@@ -453,8 +453,8 @@ const initCommand: Command = {
     }
   ],
   examples: [
-    { command: 'codex hive-mind init -t hierarchical-mesh', description: 'Init hierarchical mesh' },
-    { command: 'codex hive-mind init -c byzantine -m 20', description: 'Init with Byzantine consensus' }
+    { command: 'ruflo hive-mind init -t hierarchical-mesh', description: 'Init hierarchical mesh' },
+    { command: 'ruflo hive-mind init -c byzantine -m 20', description: 'Init with Byzantine consensus' }
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     let topology = ctx.flags.topology as string;
@@ -617,11 +617,11 @@ const spawnCommand: Command = {
     }
   ],
   examples: [
-    { command: 'codex hive-mind spawn -n 5', description: 'Spawn 5 workers' },
-    { command: 'codex hive-mind spawn -n 3 -r specialist', description: 'Spawn 3 specialists' },
-    { command: 'codex hive-mind spawn -t coder -p my-coder', description: 'Spawn coder with custom prefix' },
-    { command: 'codex hive-mind spawn --codex -o "Build a REST API"', description: 'Launch Codex with objective' },
-    { command: 'codex hive-mind spawn -n 5 --codex -o "Research AI patterns"', description: 'Spawn workers and launch Codex' }
+    { command: 'ruflo hive-mind spawn -n 5', description: 'Spawn 5 workers' },
+    { command: 'ruflo hive-mind spawn -n 3 -r specialist', description: 'Spawn 3 specialists' },
+    { command: 'ruflo hive-mind spawn -t coder -p my-coder', description: 'Spawn coder with custom prefix' },
+    { command: 'ruflo hive-mind spawn --codex -o "Build a REST API"', description: 'Launch Codex with objective' },
+    { command: 'ruflo hive-mind spawn -n 5 --codex -o "Research AI patterns"', description: 'Spawn workers and launch Codex' }
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     // Parse count with fallback to default
@@ -966,8 +966,8 @@ const taskCommand: Command = {
     }
   ],
   examples: [
-    { command: 'codex hive-mind task -d "Implement auth module"', description: 'Submit task' },
-    { command: 'codex hive-mind task -d "Security review" -p critical -c', description: 'Critical task with consensus' }
+    { command: 'ruflo hive-mind task -d "Implement auth module"', description: 'Submit task' },
+    { command: 'ruflo hive-mind task -d "Security review" -p critical -c', description: 'Critical task with consensus' }
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     let description = ctx.flags.description as string || ctx.args.join(' ');
@@ -1341,10 +1341,10 @@ export const hiveMindCommand: Command = {
   subcommands: [initCommand, spawnCommand, statusCommand, taskCommand, joinCommand, leaveCommand, consensusCommand, broadcastCommand, memorySubCommand, optimizeMemoryCommand, shutdownCommand],
   options: [],
   examples: [
-    { command: 'codex hive-mind init -t hierarchical-mesh', description: 'Initialize hive' },
-    { command: 'codex hive-mind spawn -n 5', description: 'Spawn workers' },
-    { command: 'codex hive-mind spawn --codex -o "Build a feature"', description: 'Launch Codex with hive mind' },
-    { command: 'codex hive-mind task -d "Build feature"', description: 'Submit task' }
+    { command: 'ruflo hive-mind init -t hierarchical-mesh', description: 'Initialize hive' },
+    { command: 'ruflo hive-mind spawn -n 5', description: 'Spawn workers' },
+    { command: 'ruflo hive-mind spawn --codex -o "Build a feature"', description: 'Launch Codex with hive mind' },
+    { command: 'ruflo hive-mind task -d "Build feature"', description: 'Submit task' }
   ],
   action: async (): Promise<CommandResult> => {
     output.writeln();

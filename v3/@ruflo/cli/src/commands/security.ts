@@ -21,8 +21,8 @@ const scanCommand: Command = {
     { name: 'fix', short: 'f', type: 'boolean', description: 'Auto-fix vulnerabilities where possible' },
   ],
   examples: [
-    { command: 'codex security scan -t ./src', description: 'Scan source directory' },
-    { command: 'codex security scan --depth deep --fix', description: 'Deep scan with auto-fix' },
+    { command: 'ruflo security scan -t ./src', description: 'Scan source directory' },
+    { command: 'ruflo security scan --depth deep --fix', description: 'Deep scan with auto-fix' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const target = ctx.flags.target as string || '.';
@@ -253,8 +253,8 @@ const cveCommand: Command = {
     { name: 'severity', short: 's', type: 'string', description: 'Filter by severity: critical, high, medium, low' },
   ],
   examples: [
-    { command: 'codex security cve --list', description: 'List all CVEs' },
-    { command: 'codex security cve -c CVE-2024-1234', description: 'Check specific CVE' },
+    { command: 'ruflo security cve --list', description: 'List all CVEs' },
+    { command: 'ruflo security cve -c CVE-2024-1234', description: 'Check specific CVE' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const checkCve = ctx.flags.check as string;
@@ -294,8 +294,8 @@ const threatsCommand: Command = {
     { name: 'export', short: 'e', type: 'string', description: 'Export format: json, md, html' },
   ],
   examples: [
-    { command: 'codex security threats --model stride', description: 'Run STRIDE analysis' },
-    { command: 'codex security threats -e md', description: 'Export as markdown' },
+    { command: 'ruflo security threats --model stride', description: 'Run STRIDE analysis' },
+    { command: 'ruflo security threats -e md', description: 'Export as markdown' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const model = ctx.flags.model as string || 'stride';
@@ -542,8 +542,8 @@ const auditCommand: Command = {
     { name: 'filter', short: 'f', type: 'string', description: 'Filter by event type' },
   ],
   examples: [
-    { command: 'codex security audit --action list', description: 'List audit logs' },
-    { command: 'codex security audit -a export', description: 'Export audit trail' },
+    { command: 'ruflo security audit --action list', description: 'List audit logs' },
+    { command: 'ruflo security audit -a export', description: 'Export audit trail' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const action = ctx.flags.action as string || 'list';
@@ -615,8 +615,8 @@ const secretsCommand: Command = {
     { name: 'ignore', short: 'i', type: 'string', description: 'Patterns to ignore' },
   ],
   examples: [
-    { command: 'codex security secrets --action scan', description: 'Scan for secrets' },
-    { command: 'codex security secrets -a rotate', description: 'Rotate compromised secrets' },
+    { command: 'ruflo security secrets --action scan', description: 'Scan for secrets' },
+    { command: 'ruflo security secrets -a rotate', description: 'Rotate compromised secrets' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const scanPath = ctx.flags.path as string || '.';
@@ -786,9 +786,9 @@ const defendCommand: Command = {
     { name: 'output', short: 'o', type: 'string', description: 'Output format: text, json', default: 'text' },
   ],
   examples: [
-    { command: 'codex security defend -i "ignore previous instructions"', description: 'Scan text for threats' },
-    { command: 'codex security defend -f ./prompts.txt', description: 'Scan file for threats' },
-    { command: 'codex security defend --stats', description: 'Show detection statistics' },
+    { command: 'ruflo security defend -i "ignore previous instructions"', description: 'Scan text for threats' },
+    { command: 'ruflo security defend -f ./prompts.txt', description: 'Scan file for threats' },
+    { command: 'ruflo security defend --stats', description: 'Show detection statistics' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const inputText = ctx.flags.input as string;
@@ -934,9 +934,9 @@ export const securityCommand: Command = {
   description: 'Security scanning, CVE detection, threat modeling, AI defense',
   subcommands: [scanCommand, cveCommand, threatsCommand, auditCommand, secretsCommand, defendCommand],
   examples: [
-    { command: 'codex security scan', description: 'Run security scan' },
-    { command: 'codex security cve --list', description: 'List known CVEs' },
-    { command: 'codex security threats', description: 'Run threat analysis' },
+    { command: 'ruflo security scan', description: 'Run security scan' },
+    { command: 'ruflo security cve --list', description: 'List known CVEs' },
+    { command: 'ruflo security threats', description: 'Run threat analysis' },
   ],
   action: async (): Promise<CommandResult> => {
     output.writeln();

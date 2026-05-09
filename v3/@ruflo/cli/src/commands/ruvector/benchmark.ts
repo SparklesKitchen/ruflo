@@ -151,10 +151,10 @@ export const benchmarkCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex ruvector benchmark', description: 'Run default benchmark' },
-    { command: 'codex ruvector benchmark --vectors 50000', description: 'Benchmark with 50k vectors' },
-    { command: 'codex ruvector benchmark --index ivfflat', description: 'Test IVFFlat index' },
-    { command: 'codex ruvector benchmark --dimensions 768 --metric l2', description: 'Custom dimensions and metric' },
+    { command: 'ruflo ruvector benchmark', description: 'Run default benchmark' },
+    { command: 'ruflo ruvector benchmark --vectors 50000', description: 'Benchmark with 50k vectors' },
+    { command: 'ruflo ruvector benchmark --index ivfflat', description: 'Test IVFFlat index' },
+    { command: 'ruflo ruvector benchmark --dimensions 768 --metric l2', description: 'Custom dimensions and metric' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const config = getConnectionConfig(ctx);

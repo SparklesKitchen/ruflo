@@ -1,5 +1,5 @@
 /**
- * Update checker for @codex packages
+ * Update checker for @ruflo packages
  * Queries npm registry and compares versions
  */
 

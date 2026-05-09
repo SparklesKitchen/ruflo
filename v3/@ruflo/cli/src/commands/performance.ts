@@ -22,8 +22,8 @@ const benchmarkCommand: Command = {
     { name: 'output', short: 'o', type: 'string', description: 'Output format: text, json, csv', default: 'text' },
   ],
   examples: [
-    { command: 'codex performance benchmark -s neural', description: 'Benchmark neural operations' },
-    { command: 'codex performance benchmark -i 1000', description: 'Run with 1000 iterations' },
+    { command: 'ruflo performance benchmark -s neural', description: 'Benchmark neural operations' },
+    { command: 'ruflo performance benchmark -i 1000', description: 'Run with 1000 iterations' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const suite = ctx.flags.suite as string || 'all';
@@ -264,8 +264,8 @@ const profileCommand: Command = {
     { name: 'output', short: 'o', type: 'string', description: 'Output file for profile data' },
   ],
   examples: [
-    { command: 'codex performance profile -t cpu', description: 'Profile CPU usage' },
-    { command: 'codex performance profile -d 60', description: 'Profile for 60 seconds' },
+    { command: 'ruflo performance profile -t cpu', description: 'Profile CPU usage' },
+    { command: 'ruflo performance profile -d 60', description: 'Profile for 60 seconds' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const type = ctx.flags.type as string || 'all';
@@ -346,8 +346,8 @@ const metricsCommand: Command = {
     { name: 'component', short: 'c', type: 'string', description: 'Component to filter' },
   ],
   examples: [
-    { command: 'codex performance metrics -t 7d', description: 'Show 7-day metrics' },
-    { command: 'codex performance metrics -f prometheus', description: 'Export as Prometheus format' },
+    { command: 'ruflo performance metrics -t 7d', description: 'Show 7-day metrics' },
+    { command: 'ruflo performance metrics -f prometheus', description: 'Export as Prometheus format' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const timeframe = ctx.flags.timeframe as string || '24h';
@@ -438,22 +438,22 @@ const metricsCommand: Command = {
     }
 
     if (format === 'prometheus') {
-      output.writeln(`# HELP codex_flow_heap_used_bytes Heap memory used`);
-      output.writeln(`codex_flow_heap_used_bytes ${memUsage.heapUsed}`);
-      output.writeln(`# HELP codex_flow_heap_total_bytes Total heap memory`);
-      output.writeln(`codex_flow_heap_total_bytes ${memUsage.heapTotal}`);
-      output.writeln(`# HELP codex_flow_rss_bytes Resident set size`);
-      output.writeln(`codex_flow_rss_bytes ${memUsage.rss}`);
-      output.writeln(`# HELP codex_flow_cpu_user_microseconds CPU user time`);
-      output.writeln(`codex_flow_cpu_user_microseconds ${cpuUsage.user}`);
-      output.writeln(`# HELP codex_flow_cpu_system_microseconds CPU system time`);
-      output.writeln(`codex_flow_cpu_system_microseconds ${cpuUsage.system}`);
-      output.writeln(`# HELP codex_flow_cache_entries Embedding cache entries`);
-      output.writeln(`codex_flow_cache_entries ${cacheEntries}`);
-      output.writeln(`# HELP codex_flow_hnsw_entries HNSW index entries`);
-      output.writeln(`codex_flow_hnsw_entries ${hnswEntries}`);
-      output.writeln(`# HELP codex_flow_uptime_seconds Process uptime`);
-      output.writeln(`codex_flow_uptime_seconds ${uptime}`);
+      output.writeln(`# HELP ruflo_flow_heap_used_bytes Heap memory used`);
+      output.writeln(`ruflo_flow_heap_used_bytes ${memUsage.heapUsed}`);
+      output.writeln(`# HELP ruflo_flow_heap_total_bytes Total heap memory`);
+      output.writeln(`ruflo_flow_heap_total_bytes ${memUsage.heapTotal}`);
+      output.writeln(`# HELP ruflo_flow_rss_bytes Resident set size`);
+      output.writeln(`ruflo_flow_rss_bytes ${memUsage.rss}`);
+      output.writeln(`# HELP ruflo_flow_cpu_user_microseconds CPU user time`);
+      output.writeln(`ruflo_flow_cpu_user_microseconds ${cpuUsage.user}`);
+      output.writeln(`# HELP ruflo_flow_cpu_system_microseconds CPU system time`);
+      output.writeln(`ruflo_flow_cpu_system_microseconds ${cpuUsage.system}`);
+      output.writeln(`# HELP ruflo_flow_cache_entries Embedding cache entries`);
+      output.writeln(`ruflo_flow_cache_entries ${cacheEntries}`);
+      output.writeln(`# HELP ruflo_flow_hnsw_entries HNSW index entries`);
+      output.writeln(`ruflo_flow_hnsw_entries ${hnswEntries}`);
+      output.writeln(`# HELP ruflo_flow_uptime_seconds Process uptime`);
+      output.writeln(`ruflo_flow_uptime_seconds ${uptime}`);
       return { success: true };
     }
 
@@ -535,8 +535,8 @@ const optimizeCommand: Command = {
     { name: 'dry-run', short: 'd', type: 'boolean', description: 'Show changes without applying' },
   ],
   examples: [
-    { command: 'codex performance optimize -t memory', description: 'Optimize memory usage' },
-    { command: 'codex performance optimize --apply', description: 'Apply all optimizations' },
+    { command: 'ruflo performance optimize -t memory', description: 'Optimize memory usage' },
+    { command: 'ruflo performance optimize --apply', description: 'Apply all optimizations' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const target = ctx.flags.target as string || 'all';
@@ -583,8 +583,8 @@ const bottleneckCommand: Command = {
     { name: 'depth', short: 'd', type: 'string', description: 'Analysis depth: quick, full', default: 'quick' },
   ],
   examples: [
-    { command: 'codex performance bottleneck', description: 'Find bottlenecks' },
-    { command: 'codex performance bottleneck -d full', description: 'Full analysis' },
+    { command: 'ruflo performance bottleneck', description: 'Find bottlenecks' },
+    { command: 'ruflo performance bottleneck -d full', description: 'Full analysis' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     output.writeln();
@@ -622,9 +622,9 @@ export const performanceCommand: Command = {
   aliases: ['perf'],
   subcommands: [benchmarkCommand, profileCommand, metricsCommand, optimizeCommand, bottleneckCommand],
   examples: [
-    { command: 'codex performance benchmark', description: 'Run benchmarks' },
-    { command: 'codex performance profile', description: 'Profile application' },
-    { command: 'codex perf metrics', description: 'View metrics (alias)' },
+    { command: 'ruflo performance benchmark', description: 'Run benchmarks' },
+    { command: 'ruflo performance profile', description: 'Profile application' },
+    { command: 'ruflo perf metrics', description: 'View metrics (alias)' },
   ],
   action: async (): Promise<CommandResult> => {
     output.writeln();

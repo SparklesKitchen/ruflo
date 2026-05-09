@@ -111,9 +111,9 @@ const routeTaskCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex route task "implement authentication"', description: 'Route task to best agent' },
-    { command: 'codex route task "write unit tests" --q-learning', description: 'Use Q-Learning routing' },
-    { command: 'codex route task "review code" --agent reviewer', description: 'Force specific agent' },
+    { command: 'ruflo route task "implement authentication"', description: 'Route task to best agent' },
+    { command: 'ruflo route task "write unit tests" --q-learning', description: 'Use Q-Learning routing' },
+    { command: 'ruflo route task "review code" --agent reviewer', description: 'Force specific agent' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const taskDescription = ctx.args[0];
@@ -259,8 +259,8 @@ const listAgentsCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex route list-agents', description: 'List all agents' },
-    { command: 'codex route agents --json', description: 'List agents as JSON' },
+    { command: 'ruflo route list-agents', description: 'List all agents' },
+    { command: 'ruflo route agents --json', description: 'List agents as JSON' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const jsonOutput = ctx.flags.json as boolean;
@@ -318,7 +318,7 @@ const statsCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex route stats', description: 'Show routing statistics' },
+    { command: 'ruflo route stats', description: 'Show routing statistics' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const jsonOutput = ctx.flags.json as boolean;
@@ -410,8 +410,8 @@ const feedbackCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex route feedback -t "implement auth" -a coder -r 0.9', description: 'Positive feedback' },
-    { command: 'codex route feedback -t "write tests" -a tester -r -0.5', description: 'Negative feedback' },
+    { command: 'ruflo route feedback -t "implement auth" -a coder -r 0.9', description: 'Positive feedback' },
+    { command: 'ruflo route feedback -t "write tests" -a tester -r -0.5', description: 'Negative feedback' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const taskDescription = ctx.flags.task as string;
@@ -473,8 +473,8 @@ const resetCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex route reset', description: 'Reset router state' },
-    { command: 'codex route reset --force', description: 'Force reset' },
+    { command: 'ruflo route reset', description: 'Reset router state' },
+    { command: 'ruflo route reset --force', description: 'Force reset' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const force = ctx.flags.force as boolean;
@@ -513,8 +513,8 @@ const exportCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex route export', description: 'Export Q-table to stdout' },
-    { command: 'codex route export -f qtable.json', description: 'Export to file' },
+    { command: 'ruflo route export', description: 'Export Q-table to stdout' },
+    { command: 'ruflo route export -f qtable.json', description: 'Export to file' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const filePath = ctx.flags.file as string | undefined;
@@ -552,7 +552,7 @@ const importCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex route import -f qtable.json', description: 'Import Q-table from file' },
+    { command: 'ruflo route import -f qtable.json', description: 'Import Q-table from file' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const filePath = ctx.flags.file as string;
@@ -626,10 +626,10 @@ const coverageRouteCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex route coverage', description: 'Analyze coverage and suggest routing' },
-    { command: 'codex route coverage --suggest', description: 'Get improvement suggestions' },
-    { command: 'codex route coverage --gaps', description: 'List coverage gaps by agent' },
-    { command: 'codex route coverage -p src/auth -t 90', description: 'Analyze specific path with threshold' },
+    { command: 'ruflo route coverage', description: 'Analyze coverage and suggest routing' },
+    { command: 'ruflo route coverage --suggest', description: 'Get improvement suggestions' },
+    { command: 'ruflo route coverage --gaps', description: 'List coverage gaps by agent' },
+    { command: 'ruflo route coverage -p src/auth -t 90', description: 'Analyze specific path with threshold' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const path = (ctx.flags.path as string) || '';
@@ -841,11 +841,11 @@ export const routeCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex route "implement feature"', description: 'Route task to best agent' },
-    { command: 'codex route "write tests" --q-learning', description: 'Use Q-Learning routing' },
-    { command: 'codex route --agent coder "fix bug"', description: 'Force specific agent' },
-    { command: 'codex route list-agents', description: 'List available agents' },
-    { command: 'codex route stats', description: 'Show routing statistics' },
+    { command: 'ruflo route "implement feature"', description: 'Route task to best agent' },
+    { command: 'ruflo route "write tests" --q-learning', description: 'Use Q-Learning routing' },
+    { command: 'ruflo route --agent coder "fix bug"', description: 'Force specific agent' },
+    { command: 'ruflo route list-agents', description: 'List available agents' },
+    { command: 'ruflo route stats', description: 'Show routing statistics' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     // If task description provided directly, route it
@@ -896,7 +896,7 @@ export const routeCommand: Command = {
     ]);
     output.writeln();
 
-    output.writeln(output.dim('Run "codex route <subcommand> --help" for more info'));
+    output.writeln(output.dim('Run "ruflo route <subcommand> --help" for more info'));
 
     return { success: true };
   },

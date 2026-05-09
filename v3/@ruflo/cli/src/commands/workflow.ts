@@ -72,9 +72,9 @@ const runCommand: Command = {
     }
   ],
   examples: [
-    { command: 'codex workflow run -t development --task "Build auth system"', description: 'Run development workflow' },
-    { command: 'codex workflow run -f ./workflow.yaml', description: 'Run from file' },
-    { command: 'codex workflow run -t sparc --dry-run', description: 'Validate SPARC workflow' }
+    { command: 'ruflo workflow run -t development --task "Build auth system"', description: 'Run development workflow' },
+    { command: 'ruflo workflow run -f ./workflow.yaml', description: 'Run from file' },
+    { command: 'ruflo workflow run -t sparc --dry-run', description: 'Validate SPARC workflow' }
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     let template = ctx.flags.template as string;
@@ -213,8 +213,8 @@ const validateCommand: Command = {
     }
   ],
   examples: [
-    { command: 'codex workflow validate -f ./workflow.yaml', description: 'Validate workflow file' },
-    { command: 'codex workflow validate -f ./workflow.json --strict', description: 'Strict validation' }
+    { command: 'ruflo workflow validate -f ./workflow.yaml', description: 'Validate workflow file' },
+    { command: 'ruflo workflow validate -f ./workflow.json --strict', description: 'Strict validation' }
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const file = ctx.flags.file as string || ctx.args[0];
@@ -651,9 +651,9 @@ export const workflowCommand: Command = {
   subcommands: [runCommand, validateCommand, listCommand, statusCommand, stopCommand, templateCommand],
   options: [],
   examples: [
-    { command: 'codex workflow run -t development --task "Build feature"', description: 'Run workflow' },
-    { command: 'codex workflow validate -f ./workflow.yaml', description: 'Validate workflow' },
-    { command: 'codex workflow list', description: 'List workflows' }
+    { command: 'ruflo workflow run -t development --task "Build feature"', description: 'Run workflow' },
+    { command: 'ruflo workflow validate -f ./workflow.yaml', description: 'Validate workflow' },
+    { command: 'ruflo workflow list', description: 'List workflows' }
   ],
   action: async (): Promise<CommandResult> => {
     output.writeln();
@@ -671,7 +671,7 @@ export const workflowCommand: Command = {
       `${output.highlight('template')}  - Manage templates`
     ]);
     output.writeln();
-    output.writeln('Run "codex workflow <subcommand> --help" for more info');
+    output.writeln('Run "ruflo workflow <subcommand> --help" for more info');
 
     return { success: true };
   }

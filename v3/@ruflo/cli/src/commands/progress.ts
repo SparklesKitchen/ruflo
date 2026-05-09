@@ -259,23 +259,23 @@ export const progressCommand: Command = {
   ],
   examples: [
     {
-      command: 'codex progress',
+      command: 'ruflo progress',
       description: 'Check current progress',
     },
     {
-      command: 'codex progress --detailed',
+      command: 'ruflo progress --detailed',
       description: 'Show detailed breakdown',
     },
     {
-      command: 'codex progress sync',
+      command: 'ruflo progress sync',
       description: 'Sync and persist progress',
     },
     {
-      command: 'codex progress watch',
+      command: 'ruflo progress watch',
       description: 'Watch for changes',
     },
     {
-      command: 'codex progress --json',
+      command: 'ruflo progress --json',
       description: 'Output as JSON',
     },
   ],

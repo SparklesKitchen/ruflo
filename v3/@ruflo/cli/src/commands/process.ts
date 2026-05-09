@@ -82,10 +82,10 @@ const daemonCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex process daemon --action start', description: 'Start the daemon' },
-    { command: 'codex process daemon --action stop', description: 'Stop the daemon' },
-    { command: 'codex process daemon --action restart --port 3850', description: 'Restart on different port' },
-    { command: 'codex process daemon --action status', description: 'Check daemon status' },
+    { command: 'ruflo process daemon --action start', description: 'Start the daemon' },
+    { command: 'ruflo process daemon --action stop', description: 'Stop the daemon' },
+    { command: 'ruflo process daemon --action restart --port 3850', description: 'Restart on different port' },
+    { command: 'ruflo process daemon --action status', description: 'Check daemon status' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const action = (ctx.flags?.action as string) || 'status';
@@ -242,10 +242,10 @@ const monitorCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex process monitor', description: 'Show process dashboard' },
-    { command: 'codex process monitor --watch --interval 5', description: 'Watch mode' },
-    { command: 'codex process monitor --components agents,memory,tasks', description: 'Monitor specific components' },
-    { command: 'codex process monitor --format json', description: 'JSON output' },
+    { command: 'ruflo process monitor', description: 'Show process dashboard' },
+    { command: 'ruflo process monitor --watch --interval 5', description: 'Watch mode' },
+    { command: 'ruflo process monitor --components agents,memory,tasks', description: 'Monitor specific components' },
+    { command: 'ruflo process monitor --format json', description: 'JSON output' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const interval = (ctx.flags?.interval as number) || 2;
@@ -433,10 +433,10 @@ const workersCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex process workers --action list', description: 'List all workers' },
-    { command: 'codex process workers --action spawn --type task --count 3', description: 'Spawn task workers' },
-    { command: 'codex process workers --action kill --id worker-123', description: 'Kill specific worker' },
-    { command: 'codex process workers --action scale --type memory --count 5', description: 'Scale memory workers' },
+    { command: 'ruflo process workers --action list', description: 'List all workers' },
+    { command: 'ruflo process workers --action spawn --type task --count 3', description: 'Spawn task workers' },
+    { command: 'ruflo process workers --action kill --id worker-123', description: 'Kill specific worker' },
+    { command: 'ruflo process workers --action scale --type memory --count 5', description: 'Scale memory workers' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const action = (ctx.flags?.action as string) || 'list';
@@ -539,9 +539,9 @@ const signalsCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex process signals --target daemon --signal graceful-shutdown', description: 'Graceful shutdown' },
-    { command: 'codex process signals --target workers --signal pause', description: 'Pause workers' },
-    { command: 'codex process signals --target all --signal reload-config', description: 'Reload all configs' },
+    { command: 'ruflo process signals --target daemon --signal graceful-shutdown', description: 'Graceful shutdown' },
+    { command: 'ruflo process signals --target workers --signal pause', description: 'Pause workers' },
+    { command: 'ruflo process signals --target all --signal reload-config', description: 'Reload all configs' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const target = ctx.flags?.target as string;
@@ -618,10 +618,10 @@ const logsCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex process logs', description: 'Show recent logs' },
-    { command: 'codex process logs --source daemon --tail 100', description: 'Daemon logs' },
-    { command: 'codex process logs --follow --level error', description: 'Follow error logs' },
-    { command: 'codex process logs --since 1h --grep "error"', description: 'Search logs' },
+    { command: 'ruflo process logs', description: 'Show recent logs' },
+    { command: 'ruflo process logs --source daemon --tail 100', description: 'Daemon logs' },
+    { command: 'ruflo process logs --follow --level error', description: 'Follow error logs' },
+    { command: 'ruflo process logs --since 1h --grep "error"', description: 'Search logs' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const source = (ctx.flags?.source as string) || 'all';
@@ -712,10 +712,10 @@ export const processCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex process daemon --action start', description: 'Start daemon' },
-    { command: 'codex process monitor --watch', description: 'Watch processes' },
-    { command: 'codex process workers --action list', description: 'List workers' },
-    { command: 'codex process logs --follow', description: 'Follow logs' },
+    { command: 'ruflo process daemon --action start', description: 'Start daemon' },
+    { command: 'ruflo process monitor --watch', description: 'Watch processes' },
+    { command: 'ruflo process workers --action list', description: 'List workers' },
+    { command: 'ruflo process logs --follow', description: 'Follow logs' },
   ],
   action: async (_ctx: CommandContext): Promise<CommandResult> => {
     // Show help if no subcommand

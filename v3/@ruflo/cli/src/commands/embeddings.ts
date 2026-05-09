@@ -36,8 +36,8 @@ const generateCommand: Command = {
     { name: 'output', short: 'o', type: 'string', description: 'Output format: json, array, preview', default: 'preview' },
   ],
   examples: [
-    { command: 'codex embeddings generate -t "Hello world"', description: 'Generate embedding' },
-    { command: 'codex embeddings generate -t "Test" -o json', description: 'Output as JSON' },
+    { command: 'ruflo embeddings generate -t "Hello world"', description: 'Generate embedding' },
+    { command: 'ruflo embeddings generate -t "Test" -o json', description: 'Output as JSON' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const text = ctx.flags.text as string;
@@ -119,8 +119,8 @@ const searchCommand: Command = {
     { name: 'db-path', type: 'string', description: 'Database path', default: '.swarm/memory.db' },
   ],
   examples: [
-    { command: 'codex embeddings search -q "error handling"', description: 'Search for similar' },
-    { command: 'codex embeddings search -q "test" -l 5', description: 'Limit results' },
+    { command: 'ruflo embeddings search -q "error handling"', description: 'Search for similar' },
+    { command: 'ruflo embeddings search -q "test" -l 5', description: 'Limit results' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const query = ctx.flags.query as string;
@@ -340,7 +340,7 @@ const compareCommand: Command = {
     { name: 'metric', short: 'm', type: 'string', description: 'Metric: cosine, euclidean, dot', default: 'cosine' },
   ],
   examples: [
-    { command: 'codex embeddings compare --text1 "Hello" --text2 "Hi there"', description: 'Compare texts' },
+    { command: 'ruflo embeddings compare --text1 "Hello" --text2 "Hi there"', description: 'Compare texts' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const text1 = ctx.flags.text1 as string;
@@ -436,8 +436,8 @@ const collectionsCommand: Command = {
     { name: 'db-path', type: 'string', description: 'Database path', default: '.swarm/memory.db' },
   ],
   examples: [
-    { command: 'codex embeddings collections', description: 'List collections' },
-    { command: 'codex embeddings collections -a stats', description: 'Show detailed stats' },
+    { command: 'ruflo embeddings collections', description: 'List collections' },
+    { command: 'ruflo embeddings collections -a stats', description: 'Show detailed stats' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const action = ctx.flags.action as string || 'list';
@@ -555,9 +555,9 @@ const indexCommand: Command = {
     { name: 'm', type: 'number', description: 'HNSW M parameter', default: '16' },
   ],
   examples: [
-    { command: 'codex embeddings index', description: 'Show index status' },
-    { command: 'codex embeddings index -a build -c documents', description: 'Build index' },
-    { command: 'codex embeddings index -a optimize -c patterns', description: 'Optimize index' },
+    { command: 'ruflo embeddings index', description: 'Show index status' },
+    { command: 'ruflo embeddings index -a build -c documents', description: 'Build index' },
+    { command: 'ruflo embeddings index -a optimize -c patterns', description: 'Optimize index' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const action = ctx.flags.action as string || 'status';
@@ -706,11 +706,11 @@ const initCommand: Command = {
     { name: 'force', short: 'f', type: 'boolean', description: 'Overwrite existing configuration', default: 'false' },
   ],
   examples: [
-    { command: 'codex embeddings init', description: 'Initialize with defaults' },
-    { command: 'codex embeddings init --model Xenova/all-mpnet-base-v2', description: 'Use higher quality model' },
-    { command: 'codex embeddings init --no-hyperbolic', description: 'Euclidean only' },
-    { command: 'codex embeddings init --curvature=-0.5', description: 'Custom curvature (use = for negative)' },
-    { command: 'codex embeddings init --force', description: 'Overwrite existing config' },
+    { command: 'ruflo embeddings init', description: 'Initialize with defaults' },
+    { command: 'ruflo embeddings init --model Xenova/all-mpnet-base-v2', description: 'Use higher quality model' },
+    { command: 'ruflo embeddings init --no-hyperbolic', description: 'Euclidean only' },
+    { command: 'ruflo embeddings init --curvature=-0.5', description: 'Custom curvature (use = for negative)' },
+    { command: 'ruflo embeddings init --force', description: 'Overwrite existing config' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const model = ctx.flags.model as string || 'Xenova/all-MiniLM-L6-v2';
@@ -851,7 +851,7 @@ const providersCommand: Command = {
   description: 'List available embedding providers',
   options: [],
   examples: [
-    { command: 'codex embeddings providers', description: 'List providers' },
+    { command: 'ruflo embeddings providers', description: 'List providers' },
   ],
   action: async (): Promise<CommandResult> => {
     output.writeln();
@@ -894,8 +894,8 @@ const chunkCommand: Command = {
     { name: 'file', short: 'f', type: 'string', description: 'File to chunk (instead of text)' },
   ],
   examples: [
-    { command: 'codex embeddings chunk -t "Long text..." -s 256', description: 'Chunk with 256 char limit' },
-    { command: 'codex embeddings chunk -f doc.txt --strategy paragraph', description: 'Chunk file by paragraph' },
+    { command: 'ruflo embeddings chunk -t "Long text..." -s 256', description: 'Chunk with 256 char limit' },
+    { command: 'ruflo embeddings chunk -f doc.txt --strategy paragraph', description: 'Chunk file by paragraph' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const embeddings = await getEmbeddings();
@@ -956,8 +956,8 @@ const normalizeCommand: Command = {
     { name: 'check', short: 'c', type: 'boolean', description: 'Check if already normalized' },
   ],
   examples: [
-    { command: 'codex embeddings normalize -i "[0.5, 0.3, 0.8]" -t l2', description: 'L2 normalize' },
-    { command: 'codex embeddings normalize --check -i "[...]"', description: 'Check if normalized' },
+    { command: 'ruflo embeddings normalize -i "[0.5, 0.3, 0.8]" -t l2', description: 'L2 normalize' },
+    { command: 'ruflo embeddings normalize --check -i "[...]"', description: 'Check if normalized' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const type = ctx.flags.type as string || 'l2';
@@ -999,8 +999,8 @@ const hyperbolicCommand: Command = {
     { name: 'input', short: 'i', type: 'string', description: 'Input embedding(s) JSON' },
   ],
   examples: [
-    { command: 'codex embeddings hyperbolic -a convert -i "[0.5, 0.3]"', description: 'Convert to Poincaré' },
-    { command: 'codex embeddings hyperbolic -a distance', description: 'Compute hyperbolic distance' },
+    { command: 'ruflo embeddings hyperbolic -a convert -i "[0.5, 0.3]"', description: 'Convert to Poincaré' },
+    { command: 'ruflo embeddings hyperbolic -a distance', description: 'Compute hyperbolic distance' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const action = ctx.flags.action as string || 'convert';
@@ -1115,11 +1115,11 @@ const neuralCommand: Command = {
     { name: 'consolidation-interval', type: 'string', description: 'Memory consolidation interval (ms)', default: '60000' },
   ],
   examples: [
-    { command: 'codex embeddings neural --init', description: 'Initialize RuVector substrate' },
-    { command: 'codex embeddings neural -f drift', description: 'Semantic drift detection' },
-    { command: 'codex embeddings neural -f memory', description: 'Memory physics (hippocampal)' },
-    { command: 'codex embeddings neural -f coherence', description: 'Safety & alignment monitoring' },
-    { command: 'codex embeddings neural --drift-threshold=0.2', description: 'Custom drift threshold' },
+    { command: 'ruflo embeddings neural --init', description: 'Initialize RuVector substrate' },
+    { command: 'ruflo embeddings neural -f drift', description: 'Semantic drift detection' },
+    { command: 'ruflo embeddings neural -f memory', description: 'Memory physics (hippocampal)' },
+    { command: 'ruflo embeddings neural -f coherence', description: 'Safety & alignment monitoring' },
+    { command: 'ruflo embeddings neural --drift-threshold=0.2', description: 'Custom drift threshold' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const feature = ctx.flags.feature as string || 'all';
@@ -1273,8 +1273,8 @@ const modelsCommand: Command = {
     { name: 'list', short: 'l', type: 'boolean', description: 'List available models', default: 'true' },
   ],
   examples: [
-    { command: 'codex embeddings models', description: 'List models' },
-    { command: 'codex embeddings models -d all-MiniLM-L6-v2', description: 'Download model' },
+    { command: 'ruflo embeddings models', description: 'List models' },
+    { command: 'ruflo embeddings models -d all-MiniLM-L6-v2', description: 'Download model' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const download = ctx.flags.download as string;
@@ -1348,8 +1348,8 @@ const cacheCommand: Command = {
     { name: 'db-path', type: 'string', description: 'SQLite database path', default: '.cache/embeddings.db' },
   ],
   examples: [
-    { command: 'codex embeddings cache', description: 'Show cache stats' },
-    { command: 'codex embeddings cache -a clear', description: 'Clear cache' },
+    { command: 'ruflo embeddings cache', description: 'Show cache stats' },
+    { command: 'ruflo embeddings cache -a clear', description: 'Clear cache' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const action = ctx.flags.action as string || 'stats';
@@ -1480,8 +1480,8 @@ const warmupCommand: Command = {
     { name: 'test', short: 't', type: 'boolean', description: 'Run test embedding after warmup', default: 'true' },
   ],
   examples: [
-    { command: 'codex embeddings warmup', description: 'Preload model with test' },
-    { command: 'codex embeddings warmup -b', description: 'Background warmup' },
+    { command: 'ruflo embeddings warmup', description: 'Preload model with test' },
+    { command: 'ruflo embeddings warmup -b', description: 'Background warmup' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const runTest = ctx.flags.test !== false;
@@ -1568,8 +1568,8 @@ const benchmarkCommand: Command = {
     { name: 'full', short: 'f', type: 'boolean', description: 'Run full benchmark suite', default: 'false' },
   ],
   examples: [
-    { command: 'codex embeddings benchmark', description: 'Quick benchmark' },
-    { command: 'codex embeddings benchmark -n 50 -f', description: 'Full benchmark' },
+    { command: 'ruflo embeddings benchmark', description: 'Quick benchmark' },
+    { command: 'ruflo embeddings benchmark -n 50 -f', description: 'Full benchmark' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const iterations = parseInt(ctx.flags.iterations as string || '10', 10);
@@ -1736,13 +1736,13 @@ export const embeddingsCommand: Command = {
     benchmarkCommand,
   ],
   examples: [
-    { command: 'codex embeddings init', description: 'Initialize ONNX embedding system' },
-    { command: 'codex embeddings init --model all-mpnet-base-v2', description: 'Init with larger model' },
-    { command: 'codex embeddings generate -t "Hello"', description: 'Generate embedding' },
-    { command: 'codex embeddings search -q "error handling"', description: 'Semantic search' },
-    { command: 'codex embeddings chunk -t "Long doc..."', description: 'Chunk document' },
-    { command: 'codex embeddings hyperbolic -a convert', description: 'Hyperbolic space' },
-    { command: 'codex embed neural -f drift', description: 'Neural substrate' },
+    { command: 'ruflo embeddings init', description: 'Initialize ONNX embedding system' },
+    { command: 'ruflo embeddings init --model all-mpnet-base-v2', description: 'Init with larger model' },
+    { command: 'ruflo embeddings generate -t "Hello"', description: 'Generate embedding' },
+    { command: 'ruflo embeddings search -q "error handling"', description: 'Semantic search' },
+    { command: 'ruflo embeddings chunk -t "Long doc..."', description: 'Chunk document' },
+    { command: 'ruflo embeddings hyperbolic -a convert', description: 'Hyperbolic space' },
+    { command: 'ruflo embed neural -f drift', description: 'Neural substrate' },
   ],
   action: async (): Promise<CommandResult> => {
     output.writeln();

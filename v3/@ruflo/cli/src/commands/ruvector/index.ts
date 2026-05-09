@@ -79,14 +79,14 @@ export const ruvectorCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex ruvector setup', description: 'Output Docker files and SQL for setup' },
-    { command: 'codex ruvector import --input memory.json', description: 'Import from sql.js/JSON export' },
-    { command: 'codex ruvector init --database mydb', description: 'Initialize RuVector in PostgreSQL' },
-    { command: 'codex ruvector status --verbose', description: 'Check connection and schema status' },
-    { command: 'codex ruvector migrate --up', description: 'Run pending migrations' },
-    { command: 'codex ruvector benchmark --vectors 10000', description: 'Run performance benchmark' },
-    { command: 'codex ruvector optimize --analyze', description: 'Analyze and suggest optimizations' },
-    { command: 'codex ruvector backup --output backup.sql', description: 'Backup RuVector data' },
+    { command: 'ruflo ruvector setup', description: 'Output Docker files and SQL for setup' },
+    { command: 'ruflo ruvector import --input memory.json', description: 'Import from sql.js/JSON export' },
+    { command: 'ruflo ruvector init --database mydb', description: 'Initialize RuVector in PostgreSQL' },
+    { command: 'ruflo ruvector status --verbose', description: 'Check connection and schema status' },
+    { command: 'ruflo ruvector migrate --up', description: 'Run pending migrations' },
+    { command: 'ruflo ruvector benchmark --vectors 10000', description: 'Run performance benchmark' },
+    { command: 'ruflo ruvector optimize --analyze', description: 'Analyze and suggest optimizations' },
+    { command: 'ruflo ruvector backup --output backup.sql', description: 'Backup RuVector data' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     // Default action: show help/status overview
@@ -117,7 +117,7 @@ export const ruvectorCommand: Command = {
     ].join('\n'), 'RuVector PostgreSQL Bridge');
 
     output.writeln();
-    output.printInfo('Run `codex ruvector <command> --help` for details');
+    output.printInfo('Run `ruflo ruvector <command> --help` for details');
     output.writeln();
 
     return { success: true };

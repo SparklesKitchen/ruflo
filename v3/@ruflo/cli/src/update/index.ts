@@ -1,5 +1,5 @@
 /**
- * Auto-update system for @codex packages
+ * Auto-update system for @ruflo packages
  *
  * Features:
  * - Rate-limited update checks (24h default)

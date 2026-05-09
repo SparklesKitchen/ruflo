@@ -121,9 +121,9 @@ const backupSubcommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex ruvector backup create -o backup.sql', description: 'Create SQL backup' },
-    { command: 'codex ruvector backup create -o backup.json --format json', description: 'Create JSON backup' },
-    { command: 'codex ruvector backup create -o backup.sql.gz --compress', description: 'Compressed backup' },
+    { command: 'ruflo ruvector backup create -o backup.sql', description: 'Create SQL backup' },
+    { command: 'ruflo ruvector backup create -o backup.json --format json', description: 'Create JSON backup' },
+    { command: 'ruflo ruvector backup create -o backup.sql.gz --compress', description: 'Compressed backup' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const config = getConnectionConfig(ctx);
@@ -463,9 +463,9 @@ const restoreSubcommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex ruvector backup restore -i backup.sql', description: 'Restore from SQL backup' },
-    { command: 'codex ruvector backup restore -i backup.json --clean', description: 'Clean restore' },
-    { command: 'codex ruvector backup restore -i backup.sql --dry-run', description: 'Preview restore' },
+    { command: 'ruflo ruvector backup restore -i backup.sql', description: 'Restore from SQL backup' },
+    { command: 'ruflo ruvector backup restore -i backup.json --clean', description: 'Clean restore' },
+    { command: 'ruflo ruvector backup restore -i backup.sql --dry-run', description: 'Preview restore' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const config = getConnectionConfig(ctx);
@@ -769,8 +769,8 @@ export const backupCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex ruvector backup create -o backup.sql', description: 'Create backup' },
-    { command: 'codex ruvector backup restore -i backup.sql', description: 'Restore backup' },
+    { command: 'ruflo ruvector backup create -o backup.sql', description: 'Create backup' },
+    { command: 'ruflo ruvector backup restore -i backup.sql', description: 'Restore backup' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     output.writeln();
@@ -797,7 +797,7 @@ export const backupCommand: Command = {
     ].join('\n'), 'Backup Commands');
 
     output.writeln();
-    output.printInfo('Run `codex ruvector backup <command> --help` for details');
+    output.printInfo('Run `ruflo ruvector backup <command> --help` for details');
 
     return { success: true };
   },

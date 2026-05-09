@@ -119,10 +119,10 @@ export const optimizeCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex ruvector optimize --analyze', description: 'Analyze and show recommendations' },
-    { command: 'codex ruvector optimize --apply', description: 'Apply optimizations' },
-    { command: 'codex ruvector optimize --vacuum', description: 'Run VACUUM ANALYZE' },
-    { command: 'codex ruvector optimize --reindex', description: 'Rebuild all indexes' },
+    { command: 'ruflo ruvector optimize --analyze', description: 'Analyze and show recommendations' },
+    { command: 'ruflo ruvector optimize --apply', description: 'Apply optimizations' },
+    { command: 'ruflo ruvector optimize --vacuum', description: 'Run VACUUM ANALYZE' },
+    { command: 'ruflo ruvector optimize --reindex', description: 'Rebuild all indexes' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const config = getConnectionConfig(ctx);

@@ -194,10 +194,10 @@ export const importCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex ruvector import --input memory-export.json', description: 'Import from JSON file' },
-    { command: 'codex ruvector import --input data.json --output import.sql', description: 'Generate SQL file (dry-run)' },
-    { command: 'codex ruvector import --from-memory', description: 'Export current memory and import' },
-    { command: 'codex ruvector import --input data.json --container my-postgres', description: 'Import using custom container' },
+    { command: 'ruflo ruvector import --input memory-export.json', description: 'Import from JSON file' },
+    { command: 'ruflo ruvector import --input data.json --output import.sql', description: 'Generate SQL file (dry-run)' },
+    { command: 'ruflo ruvector import --from-memory', description: 'Export current memory and import' },
+    { command: 'ruflo ruvector import --input data.json --container my-postgres', description: 'Import using custom container' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const inputFile = ctx.flags.input as string | undefined;

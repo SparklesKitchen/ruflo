@@ -464,13 +464,13 @@ export const startCommand: Command = {
     }
   ],
   examples: [
-    { command: 'codex start', description: 'Start with configuration defaults' },
-    { command: 'codex start --daemon', description: 'Start as background daemon' },
-    { command: 'codex start --port 3001', description: 'Start MCP on custom port' },
-    { command: 'codex start --topology mesh', description: 'Start with mesh topology' },
-    { command: 'codex start --skip-mcp', description: 'Start without MCP server' },
-    { command: 'codex start quick', description: 'Quick start with defaults' },
-    { command: 'codex start stop', description: 'Stop the running system' }
+    { command: 'ruflo start', description: 'Start with configuration defaults' },
+    { command: 'ruflo start --daemon', description: 'Start as background daemon' },
+    { command: 'ruflo start --port 3001', description: 'Start MCP on custom port' },
+    { command: 'ruflo start --topology mesh', description: 'Start with mesh topology' },
+    { command: 'ruflo start --skip-mcp', description: 'Start without MCP server' },
+    { command: 'ruflo start quick', description: 'Quick start with defaults' },
+    { command: 'ruflo start stop', description: 'Stop the running system' }
   ],
   action: startAction
 };

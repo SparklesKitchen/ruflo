@@ -25,9 +25,9 @@ const pretrainCommand: Command = {
     { name: 'verbose', short: 'v', type: 'boolean', description: 'Verbose output', default: 'false' },
   ],
   examples: [
-    { command: 'codex benchmark pretrain', description: 'Run pre-training benchmarks' },
-    { command: 'codex benchmark pretrain -i 500 --save results.json', description: 'Extended benchmark with results saved' },
-    { command: 'codex benchmark pretrain -o json', description: 'Output results as JSON' },
+    { command: 'ruflo benchmark pretrain', description: 'Run pre-training benchmarks' },
+    { command: 'ruflo benchmark pretrain -i 500 --save results.json', description: 'Extended benchmark with results saved' },
+    { command: 'ruflo benchmark pretrain -o json', description: 'Output results as JSON' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const iterations = parseInt(ctx.flags.iterations as string || '100', 10);
@@ -94,8 +94,8 @@ const neuralCommand: Command = {
     { name: 'output', short: 'o', type: 'string', description: 'Output format: text, json', default: 'text' },
   ],
   examples: [
-    { command: 'codex benchmark neural', description: 'Run neural benchmarks' },
-    { command: 'codex benchmark neural -d 768 -n 5000', description: 'Higher dimension, more vectors' },
+    { command: 'ruflo benchmark neural', description: 'Run neural benchmarks' },
+    { command: 'ruflo benchmark neural -d 768 -n 5000', description: 'Higher dimension, more vectors' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const iterations = parseInt(ctx.flags.iterations as string || '100', 10);
@@ -278,7 +278,7 @@ const memoryCommand: Command = {
     { name: 'output', short: 'o', type: 'string', description: 'Output format: text, json', default: 'text' },
   ],
   examples: [
-    { command: 'codex benchmark memory', description: 'Run memory benchmarks' },
+    { command: 'ruflo benchmark memory', description: 'Run memory benchmarks' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const iterations = parseInt(ctx.flags.iterations as string || '100', 10);
@@ -408,8 +408,8 @@ const allCommand: Command = {
     { name: 'save', short: 's', type: 'string', description: 'Save results to file' },
   ],
   examples: [
-    { command: 'codex benchmark all', description: 'Run all benchmarks' },
-    { command: 'codex benchmark all --save full-results.json', description: 'Run all and save results' },
+    { command: 'ruflo benchmark all', description: 'Run all benchmarks' },
+    { command: 'ruflo benchmark all --save full-results.json', description: 'Run all and save results' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     output.writeln();
@@ -485,10 +485,10 @@ export const benchmarkCommand: Command = {
     allCommand,
   ],
   examples: [
-    { command: 'codex benchmark pretrain', description: 'Benchmark pre-training system' },
-    { command: 'codex benchmark neural', description: 'Benchmark neural operations' },
-    { command: 'codex benchmark memory', description: 'Benchmark memory operations' },
-    { command: 'codex benchmark all', description: 'Run all benchmarks' },
+    { command: 'ruflo benchmark pretrain', description: 'Benchmark pre-training system' },
+    { command: 'ruflo benchmark neural', description: 'Benchmark neural operations' },
+    { command: 'ruflo benchmark memory', description: 'Benchmark memory operations' },
+    { command: 'ruflo benchmark all', description: 'Run all benchmarks' },
   ],
   action: async (_ctx: CommandContext): Promise<CommandResult> => {
     output.writeln();

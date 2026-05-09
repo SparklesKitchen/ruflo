@@ -256,10 +256,10 @@ export const migrateCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex ruvector migrate --up', description: 'Run pending migrations' },
-    { command: 'codex ruvector migrate --down', description: 'Rollback last migration' },
-    { command: 'codex ruvector migrate --to 1.2.0', description: 'Migrate to version 1.2.0' },
-    { command: 'codex ruvector migrate --dry-run', description: 'Preview migration SQL' },
+    { command: 'ruflo ruvector migrate --up', description: 'Run pending migrations' },
+    { command: 'ruflo ruvector migrate --down', description: 'Rollback last migration' },
+    { command: 'ruflo ruvector migrate --to 1.2.0', description: 'Migrate to version 1.2.0' },
+    { command: 'ruflo ruvector migrate --dry-run', description: 'Preview migration SQL' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const config = getConnectionConfig(ctx);
@@ -329,7 +329,7 @@ export const migrateCommand: Command = {
 
       if (schemaExists.rows.length === 0) {
         spinner.fail(`Schema "${config.schema}" not found`);
-        output.printError('Run `codex ruvector init` first');
+        output.printError('Run `ruflo ruvector init` first');
         await client.end();
         return { success: false, exitCode: 1 };
       }

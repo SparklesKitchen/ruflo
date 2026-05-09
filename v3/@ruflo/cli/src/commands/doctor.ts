@@ -245,7 +245,7 @@ async function checkGitRepo(): Promise<HealthCheck> {
 // `aidefence_*` MCP tools (scan, analyze, has_pii, stats, learn) require
 // `@ruflo/aidefence` to be installed and loadable. The package is an
 // optional dependency — present in some installs (project-local) but
-// missing in others (npm-global of `codex`). Without it, every
+// missing in others (npm-global of `ruflo`). Without it, every
 // aidefence MCP call fails at runtime with "Cannot find module".
 //
 // Surface that state in `doctor` so operators know BEFORE they rely on
@@ -265,7 +265,7 @@ async function checkAIDefence(): Promise<HealthCheck> {
       name: 'AIDefence',
       status: 'warn',
       message: '@ruflo/aidefence not loadable — aidefence_* MCP tools will fail (optional package)',
-      fix: 'npm install --save @ruflo/aidefence  (in your project), or run `codex mcp start` from a directory that has it installed',
+      fix: 'npm install --save @ruflo/aidefence  (in your project), or run `ruflo mcp start` from a directory that has it installed',
     };
   }
 }
@@ -693,11 +693,11 @@ export const doctorCommand: Command = {
     }
   ],
   examples: [
-    { command: 'codex doctor', description: 'Run full health check' },
-    { command: 'codex doctor --fix', description: 'Print suggested fix commands (does not auto-apply)' },
-    { command: 'codex doctor --install', description: 'Auto-install missing dependencies' },
-    { command: 'codex doctor -c version', description: 'Check for stale npx cache' },
-    { command: 'codex doctor -c codex', description: 'Check Codex CLI only' }
+    { command: 'ruflo doctor', description: 'Run full health check' },
+    { command: 'ruflo doctor --fix', description: 'Print suggested fix commands (does not auto-apply)' },
+    { command: 'ruflo doctor --install', description: 'Auto-install missing dependencies' },
+    { command: 'ruflo doctor -c version', description: 'Check for stale npx cache' },
+    { command: 'ruflo doctor -c codex', description: 'Check Codex CLI only' }
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const showFix = ctx.flags.fix as boolean;

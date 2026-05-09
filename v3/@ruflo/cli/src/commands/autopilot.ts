@@ -376,10 +376,10 @@ export const autopilotCommand: Command = {
   aliases: ['ap'],
   subcommands: [statusCommand, enableCommand, disableCommand, configCommand, resetCommand, logCommand, learnCommand, historyCommand, predictCommand, checkCommand],
   examples: [
-    { command: 'codex autopilot status', description: 'Show current state and progress' },
-    { command: 'codex autopilot enable', description: 'Enable persistent completion' },
-    { command: 'codex autopilot config --max-iterations 100 --timeout 180', description: 'Configure limits' },
-    { command: 'codex autopilot predict', description: 'Get recommended next action' },
+    { command: 'ruflo autopilot status', description: 'Show current state and progress' },
+    { command: 'ruflo autopilot enable', description: 'Enable persistent completion' },
+    { command: 'ruflo autopilot config --max-iterations 100 --timeout 180', description: 'Configure limits' },
+    { command: 'ruflo autopilot predict', description: 'Get recommended next action' },
   ],
   action: async (): Promise<CommandResult> => {
     output.writeln(output.bold('Autopilot — Persistent Swarm Completion'));

@@ -26,10 +26,10 @@ const startCommand: Command = {
     { name: 'min-free-memory', type: 'string', description: 'Override minFreeMemoryPercent resource threshold (e.g. 15)' },
   ],
   examples: [
-    { command: 'codex daemon start', description: 'Start daemon in background (default)' },
-    { command: 'codex daemon start --foreground', description: 'Start in foreground (blocks terminal)' },
-    { command: 'codex daemon start -w map,audit,optimize', description: 'Start with specific workers' },
-    { command: 'codex daemon start --headless --sandbox strict', description: 'Start with headless workers in strict sandbox' },
+    { command: 'ruflo daemon start', description: 'Start daemon in background (default)' },
+    { command: 'ruflo daemon start --foreground', description: 'Start in foreground (blocks terminal)' },
+    { command: 'ruflo daemon start -w map,audit,optimize', description: 'Start with specific workers' },
+    { command: 'ruflo daemon start --headless --sandbox strict', description: 'Start with headless workers in strict sandbox' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const quiet = ctx.flags.quiet as boolean;
@@ -349,7 +349,7 @@ const stopCommand: Command = {
     { name: 'quiet', short: 'Q', type: 'boolean', description: 'Suppress output' },
   ],
   examples: [
-    { command: 'codex daemon stop', description: 'Stop the daemon' },
+    { command: 'ruflo daemon stop', description: 'Stop the daemon' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const quiet = ctx.flags.quiet as boolean;
@@ -579,9 +579,9 @@ const statusCommand: Command = {
     { name: 'show-modes', type: 'boolean', description: 'Show worker execution modes (local/headless) and sandbox settings' },
   ],
   examples: [
-    { command: 'codex daemon status', description: 'Show daemon status' },
-    { command: 'codex daemon status -v', description: 'Show detailed status' },
-    { command: 'codex daemon status --show-modes', description: 'Show worker execution modes' },
+    { command: 'ruflo daemon status', description: 'Show daemon status' },
+    { command: 'ruflo daemon status -v', description: 'Show detailed status' },
+    { command: 'ruflo daemon status --show-modes', description: 'Show worker execution modes' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const verbose = ctx.flags.verbose as boolean;
@@ -694,7 +694,7 @@ const statusCommand: Command = {
         [
           `Status: ${output.error('○')} ${output.error('NOT INITIALIZED')}`,
           '',
-          'Run "codex daemon start" to start the daemon',
+          'Run "ruflo daemon start" to start the daemon',
         ].join('\n'),
         'RuFlo Daemon'
       );
@@ -713,9 +713,9 @@ const triggerCommand: Command = {
     { name: 'headless', type: 'boolean', description: 'Run triggered worker in headless mode (E2B sandbox)' },
   ],
   examples: [
-    { command: 'codex daemon trigger -w map', description: 'Trigger the map worker' },
-    { command: 'codex daemon trigger -w audit', description: 'Trigger security audit' },
-    { command: 'codex daemon trigger -w audit --headless', description: 'Trigger audit in headless sandbox' },
+    { command: 'ruflo daemon trigger -w map', description: 'Trigger the map worker' },
+    { command: 'ruflo daemon trigger -w audit', description: 'Trigger security audit' },
+    { command: 'ruflo daemon trigger -w audit --headless', description: 'Trigger audit in headless sandbox' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const workerType = ctx.flags.worker as WorkerType;
@@ -764,8 +764,8 @@ const enableCommand: Command = {
     { name: 'disable', short: 'd', type: 'boolean', description: 'Disable instead of enable' },
   ],
   examples: [
-    { command: 'codex daemon enable -w predict', description: 'Enable predict worker' },
-    { command: 'codex daemon enable -w document --disable', description: 'Disable document worker' },
+    { command: 'ruflo daemon enable -w predict', description: 'Enable predict worker' },
+    { command: 'ruflo daemon enable -w document --disable', description: 'Disable document worker' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const workerType = ctx.flags.worker as WorkerType;
@@ -823,9 +823,9 @@ const installSupervisorCommand: Command = {
     { name: 'dry-run', type: 'boolean', description: 'Print the unit file content without writing', default: 'false' },
   ],
   examples: [
-    { command: 'codex daemon install-supervisor', description: 'Install + load (auto-restart enabled)' },
-    { command: 'codex daemon install-supervisor --no-load', description: 'Write unit file but do not enable yet' },
-    { command: 'codex daemon install-supervisor --dry-run', description: 'Preview the unit file' },
+    { command: 'ruflo daemon install-supervisor', description: 'Install + load (auto-restart enabled)' },
+    { command: 'ruflo daemon install-supervisor --no-load', description: 'Write unit file but do not enable yet' },
+    { command: 'ruflo daemon install-supervisor --dry-run', description: 'Preview the unit file' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const force = ctx.flags.force === true;
@@ -1032,11 +1032,11 @@ export const daemonCommand: Command = {
   ],
   options: [],
   examples: [
-    { command: 'codex daemon start', description: 'Start the daemon' },
-    { command: 'codex daemon start --headless', description: 'Start with headless workers (E2B sandbox)' },
-    { command: 'codex daemon status', description: 'Check daemon status' },
-    { command: 'codex daemon stop', description: 'Stop the daemon' },
-    { command: 'codex daemon trigger -w audit', description: 'Run security audit' },
+    { command: 'ruflo daemon start', description: 'Start the daemon' },
+    { command: 'ruflo daemon start --headless', description: 'Start with headless workers (E2B sandbox)' },
+    { command: 'ruflo daemon status', description: 'Check daemon status' },
+    { command: 'ruflo daemon stop', description: 'Stop the daemon' },
+    { command: 'ruflo daemon trigger -w audit', description: 'Run security audit' },
   ],
   action: async (): Promise<CommandResult> => {
     output.writeln();
@@ -1077,7 +1077,7 @@ export const daemonCommand: Command = {
     ]);
 
     output.writeln();
-    output.writeln('Run "codex daemon <subcommand> --help" for details');
+    output.writeln('Run "ruflo daemon <subcommand> --help" for details');
 
     return { success: true };
   },

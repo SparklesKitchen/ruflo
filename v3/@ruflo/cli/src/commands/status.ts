@@ -727,14 +727,14 @@ export const statusCommand: Command = {
     }
   ],
   examples: [
-    { command: 'codex status', description: 'Show current system status' },
-    { command: 'codex status --watch', description: 'Watch mode with live updates' },
-    { command: 'codex status --watch -i 5', description: 'Watch mode updating every 5 seconds' },
-    { command: 'codex status --health-check', description: 'Run health checks' },
-    { command: 'codex status --json', description: 'Output status as JSON' },
-    { command: 'codex status agents', description: 'Show detailed agent status' },
-    { command: 'codex status tasks', description: 'Show detailed task status' },
-    { command: 'codex status memory', description: 'Show detailed memory status' }
+    { command: 'ruflo status', description: 'Show current system status' },
+    { command: 'ruflo status --watch', description: 'Watch mode with live updates' },
+    { command: 'ruflo status --watch -i 5', description: 'Watch mode updating every 5 seconds' },
+    { command: 'ruflo status --health-check', description: 'Run health checks' },
+    { command: 'ruflo status --json', description: 'Output status as JSON' },
+    { command: 'ruflo status agents', description: 'Show detailed agent status' },
+    { command: 'ruflo status tasks', description: 'Show detailed task status' },
+    { command: 'ruflo status memory', description: 'Show detailed memory status' }
   ],
   action: statusAction
 };

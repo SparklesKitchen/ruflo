@@ -29,9 +29,9 @@ const compileCommand: Command = {
     { name: 'json', type: 'boolean', description: 'Output as JSON', default: 'false' },
   ],
   examples: [
-    { command: 'codex guidance compile', description: 'Compile default AGENTS.md' },
-    { command: 'codex guidance compile -r ./AGENTS.md -l ./.codex/AGENTS.override.md', description: 'Compile with local overlay' },
-    { command: 'codex guidance compile --json', description: 'Output compiled bundle as JSON' },
+    { command: 'ruflo guidance compile', description: 'Compile default AGENTS.md' },
+    { command: 'ruflo guidance compile -r ./AGENTS.md -l ./.codex/AGENTS.override.md', description: 'Compile with local overlay' },
+    { command: 'ruflo guidance compile --json', description: 'Output compiled bundle as JSON' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const rootPath = ctx.flags.root as string || './AGENTS.md';
@@ -110,8 +110,8 @@ const retrieveCommand: Command = {
     { name: 'json', type: 'boolean', description: 'Output as JSON', default: 'false' },
   ],
   examples: [
-    { command: 'codex guidance retrieve -t "Fix SQL injection in user search"', description: 'Retrieve guidance for a security task' },
-    { command: 'codex guidance retrieve -t "Add unit tests" -n 3', description: 'Retrieve top 3 shards for testing' },
+    { command: 'ruflo guidance retrieve -t "Fix SQL injection in user search"', description: 'Retrieve guidance for a security task' },
+    { command: 'ruflo guidance retrieve -t "Add unit tests" -n 3', description: 'Retrieve top 3 shards for testing' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const task = ctx.flags.task as string;
@@ -205,8 +205,8 @@ const gatesCommand: Command = {
     { name: 'json', type: 'boolean', description: 'Output as JSON', default: 'false' },
   ],
   examples: [
-    { command: 'codex guidance gates -c "rm -rf /tmp"', description: 'Check if a command is destructive' },
-    { command: 'codex guidance gates --content "api_key=sk-abc123..."', description: 'Check content for secrets' },
+    { command: 'ruflo guidance gates -c "rm -rf /tmp"', description: 'Check if a command is destructive' },
+    { command: 'ruflo guidance gates --content "api_key=sk-abc123..."', description: 'Check content for secrets' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const command = ctx.flags.command as string | undefined;
@@ -357,10 +357,10 @@ const optimizeCommand: Command = {
     { name: 'json', type: 'boolean', description: 'Output as JSON', default: 'false' },
   ],
   examples: [
-    { command: 'codex guidance optimize', description: 'Analyze current AGENTS.md and show suggestions' },
-    { command: 'codex guidance optimize --apply', description: 'Apply optimizations to AGENTS.md' },
-    { command: 'codex guidance optimize -s compact --apply', description: 'Optimize for compact context window' },
-    { command: 'codex guidance optimize --target-score 95', description: 'Optimize until score reaches 95' },
+    { command: 'ruflo guidance optimize', description: 'Analyze current AGENTS.md and show suggestions' },
+    { command: 'ruflo guidance optimize --apply', description: 'Apply optimizations to AGENTS.md' },
+    { command: 'ruflo guidance optimize -s compact --apply', description: 'Optimize for compact context window' },
+    { command: 'ruflo guidance optimize --target-score 95', description: 'Optimize until score reaches 95' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const rootPath = ctx.flags.root as string || './AGENTS.md';
@@ -473,10 +473,10 @@ const abTestCommand: Command = {
     { name: 'json', type: 'boolean', description: 'Output as JSON', default: 'false' },
   ],
   examples: [
-    { command: 'codex guidance ab-test', description: 'Run default A/B test (no guidance vs ./AGENTS.md)' },
-    { command: 'codex guidance ab-test -a old.md -b new.md', description: 'Compare two AGENTS.md versions' },
-    { command: 'codex guidance ab-test --tasks custom-tasks.json', description: 'Run with custom test tasks' },
-    { command: 'codex guidance ab-test --json', description: 'Output full report as JSON' },
+    { command: 'ruflo guidance ab-test', description: 'Run default A/B test (no guidance vs ./AGENTS.md)' },
+    { command: 'ruflo guidance ab-test -a old.md -b new.md', description: 'Compare two AGENTS.md versions' },
+    { command: 'ruflo guidance ab-test --tasks custom-tasks.json', description: 'Run with custom test tasks' },
+    { command: 'ruflo guidance ab-test --json', description: 'Output full report as JSON' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const configAPath = ctx.flags['config-a'] as string | undefined;
@@ -597,12 +597,12 @@ export const guidanceCommand: Command = {
   ],
   options: [],
   examples: [
-    { command: 'codex guidance compile', description: 'Compile AGENTS.md into policy bundle' },
-    { command: 'codex guidance retrieve -t "Fix auth bug"', description: 'Retrieve relevant guidance' },
-    { command: 'codex guidance gates -c "rm -rf /"', description: 'Check enforcement gates' },
-    { command: 'codex guidance status', description: 'Show control plane status' },
-    { command: 'codex guidance optimize', description: 'Analyze and optimize AGENTS.md' },
-    { command: 'codex guidance ab-test', description: 'Run A/B behavioral comparison' },
+    { command: 'ruflo guidance compile', description: 'Compile AGENTS.md into policy bundle' },
+    { command: 'ruflo guidance retrieve -t "Fix auth bug"', description: 'Retrieve relevant guidance' },
+    { command: 'ruflo guidance gates -c "rm -rf /"', description: 'Check enforcement gates' },
+    { command: 'ruflo guidance status', description: 'Show control plane status' },
+    { command: 'ruflo guidance optimize', description: 'Analyze and optimize AGENTS.md' },
+    { command: 'ruflo guidance ab-test', description: 'Run A/B behavioral comparison' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     output.writeln();

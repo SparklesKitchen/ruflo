@@ -875,7 +875,7 @@ export function generateStatuslineHook(options: InitOptions): string {
 # Source this in your .bashrc/.zshrc for terminal statusline
 
 # Function to get statusline
-codex_flow_statusline() {
+ruflo_flow_statusline() {
   local statusline_script="\${RUFLO_DIR:-.codex}/helpers/statusline.cjs"
   if [ -f "$statusline_script" ]; then
     node "$statusline_script" 2>/dev/null || echo ""
@@ -883,10 +883,10 @@ codex_flow_statusline() {
 }
 
 # Bash: Add to PS1
-# export PS1='$(codex_flow_statusline) \\n\\$ '
+# export PS1='$(ruflo_flow_statusline) \\n\\$ '
 
 # Zsh: Add to RPROMPT
-# export RPROMPT='$(codex_flow_statusline)'
+# export RPROMPT='$(ruflo_flow_statusline)'
 
 # Codex: Add to .codex/settings.json
 # "statusLine": {

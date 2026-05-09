@@ -23,7 +23,7 @@ export const wasmStatusCommand: Command = {
   description: 'Check rvagent-wasm availability, version, and capabilities',
   options: [],
   examples: [
-    { command: 'codex agent wasm-status', description: 'Check WASM agent runtime status' },
+    { command: 'ruflo agent wasm-status', description: 'Check WASM agent runtime status' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     try {
@@ -136,9 +136,9 @@ export const wasmCreateCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex agent wasm-create', description: 'Create a default WASM agent' },
-    { command: 'codex agent wasm-create -t coder', description: 'Create from gallery template' },
-    { command: 'codex agent wasm-create -m "openai:codex-sonnet-4-6" -i "You are a security auditor"', description: 'Create with custom config' },
+    { command: 'ruflo agent wasm-create', description: 'Create a default WASM agent' },
+    { command: 'ruflo agent wasm-create -t coder', description: 'Create from gallery template' },
+    { command: 'ruflo agent wasm-create -m "openai:codex-sonnet-4-6" -i "You are a security auditor"', description: 'Create with custom config' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     try {
@@ -216,7 +216,7 @@ export const wasmPromptCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex agent wasm-prompt -a wasm-agent-1-abc -i "Write a hello world"', description: 'Send prompt to WASM agent' },
+    { command: 'ruflo agent wasm-prompt -a wasm-agent-1-abc -i "Write a hello world"', description: 'Send prompt to WASM agent' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const agentId = ctx.flags['agent-id'] as string || ctx.args[0];
@@ -286,8 +286,8 @@ export const wasmGalleryCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex agent wasm-gallery', description: 'List all gallery templates' },
-    { command: 'codex agent wasm-gallery -s coder', description: 'Search gallery templates' },
+    { command: 'ruflo agent wasm-gallery', description: 'List all gallery templates' },
+    { command: 'ruflo agent wasm-gallery -s coder', description: 'Search gallery templates' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     try {

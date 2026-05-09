@@ -83,10 +83,10 @@ const diffCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex analyze diff --risk', description: 'Analyze current diff with risk assessment' },
-    { command: 'codex analyze diff HEAD~1 --classify', description: 'Classify changes from last commit' },
-    { command: 'codex analyze diff main..feature --format json', description: 'Compare branches with JSON output' },
-    { command: 'codex analyze diff --reviewers', description: 'Get recommended reviewers for changes' },
+    { command: 'ruflo analyze diff --risk', description: 'Analyze current diff with risk assessment' },
+    { command: 'ruflo analyze diff HEAD~1 --classify', description: 'Classify changes from last commit' },
+    { command: 'ruflo analyze diff main..feature --format json', description: 'Compare branches with JSON output' },
+    { command: 'ruflo analyze diff --reviewers', description: 'Get recommended reviewers for changes' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const ref = ctx.args[0] || 'HEAD';
@@ -311,8 +311,8 @@ const codeCommand: Command = {
     { name: 'format', short: 'f', type: 'string', description: 'Output format: text, json', default: 'text' },
   ],
   examples: [
-    { command: 'codex analyze code -p ./src', description: 'Analyze source directory' },
-    { command: 'codex analyze code --type complexity', description: 'Run complexity analysis' },
+    { command: 'ruflo analyze code -p ./src', description: 'Analyze source directory' },
+    { command: 'ruflo analyze code --type complexity', description: 'Run complexity analysis' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const targetPath = resolve(ctx.flags.path as string || '.');
@@ -556,10 +556,10 @@ const astCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex analyze ast src/', description: 'Analyze all files in src/' },
-    { command: 'codex analyze ast src/index.ts --complexity', description: 'Analyze with complexity' },
-    { command: 'codex analyze ast . --format json', description: 'JSON output' },
-    { command: 'codex analyze ast src/ --symbols', description: 'Extract symbols' },
+    { command: 'ruflo analyze ast src/', description: 'Analyze all files in src/' },
+    { command: 'ruflo analyze ast src/index.ts --complexity', description: 'Analyze with complexity' },
+    { command: 'ruflo analyze ast . --format json', description: 'JSON output' },
+    { command: 'ruflo analyze ast src/ --symbols', description: 'Extract symbols' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const targetPath = ctx.args[0] || ctx.cwd;
@@ -810,8 +810,8 @@ const complexityAstCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex analyze complexity src/', description: 'Analyze complexity' },
-    { command: 'codex analyze complexity src/ --threshold 15', description: 'Flag high complexity' },
+    { command: 'ruflo analyze complexity src/', description: 'Analyze complexity' },
+    { command: 'ruflo analyze complexity src/ --threshold 15', description: 'Flag high complexity' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const targetPath = ctx.args[0] || ctx.cwd;
@@ -990,9 +990,9 @@ const symbolsCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex analyze symbols src/', description: 'Extract all symbols' },
-    { command: 'codex analyze symbols src/ --type function', description: 'Only functions' },
-    { command: 'codex analyze symbols src/ --format json', description: 'JSON output' },
+    { command: 'ruflo analyze symbols src/', description: 'Extract all symbols' },
+    { command: 'ruflo analyze symbols src/ --type function', description: 'Only functions' },
+    { command: 'ruflo analyze symbols src/ --format json', description: 'JSON output' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const targetPath = ctx.args[0] || ctx.cwd;
@@ -1154,8 +1154,8 @@ const importsCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex analyze imports src/', description: 'Analyze all imports' },
-    { command: 'codex analyze imports src/ --external', description: 'Only npm packages' },
+    { command: 'ruflo analyze imports src/', description: 'Analyze all imports' },
+    { command: 'ruflo analyze imports src/ --external', description: 'Only npm packages' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const targetPath = ctx.args[0] || ctx.cwd;
@@ -1414,8 +1414,8 @@ const depsCommand: Command = {
     { name: 'format', short: 'f', type: 'string', description: 'Output format: text, json', default: 'text' },
   ],
   examples: [
-    { command: 'codex analyze deps --outdated', description: 'Show outdated dependencies' },
-    { command: 'codex analyze deps --security', description: 'Check for vulnerabilities' },
+    { command: 'ruflo analyze deps --outdated', description: 'Show outdated dependencies' },
+    { command: 'ruflo analyze deps --security', description: 'Check for vulnerabilities' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const showOutdated = ctx.flags.outdated as boolean;
@@ -1584,9 +1584,9 @@ const boundariesCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex analyze boundaries src/', description: 'Find code boundaries in src/' },
-    { command: 'codex analyze boundaries -p 3 src/', description: 'Find 3 partitions' },
-    { command: 'codex analyze boundaries -f dot -o graph.dot src/', description: 'Export to DOT format' },
+    { command: 'ruflo analyze boundaries src/', description: 'Find code boundaries in src/' },
+    { command: 'ruflo analyze boundaries -p 3 src/', description: 'Find 3 partitions' },
+    { command: 'ruflo analyze boundaries -f dot -o graph.dot src/', description: 'Export to DOT format' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const targetDir = ctx.args[0] || ctx.cwd;
@@ -1759,9 +1759,9 @@ const modulesCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex analyze modules src/', description: 'Detect module communities' },
-    { command: 'codex analyze modules -f dot -o modules.dot src/', description: 'Export colored DOT graph' },
-    { command: 'codex analyze modules -m 3 src/', description: 'Only show communities with 3+ files' },
+    { command: 'ruflo analyze modules src/', description: 'Detect module communities' },
+    { command: 'ruflo analyze modules -f dot -o modules.dot src/', description: 'Export colored DOT graph' },
+    { command: 'ruflo analyze modules -m 3 src/', description: 'Only show communities with 3+ files' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const targetDir = ctx.args[0] || ctx.cwd;
@@ -1928,9 +1928,9 @@ const dependenciesCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex analyze dependencies src/', description: 'Build dependency graph' },
-    { command: 'codex analyze dependencies -f dot -o deps.dot src/', description: 'Export to DOT' },
-    { command: 'codex analyze dependencies -i .ts,.tsx src/', description: 'Only TypeScript files' },
+    { command: 'ruflo analyze dependencies src/', description: 'Build dependency graph' },
+    { command: 'ruflo analyze dependencies -f dot -o deps.dot src/', description: 'Export to DOT' },
+    { command: 'ruflo analyze dependencies -i .ts,.tsx src/', description: 'Only TypeScript files' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const targetDir = ctx.args[0] || ctx.cwd;
@@ -2114,8 +2114,8 @@ const circularCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex analyze circular src/', description: 'Find circular dependencies' },
-    { command: 'codex analyze circular -s high src/', description: 'Only high severity cycles' },
+    { command: 'ruflo analyze circular src/', description: 'Find circular dependencies' },
+    { command: 'ruflo analyze circular -s high src/', description: 'Only high severity cycles' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const targetDir = ctx.args[0] || ctx.cwd;
@@ -2279,16 +2279,16 @@ export const analyzeCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex analyze ast src/', description: 'Analyze code with AST parsing' },
-    { command: 'codex analyze complexity src/ --threshold 15', description: 'Find high-complexity files' },
-    { command: 'codex analyze symbols src/ --type function', description: 'Extract all functions' },
-    { command: 'codex analyze imports src/ --external', description: 'List npm dependencies' },
-    { command: 'codex analyze diff --risk', description: 'Analyze diff with risk assessment' },
-    { command: 'codex analyze boundaries src/', description: 'Find code boundaries using MinCut' },
-    { command: 'codex analyze modules src/', description: 'Detect module communities with Louvain' },
-    { command: 'codex analyze dependencies src/ --format dot', description: 'Export dependency graph as DOT' },
-    { command: 'codex analyze circular src/', description: 'Find circular dependencies' },
-    { command: 'codex analyze deps --security', description: 'Check dependency vulnerabilities' },
+    { command: 'ruflo analyze ast src/', description: 'Analyze code with AST parsing' },
+    { command: 'ruflo analyze complexity src/ --threshold 15', description: 'Find high-complexity files' },
+    { command: 'ruflo analyze symbols src/ --type function', description: 'Extract all functions' },
+    { command: 'ruflo analyze imports src/ --external', description: 'List npm dependencies' },
+    { command: 'ruflo analyze diff --risk', description: 'Analyze diff with risk assessment' },
+    { command: 'ruflo analyze boundaries src/', description: 'Find code boundaries using MinCut' },
+    { command: 'ruflo analyze modules src/', description: 'Detect module communities with Louvain' },
+    { command: 'ruflo analyze dependencies src/ --format dot', description: 'Export dependency graph as DOT' },
+    { command: 'ruflo analyze circular src/', description: 'Find circular dependencies' },
+    { command: 'ruflo analyze deps --security', description: 'Check dependency vulnerabilities' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     // If no subcommand, show help

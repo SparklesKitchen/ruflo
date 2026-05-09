@@ -68,8 +68,8 @@ const getCommand: Command = {
     }
   ],
   examples: [
-    { command: 'codex config get swarm.topology', description: 'Get swarm topology' },
-    { command: 'codex config get -k memory.backend', description: 'Get memory backend' }
+    { command: 'ruflo config get swarm.topology', description: 'Get swarm topology' },
+    { command: 'ruflo config get -k memory.backend', description: 'Get memory backend' }
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const key = ctx.flags.key as string || ctx.args[0];
@@ -148,8 +148,8 @@ const setCommand: Command = {
     }
   ],
   examples: [
-    { command: 'codex config set swarm.maxAgents 20', description: 'Set max agents' },
-    { command: 'codex config set -k memory.backend -v agentdb', description: 'Set memory backend' }
+    { command: 'ruflo config set swarm.maxAgents 20', description: 'Set max agents' },
+    { command: 'ruflo config set -k memory.backend -v agentdb', description: 'Set memory backend' }
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const key = ctx.flags.key as string || ctx.args[0];
@@ -413,9 +413,9 @@ export const configCommand: Command = {
   subcommands: [initCommand, getCommand, setCommand, providersCommand, resetCommand, exportCommand, importCommand],
   options: [],
   examples: [
-    { command: 'codex config init --v3', description: 'Initialize V3 config' },
-    { command: 'codex config get swarm.topology', description: 'Get config value' },
-    { command: 'codex config set swarm.maxAgents 20', description: 'Set config value' }
+    { command: 'ruflo config init --v3', description: 'Initialize V3 config' },
+    { command: 'ruflo config get swarm.topology', description: 'Get config value' },
+    { command: 'ruflo config set swarm.maxAgents 20', description: 'Set config value' }
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     output.writeln();

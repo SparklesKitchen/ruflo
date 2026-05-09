@@ -1,6 +1,6 @@
 /**
  * V3 CLI Cleanup Command
- * Removes project artifacts created by codex/ruflo
+ * Removes project artifacts created by Ruflo
  *
  * Created with ruv.io
  */
@@ -21,7 +21,7 @@ const CODEX_OWNED_SUBDIRS = [
 ];
 
 /**
- * Artifact directories and files that codex/ruflo may create
+ * Artifact directories and files that Ruflo may create
  */
 const ARTIFACT_DIRS = [
   { path: '.codex', description: 'Capabilities and configuration' },
@@ -83,7 +83,7 @@ function formatSize(bytes: number): string {
  */
 export const cleanupCommand: Command = {
   name: 'cleanup',
-  description: 'Remove project artifacts created by codex/ruflo',
+  description: 'Remove project artifacts created by Ruflo',
   aliases: ['clean'],
   options: [
     {

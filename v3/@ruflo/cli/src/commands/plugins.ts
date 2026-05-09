@@ -36,10 +36,10 @@ const listCommand: Command = {
     { name: 'registry', short: 'r', type: 'string', description: 'Registry to use (default: codex-official)' },
   ],
   examples: [
-    { command: 'codex plugins list', description: 'List all plugins from registry' },
-    { command: 'codex plugins list --installed', description: 'List installed only' },
-    { command: 'codex plugins list --official', description: 'List official plugins' },
-    { command: 'codex plugins list --category security', description: 'List security plugins' },
+    { command: 'ruflo plugins list', description: 'List all plugins from registry' },
+    { command: 'ruflo plugins list --installed', description: 'List installed only' },
+    { command: 'ruflo plugins list --official', description: 'List official plugins' },
+    { command: 'ruflo plugins list --category security', description: 'List security plugins' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const installedOnly = ctx.flags.installed as boolean;
@@ -63,8 +63,8 @@ const listCommand: Command = {
         if (installed.length === 0) {
           output.writeln(output.dim('No plugins installed.'));
           output.writeln();
-          output.writeln(output.dim('Run "codex plugins list" to see available plugins'));
-          output.writeln(output.dim('Run "codex plugins install -n <plugin>" to install'));
+          output.writeln(output.dim('Run "ruflo plugins list" to see available plugins'));
+          output.writeln(output.dim('Run "ruflo plugins install -n <plugin>" to install'));
           return { success: true };
         }
 
@@ -218,8 +218,8 @@ const installCommand: Command = {
     { name: 'registry', short: 'r', type: 'string', description: 'Registry to use' },
   ],
   examples: [
-    { command: 'codex plugins install -n community-analytics', description: 'Install plugin from IPFS' },
-    { command: 'codex plugins install -n ./my-plugin --dev', description: 'Install local plugin' },
+    { command: 'ruflo plugins install -n community-analytics', description: 'Install plugin from IPFS' },
+    { command: 'ruflo plugins install -n ./my-plugin --dev', description: 'Install local plugin' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const name = ctx.flags.name as string;
@@ -329,7 +329,7 @@ const uninstallCommand: Command = {
     { name: 'force', short: 'f', type: 'boolean', description: 'Force uninstall without confirmation' },
   ],
   examples: [
-    { command: 'codex plugins uninstall -n community-analytics', description: 'Uninstall plugin' },
+    { command: 'ruflo plugins uninstall -n community-analytics', description: 'Uninstall plugin' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const name = ctx.flags.name as string;
@@ -385,8 +385,8 @@ const toggleCommand: Command = {
     { name: 'disable', short: 'd', type: 'boolean', description: 'Disable the plugin' },
   ],
   examples: [
-    { command: 'codex plugins toggle -n analytics --enable', description: 'Enable plugin' },
-    { command: 'codex plugins toggle -n analytics --disable', description: 'Disable plugin' },
+    { command: 'ruflo plugins toggle -n analytics --enable', description: 'Enable plugin' },
+    { command: 'ruflo plugins toggle -n analytics --disable', description: 'Disable plugin' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const name = ctx.flags.name as string;
@@ -454,7 +454,7 @@ const infoCommand: Command = {
     { name: 'registry', short: 'r', type: 'string', description: 'Registry to use' },
   ],
   examples: [
-    { command: 'codex plugins info -n @ruflo/neural', description: 'Show plugin info' },
+    { command: 'ruflo plugins info -n @ruflo/neural', description: 'Show plugin info' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const name = ctx.flags.name as string;
@@ -623,8 +623,8 @@ const createCommand: Command = {
     { name: 'path', short: 'p', type: 'string', description: 'Output path', default: '.' },
   ],
   examples: [
-    { command: 'codex plugins create -n my-plugin', description: 'Create basic plugin' },
-    { command: 'codex plugins create -n my-plugin -t hooks', description: 'Create hooks plugin' },
+    { command: 'ruflo plugins create -n my-plugin', description: 'Create basic plugin' },
+    { command: 'ruflo plugins create -n my-plugin -t hooks', description: 'Create hooks plugin' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const name = ctx.flags.name as string;
@@ -682,8 +682,8 @@ const upgradeCommand: Command = {
     { name: 'version', short: 'v', type: 'string', description: 'Target version (default: latest)' },
   ],
   examples: [
-    { command: 'codex plugins upgrade -n @ruflo/neural', description: 'Upgrade to latest' },
-    { command: 'codex plugins upgrade -n @ruflo/neural -v 3.1.0', description: 'Upgrade to specific version' },
+    { command: 'ruflo plugins upgrade -n @ruflo/neural', description: 'Upgrade to latest' },
+    { command: 'ruflo plugins upgrade -n @ruflo/neural -v 3.1.0', description: 'Upgrade to specific version' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const name = ctx.flags.name as string;
@@ -744,8 +744,8 @@ const searchCommand: Command = {
     { name: 'registry', short: 'r', type: 'string', description: 'Registry to use' },
   ],
   examples: [
-    { command: 'codex plugins search -q neural', description: 'Search for neural plugins' },
-    { command: 'codex plugins search -q security --verified', description: 'Search verified security plugins' },
+    { command: 'ruflo plugins search -q neural', description: 'Search for neural plugins' },
+    { command: 'ruflo plugins search -q security --verified', description: 'Search verified security plugins' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const query = ctx.flags.query as string;
@@ -844,8 +844,8 @@ const rateCommand: Command = {
     { name: 'rating', short: 'r', type: 'number', description: 'Rating (1-5)', required: true },
   ],
   examples: [
-    { command: 'codex plugins rate -n @ruflo/embeddings -r 5', description: 'Rate 5 stars' },
-    { command: 'codex plugins rate -n my-plugin -r 4', description: 'Rate 4 stars' },
+    { command: 'ruflo plugins rate -n @ruflo/embeddings -r 5', description: 'Rate 5 stars' },
+    { command: 'ruflo plugins rate -n my-plugin -r 4', description: 'Rate 4 stars' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const { rateItem } = await import('../services/registry-api.js');
@@ -892,10 +892,10 @@ export const pluginsCommand: Command = {
   description: 'Plugin management with IPFS-based decentralized registry',
   subcommands: [listCommand, searchCommand, installCommand, uninstallCommand, upgradeCommand, toggleCommand, infoCommand, createCommand, rateCommand],
   examples: [
-    { command: 'codex plugins list', description: 'List plugins from IPFS registry' },
-    { command: 'codex plugins search -q neural', description: 'Search for plugins' },
-    { command: 'codex plugins install -n community-analytics', description: 'Install from IPFS' },
-    { command: 'codex plugins create -n my-plugin', description: 'Create new plugin' },
+    { command: 'ruflo plugins list', description: 'List plugins from IPFS registry' },
+    { command: 'ruflo plugins search -q neural', description: 'Search for plugins' },
+    { command: 'ruflo plugins install -n community-analytics', description: 'Install from IPFS' },
+    { command: 'ruflo plugins create -n my-plugin', description: 'Create new plugin' },
   ],
   action: async (): Promise<CommandResult> => {
     output.writeln();
@@ -933,7 +933,7 @@ export const pluginsCommand: Command = {
       '@ruflo/plugin-gastown-bridge - Gas Town orchestrator integration (WASM-accelerated)',
     ]);
     output.writeln();
-    output.writeln(output.dim('Run "codex plugins list --official" to see all official plugins'));
+    output.writeln(output.dim('Run "ruflo plugins list --official" to see all official plugins'));
     output.writeln(output.dim('Created with ❤️ by ruv.io'));
     return { success: true };
   },

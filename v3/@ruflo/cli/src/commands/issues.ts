@@ -570,12 +570,12 @@ export const issuesCommand: Command = {
     boardCommand,
   ],
   examples: [
-    { command: 'codex issues list', description: 'List all claims' },
-    { command: 'codex issues claim 123 --agent coder:coder-1', description: 'Claim as agent' },
-    { command: 'codex issues handoff 123 --to agent:tester:tester-1', description: 'Handoff to tester' },
-    { command: 'codex issues stealable', description: 'List stealable' },
-    { command: 'codex issues steal 123 --agent coder:coder-2', description: 'Steal issue' },
-    { command: 'codex issues board', description: 'Visual board' },
+    { command: 'ruflo issues list', description: 'List all claims' },
+    { command: 'ruflo issues claim 123 --agent coder:coder-1', description: 'Claim as agent' },
+    { command: 'ruflo issues handoff 123 --to agent:tester:tester-1', description: 'Handoff to tester' },
+    { command: 'ruflo issues stealable', description: 'List stealable' },
+    { command: 'ruflo issues steal 123 --agent coder:coder-2', description: 'Steal issue' },
+    { command: 'ruflo issues board', description: 'Visual board' },
   ],
   action: async (): Promise<CommandResult> => {
     output.writeln();

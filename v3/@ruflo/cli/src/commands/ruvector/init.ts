@@ -106,10 +106,10 @@ export const initCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex ruvector init -d mydb', description: 'Initialize with database name' },
-    { command: 'codex ruvector init -d mydb -h db.example.com --ssl', description: 'Remote with SSL' },
-    { command: 'codex ruvector init -d mydb --force', description: 'Force re-initialization' },
-    { command: 'codex ruvector init -d mydb --dimensions 768', description: 'Custom vector dimensions' },
+    { command: 'ruflo ruvector init -d mydb', description: 'Initialize with database name' },
+    { command: 'ruflo ruvector init -d mydb -h db.example.com --ssl', description: 'Remote with SSL' },
+    { command: 'ruflo ruvector init -d mydb --force', description: 'Force re-initialization' },
+    { command: 'ruflo ruvector init -d mydb --dimensions 768', description: 'Custom vector dimensions' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     let config = getConnectionConfig(ctx);

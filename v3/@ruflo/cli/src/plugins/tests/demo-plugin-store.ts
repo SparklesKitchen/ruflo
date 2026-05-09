@@ -105,7 +105,7 @@ async function demo() {
       console.log('');
     }
     console.log('   To install:');
-    console.log('   $ codex plugins install -n plugin-creator');
+    console.log('   $ ruflo plugins install -n plugin-creator');
     console.log('');
   }
 
@@ -125,11 +125,11 @@ async function demo() {
   console.log('   ✅ Content-addressed storage (CID)');
   console.log('');
   console.log('   CLI Commands:');
-  console.log('   $ codex plugins list              # List all plugins');
-  console.log('   $ codex plugins list --official   # Official only');
-  console.log('   $ codex plugins search -q neural  # Search plugins');
-  console.log('   $ codex plugins info -n plugin-creator');
-  console.log('   $ codex plugins install -n plugin-creator');
+  console.log('   $ ruflo plugins list              # List all plugins');
+  console.log('   $ ruflo plugins list --official   # Official only');
+  console.log('   $ ruflo plugins search -q neural  # Search plugins');
+  console.log('   $ ruflo plugins info -n plugin-creator');
+  console.log('   $ ruflo plugins install -n plugin-creator');
   console.log('');
 }
 

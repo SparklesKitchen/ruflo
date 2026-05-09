@@ -28,9 +28,9 @@ const trainCommand: Command = {
     { name: 'curriculum', type: 'boolean', description: 'Enable curriculum learning', default: 'false' },
   ],
   examples: [
-    { command: 'codex neural train -p coordination -e 100', description: 'Train coordination patterns' },
-    { command: 'codex neural train -d ./training-data.json --flash', description: 'Train from file with Flash Attention' },
-    { command: 'codex neural train -p security --wasm --contrastive', description: 'Security patterns with contrastive learning' },
+    { command: 'ruflo neural train -p coordination -e 100', description: 'Train coordination patterns' },
+    { command: 'ruflo neural train -d ./training-data.json --flash', description: 'Train from file with Flash Attention' },
+    { command: 'ruflo neural train -p security --wasm --contrastive', description: 'Security patterns with contrastive learning' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const patternType = (ctx.flags.pattern || ctx.flags.patternType || ctx.flags['pattern-type']) as string || 'coordination';
@@ -414,8 +414,8 @@ const statusCommand: Command = {
     { name: 'verbose', short: 'v', type: 'boolean', description: 'Show detailed metrics' },
   ],
   examples: [
-    { command: 'codex neural status', description: 'Show all neural status' },
-    { command: 'codex neural status -m model-123', description: 'Check specific model' },
+    { command: 'ruflo neural status', description: 'Show all neural status' },
+    { command: 'ruflo neural status -m model-123', description: 'Check specific model' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const verbose = ctx.flags.verbose === true;
@@ -611,8 +611,8 @@ const patternsCommand: Command = {
     { name: 'limit', short: 'l', type: 'number', description: 'Max patterns to return', default: '10' },
   ],
   examples: [
-    { command: 'codex neural patterns --action list', description: 'List all patterns' },
-    { command: 'codex neural patterns -a analyze -q "error handling"', description: 'Analyze patterns' },
+    { command: 'ruflo neural patterns --action list', description: 'List all patterns' },
+    { command: 'ruflo neural patterns -a analyze -q "error handling"', description: 'Analyze patterns' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const action = ctx.flags.action as string || 'list';
@@ -719,8 +719,8 @@ const predictCommand: Command = {
     { name: 'format', short: 'f', type: 'string', description: 'Output format: json, table', default: 'table' },
   ],
   examples: [
-    { command: 'codex neural predict -i "implement authentication"', description: 'Predict routing for task' },
-    { command: 'codex neural predict -i "fix bug in login" -k 3', description: 'Get top 3 predictions' },
+    { command: 'ruflo neural predict -i "implement authentication"', description: 'Predict routing for task' },
+    { command: 'ruflo neural predict -i "fix bug in login" -k 3', description: 'Get top 3 predictions' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const input = ctx.flags.input as string;
@@ -817,8 +817,8 @@ const optimizeCommand: Command = {
     { name: 'verbose', short: 'v', type: 'boolean', description: 'Show detailed metrics' },
   ],
   examples: [
-    { command: 'codex neural optimize --method quantize', description: 'Quantize patterns to Int8' },
-    { command: 'codex neural optimize --method analyze -v', description: 'Analyze memory usage' },
+    { command: 'ruflo neural optimize --method quantize', description: 'Quantize patterns to Int8' },
+    { command: 'ruflo neural optimize --method analyze -v', description: 'Analyze memory usage' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const method = ctx.flags.method as string || 'quantize';
@@ -1016,8 +1016,8 @@ const exportCommand: Command = {
     { name: 'name', short: 'n', type: 'string', description: 'Custom name for exported model' },
   ],
   examples: [
-    { command: 'codex neural export -m security-patterns --ipfs', description: 'Export and pin to IPFS' },
-    { command: 'codex neural export -m code-review -o ./export.json', description: 'Export to file' },
+    { command: 'ruflo neural export -m security-patterns --ipfs', description: 'Export and pin to IPFS' },
+    { command: 'ruflo neural export -m code-review -o ./export.json', description: 'Export to file' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const modelId = ctx.flags.model as string || 'all';
@@ -1054,7 +1054,7 @@ const exportCommand: Command = {
       const exportData = {
         type: 'learning-pattern',
         version: '1.0.0',
-        name: customName || `codex-model-${Date.now()}`,
+        name: customName || `ruflo-model-${Date.now()}`,
         exportedAt: new Date().toISOString(),
         modelId,
         patterns: [] as Array<{ id: string; trigger: string; action: string; confidence: number; usageCount: number }>,
@@ -1243,9 +1243,9 @@ const listCommand: Command = {
     { name: 'cid', type: 'string', description: 'Custom registry CID (default: official registry)' },
   ],
   examples: [
-    { command: 'codex neural list', description: 'List all available models' },
-    { command: 'codex neural list --category security', description: 'List only security models' },
-    { command: 'codex neural list -f json', description: 'Output as JSON' },
+    { command: 'ruflo neural list', description: 'List all available models' },
+    { command: 'ruflo neural list --category security', description: 'List only security models' },
+    { command: 'ruflo neural list -f json', description: 'Output as JSON' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const category = ctx.flags.category as string | undefined;
@@ -1358,11 +1358,11 @@ const listCommand: Command = {
         output.writeln(output.dim('Registry CID: ' + registryCid));
         output.writeln();
         output.writeln(output.bold('Import Commands:'));
-        output.writeln(output.dim('  All models:      ') + `codex neural import --cid ${registryCid}`);
+        output.writeln(output.dim('  All models:      ') + `ruflo neural import --cid ${registryCid}`);
         if (category) {
-          output.writeln(output.dim(`  ${category} only: `) + `codex neural import --cid ${registryCid} --category ${category}`);
+          output.writeln(output.dim(`  ${category} only: `) + `ruflo neural import --cid ${registryCid} --category ${category}`);
         } else {
-          output.writeln(output.dim('  By category:     ') + `codex neural import --cid ${registryCid} --category <category>`);
+          output.writeln(output.dim('  By category:     ') + `ruflo neural import --cid ${registryCid} --category <category>`);
         }
       }
 
@@ -1386,9 +1386,9 @@ const importCommand: Command = {
     { name: 'category', type: 'string', description: 'Only import patterns from specific category' },
   ],
   examples: [
-    { command: 'codex neural import --cid QmXxx...', description: 'Import from IPFS' },
-    { command: 'codex neural import -f ./patterns.json --verify', description: 'Import from file' },
-    { command: 'codex neural import --cid QmNr1yYMK... --category security', description: 'Import only security patterns' },
+    { command: 'ruflo neural import --cid QmXxx...', description: 'Import from IPFS' },
+    { command: 'ruflo neural import -f ./patterns.json --verify', description: 'Import from file' },
+    { command: 'ruflo neural import --cid QmNr1yYMK... --category security', description: 'Import only security patterns' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const cid = ctx.flags.cid as string;
@@ -1589,7 +1589,7 @@ const importCommand: Command = {
 
       output.writeln();
       output.writeln(output.success('Patterns imported and ready to use'));
-      output.writeln(output.dim('Run "codex neural patterns --action list" to see imported patterns'));
+      output.writeln(output.dim('Run "ruflo neural patterns --action list" to see imported patterns'));
 
       return { success: true };
     } catch (error) {
@@ -1609,8 +1609,8 @@ const benchmarkCommand: Command = {
     { name: 'keys', short: 'k', type: 'number', description: 'Number of keys for attention', default: '100' },
   ],
   examples: [
-    { command: 'codex neural benchmark', description: 'Run default benchmark' },
-    { command: 'codex neural benchmark -d 128 -i 5000', description: 'Custom benchmark' },
+    { command: 'ruflo neural benchmark', description: 'Run default benchmark' },
+    { command: 'ruflo neural benchmark -d 128 -i 5000', description: 'Custom benchmark' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const dim = Math.min(parseInt(ctx.flags.dim as string || '256', 10), 256);
@@ -1773,9 +1773,9 @@ export const neuralCommand: Command = {
   description: 'Neural pattern training, MoE, Flash Attention, pattern learning',
   subcommands: [trainCommand, statusCommand, patternsCommand, predictCommand, optimizeCommand, benchmarkCommand, listCommand, exportCommand, importCommand],
   examples: [
-    { command: 'codex neural status', description: 'Check neural system status' },
-    { command: 'codex neural train -p coordination', description: 'Train coordination patterns' },
-    { command: 'codex neural patterns --action list', description: 'List learned patterns' },
+    { command: 'ruflo neural status', description: 'Check neural system status' },
+    { command: 'ruflo neural train -p coordination', description: 'Train coordination patterns' },
+    { command: 'ruflo neural patterns --action list', description: 'List learned patterns' },
   ],
   action: async (): Promise<CommandResult> => {
     output.writeln();

@@ -18,7 +18,7 @@ interface PackageCompatibility {
   peerDependencies?: Record<string, string>;
 }
 
-// Known compatibility matrix between @codex packages
+// Known compatibility matrix between @ruflo packages
 const COMPATIBILITY_MATRIX: Record<string, Record<string, PackageCompatibility>> = {
   '@ruflo/cli': {
     '@ruflo/embeddings': { minVersion: '3.0.0-alpha.1' },

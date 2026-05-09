@@ -1,6 +1,6 @@
 /**
  * V3 CLI Update Command
- * Auto-update system for @codex packages (ADR-025)
+ * Auto-update system for @ruflo packages (ADR-025)
  */
 
 import type { Command, CommandContext, CommandResult } from '../types.js';
@@ -53,7 +53,7 @@ function formatPriority(priority: string): string {
 // Subcommand: check
 const checkCommand: Command = {
   name: 'check',
-  description: 'Check for available @codex package updates',
+  description: 'Check for available @ruflo package updates',
   options: [
     { name: 'force', description: 'Force check (ignore rate limit)', type: 'boolean' },
     { name: 'json', description: 'Output as JSON', type: 'boolean' },
@@ -80,7 +80,7 @@ const checkCommand: Command = {
       }
 
       if (results.length === 0) {
-        output.printSuccess('All @codex packages are up to date!');
+        output.printSuccess('All @ruflo packages are up to date!');
         return { success: true };
       }
 
@@ -133,7 +133,7 @@ const checkCommand: Command = {
 // Subcommand: all
 const allCommand: Command = {
   name: 'all',
-  description: 'Update all @codex packages',
+  description: 'Update all @ruflo packages',
   options: [
     { name: 'dry-run', description: 'Show what would be updated', type: 'boolean' },
     { name: 'include-major', description: 'Include major version updates', type: 'boolean' },
@@ -307,14 +307,14 @@ const clearCacheCommand: Command = {
 // Main update command
 const updateCommand: Command = {
   name: 'update',
-  description: 'Manage @codex package updates (ADR-025)',
+  description: 'Manage @ruflo package updates (ADR-025)',
   subcommands: [checkCommand, allCommand, historyCommand, rollbackCommand, clearCacheCommand],
   async action(): Promise<CommandResult> {
     // Show help if no subcommand
     output.writeln();
     output.writeln(output.highlight('═══ Update Command ═══'));
     output.writeln();
-    output.writeln('Manage @codex package updates with auto-update support.');
+    output.writeln('Manage @ruflo package updates with auto-update support.');
     output.writeln();
     output.writeln('Subcommands:');
     output.printList([
@@ -331,7 +331,7 @@ const updateCommand: Command = {
       `${output.dim('RUFLO_FORCE_UPDATE=true')} - Force update check`,
     ]);
     output.writeln();
-    output.writeln('Run "codex update <subcommand> --help" for subcommand help');
+    output.writeln('Run "ruflo update <subcommand> --help" for subcommand help');
 
     return { success: true };
   },

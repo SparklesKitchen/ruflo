@@ -112,7 +112,7 @@ const listCommand: Command = {
 
       if (result.sessions.length === 0) {
         output.printInfo('No sessions found');
-        output.printInfo('Run "codex session save" to create a session');
+        output.printInfo('Run "ruflo session save" to create a session');
         return { success: true, data: result };
       }
 
@@ -870,13 +870,13 @@ export const sessionCommand: Command = {
   ],
   options: [],
   examples: [
-    { command: 'codex session list', description: 'List all sessions' },
-    { command: 'codex session save -n "checkpoint-1"', description: 'Save current session' },
-    { command: 'codex session restore session-123', description: 'Restore a session' },
-    { command: 'codex session delete session-123', description: 'Delete a session' },
-    { command: 'codex session export -o backup.json', description: 'Export session to file' },
-    { command: 'codex session import backup.json', description: 'Import session from file' },
-    { command: 'codex session current', description: 'Show current session' }
+    { command: 'ruflo session list', description: 'List all sessions' },
+    { command: 'ruflo session save -n "checkpoint-1"', description: 'Save current session' },
+    { command: 'ruflo session restore session-123', description: 'Restore a session' },
+    { command: 'ruflo session delete session-123', description: 'Delete a session' },
+    { command: 'ruflo session export -o backup.json', description: 'Export session to file' },
+    { command: 'ruflo session import backup.json', description: 'Import session from file' },
+    { command: 'ruflo session current', description: 'Show current session' }
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     // Show help if no subcommand
@@ -896,7 +896,7 @@ export const sessionCommand: Command = {
       `${output.highlight('current')} - Show current active session`
     ]);
     output.writeln();
-    output.writeln('Run "codex session <subcommand> --help" for subcommand help');
+    output.writeln('Run "ruflo session <subcommand> --help" for subcommand help');
 
     return { success: true };
   }

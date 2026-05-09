@@ -66,9 +66,9 @@ const storeCommand: Command = {
     }
   ],
   examples: [
-    { command: 'codex memory store -k "api/auth" -v "JWT implementation"', description: 'Store text' },
-    { command: 'codex memory store -k "pattern/singleton" --vector', description: 'Store vector' },
-    { command: 'codex memory store -k "pattern" -v "updated" --upsert', description: 'Update existing' }
+    { command: 'ruflo memory store -k "api/auth" -v "JWT implementation"', description: 'Store text' },
+    { command: 'ruflo memory store -k "pattern/singleton" --vector', description: 'Store vector' },
+    { command: 'ruflo memory store -k "pattern" -v "updated" --upsert', description: 'Update existing' }
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const key = ctx.flags.key as string;
@@ -289,10 +289,10 @@ const searchCommand: Command = {
     }
   ],
   examples: [
-    { command: 'codex memory search -q "authentication patterns"', description: 'Semantic search' },
-    { command: 'codex memory search -q "JWT" -t keyword', description: 'Keyword search' },
-    { command: 'codex memory search -q "test" --build-hnsw', description: 'Build HNSW index and search' },
-    { command: 'codex memory search -q "auth patterns" --smart', description: 'SmartRetrieval with RRF + MMR' }
+    { command: 'ruflo memory search -q "authentication patterns"', description: 'Semantic search' },
+    { command: 'ruflo memory search -q "JWT" -t keyword', description: 'Keyword search' },
+    { command: 'ruflo memory search -q "test" --build-hnsw', description: 'Build HNSW index and search' },
+    { command: 'ruflo memory search -q "auth patterns" --smart', description: 'SmartRetrieval with RRF + MMR' }
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const query = ctx.flags.query as string || ctx.args[0];
@@ -599,9 +599,9 @@ const deleteCommand: Command = {
     }
   ],
   examples: [
-    { command: 'codex memory delete -k "mykey"', description: 'Delete entry with default namespace' },
-    { command: 'codex memory delete -k "lesson" -n "lessons"', description: 'Delete entry from specific namespace' },
-    { command: 'codex memory delete mykey -f', description: 'Delete without confirmation' }
+    { command: 'ruflo memory delete -k "mykey"', description: 'Delete entry with default namespace' },
+    { command: 'ruflo memory delete -k "lesson" -n "lessons"', description: 'Delete entry from specific namespace' },
+    { command: 'ruflo memory delete mykey -f', description: 'Delete without confirmation' }
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     // Support both --key flag and positional argument
@@ -923,9 +923,9 @@ const cleanupCommand: Command = {
     }
   ],
   examples: [
-    { command: 'codex memory cleanup --dry-run', description: 'Preview cleanup' },
-    { command: 'codex memory cleanup --older-than 30d', description: 'Delete entries older than 30 days' },
-    { command: 'codex memory cleanup --expired-only', description: 'Clean expired entries' }
+    { command: 'ruflo memory cleanup --dry-run', description: 'Preview cleanup' },
+    { command: 'ruflo memory cleanup --older-than 30d', description: 'Delete entries older than 30 days' },
+    { command: 'ruflo memory cleanup --expired-only', description: 'Clean expired entries' }
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const dryRun = ctx.flags.dryRun as boolean;
@@ -1062,9 +1062,9 @@ const compressCommand: Command = {
     }
   ],
   examples: [
-    { command: 'codex memory compress', description: 'Balanced compression' },
-    { command: 'codex memory compress --quantize --bits 4', description: '4-bit quantization (32x reduction)' },
-    { command: 'codex memory compress -l max -t vectors', description: 'Max compression on vectors' }
+    { command: 'ruflo memory compress', description: 'Balanced compression' },
+    { command: 'ruflo memory compress --quantize --bits 4', description: '4-bit quantization (32x reduction)' },
+    { command: 'ruflo memory compress -l max -t vectors', description: 'Max compression on vectors' }
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const level = ctx.flags.level as string || 'balanced';
@@ -1211,8 +1211,8 @@ const exportCommand: Command = {
     }
   ],
   examples: [
-    { command: 'codex memory export -o ./backup.json', description: 'Export all to JSON' },
-    { command: 'codex memory export -o ./data.csv -f csv', description: 'Export to CSV' }
+    { command: 'ruflo memory export -o ./backup.json', description: 'Export all to JSON' },
+    { command: 'ruflo memory export -o ./data.csv -f csv', description: 'Export to CSV' }
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const outputPath = ctx.flags.output as string;
@@ -1289,8 +1289,8 @@ const importCommand: Command = {
     }
   ],
   examples: [
-    { command: 'codex memory import -i ./backup.json', description: 'Import from file' },
-    { command: 'codex memory import -i ./data.json -n archive', description: 'Import to namespace' }
+    { command: 'ruflo memory import -i ./backup.json', description: 'Import from file' },
+    { command: 'ruflo memory import -i ./data.json -n archive', description: 'Import to namespace' }
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const inputPath = ctx.flags.input as string || ctx.args[0];
@@ -1384,10 +1384,10 @@ const initMemoryCommand: Command = {
     }
   ],
   examples: [
-    { command: 'codex memory init', description: 'Initialize hybrid backend with all features' },
-    { command: 'codex memory init -b agentdb', description: 'Initialize AgentDB backend' },
-    { command: 'codex memory init -p ./data/memory.db --force', description: 'Reinitialize at custom path' },
-    { command: 'codex memory init --verbose --verify', description: 'Initialize with full verification' }
+    { command: 'ruflo memory init', description: 'Initialize hybrid backend with all features' },
+    { command: 'ruflo memory init -b agentdb', description: 'Initialize AgentDB backend' },
+    { command: 'ruflo memory init -p ./data/memory.db --force', description: 'Reinitialize at custom path' },
+    { command: 'ruflo memory init --verbose --verify', description: 'Initialize with full verification' }
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const backend = (ctx.flags.backend as string) || 'hybrid';
@@ -1622,9 +1622,9 @@ export const memoryCommand: Command = {
   subcommands: [initMemoryCommand, storeCommand, retrieveCommand, searchCommand, listCommand, deleteCommand, statsCommand, configureCommand, cleanupCommand, compressCommand, exportCommand, importCommand],
   options: [],
   examples: [
-    { command: 'codex memory store -k "key" -v "value"', description: 'Store data' },
-    { command: 'codex memory search -q "auth patterns"', description: 'Search memory' },
-    { command: 'codex memory stats', description: 'Show statistics' }
+    { command: 'ruflo memory store -k "key" -v "value"', description: 'Store data' },
+    { command: 'ruflo memory search -q "auth patterns"', description: 'Search memory' },
+    { command: 'ruflo memory stats', description: 'Show statistics' }
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     output.writeln();

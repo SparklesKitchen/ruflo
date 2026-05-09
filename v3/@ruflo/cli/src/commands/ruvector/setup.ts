@@ -685,10 +685,10 @@ export const setupCommand: Command = {
     },
   ],
   examples: [
-    { command: 'codex ruvector setup', description: 'Output files to ./ruvector-postgres/' },
-    { command: 'codex ruvector setup --output /path/to/dir', description: 'Output to custom directory' },
-    { command: 'codex ruvector setup --print', description: 'Print files to stdout' },
-    { command: 'codex ruvector setup --force', description: 'Overwrite existing files' },
+    { command: 'ruflo ruvector setup', description: 'Output files to ./ruvector-postgres/' },
+    { command: 'ruflo ruvector setup --output /path/to/dir', description: 'Output to custom directory' },
+    { command: 'ruflo ruvector setup --print', description: 'Print files to stdout' },
+    { command: 'ruflo ruvector setup --force', description: 'Overwrite existing files' },
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const outputDir = (ctx.flags.output as string) || './ruvector-postgres';

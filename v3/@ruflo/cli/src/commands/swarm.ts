@@ -438,8 +438,8 @@ const startCommand: Command = {
     }
   ],
   examples: [
-    { command: 'codex swarm start -o "Build REST API" -s development', description: 'Start development swarm' },
-    { command: 'codex swarm start -o "Analyze codebase" --parallel', description: 'Parallel analysis' }
+    { command: 'ruflo swarm start -o "Build REST API" -s development', description: 'Start development swarm' },
+    { command: 'ruflo swarm start -o "Analyze codebase" --parallel', description: 'Parallel analysis' }
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     const objective = ctx.args[0] || ctx.flags.objective as string;
@@ -511,7 +511,7 @@ const startCommand: Command = {
     } catch (err) {
       spinner.fail('MCP swarm_init failed — swarm metadata saved locally only');
       output.writeln(output.dim(`  Error: ${err instanceof Error ? err.message : String(err)}`));
-      output.writeln(output.dim('  The MCP server may not be running. Start it with: codex mcp add codex npx ruflo@v3alpha mcp start'));
+      output.writeln(output.dim('  The MCP server may not be running. Start it with: ruflo mcp start # or: codex mcp add ruflo -- npx ruflo@v3alpha mcp start'));
     }
 
     // Persist swarm state to disk so `swarm status` can read it
@@ -857,9 +857,9 @@ export const swarmCommand: Command = {
   subcommands: [initCommand, startCommand, statusCommand, stopCommand, scaleCommand, coordinateCommand],
   options: [],
   examples: [
-    { command: 'codex swarm init --v3-mode', description: 'Initialize V3 swarm' },
-    { command: 'codex swarm start -o "Build API" -s development', description: 'Start development swarm' },
-    { command: 'codex swarm coordinate --agents 15', description: 'V3 coordination' }
+    { command: 'ruflo swarm init --v3-mode', description: 'Initialize V3 swarm' },
+    { command: 'ruflo swarm start -o "Build API" -s development', description: 'Start development swarm' },
+    { command: 'ruflo swarm coordinate --agents 15', description: 'V3 coordination' }
   ],
   action: async (ctx: CommandContext): Promise<CommandResult> => {
     output.writeln();
