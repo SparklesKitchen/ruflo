@@ -73,6 +73,14 @@ export function _resetMemoryRootCache(): void {
 // ADR-053: Lazy import of AgentDB v3 bridge
 let _bridge: typeof import('./memory-bridge.js') | null | undefined;
 async function getBridge(): Promise<typeof import('./memory-bridge.js') | null> {
+  // The AgentDB bridge is useful for experiments, but it is not safe as the
+  // default persistence path yet: in sql.js-backed projects it can report a
+  // successful write without persisting to .swarm/memory.db for the next CLI
+  // process to read. Keep the lossless sql.js path as the default and make the
+  // bridge explicitly opt-in until its persistence contract is fixed.
+  if (process.env.RUFLO_MEMORY_ENABLE_AGENTDB_BRIDGE !== '1') {
+    return null;
+  }
   if (_bridge === null) return null;
   if (_bridge) return _bridge;
   try {

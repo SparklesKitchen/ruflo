@@ -62,8 +62,9 @@ if (isMCPMode) {
   // batch search results — top out at ~1MB).
   const MCP_MAX_BUFFER_BYTES = 10 * 1024 * 1024;
   let buffer = '';
+  let processing = Promise.resolve();
   process.stdin.setEncoding('utf8');
-  process.stdin.on('data', async (chunk) => {
+  process.stdin.on('data', (chunk) => {
     buffer += chunk;
     if (buffer.length > MCP_MAX_BUFFER_BYTES) {
       // Drop the buffer + emit a protocol-level error so the client
@@ -82,38 +83,40 @@ if (isMCPMode) {
     let lines = buffer.split('\n');
     buffer = lines.pop() || '';
 
-    for (const line of lines) {
-      if (line.trim()) {
-        let message;
-        try {
-          message = JSON.parse(line);
-        } catch {
-          console.log(JSON.stringify({
-            jsonrpc: '2.0',
-            id: null,
-            error: { code: -32700, message: 'Parse error' },
-          }));
-          continue;
-        }
-        try {
-          const response = await handleMessage(message);
-          if (response) {
-            console.log(JSON.stringify(response));
+    processing = processing.then(async () => {
+      for (const line of lines) {
+        if (line.trim()) {
+          let message;
+          try {
+            message = JSON.parse(line);
+          } catch {
+            console.log(JSON.stringify({
+              jsonrpc: '2.0',
+              id: null,
+              error: { code: -32700, message: 'Parse error' },
+            }));
+            continue;
           }
-        } catch (error) {
-          // #1606: Return proper internal error instead of parse error
-          console.log(JSON.stringify({
-            jsonrpc: '2.0',
-            id: message.id ?? null,
-            error: { code: -32603, message: error instanceof Error ? error.message : 'Internal error' },
-          }));
+          try {
+            const response = await handleMessage(message);
+            if (response) {
+              console.log(JSON.stringify(response));
+            }
+          } catch (error) {
+            // #1606: Return proper internal error instead of parse error
+            console.log(JSON.stringify({
+              jsonrpc: '2.0',
+              id: message.id ?? null,
+              error: { code: -32603, message: error instanceof Error ? error.message : 'Internal error' },
+            }));
+          }
         }
       }
-    }
+    });
   });
 
   process.stdin.on('end', () => {
-    process.exit(0);
+    processing.finally(() => process.exit(0));
   });
 
   async function handleMessage(message) {
