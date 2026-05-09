@@ -142,9 +142,9 @@ export class WorkerDaemon extends EventEmitter {
     this.projectRoot = projectRoot;
     this.originalConfig = config;
 
-    const claudeFlowDir = join(projectRoot, '.claude-flow');
+    const claudeFlowDir = join(projectRoot, '.ruflo');
 
-    // Read daemon config from .claude-flow/config.json (Layer B)
+    // Read daemon config from .ruflo/config.json (Layer B)
     const fileConfig = this.readDaemonConfigFromFile(claudeFlowDir);
 
     // CPU-proportional smart default instead of hardcoded 2.0
@@ -197,7 +197,7 @@ export class WorkerDaemon extends EventEmitter {
   }
 
   /**
-   * Initialize headless executor if Claude Code is available
+   * Initialize headless executor if Codex CLI is available
    */
   private async initHeadlessExecutor(): Promise<void> {
     try {
@@ -208,7 +208,7 @@ export class WorkerDaemon extends EventEmitter {
       this.headlessAvailable = await this.headlessExecutor.isAvailable();
 
       if (this.headlessAvailable) {
-        this.log('info', 'Claude Code headless mode available - AI workers enabled');
+        this.log('info', 'Codex headless mode available - AI workers enabled');
 
         // Forward headless executor events. #1855: also snapshot the
         // active child PIDs to disk on every transition so the next
@@ -232,7 +232,7 @@ export class WorkerDaemon extends EventEmitter {
           this.emit('headless:output', data);
         });
       } else {
-        this.log('info', 'Claude Code not found - AI workers will run in local fallback mode');
+        this.log('info', 'Codex CLI not found - AI workers will run in local fallback mode');
       }
     } catch (error) {
       this.log('warn', `Failed to initialize headless executor: ${error}`);
@@ -286,7 +286,7 @@ export class WorkerDaemon extends EventEmitter {
   }
 
   /**
-   * Read daemon-specific config from .claude-flow/config.{json,yaml,yml}.
+   * Read daemon-specific config from .ruflo/config.{json,yaml,yml}.
    * Supports dot-notation keys like 'daemon.resourceThresholds.maxCpuLoad'.
    * #1844: prefer JSON when both exist (existing behavior) but fall back
    * to YAML so operators using the v3 canonical YAML format aren't silently
@@ -408,7 +408,7 @@ export class WorkerDaemon extends EventEmitter {
   }
 
   /**
-   * Append a structured crash record to .claude-flow/logs/crash.log.
+   * Append a structured crash record to .ruflo/logs/crash.log.
    * Inspectable by hand or via `ruflo daemon status` follow-ups.
    */
   private writeCrashRecord(kind: string, err: unknown): void {
@@ -430,7 +430,7 @@ export class WorkerDaemon extends EventEmitter {
    * lifetime to reap orphans after a hard crash.
    */
   private get childrenFile(): string {
-    return join(this.projectRoot, '.claude-flow', 'daemon-children.json');
+    return join(this.projectRoot, '.ruflo', 'daemon-children.json');
   }
 
   /**
@@ -472,7 +472,7 @@ export class WorkerDaemon extends EventEmitter {
     if (!this.headlessExecutor) return;
     try {
       const pids = this.headlessExecutor.getActiveChildPids();
-      const dir = join(this.projectRoot, '.claude-flow');
+      const dir = join(this.projectRoot, '.ruflo');
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(
         this.childrenFile,
@@ -484,7 +484,7 @@ export class WorkerDaemon extends EventEmitter {
 
   /**
    * #1855: reap orphan headless worker children left behind by a
-   * previous crashed lifetime. Reads `.claude-flow/daemon-children.json`,
+   * previous crashed lifetime. Reads `.ruflo/daemon-children.json`,
    * SIGTERMs any PID still alive that doesn't belong to the current
    * daemon, then truncates the file. Called at the top of `start()`
    * so the next lifetime starts with a clean process tree.
@@ -643,7 +643,7 @@ export class WorkerDaemon extends EventEmitter {
    * Get the PID file path for singleton enforcement (#1395 Bug 3).
    */
   private get pidFile(): string {
-    return join(this.projectRoot, '.claude-flow', 'daemon.pid');
+    return join(this.projectRoot, '.ruflo', 'daemon.pid');
   }
 
   /**
@@ -681,7 +681,7 @@ export class WorkerDaemon extends EventEmitter {
    * Write PID file for singleton enforcement.
    */
   private writePidFile(): void {
-    const dir = join(this.projectRoot, '.claude-flow');
+    const dir = join(this.projectRoot, '.ruflo');
     if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
     writeFileSync(this.pidFile, String(process.pid), 'utf-8');
   }
@@ -755,14 +755,14 @@ export class WorkerDaemon extends EventEmitter {
 
   /**
    * #1845: ingest queue entries written by mcp__hooks_worker-dispatch.
-   * Each entry is a JSON file at `.claude-flow/daemon-queue/<id>.json`
+   * Each entry is a JSON file at `.ruflo/daemon-queue/<id>.json`
    * with `{ workerId, trigger, context, enqueuedAt }`. We move processed
-   * files to `.claude-flow/daemon-queue/.processed/` so the daemon never
+   * files to `.ruflo/daemon-queue/.processed/` so the daemon never
    * re-runs the same dispatch and operators can inspect history.
    */
   private async processDispatchQueue(): Promise<void> {
     if (!this.running) return;
-    const queueDir = join(this.projectRoot, '.claude-flow', 'daemon-queue');
+    const queueDir = join(this.projectRoot, '.ruflo', 'daemon-queue');
     if (!existsSync(queueDir)) return;
 
     let entries: string[];
@@ -1048,12 +1048,12 @@ export class WorkerDaemon extends EventEmitter {
     // Check if this is a headless worker type and headless execution is available
     if (isHeadlessWorker(workerConfig.type) && this.headlessAvailable && this.headlessExecutor) {
       try {
-        this.log('info', `Running ${workerConfig.type} in headless mode (Claude Code AI)`);
+        this.log('info', `Running ${workerConfig.type} in headless mode (Codex AI)`);
         const result = await this.headlessExecutor.execute(workerConfig.type as HeadlessWorkerType);
         // #1793: persist the headless result to the same metrics files the
         // local workers write to. Without this, AI-mode runs produced rich
-        // parsedOutput that lived only in `.claude-flow/logs/headless/*` and
-        // never reached `.claude-flow/metrics/<name>.json` — `memory stats`
+        // parsedOutput that lived only in `.ruflo/logs/headless/*` and
+        // never reached `.ruflo/metrics/<name>.json` — `memory stats`
         // and downstream consumers saw nothing despite successful runs.
         try {
           this.persistHeadlessResult(workerConfig.type as HeadlessWorkerType, result);
@@ -1109,7 +1109,7 @@ export class WorkerDaemon extends EventEmitter {
    * #1793: persist a headless worker result to the same metrics file the
    * local fallback writes to. Without this, AI-mode workers produced rich
    * structured output (audit findings, perf signals, test-gap analysis)
-   * that lived only in `.claude-flow/logs/headless/*_result.log` and was
+   * that lived only in `.ruflo/logs/headless/*_result.log` and was
    * invisible to `npx ruflo memory stats` or the metrics consumers.
    *
    * The mapping mirrors the `*Local` worker implementations below so a
@@ -1119,7 +1119,7 @@ export class WorkerDaemon extends EventEmitter {
     workerType: HeadlessWorkerType,
     result: HeadlessExecutionResult,
   ): void {
-    const metricsDir = join(this.projectRoot, '.claude-flow', 'metrics');
+    const metricsDir = join(this.projectRoot, '.ruflo', 'metrics');
     if (!existsSync(metricsDir)) mkdirSync(metricsDir, { recursive: true });
 
     // Filename mirrors the local-mode worker writes (security-audit.json,
@@ -1162,8 +1162,8 @@ export class WorkerDaemon extends EventEmitter {
 
   private async runMapWorker(): Promise<unknown> {
     // Scan project structure and update metrics
-    const metricsFile = join(this.projectRoot, '.claude-flow', 'metrics', 'codebase-map.json');
-    const metricsDir = join(this.projectRoot, '.claude-flow', 'metrics');
+    const metricsFile = join(this.projectRoot, '.ruflo', 'metrics', 'codebase-map.json');
+    const metricsDir = join(this.projectRoot, '.ruflo', 'metrics');
 
     if (!existsSync(metricsDir)) {
       mkdirSync(metricsDir, { recursive: true });
@@ -1176,7 +1176,7 @@ export class WorkerDaemon extends EventEmitter {
         hasPackageJson: existsSync(join(this.projectRoot, 'package.json')),
         hasTsConfig: existsSync(join(this.projectRoot, 'tsconfig.json')),
         hasClaudeConfig: existsSync(join(this.projectRoot, '.claude')),
-        hasClaudeFlow: existsSync(join(this.projectRoot, '.claude-flow')),
+        hasClaudeFlow: existsSync(join(this.projectRoot, '.ruflo')),
       },
       scannedAt: Date.now(),
     };
@@ -1190,8 +1190,8 @@ export class WorkerDaemon extends EventEmitter {
    */
   private async runAuditWorkerLocal(): Promise<unknown> {
     // Basic security checks
-    const auditFile = join(this.projectRoot, '.claude-flow', 'metrics', 'security-audit.json');
-    const metricsDir = join(this.projectRoot, '.claude-flow', 'metrics');
+    const auditFile = join(this.projectRoot, '.ruflo', 'metrics', 'security-audit.json');
+    const metricsDir = join(this.projectRoot, '.ruflo', 'metrics');
 
     if (!existsSync(metricsDir)) {
       mkdirSync(metricsDir, { recursive: true });
@@ -1207,7 +1207,7 @@ export class WorkerDaemon extends EventEmitter {
       },
       riskLevel: 'low',
       recommendations: [],
-      note: 'Install Claude Code CLI for AI-powered security analysis',
+      note: 'Install Codex CLI for AI-powered security analysis',
     };
 
     writeFileSync(auditFile, JSON.stringify(audit, null, 2));
@@ -1219,8 +1219,8 @@ export class WorkerDaemon extends EventEmitter {
    */
   private async runOptimizeWorkerLocal(): Promise<unknown> {
     // Update performance metrics
-    const optimizeFile = join(this.projectRoot, '.claude-flow', 'metrics', 'performance.json');
-    const metricsDir = join(this.projectRoot, '.claude-flow', 'metrics');
+    const optimizeFile = join(this.projectRoot, '.ruflo', 'metrics', 'performance.json');
+    const metricsDir = join(this.projectRoot, '.ruflo', 'metrics');
 
     if (!existsSync(metricsDir)) {
       mkdirSync(metricsDir, { recursive: true });
@@ -1235,7 +1235,7 @@ export class WorkerDaemon extends EventEmitter {
         cacheHitRate: 0.78,
         avgResponseTime: 45,
       },
-      note: 'Install Claude Code CLI for AI-powered optimization suggestions',
+      note: 'Install Codex CLI for AI-powered optimization suggestions',
     };
 
     writeFileSync(optimizeFile, JSON.stringify(perf, null, 2));
@@ -1244,8 +1244,8 @@ export class WorkerDaemon extends EventEmitter {
 
   private async runConsolidateWorker(): Promise<unknown> {
     // Memory consolidation - clean up old patterns
-    const consolidateFile = join(this.projectRoot, '.claude-flow', 'metrics', 'consolidation.json');
-    const metricsDir = join(this.projectRoot, '.claude-flow', 'metrics');
+    const consolidateFile = join(this.projectRoot, '.ruflo', 'metrics', 'consolidation.json');
+    const metricsDir = join(this.projectRoot, '.ruflo', 'metrics');
 
     if (!existsSync(metricsDir)) {
       mkdirSync(metricsDir, { recursive: true });
@@ -1267,8 +1267,8 @@ export class WorkerDaemon extends EventEmitter {
    */
   private async runTestGapsWorkerLocal(): Promise<unknown> {
     // Check for test coverage gaps
-    const testGapsFile = join(this.projectRoot, '.claude-flow', 'metrics', 'test-gaps.json');
-    const metricsDir = join(this.projectRoot, '.claude-flow', 'metrics');
+    const testGapsFile = join(this.projectRoot, '.ruflo', 'metrics', 'test-gaps.json');
+    const metricsDir = join(this.projectRoot, '.ruflo', 'metrics');
 
     if (!existsSync(metricsDir)) {
       mkdirSync(metricsDir, { recursive: true });
@@ -1280,7 +1280,7 @@ export class WorkerDaemon extends EventEmitter {
       hasTestDir: existsSync(join(this.projectRoot, 'tests')) || existsSync(join(this.projectRoot, '__tests__')),
       estimatedCoverage: 'unknown',
       gaps: [],
-      note: 'Install Claude Code CLI for AI-powered test gap analysis',
+      note: 'Install Codex CLI for AI-powered test gap analysis',
     };
 
     writeFileSync(testGapsFile, JSON.stringify(result, null, 2));
@@ -1296,7 +1296,7 @@ export class WorkerDaemon extends EventEmitter {
       mode: 'local',
       predictions: [],
       preloaded: [],
-      note: 'Install Claude Code CLI for AI-powered predictions',
+      note: 'Install Codex CLI for AI-powered predictions',
     };
   }
 
@@ -1309,7 +1309,7 @@ export class WorkerDaemon extends EventEmitter {
       mode: 'local',
       filesDocumented: 0,
       suggestedDocs: [],
-      note: 'Install Claude Code CLI for AI-powered documentation generation',
+      note: 'Install Codex CLI for AI-powered documentation generation',
     };
   }
 
@@ -1322,7 +1322,7 @@ export class WorkerDaemon extends EventEmitter {
       mode: 'local',
       patternsLearned: 0,
       insightsGained: [],
-      note: 'Install Claude Code CLI for AI-powered deep learning',
+      note: 'Install Codex CLI for AI-powered deep learning',
     };
   }
 
@@ -1335,7 +1335,7 @@ export class WorkerDaemon extends EventEmitter {
       mode: 'local',
       suggestions: [],
       duplicatesFound: 0,
-      note: 'Install Claude Code CLI for AI-powered refactoring suggestions',
+      note: 'Install Codex CLI for AI-powered refactoring suggestions',
     };
   }
 
@@ -1348,7 +1348,7 @@ export class WorkerDaemon extends EventEmitter {
       mode: 'local',
       analysisDepth: 'shallow',
       findings: [],
-      note: 'Install Claude Code CLI for AI-powered deep code analysis',
+      note: 'Install Codex CLI for AI-powered deep code analysis',
     };
   }
 
@@ -1356,8 +1356,8 @@ export class WorkerDaemon extends EventEmitter {
    * Local benchmark worker
    */
   private async runBenchmarkWorkerLocal(): Promise<unknown> {
-    const benchmarkFile = join(this.projectRoot, '.claude-flow', 'metrics', 'benchmark.json');
-    const metricsDir = join(this.projectRoot, '.claude-flow', 'metrics');
+    const benchmarkFile = join(this.projectRoot, '.ruflo', 'metrics', 'benchmark.json');
+    const metricsDir = join(this.projectRoot, '.ruflo', 'metrics');
 
     if (!existsSync(metricsDir)) {
       mkdirSync(metricsDir, { recursive: true });

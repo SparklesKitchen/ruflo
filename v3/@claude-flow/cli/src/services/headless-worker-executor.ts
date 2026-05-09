@@ -1,9 +1,9 @@
 /**
  * Headless Worker Executor
- * Enables workers to invoke Claude Code in headless mode with configurable sandbox profiles.
+ * Enables workers to invoke Codex in headless mode with configurable sandbox profiles.
  *
  * ADR-020: Headless Worker Integration Architecture
- * - Integrates with CLAUDE_CODE_HEADLESS and CLAUDE_CODE_SANDBOX_MODE environment variables
+ * - Integrates with Codex CLI non-interactive execution
  * - Provides process pool for concurrent execution
  * - Builds context from file glob patterns
  * - Supports prompt templates and output parsing
@@ -22,7 +22,7 @@
 import { spawn, execSync, type ChildProcess } from 'child_process';
 import { EventEmitter } from 'events';
 import { existsSync, readFileSync, readdirSync, mkdirSync, writeFileSync } from 'fs';
-import { join, relative } from 'path';
+import { join } from 'path';
 import type { WorkerType } from './worker-daemon.js';
 
 // ============================================
@@ -30,7 +30,7 @@ import type { WorkerType } from './worker-daemon.js';
 // ============================================
 
 /**
- * Headless worker types - workers that use Claude Code AI
+ * Headless worker types - workers that use Codex AI
  */
 export type HeadlessWorkerType =
   | 'audit'
@@ -53,7 +53,10 @@ export type LocalWorkerType = 'map' | 'consolidate' | 'benchmark' | 'preload';
 export type SandboxMode = 'strict' | 'permissive' | 'disabled';
 
 /**
- * Model types for Claude Code
+ * Worker model tier aliases.
+ *
+ * These names are kept for compatibility with existing daemon-state.json files.
+ * They now map to Codex/OpenAI model IDs rather than Anthropic model aliases.
  */
 export type ModelType = 'sonnet' | 'opus' | 'haiku';
 
@@ -91,7 +94,7 @@ export interface WorkerConfig {
  * Headless-specific options
  */
 export interface HeadlessOptions {
-  /** Prompt template for Claude Code */
+  /** Prompt template for Codex */
   promptTemplate: string;
 
   /** Sandbox profile: strict, permissive, or disabled */
@@ -157,7 +160,7 @@ export interface HeadlessExecutionResult {
   /** Whether execution completed successfully */
   success: boolean;
 
-  /** Raw output from Claude Code */
+  /** Raw output from Codex */
   output: string;
 
   /** Parsed output (if outputFormat is json or markdown) */
@@ -271,18 +274,48 @@ export const LOCAL_WORKER_TYPES: LocalWorkerType[] = [
  * Model ID mapping
  */
 /**
- * Model ID mapping — use short aliases so they auto-resolve to the latest
- * snapshot. Hardcoded dated IDs (e.g. claude-sonnet-4-5-20250929) go stale
- * when Anthropic retires them, causing 100% worker failure (#1431).
+ * Model ID mapping for Codex worker tiers.
  *
- * Users can override per-worker via the `model` field in daemon-state.json
- * or the ANTHROPIC_MODEL environment variable.
+ * Users can override all workers with CODEX_MODEL, or override individual
+ * tiers with CODEX_MODEL_FAST, CODEX_MODEL_BALANCED, and CODEX_MODEL_DEEP.
  */
 const MODEL_IDS: Record<ModelType, string> = {
-  sonnet: 'sonnet',
-  opus: 'opus',
-  haiku: 'haiku',
+  sonnet: 'gpt-5.5',
+  opus: 'gpt-5.5',
+  haiku: 'gpt-5.4-mini',
 };
+
+const MODEL_ENV_BY_TIER: Record<ModelType, string> = {
+  haiku: 'CODEX_MODEL_FAST',
+  sonnet: 'CODEX_MODEL_BALANCED',
+  opus: 'CODEX_MODEL_DEEP',
+};
+
+const CODEX_SANDBOX_BY_MODE: Record<SandboxMode, 'read-only' | 'workspace-write' | 'danger-full-access'> = {
+  strict: 'read-only',
+  permissive: 'workspace-write',
+  disabled: 'danger-full-access',
+};
+
+function createCodexEnv(): Record<string, string> {
+  const env: Record<string, string> = {
+    ...(process.env as Record<string, string>),
+    CODEX_HEADLESS: 'true',
+  };
+
+  if (env.PATH) {
+    env.PATH = env.PATH
+      .split(':')
+      .filter((entry) => !entry.endsWith('/node_modules/.bin'))
+      .join(':');
+  }
+
+  // Remove legacy parent session markers when running from mixed environments.
+  delete env.CLAUDE_SESSION_ID;
+  delete env.CLAUDE_PARENT_SESSION_ID;
+
+  return env;
+}
 
 /**
  * Default headless worker configurations based on ADR-020
@@ -491,7 +524,7 @@ Provide preload suggestions as JSON:
       sandbox: 'strict',
       model: 'haiku',
       outputFormat: 'json',
-      contextPatterns: ['.claude-flow/metrics/*.json'],
+      contextPatterns: ['.ruflo/metrics/*.json'],
       timeoutMs: 2 * 60 * 1000,
     },
   },
@@ -565,7 +598,7 @@ export function isLocalWorker(type: WorkerType): type is LocalWorkerType {
  * Get model ID from model type
  */
 export function getModelId(model: ModelType): string {
-  return MODEL_IDS[model];
+  return process.env[MODEL_ENV_BY_TIER[model]] || process.env.CODEX_MODEL || MODEL_IDS[model];
 }
 
 /**
@@ -586,7 +619,7 @@ export function getWorkerConfig(type: WorkerType): HeadlessWorkerConfig | undefi
 // ============================================
 
 /**
- * HeadlessWorkerExecutor - Executes workers using Claude Code in headless mode
+ * HeadlessWorkerExecutor - Executes workers using Codex in headless mode
  *
  * Features:
  * - Process pool with configurable concurrency limit
@@ -602,8 +635,8 @@ export class HeadlessWorkerExecutor extends EventEmitter {
   private processPool: Map<string, PoolEntry> = new Map();
   private pendingQueue: QueueEntry[] = [];
   private contextCache: Map<string, CacheEntry> = new Map();
-  private claudeCodeAvailable: boolean | null = null;
-  private claudeCodeVersion: string | null = null;
+  private codexAvailable: boolean | null = null;
+  private codexVersion: string | null = null;
 
   constructor(projectRoot: string, options?: HeadlessExecutorConfig) {
     super();
@@ -615,7 +648,7 @@ export class HeadlessWorkerExecutor extends EventEmitter {
       defaultTimeoutMs: options?.defaultTimeoutMs ?? 5 * 60 * 1000,
       maxContextFiles: options?.maxContextFiles ?? 20,
       maxCharsPerFile: options?.maxCharsPerFile ?? 5000,
-      logDir: options?.logDir ?? join(projectRoot, '.claude-flow', 'logs', 'headless'),
+      logDir: options?.logDir ?? join(projectRoot, '.ruflo', 'logs', 'headless'),
       cacheContext: options?.cacheContext ?? true,
       cacheTtlMs: options?.cacheTtlMs ?? 60000, // 1 minute default
     };
@@ -629,37 +662,38 @@ export class HeadlessWorkerExecutor extends EventEmitter {
   // ============================================
 
   /**
-   * Check if Claude Code CLI is available
+   * Check if Codex CLI is available
    */
   async isAvailable(): Promise<boolean> {
-    if (this.claudeCodeAvailable !== null) {
-      return this.claudeCodeAvailable;
+    if (this.codexAvailable !== null) {
+      return this.codexAvailable;
     }
 
     try {
-      const output = execSync('claude --version', {
+      const output = execSync('codex --version', {
         encoding: 'utf-8',
+        env: createCodexEnv(),
         stdio: 'pipe',
         timeout: 5000,
         windowsHide: true, // Prevent phantom console windows on Windows
       });
-      this.claudeCodeAvailable = true;
-      this.claudeCodeVersion = output.trim();
-      this.emit('status', { available: true, version: this.claudeCodeVersion });
+      this.codexAvailable = true;
+      this.codexVersion = output.trim();
+      this.emit('status', { available: true, version: this.codexVersion });
       return true;
     } catch {
-      this.claudeCodeAvailable = false;
+      this.codexAvailable = false;
       this.emit('status', { available: false });
       return false;
     }
   }
 
   /**
-   * Get Claude Code version
+   * Get Codex CLI version
    */
   async getVersion(): Promise<string | null> {
     await this.isAvailable();
-    return this.claudeCodeVersion;
+    return this.codexVersion;
   }
 
   /**
@@ -679,7 +713,7 @@ export class HeadlessWorkerExecutor extends EventEmitter {
     if (!available) {
       const result = this.createErrorResult(
         workerType,
-        'Claude Code CLI not available. Install with: npm install -g @anthropic-ai/claude-code'
+        'Codex CLI not available. Install with: npm install -g @openai/codex'
       );
       this.emit('error', result);
       return result;
@@ -873,8 +907,8 @@ export class HeadlessWorkerExecutor extends EventEmitter {
       // Log prompt for debugging
       this.logExecution(executionId, 'prompt', fullPrompt);
 
-      // Execute Claude Code headlessly
-      const result = await this.executeClaudeCode(fullPrompt, {
+      // Execute Codex headlessly
+      const result = await this.executeCodex(fullPrompt, {
         sandbox: headless.sandbox,
         model: headless.model || 'sonnet',
         timeoutMs: headless.timeoutMs || this.config.defaultTimeoutMs,
@@ -1125,9 +1159,9 @@ Analyze the above codebase context and provide your response following the forma
   }
 
   /**
-   * Execute Claude Code in headless mode
+   * Execute Codex in headless mode
    */
-  private executeClaudeCode(
+  private executeCodex(
     prompt: string,
     options: {
       sandbox: SandboxMode;
@@ -1138,39 +1172,16 @@ Analyze the above codebase context and provide your response following the forma
     }
   ): Promise<{ success: boolean; output: string; tokensUsed?: number; error?: string }> {
     return new Promise((resolve) => {
-      const env: Record<string, string> = {
-        ...(process.env as Record<string, string>),
-        CLAUDE_CODE_HEADLESS: 'true',
-        CLAUDE_CODE_SANDBOX_MODE: options.sandbox,
-        // Fix #1395 Bug 2: Workers fail inside active Claude Code session.
-        // Claude Code detects nested sessions and exits immediately.
-        // Setting CLAUDE_ENTRYPOINT=worker bypasses the nested-session check,
-        // and unsetting CLAUDE_SESSION_ID prevents parent session detection.
-        CLAUDE_ENTRYPOINT: 'worker',
-      };
-      // Remove parent session markers so the child doesn't detect a "nested" session
-      delete env.CLAUDE_SESSION_ID;
-      delete env.CLAUDE_PARENT_SESSION_ID;
+      const env = createCodexEnv();
 
-      // Set model
-      // Resolve model: user env override > config override > default alias
-      env.ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL || MODEL_IDS[options.model];
-
-      // Spawn claude CLI process. #1852: previously the prompt was passed
-      // as a positional CLI arg. On Windows `claude` resolves to
-      // `claude.cmd`, which Node refuses to exec directly (CVE-2024-27980
-      // mitigation) — it routes through `cmd.exe /d /s /c`, which then
-      // re-tokenizes the entire command line including the prompt.
-      // Source-code prompts contain `>` `<` `&` `|` (arrow functions,
-      // comparisons, redirections) — cmd.exe parses those as redirects
-      // and creates zero-byte files in cwd named after the next token
-      // (`controller.abort()`, `{const`, `0`, `HTTP`, etc.).
-      //
-      // Fix: pipe the prompt via stdin instead. `child.stdin.end(prompt)`
-      // writes the prompt and closes stdin atomically — the EOF still
-      // unblocks `claude --print` (the original concern in #1395) but no
-      // shell tokenization touches the prompt.
-      const child = spawn('claude', ['--print'], {
+      const child = spawn('codex', [
+        'exec',
+        '--model', getModelId(options.model),
+        '--sandbox', CODEX_SANDBOX_BY_MODE[options.sandbox],
+        '--skip-git-repo-check',
+        '--cd', this.projectRoot,
+        '-',
+      ], {
         cwd: this.projectRoot,
         env,
         stdio: ['pipe', 'pipe', 'pipe'],
@@ -1278,7 +1289,7 @@ Analyze the above codebase context and provide your response following the forma
   }
 
   /**
-   * Parse JSON output from Claude Code
+   * Parse JSON output from Codex
    */
   private parseJsonOutput(output: string): unknown {
     try {
