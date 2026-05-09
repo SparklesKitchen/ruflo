@@ -1,5 +1,5 @@
 /**
- * @claude-flow/codex - AGENTS.md Generator
+ * @ruflo/codex - AGENTS.md Generator
  *
  * Generates AGENTS.md files for OpenAI Codex CLI
  * Following the Agentic AI Foundation standard
@@ -33,7 +33,7 @@ export async function generateAgentsMd(options: AgentsMdOptions): Promise<string
 function generateMinimal(options: AgentsMdOptions): string {
   const {
     projectName,
-    description = 'A Claude Flow powered project',
+    description = 'A Ruflo powered project',
     buildCommand = 'npm run build',
     testCommand = 'npm test',
   } = options;
@@ -85,7 +85,7 @@ ${testCommand}
 
 ## Links
 
-- Documentation: https://github.com/ruvnet/claude-flow
+- Documentation: https://github.com/SparklesKitchen/ruflo
 `;
 }
 
@@ -95,7 +95,7 @@ ${testCommand}
 function generateDefault(options: AgentsMdOptions): string {
   const {
     projectName,
-    description = 'A Claude Flow powered project',
+    description = 'A Ruflo powered project',
     techStack = 'TypeScript, Node.js',
     buildCommand = 'npm run build',
     testCommand = 'npm test',
@@ -194,10 +194,10 @@ ${skillsTable}
 
 ## Execution Model
 
-- **claude-flow** = LEDGER (coordinates: memory, routing, swarm state)
+- **ruflo** = LEDGER (coordinates: memory, routing, swarm state)
 - **Codex** = EXECUTOR (writes code, runs tests, creates files)
 
-**Critical rule:** DON'T STOP after calling claude-flow commands. Coordination commands return instantly — continue immediately with the next implementation step.
+**Critical rule:** DON'T STOP after calling ruflo commands. Coordination commands return instantly — continue immediately with the next implementation step.
 
 ## MCP Integration
 
@@ -232,7 +232,7 @@ Use MCP tools for coordination, then keep coding:
 
 [optional body]
 
-Co-Authored-By: claude-flow <ruv@ruv.net>
+Co-Authored-By: ruflo <ruv@ruv.net>
 \`\`\`
 
 Types: \`feat\`, \`fix\`, \`docs\`, \`style\`, \`refactor\`, \`perf\`, \`test\`, \`chore\`
@@ -255,7 +255,7 @@ Types: \`feat\`, \`fix\`, \`docs\`, \`style\`, \`refactor\`, \`perf\`, \`test\`,
 
 ### Storing Patterns
 \`\`\`bash
-npx @claude-flow/cli memory store \\
+npx ruflo memory store \\
   --key "pattern-name" \\
   --value "pattern description" \\
   --namespace patterns
@@ -263,7 +263,7 @@ npx @claude-flow/cli memory store \\
 
 ### Searching Memory
 \`\`\`bash
-npx @claude-flow/cli memory search \\
+npx ruflo memory search \\
   --query "search terms" \\
   --namespace patterns
 \`\`\`
@@ -271,16 +271,16 @@ npx @claude-flow/cli memory search \\
 ## Quick Commands
 
 \`\`\`bash
-npx @claude-flow/cli memory search --query "relevant patterns"
-npx @claude-flow/cli hooks route --task "current task description"
-npx @claude-flow/cli swarm init --topology hierarchical
-npx @claude-flow/cli hooks pre-task --description "task summary"
+npx ruflo memory search --query "relevant patterns"
+npx ruflo hooks route --task "current task description"
+npx ruflo swarm init --topology hierarchical
+npx ruflo hooks pre-task --description "task summary"
 \`\`\`
 
 ## Links
 
-- Documentation: https://github.com/ruvnet/claude-flow
-- Issues: https://github.com/ruvnet/claude-flow/issues
+- Documentation: https://github.com/SparklesKitchen/ruflo
+- Issues: https://github.com/SparklesKitchen/ruflo/issues
 `;
 }
 
@@ -332,14 +332,14 @@ npm run test:security
 
 ## MCP Integration
 
-Claude Flow exposes tools via Model Context Protocol:
+Ruflo exposes tools via Model Context Protocol:
 
 \`\`\`bash
 # Start MCP server
-npx @claude-flow/cli mcp start
+npx ruflo mcp start
 
 # List available tools
-npx @claude-flow/cli mcp tools
+npx ruflo mcp tools
 \`\`\`
 
 ### Available Tools
@@ -356,7 +356,7 @@ npx @claude-flow/cli mcp tools
 
 ## Hooks System
 
-Claude Flow uses hooks for lifecycle automation:
+Ruflo uses hooks for lifecycle automation:
 
 ### Core Hooks
 
@@ -391,16 +391,16 @@ Claude Flow uses hooks for lifecycle automation:
 ### Example Usage
 \`\`\`bash
 # Before starting a task
-npx @claude-flow/cli hooks pre-task \\
+npx ruflo hooks pre-task \\
   --description "implementing authentication"
 
 # After completing a task
-npx @claude-flow/cli hooks post-task \\
+npx ruflo hooks post-task \\
   --task-id "task-123" \\
   --success true
 
 # Route a task to agents
-npx @claude-flow/cli hooks route \\
+npx ruflo hooks route \\
   --task "implement OAuth2 login flow"
 \`\`\`
 
@@ -426,13 +426,13 @@ npx @claude-flow/cli hooks route \\
 ### Managing Workers
 \`\`\`bash
 # List workers
-npx @claude-flow/cli hooks worker list
+npx ruflo hooks worker list
 
 # Trigger specific worker
-npx @claude-flow/cli hooks worker dispatch --trigger audit
+npx ruflo hooks worker dispatch --trigger audit
 
 # Check worker status
-npx @claude-flow/cli hooks worker status
+npx ruflo hooks worker status
 \`\`\`
 
 ## Intelligence System
@@ -457,19 +457,19 @@ The RuVector Intelligence System provides neural learning:
 ### Log Levels
 \`\`\`bash
 # Set log level
-export CLAUDE_FLOW_LOG_LEVEL=debug
+export RUFLO_LOG_LEVEL=debug
 
 # Enable verbose mode
-npx @claude-flow/cli --verbose <command>
+npx ruflo --verbose <command>
 \`\`\`
 
 ### Health Checks
 \`\`\`bash
 # Run diagnostics
-npx @claude-flow/cli doctor --fix
+npx ruflo doctor --fix
 
 # Check system status
-npx @claude-flow/cli status
+npx ruflo status
 \`\`\`
 `;
 
@@ -510,10 +510,10 @@ All agent actions are logged to:
 
 \`\`\`bash
 # View recent agent actions
-npx @claude-flow/cli logs --type agent-actions --last 1h
+npx ruflo logs --type agent-actions --last 1h
 
 # Export audit log
-npx @claude-flow/cli logs export --format json --output audit.json
+npx ruflo logs export --format json --output audit.json
 \`\`\`
 
 ### Compliance
@@ -548,10 +548,10 @@ npx @claude-flow/cli logs export --format json --output audit.json
 
 \`\`\`bash
 # Check current role
-npx @claude-flow/cli claims list
+npx ruflo claims list
 
 # Request elevated permissions
-npx @claude-flow/cli claims request --permission deploy:production
+npx ruflo claims request --permission deploy:production
 \`\`\`
 
 ## Service Level Agreements (SLAs)
@@ -584,7 +584,7 @@ npx @claude-flow/cli claims request --permission deploy:production
 ### On Security Issue
 1. **Contain** - Immediately stop affected agents
    \`\`\`bash
-   npx @claude-flow/cli agent stop --all --force
+   npx ruflo agent stop --all --force
    \`\`\`
 2. **Isolate** - Quarantine compromised resources
 3. **Document** - Record timeline in incident log
@@ -597,10 +597,10 @@ npx @claude-flow/cli claims request --permission deploy:production
 2. **Decide** - Roll back if safe, or forward-fix
    \`\`\`bash
    # Rollback
-   npx @claude-flow/cli deployment rollback --env production
+   npx ruflo deployment rollback --env production
 
    # Or forward-fix
-   npx @claude-flow/cli workflow run hotfix
+   npx ruflo workflow run hotfix
    \`\`\`
 3. **Document** - Capture reproduction steps
 4. **Fix** - Create hotfix on dedicated branch
@@ -634,10 +634,10 @@ npx @claude-flow/cli claims request --permission deploy:production
 ### Recovery Procedures
 \`\`\`bash
 # Restore from backup
-npx @claude-flow/cli memory restore --snapshot latest
+npx ruflo memory restore --snapshot latest
 
 # Restore specific checkpoint
-npx @claude-flow/cli session restore --checkpoint <id>
+npx ruflo session restore --checkpoint <id>
 \`\`\`
 
 ### Recovery Time Objectives
@@ -681,7 +681,7 @@ alerts:
 - [ ] Read this AGENTS.md document
 - [ ] Complete security awareness training
 - [ ] Set up local development environment
-- [ ] Run \`npx @claude-flow/cli doctor\` to verify setup
+- [ ] Run \`npx ruflo doctor\` to verify setup
 - [ ] Complete first guided task with mentor
 - [ ] Review incident response procedures
 

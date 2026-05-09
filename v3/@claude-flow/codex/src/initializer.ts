@@ -1,5 +1,5 @@
 /**
- * @claude-flow/codex - CodexInitializer
+ * @ruflo/codex - CodexInitializer
  *
  * Main initialization class for setting up Codex projects
  */
@@ -22,6 +22,17 @@ import { DEFAULT_SKILLS_BY_TEMPLATE, AGENTS_OVERRIDE_TEMPLATE, GITIGNORE_ENTRIES
  */
 const BUNDLED_SKILLS_DIR = '../../../../.agents/skills';
 
+function getCodexCliEnv(): NodeJS.ProcessEnv {
+  const env: NodeJS.ProcessEnv = { ...process.env };
+  if (env.PATH) {
+    env.PATH = env.PATH
+      .split(path.delimiter)
+      .filter((entry) => !entry.endsWith(`${path.sep}node_modules${path.sep}.bin`))
+      .join(path.delimiter);
+  }
+  return env;
+}
+
 /**
  * Main initializer for Codex projects
  */
@@ -30,7 +41,6 @@ export class CodexInitializer {
   private template: AgentsMdTemplate = 'default';
   private skills: string[] = [];
   private force: boolean = false;
-  private dual: boolean = false;
   private bundledSkillsPath: string = '';
 
   /**
@@ -41,7 +51,6 @@ export class CodexInitializer {
     this.template = options.template ?? 'default';
     this.skills = options.skills ?? DEFAULT_SKILLS_BY_TEMPLATE[this.template];
     this.force = options.force ?? false;
-    this.dual = options.dual ?? false;
 
     // Resolve bundled skills path (relative to this file's location)
     this.bundledSkillsPath = path.resolve(
@@ -156,15 +165,6 @@ export class CodexInitializer {
       }
       if (mcpResult.warning) {
         warnings.push(mcpResult.warning);
-      }
-
-      // If dual mode, also generate Claude Code files
-      if (this.dual) {
-        const dualResult = await this.generateDualPlatformFiles();
-        filesCreated.push(...dualResult.files);
-        if (dualResult.warnings) {
-          warnings.push(...dualResult.warnings);
-        }
       }
 
       // Create a README for the .agents directory
@@ -319,10 +319,11 @@ export class CodexInitializer {
   private async registerMCPServer(): Promise<{ registered: boolean; warning?: string }> {
     try {
       const { execSync } = await import('child_process');
+      const codexEnv = getCodexCliEnv();
 
       // Check if codex CLI is available
       try {
-        execSync('which codex', { stdio: 'pipe' });
+        execSync('which codex', { stdio: 'pipe', env: codexEnv });
       } catch {
         return {
           registered: false,
@@ -332,7 +333,7 @@ export class CodexInitializer {
 
       // Check if already registered
       try {
-        const list = execSync('codex mcp list 2>&1', { encoding: 'utf-8' });
+        const list = execSync('codex mcp list 2>&1', { encoding: 'utf-8', env: codexEnv });
         if (list.includes('ruflo')) {
           return { registered: true }; // Already registered
         }
@@ -345,6 +346,7 @@ export class CodexInitializer {
         execSync('codex mcp add ruflo -- npx ruflo@latest mcp start', {
           stdio: 'pipe',
           timeout: 10000,
+          env: codexEnv,
         });
         return { registered: true };
       } catch (err) {
@@ -546,156 +548,6 @@ Skills are invoked using \`$skill-name\` syntax. Each skill has:
   }
 
   /**
-   * Generate dual-platform files (Claude Code + Codex)
-   */
-  private async generateDualPlatformFiles(): Promise<{ files: string[]; warnings?: string[] }> {
-    const files: string[] = [];
-    const warnings: string[] = [];
-
-    // Check if CLAUDE.md already exists
-    const claudeMdPath = path.join(this.projectPath, 'CLAUDE.md');
-    const claudeMdExists = await fs.pathExists(claudeMdPath);
-
-    if (claudeMdExists && !this.force) {
-      warnings.push('CLAUDE.md already exists - not overwriting. Use --force to replace.');
-      return { files, warnings };
-    }
-
-    const projectName = path.basename(this.projectPath);
-
-    // Generate a CLAUDE.md that references AGENTS.md
-    const claudeMd = `# ${projectName}
-
-> This project supports both Claude Code and OpenAI Codex.
-
-## Platform Compatibility
-
-| Platform | Config File | Skill Syntax |
-|----------|-------------|--------------|
-| Claude Code | CLAUDE.md | /skill-name |
-| OpenAI Codex | AGENTS.md | $skill-name |
-
-## Instructions
-
-**Primary instructions are in \`AGENTS.md\`** (Agentic AI Foundation standard).
-
-This file provides compatibility for Claude Code users.
-
-## Quick Start
-
-\`\`\`bash
-# Install dependencies
-npm install
-
-# Build the project
-npm run build
-
-# Run tests
-npm test
-\`\`\`
-
-## Available Skills
-
-Both platforms share the same skills in \`.agents/skills/\`:
-
-${this.skills.map(s => `- \`$${s}\` (Codex) / \`/${s}\` (Claude Code)`).join('\n')}
-
-## Configuration
-
-### Codex Configuration
-- Main: \`.agents/config.toml\`
-- Local: \`.codex/config.toml\` (gitignored)
-
-### Claude Code Configuration
-- This file: \`CLAUDE.md\`
-- Local: \`CLAUDE.local.md\` (gitignored)
-
-## MCP Integration
-
-\`\`\`bash
-# Start MCP server
-npx @claude-flow/cli mcp start
-\`\`\`
-
-## Swarm Orchestration
-
-This project uses hierarchical swarm coordination:
-
-| Setting | Value |
-|---------|-------|
-| Topology | hierarchical |
-| Max Agents | 8 |
-| Strategy | specialized |
-
-## Code Standards
-
-- Files under 500 lines
-- No hardcoded secrets
-- Input validation at boundaries
-- Typed interfaces for APIs
-
-## Security
-
-- NEVER commit .env files or secrets
-- Always validate user input
-- Use parameterized queries for SQL
-
-## Full Documentation
-
-For complete instructions, see \`AGENTS.md\`.
-
----
-
-*Generated by @claude-flow/codex - Dual platform mode*
-`;
-
-    await fs.writeFile(claudeMdPath, claudeMd, 'utf-8');
-    files.push('CLAUDE.md');
-
-    // Generate CLAUDE.local.md template
-    const claudeLocalPath = path.join(this.projectPath, 'CLAUDE.local.md');
-    if (await this.shouldWriteFile(claudeLocalPath)) {
-      const claudeLocal = `# Local Development Configuration
-
-## Environment
-
-\`\`\`bash
-# Development settings
-CLAUDE_FLOW_LOG_LEVEL=debug
-\`\`\`
-
-## Personal Preferences
-
-[Add your preferences here]
-
-## Debug Settings
-
-Enable verbose logging for development.
-
----
-
-*This file is gitignored and contains local-only settings.*
-`;
-      await fs.writeFile(claudeLocalPath, claudeLocal, 'utf-8');
-      files.push('CLAUDE.local.md');
-    }
-
-    // Update .gitignore for CLAUDE.local.md
-    const gitignorePath = path.join(this.projectPath, '.gitignore');
-    if (await fs.pathExists(gitignorePath)) {
-      let content = await fs.readFile(gitignorePath, 'utf-8');
-      if (!content.includes('CLAUDE.local.md')) {
-        content += '\n# Claude Code local config\nCLAUDE.local.md\n';
-        await fs.writeFile(gitignorePath, content, 'utf-8');
-      }
-    }
-
-    warnings.push('Generated dual-platform setup. AGENTS.md is the canonical source.');
-
-    return { files, warnings };
-  }
-
-  /**
    * Get the list of files that would be created (dry-run)
    */
   async dryRun(options: CodexInitOptions): Promise<string[]> {
@@ -711,11 +563,6 @@ Enable verbose logging for development.
     const skills = options.skills ?? DEFAULT_SKILLS_BY_TEMPLATE[options.template ?? 'default'];
     for (const skill of skills) {
       files.push(`.agents/skills/${skill}/SKILL.md`);
-    }
-
-    if (options.dual) {
-      files.push('CLAUDE.md');
-      files.push('CLAUDE.local.md');
     }
 
     return files;
@@ -734,7 +581,6 @@ export async function initializeCodexProject(
     projectPath,
     template: options?.template ?? 'default',
     force: options?.force ?? false,
-    dual: options?.dual ?? false,
   };
   if (options?.skills) {
     initOptions.skills = options.skills;

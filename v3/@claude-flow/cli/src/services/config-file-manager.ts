@@ -9,7 +9,7 @@ import * as path from 'path';
 /** Config file search paths in priority order */
 const CONFIG_FILENAMES = [
   'claude-flow.config.json',
-  '.claude-flow/config.json',
+  '.ruflo/config.json',
 ];
 
 /** Default config values */

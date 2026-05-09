@@ -67,7 +67,7 @@ export const DEFAULT_PLUGIN_STORE_CONFIG: PluginStoreConfig = {
   registries: [
     {
       name: 'claude-flow-official',
-      description: 'Official Claude Flow plugin registry',
+      description: 'Official Ruflo plugin registry',
       // Use direct CID for reliable resolution (IPNS can be slow)
       ipnsName: LIVE_REGISTRY_CID,
       gateway: 'https://gateway.pinata.cloud',
@@ -88,7 +88,7 @@ export const DEFAULT_PLUGIN_STORE_CONFIG: PluginStoreConfig = {
   defaultRegistry: 'claude-flow-official',
   gateway: 'https://gateway.pinata.cloud',
   timeout: 30000,
-  cacheDir: '.claude-flow/plugins/cache',
+  cacheDir: '.ruflo/plugins/cache',
   cacheExpiry: 3600000, // 1 hour
   requireVerification: true,
   requireSecurityAudit: false,
@@ -229,7 +229,7 @@ export class PluginDiscoveryService {
       authors: [
         {
           id: 'claude-flow-team',
-          displayName: 'Claude Flow Team',
+          displayName: 'Ruflo Team',
           verified: true,
           plugins: plugins.length,
           totalDownloads: plugins.reduce((sum, p) => sum + p.downloads, 0),
@@ -271,7 +271,7 @@ export class PluginDiscoveryService {
     const baseTime = new Date().toISOString();
     const officialAuthor = {
       id: 'claude-flow-team',
-      displayName: 'Claude Flow Team',
+      displayName: 'Ruflo Team',
       verified: true,
       plugins: 5,
       totalDownloads: 50000,
@@ -447,7 +447,7 @@ export class PluginDiscoveryService {
         id: 'community-analytics',
         name: 'community-analytics',
         displayName: 'Analytics Dashboard',
-        description: 'Analytics and metrics visualization for Claude Flow operations',
+        description: 'Analytics and metrics visualization for Ruflo operations',
         version: '1.2.0',
         cid: 'bafybeianalyticsplugin',
         size: 210000,

@@ -1,5 +1,5 @@
 /**
- * @claude-flow/codex - Generators
+ * @ruflo/codex - Generators
  *
  * Template generation functions for AGENTS.md, SKILL.md, and config.toml
  */

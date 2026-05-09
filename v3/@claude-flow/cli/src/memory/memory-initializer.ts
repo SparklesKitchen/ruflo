@@ -44,7 +44,7 @@ export function getMemoryRoot(): string {
   // 2. Config file (claude-flow.config.json)
   const configCandidates = [
     path.resolve(process.cwd(), 'claude-flow.config.json'),
-    path.resolve(process.cwd(), '.claude-flow', 'config.json'),
+    path.resolve(process.cwd(), '.ruflo', 'config.json'),
   ];
   for (const configPath of configCandidates) {
     if (!fs.existsSync(configPath)) continue;
@@ -1118,7 +1118,7 @@ export async function checkAndMigrateLegacy(options: {
     path.join(process.cwd(), 'memory.db'),
     path.join(process.cwd(), '.claude/memory.db'),
     path.join(process.cwd(), 'data/memory.db'),
-    path.join(process.cwd(), '.claude-flow/memory.db')
+    path.join(process.cwd(), '.ruflo/memory.db')
   ];
 
   for (const legacyPath of legacyPaths) {
@@ -2164,7 +2164,7 @@ export async function storeEntry(options: {
 
   try {
     if (!fs.existsSync(dbPath)) {
-      return { success: false, id: '', error: 'Database not initialized. Run: claude-flow memory init' };
+      return { success: false, id: '', error: 'Database not initialized. Run: ruflo memory init' };
     }
 
     // Ensure schema has all required columns (migration for older DBs)

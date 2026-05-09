@@ -66,7 +66,7 @@ export class PluginManager {
   private manifest: InstalledPluginsManifest | null = null;
 
   constructor(baseDir: string = process.cwd()) {
-    const pluginsDir = path.join(baseDir, '.claude-flow', 'plugins');
+    const pluginsDir = path.join(baseDir, '.ruflo', 'plugins');
     this.config = {
       pluginsDir,
       manifestPath: path.join(pluginsDir, 'installed.json'),
@@ -528,7 +528,7 @@ let defaultManager: PluginManager | null = null;
 export function getPluginManager(baseDir?: string): PluginManager {
   if (!defaultManager) {
     defaultManager = new PluginManager(baseDir);
-  } else if (baseDir && defaultManager.getPluginsDir() !== path.join(baseDir, '.claude-flow', 'plugins')) {
+  } else if (baseDir && defaultManager.getPluginsDir() !== path.join(baseDir, '.ruflo', 'plugins')) {
     console.warn(`[PluginManager] Warning: getPluginManager called with different baseDir. Using existing instance. Call resetPluginManager() first to change.`);
   }
   return defaultManager;

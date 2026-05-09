@@ -11,7 +11,7 @@ import { validateIdentifier, validatePath, validateText } from './validate-input
 import { executeAgentTask } from './agent-execute-core.js';
 
 // Storage paths
-const STORAGE_DIR = '.claude-flow';
+const STORAGE_DIR = '.ruflo';
 const WORKFLOW_DIR = 'workflows';
 const WORKFLOW_FILE = 'store.json';
 

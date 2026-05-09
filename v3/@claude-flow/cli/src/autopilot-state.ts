@@ -15,7 +15,7 @@ import { homedir } from 'node:os';
 
 // ── Constants ─────────────────────────────────────────────────
 
-export const STATE_DIR = '.claude-flow/data';
+export const STATE_DIR = '.ruflo/data';
 export const STATE_FILE = `${STATE_DIR}/autopilot-state.json`;
 export const LOG_FILE = `${STATE_DIR}/autopilot-log.json`;
 
@@ -235,7 +235,7 @@ export function discoverTasks(sources: string[]): TaskInfo[] {
     }
 
     if (source === 'swarm-tasks') {
-      const swarmFile = resolve('.claude-flow/swarm-tasks.json');
+      const swarmFile = resolve('.ruflo/swarm-tasks.json');
       try {
         if (existsSync(swarmFile)) {
           const data = safeJsonParse<Record<string, unknown> | unknown[]>(readFileSync(swarmFile, 'utf-8'));
@@ -256,7 +256,7 @@ export function discoverTasks(sources: string[]): TaskInfo[] {
     }
 
     if (source === 'file-checklist') {
-      const checklistFile = resolve('.claude-flow/data/checklist.json');
+      const checklistFile = resolve('.ruflo/data/checklist.json');
       try {
         if (existsSync(checklistFile)) {
           const data = safeJsonParse<Record<string, unknown> | unknown[]>(readFileSync(checklistFile, 'utf-8'));

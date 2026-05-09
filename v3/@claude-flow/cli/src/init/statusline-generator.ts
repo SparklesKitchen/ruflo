@@ -208,7 +208,7 @@ function getLearningStats() {
   let sessions = 0;
 
   // 1. Count real patterns from intelligence pattern store
-  const patternStorePath = path.join(CWD, '.claude-flow', 'data', 'patterns.json');
+  const patternStorePath = path.join(CWD, '.ruflo', 'data', 'patterns.json');
   try {
     if (fs.existsSync(patternStorePath)) {
       const data = JSON.parse(fs.readFileSync(patternStorePath, 'utf-8'));
@@ -219,7 +219,7 @@ function getLearningStats() {
 
   // 2. Count patterns from auto-memory-store (real entries, not file size)
   if (patterns === 0) {
-    const autoStorePath = path.join(CWD, '.claude-flow', 'data', 'auto-memory-store.json');
+    const autoStorePath = path.join(CWD, '.ruflo', 'data', 'auto-memory-store.json');
     try {
       if (fs.existsSync(autoStorePath)) {
         const data = JSON.parse(fs.readFileSync(autoStorePath, 'utf-8'));
@@ -232,7 +232,7 @@ function getLearningStats() {
   // 3. Count patterns from memory.db using row count (sqlite header bytes 28-31)
   if (patterns === 0) {
     const memoryPaths = [
-      path.join(CWD, '.claude-flow', 'memory.db'),
+      path.join(CWD, '.ruflo', 'memory.db'),
       path.join(CWD, 'data', 'memory.db'),
       path.join(CWD, '.swarm', 'memory.db'),
     ];
@@ -265,7 +265,7 @@ function getLearningStats() {
   // 5. Count session files from claude-flow
   if (sessions === 0) {
     try {
-      const cfSessDir = path.join(CWD, '.claude-flow', 'sessions');
+      const cfSessDir = path.join(CWD, '.ruflo', 'sessions');
       if (fs.existsSync(cfSessDir)) {
         sessions = fs.readdirSync(cfSessDir).filter(f => f.endsWith('.json')).length;
       }
@@ -280,7 +280,7 @@ function getV3Progress() {
   const learning = getLearningStats();
   const totalDomains = 5;
 
-  const dddData = readJSON(path.join(CWD, '.claude-flow', 'metrics', 'ddd-progress.json'));
+  const dddData = readJSON(path.join(CWD, '.ruflo', 'metrics', 'ddd-progress.json'));
   let dddProgress = dddData ? (dddData.progress || 0) : 0;
   let domainsCompleted = Math.min(5, Math.floor(dddProgress / 20));
 
@@ -302,7 +302,7 @@ function getV3Progress() {
 
 // Security status (pure file reads)
 function getSecurityStatus() {
-  const auditData = readJSON(path.join(CWD, '.claude-flow', 'security', 'audit-status.json'));
+  const auditData = readJSON(path.join(CWD, '.ruflo', 'security', 'audit-status.json'));
   if (auditData) {
     const auditDate = auditData.lastAudit || auditData.lastScan;
     if (!auditDate) {
@@ -337,7 +337,7 @@ function getSwarmStatus() {
   const staleThresholdMs = 5 * 60 * 1000;
   const now = Date.now();
 
-  const swarmStatePath = path.join(CWD, '.claude-flow', 'swarm', 'swarm-state.json');
+  const swarmStatePath = path.join(CWD, '.ruflo', 'swarm', 'swarm-state.json');
   const swarmState = readJSON(swarmStatePath);
   if (swarmState) {
     const updatedAt = swarmState.updatedAt || swarmState.startedAt;
@@ -351,7 +351,7 @@ function getSwarmStatus() {
     }
   }
 
-  const activityData = readJSON(path.join(CWD, '.claude-flow', 'metrics', 'swarm-activity.json'));
+  const activityData = readJSON(path.join(CWD, '.ruflo', 'metrics', 'swarm-activity.json'));
   if (activityData && activityData.swarm) {
     const updatedAt = activityData.timestamp || (activityData.swarm && activityData.swarm.timestamp);
     const age = updatedAt ? now - new Date(updatedAt).getTime() : Infinity;
@@ -374,7 +374,7 @@ function getSystemMetrics() {
   const agentdb = getAgentDBStats();
 
   // Intelligence from learning.json
-  const learningData = readJSON(path.join(CWD, '.claude-flow', 'metrics', 'learning.json'));
+  const learningData = readJSON(path.join(CWD, '.ruflo', 'metrics', 'learning.json'));
   let intelligencePct = 0;
   let contextPct = 0;
 
@@ -397,7 +397,7 @@ function getSystemMetrics() {
 
   // Sub-agents from file metrics (no ps aux)
   let subAgents = 0;
-  const activityData = readJSON(path.join(CWD, '.claude-flow', 'metrics', 'swarm-activity.json'));
+  const activityData = readJSON(path.join(CWD, '.ruflo', 'metrics', 'swarm-activity.json'));
   if (activityData && activityData.processes && activityData.processes.estimated_agents) {
     subAgents = activityData.processes.estimated_agents;
   }
@@ -411,7 +411,7 @@ function getADRStatus() {
   const adrPaths = [
     path.join(CWD, 'v3', 'implementation', 'adrs'),
     path.join(CWD, 'docs', 'adrs'),
-    path.join(CWD, '.claude-flow', 'adrs'),
+    path.join(CWD, '.ruflo', 'adrs'),
   ];
 
   for (const adrPath of adrPaths) {
@@ -468,7 +468,7 @@ function getAgentDBStats() {
   let hasHnsw = false;
 
   // 1. Count real entries from auto-memory-store.json
-  const storePath = path.join(CWD, '.claude-flow', 'data', 'auto-memory-store.json');
+  const storePath = path.join(CWD, '.ruflo', 'data', 'auto-memory-store.json');
   const storeStat = safeStat(storePath);
   if (storeStat) {
     dbSizeKB += storeStat.size / 1024;
@@ -479,8 +479,8 @@ function getAgentDBStats() {
     } catch { /* fall back */ }
   }
 
-  // 2. Count entries from hooks memory store (.claude-flow/memory/store.json)
-  const hooksStorePath = path.join(CWD, '.claude-flow', 'memory', 'store.json');
+  // 2. Count entries from hooks memory store (.ruflo/memory/store.json)
+  const hooksStorePath = path.join(CWD, '.ruflo', 'memory', 'store.json');
   const hooksStoreStat = safeStat(hooksStorePath);
   if (hooksStoreStat) {
     dbSizeKB += hooksStoreStat.size / 1024;
@@ -496,14 +496,14 @@ function getAgentDBStats() {
 
   // 3. Count entries from ranked-context.json
   try {
-    const ranked = readJSON(path.join(CWD, '.claude-flow', 'data', 'ranked-context.json'));
+    const ranked = readJSON(path.join(CWD, '.ruflo', 'data', 'ranked-context.json'));
     if (ranked && ranked.entries && ranked.entries.length > vectorCount) vectorCount = ranked.entries.length;
   } catch { /* ignore */ }
 
   // 3. Add DB file sizes
   const dbFiles = [
     path.join(CWD, 'data', 'memory.db'),
-    path.join(CWD, '.claude-flow', 'memory.db'),
+    path.join(CWD, '.ruflo', 'memory.db'),
     path.join(CWD, '.swarm', 'memory.db'),
   ];
   for (const f of dbFiles) {
@@ -521,7 +521,7 @@ function getAgentDBStats() {
   // 5. HNSW index or memory package
   const hnswPaths = [
     path.join(CWD, '.swarm', 'hnsw.index'),
-    path.join(CWD, '.claude-flow', 'hnsw.index'),
+    path.join(CWD, '.ruflo', 'hnsw.index'),
   ];
   for (const p of hnswPaths) {
     if (safeStat(p)) { hasHnsw = true; break; }
@@ -593,7 +593,7 @@ function getIntegrationStatus() {
     }
   }
 
-  const hasDatabase = ['.swarm/memory.db', '.claude-flow/memory.db', 'data/memory.db']
+  const hasDatabase = ['.swarm/memory.db', '.ruflo/memory.db', 'data/memory.db']
     .some(p => fs.existsSync(path.join(CWD, p)));
   const hasApi = !!(process.env.ANTHROPIC_API_KEY || process.env.OPENAI_API_KEY);
 
@@ -602,7 +602,7 @@ function getIntegrationStatus() {
 
 // Session stats (pure file reads)
 function getSessionStats() {
-  var sessionPaths = ['.claude-flow/session.json', '.claude/session.json'];
+  var sessionPaths = ['.ruflo/session.json', '.claude/session.json'];
   for (var i = 0; i < sessionPaths.length; i++) {
     const data = readJSON(path.join(CWD, sessionPaths[i]));
     if (data && data.startTime) {

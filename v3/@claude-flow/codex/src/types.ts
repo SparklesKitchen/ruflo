@@ -1,7 +1,7 @@
 /**
- * @claude-flow/codex - Type Definitions
+ * @ruflo/codex - Type Definitions
  *
- * OpenAI Codex platform adapter types for Claude Flow
+ * OpenAI Codex platform adapter types for Ruflo
  * Part of the coflow rebranding initiative
  */
 
@@ -144,8 +144,6 @@ export interface CodexInitOptions {
   template?: AgentsMdTemplate;
   skills?: string[];
   force?: boolean;
-  dual?: boolean;  // Generate both Claude Code and Codex configs
-  migrateFrom?: 'claude.md' | 'CLAUDE.md';
 }
 
 /**
@@ -157,38 +155,6 @@ export interface CodexInitResult {
   skillsGenerated: string[];
   warnings?: string[];
   errors?: string[];
-}
-
-/**
- * Migration options
- */
-export interface MigrationOptions {
-  sourcePath: string;
-  targetPath: string;
-  preserveComments?: boolean;
-  generateSkills?: boolean;
-}
-
-/**
- * Migration result
- */
-export interface MigrationResult {
-  success: boolean;
-  agentsMdPath?: string;
-  skillsCreated?: string[];
-  configTomlPath?: string;
-  mappings?: FeatureMapping[];
-  warnings?: string[];
-}
-
-/**
- * Feature mapping between Claude Code and Codex
- */
-export interface FeatureMapping {
-  claudeCode: string;
-  codex: string;
-  status: 'mapped' | 'partial' | 'unsupported';
-  notes?: string;
 }
 
 /**

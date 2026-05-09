@@ -163,7 +163,7 @@ function generateSimpleEmbedding(text: string, dimension: number = 384): Float32
 // ── Runtime routing outcome persistence ──────────────────────────────
 // Closes the learning loop: post-task records outcomes → route loads them.
 
-const ROUTING_OUTCOMES_PATH = join(resolve('.'), '.claude-flow/routing-outcomes.json');
+const ROUTING_OUTCOMES_PATH = join(resolve('.'), '.ruflo/routing-outcomes.json');
 
 const ROUTING_STOPWORDS = new Set([
   'the','a','an','is','are','was','were','be','been','being','have','has','had',
@@ -458,7 +458,7 @@ interface MemoryStore {
   version: string;
 }
 
-const MEMORY_DIR = '.claude-flow/memory';
+const MEMORY_DIR = '.ruflo/memory';
 const MEMORY_FILE = 'store.json';
 
 function getMemoryPath(): string {
@@ -1373,7 +1373,7 @@ export const hooksPostTask: MCPTool = {
 
     // Persist to auto-memory-store for statusline visibility
     try {
-      const dataDir = join(getProjectCwd(), '.claude-flow', 'data');
+      const dataDir = join(getProjectCwd(), '.ruflo', 'data');
       if (!existsSync(dataDir)) mkdirSync(dataDir, { recursive: true });
       const storePath = join(dataDir, 'auto-memory-store.json');
       let store: Array<Record<string, unknown>> = [];
@@ -1454,7 +1454,7 @@ export const hooksExplain: MCPTool = {
     let historicalSuccess: number | null = null;
     let historicalNote = 'No historical data yet';
     try {
-      const outcomesPath = join(resolve('.'), '.claude-flow/routing-outcomes.json');
+      const outcomesPath = join(resolve('.'), '.ruflo/routing-outcomes.json');
       if (existsSync(outcomesPath)) {
         const data = JSON.parse(readFileSync(outcomesPath, 'utf-8'));
         const outcomes: Array<{ success: boolean }> = data.outcomes || [];
@@ -1853,7 +1853,7 @@ export const hooksSessionStart: MCPTool = {
 
     // Persist session record to auto-memory-store for statusline visibility
     try {
-      const dataDir = join(getProjectCwd(), '.claude-flow', 'data');
+      const dataDir = join(getProjectCwd(), '.ruflo', 'data');
       if (!existsSync(dataDir)) mkdirSync(dataDir, { recursive: true });
       const storePath = join(dataDir, 'auto-memory-store.json');
       let store: Array<Record<string, unknown>> = [];
@@ -1943,7 +1943,7 @@ export const hooksSessionEnd: MCPTool = {
     // Check for pending-insights.jsonl
     let insightCount = 0;
     try {
-      const insightsPath = resolve(join('.claude-flow', 'data', 'pending-insights.jsonl'));
+      const insightsPath = resolve(join('.ruflo', 'data', 'pending-insights.jsonl'));
       if (existsSync(insightsPath)) {
         const content = readFileSync(insightsPath, 'utf-8').trim();
         insightCount = content ? content.split('\n').length : 0;
@@ -2265,9 +2265,9 @@ export const hooksIntelligenceReset: MCPTool = {
 
     // Clear intelligence data files if they exist
     const dataFiles = [
-      join(cwd, '.claude-flow', 'data', 'auto-memory-store.json'),
-      join(cwd, '.claude-flow', 'data', 'graph-state.json'),
-      join(cwd, '.claude-flow', 'data', 'ranked-context.json'),
+      join(cwd, '.ruflo', 'data', 'auto-memory-store.json'),
+      join(cwd, '.ruflo', 'data', 'graph-state.json'),
+      join(cwd, '.ruflo', 'data', 'ranked-context.json'),
     ];
 
     for (const filePath of dataFiles) {
@@ -2283,7 +2283,7 @@ export const hooksIntelligenceReset: MCPTool = {
     }
 
     // Clear neural directory if it exists
-    const neuralDir = join(cwd, '.claude-flow', 'neural');
+    const neuralDir = join(cwd, '.ruflo', 'neural');
     if (existsSync(neuralDir)) {
       try {
         const files = readdirSync(neuralDir);
@@ -2755,7 +2755,7 @@ export const hooksPatternSearch: MCPTool = {
       results: [],
       searchTimeMs: 0,
       backend: 'unavailable',
-      note: 'Real vector search not available. Initialize memory database with: claude-flow memory init',
+      note: 'Real vector search not available. Initialize memory database with: ruflo memory init',
     };
   },
 };
@@ -3598,7 +3598,7 @@ export const hooksWorkerDispatch: MCPTool = {
     // never ran (#1700 item 1). Detect daemon presence via PID file and
     // surface honest verdicts (`no-daemon` / `queued` / `synthetic`).
     const cwd = getProjectCwd();
-    const pidFile = join(cwd, '.claude-flow', 'daemon.pid');
+    const pidFile = join(cwd, '.ruflo', 'daemon.pid');
     let daemonPid: number | null = null;
     let daemonAlive = false;
     if (existsSync(pidFile)) {
@@ -3638,13 +3638,13 @@ export const hooksWorkerDispatch: MCPTool = {
     let note = '';
     if (!daemonAlive) {
       reportedStatus = 'no-daemon';
-      note = 'No worker daemon detected. Run `claude-flow daemon start` to enable real worker execution. The dispatch was recorded in-process but no actual work will run.';
+      note = 'No worker daemon detected. Run `ruflo daemon start` to enable real worker execution. The dispatch was recorded in-process but no actual work will run.';
     } else if (background) {
       // #1845: write a durable queue file the daemon polls every 5s. Until
       // 3.7.0-alpha.11 the dispatch only updated a process-local Map that
       // the daemon (separate process) could never see, so `queued` was a
       // lie. The queue file makes it real and inspectable on disk.
-      const queueDir = join(cwd, '.claude-flow', 'daemon-queue');
+      const queueDir = join(cwd, '.ruflo', 'daemon-queue');
       const queuePath = join(queueDir, `${workerId}.json`);
       let queueWritten = false;
       try {
@@ -3661,7 +3661,7 @@ export const hooksWorkerDispatch: MCPTool = {
       }
       if (queueWritten) {
         reportedStatus = 'queued';
-        note = `Worker queued for daemon (pid ${daemonPid}) at ${queuePath}. Daemon polls every 5s; processed entries move to .claude-flow/daemon-queue/.processed/. Poll hooks_worker-status until status === "completed".`;
+        note = `Worker queued for daemon (pid ${daemonPid}) at ${queuePath}. Daemon polls every 5s; processed entries move to .ruflo/daemon-queue/.processed/. Poll hooks_worker-status until status === "completed".`;
       } else {
         reportedStatus = 'mcp-only';
       }

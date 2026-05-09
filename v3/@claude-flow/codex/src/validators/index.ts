@@ -1,5 +1,5 @@
 /**
- * @claude-flow/codex - Validators
+ * @ruflo/codex - Validators
  *
  * Comprehensive validation functions for AGENTS.md, SKILL.md, and config.toml
  * Provides detailed error messages and suggestions for fixes.
@@ -173,15 +173,15 @@ export async function validateAgentsMd(content: string): Promise<ValidationResul
     warnings.push({
       path: 'AGENTS.md',
       message: 'No skill references found',
-      suggestion: 'Add skill references using $skill-name syntax (Codex) or /skill-name (Claude Code)',
+      suggestion: 'Add skill references using $skill-name syntax (Codex) or $skill-name (Codex)',
     });
   }
 
-  // Warn about slash syntax (Claude Code style)
+  // Warn about slash syntax (Codex style)
   if (slashSkills.length > 0 && dollarSkills.length === 0) {
     warnings.push({
       path: 'AGENTS.md',
-      message: 'Using Claude Code skill syntax (/skill-name)',
+      message: 'Using Codex skill syntax ($skill-name)',
       suggestion: 'Codex uses $skill-name syntax. Consider migrating for full compatibility.',
     });
   }

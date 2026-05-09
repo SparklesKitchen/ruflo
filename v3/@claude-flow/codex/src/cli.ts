@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * @claude-flow/codex - CLI
+ * @ruflo/codex - CLI
  *
  * Command-line interface for Codex integration
  * Part of the coflow rebranding initiative
@@ -10,7 +10,6 @@ import { Command } from 'commander';
 import chalk from 'chalk';
 import { CodexInitializer } from './initializer.js';
 import { validateAgentsMd, validateSkillMd, validateConfigToml } from './validators/index.js';
-import { migrateFromClaudeCode, analyzeClaudeMd, generateMigrationReport } from './migrations/index.js';
 import { listTemplates, BUILT_IN_SKILLS } from './templates/index.js';
 import { generateSkillMd } from './generators/skill-md.js';
 import { VERSION, PACKAGE_INFO } from './index.js';
@@ -61,14 +60,14 @@ function validateSkillName(name: string): boolean {
 
 // Print banner
 function printBanner(): void {
-  console.log(chalk.cyan.bold('\n  Claude Flow Codex'));
-  console.log(chalk.gray('  OpenAI Codex integration for Claude Flow'));
+  console.log(chalk.cyan.bold('\n  Ruflo Codex'));
+  console.log(chalk.gray('  OpenAI Codex integration for Ruflo'));
   console.log(chalk.gray('  ----------------------------------------\n'));
 }
 
 program
-  .name('claude-flow-codex')
-  .description('OpenAI Codex integration for Claude Flow - Part of the coflow ecosystem')
+  .name('ruflo-codex')
+  .description('OpenAI Codex integration for Ruflo')
   .version(VERSION, '-v, --version', 'Display version number')
   .option('--debug', 'Enable debug mode', false)
   .hook('preAction', (thisCommand) => {
@@ -84,7 +83,6 @@ program
   .option('-t, --template <template>', 'Template to use (minimal, default, full, enterprise)', 'default')
   .option('-s, --skills <skills>', 'Comma-separated list of skills to include')
   .option('-f, --force', 'Overwrite existing files', false)
-  .option('--dual', 'Generate both Codex and Claude Code configurations', false)
   .option('-p, --path <path>', 'Project path', process.cwd())
   .option('-q, --quiet', 'Suppress verbose output', false)
   .action(async (options) => {
@@ -112,10 +110,6 @@ program
       if (options.force) {
         console.log(chalk.yellow('  Force:    enabled (will overwrite existing files)'));
       }
-      if (options.dual) {
-        console.log(chalk.gray('  Mode:     dual (Codex + Claude Code)'));
-      }
-
       const initializer = new CodexInitializer();
       const skills = options.skills?.split(',').map((s: string) => s.trim()).filter(Boolean);
 
@@ -135,7 +129,6 @@ program
         template: options.template,
         skills,
         force: options.force,
-        dual: options.dual,
       });
 
       if (result.success) {
@@ -322,7 +315,7 @@ program
 
       if (filesToValidate.length === 0) {
         console.log(chalk.yellow('No files found to validate'));
-        console.log(chalk.gray('Run `claude-flow-codex init` to create a project'));
+        console.log(chalk.gray('Run `ruflo-codex init` to create a project'));
         return;
       }
 
@@ -402,120 +395,6 @@ program
     }
   });
 
-// Migrate command
-program
-  .command('migrate')
-  .description('Migrate from Claude Code (CLAUDE.md) to Codex (AGENTS.md)')
-  .option('-f, --from <file>', 'Source CLAUDE.md file', 'CLAUDE.md')
-  .option('-o, --output <path>', 'Output directory', process.cwd())
-  .option('--analyze-only', 'Only analyze, do not generate files', false)
-  .option('--generate-skills', 'Generate skill files from detected patterns', true)
-  .option('--preserve-comments', 'Preserve comments from original file', true)
-  .action(async (options) => {
-    try {
-      printBanner();
-
-      const sourcePath = path.resolve(options.from);
-
-      if (!await fs.pathExists(sourcePath)) {
-        console.error(chalk.red(`Source file not found: ${sourcePath}`));
-        console.log(chalk.gray('\nLooking for CLAUDE.md in the current directory.'));
-        console.log(chalk.gray('Use --from <path> to specify a different source file.'));
-        process.exit(1);
-      }
-
-      let content: string;
-      try {
-        content = await fs.readFile(sourcePath, 'utf-8');
-      } catch (error) {
-        handleError(error, `Cannot read source file: ${sourcePath}`);
-      }
-
-      if (options.analyzeOnly) {
-        console.log(chalk.blue('Analyzing CLAUDE.md...'));
-        console.log(chalk.gray(`Source: ${sourcePath}\n`));
-
-        const analysis = await analyzeClaudeMd(content);
-
-        console.log(chalk.white.bold('Sections found:'));
-        if (analysis.sections.length > 0) {
-          for (const section of analysis.sections) {
-            console.log(chalk.gray(`  - ${section}`));
-          }
-        } else {
-          console.log(chalk.gray('  (none)'));
-        }
-
-        console.log(chalk.white.bold('\nSkills detected:'));
-        if (analysis.skills.length > 0) {
-          for (const skill of analysis.skills) {
-            console.log(chalk.gray(`  - /${skill} ${chalk.cyan('->')} $${skill}`));
-          }
-        } else {
-          console.log(chalk.gray('  (none)'));
-        }
-
-        console.log(chalk.white.bold('\nHooks used:'));
-        if (analysis.hooks.length > 0) {
-          for (const hook of analysis.hooks) {
-            console.log(chalk.gray(`  - ${hook}`));
-          }
-        } else {
-          console.log(chalk.gray('  (none)'));
-        }
-
-        console.log(chalk.white.bold('\nCustom instructions:'));
-        if (analysis.customInstructions.length > 0) {
-          for (const instruction of analysis.customInstructions.slice(0, 5)) {
-            console.log(chalk.gray(`  - ${instruction.substring(0, 60)}...`));
-          }
-          if (analysis.customInstructions.length > 5) {
-            console.log(chalk.gray(`  ... and ${analysis.customInstructions.length - 5} more`));
-          }
-        } else {
-          console.log(chalk.gray('  (none)'));
-        }
-
-        if (analysis.warnings.length > 0) {
-          console.log(chalk.yellow.bold('\nMigration warnings:'));
-          for (const warning of analysis.warnings) {
-            console.log(chalk.yellow(`  ! ${warning}`));
-          }
-        }
-
-        console.log();
-      } else {
-        console.log(chalk.blue('Migrating to Codex...'));
-        console.log(chalk.gray(`Source: ${sourcePath}`));
-        console.log(chalk.gray(`Output: ${path.resolve(options.output)}\n`));
-
-        const result = await migrateFromClaudeCode({
-          sourcePath,
-          targetPath: options.output,
-          generateSkills: options.generateSkills,
-          preserveComments: options.preserveComments,
-        });
-
-        const report = generateMigrationReport(result);
-        console.log(report);
-
-        if (result.success) {
-          console.log(chalk.green.bold('\n  Migration completed successfully!'));
-          console.log(chalk.gray('\n  Next steps:'));
-          console.log(chalk.gray('    1. Review the generated AGENTS.md'));
-          console.log(chalk.gray('    2. Check skill invocation syntax (/ -> $)'));
-          console.log(chalk.gray('    3. Run `claude-flow-codex validate` to verify'));
-          console.log();
-        } else {
-          console.log(chalk.red.bold('\n  Migration failed'));
-          process.exit(1);
-        }
-      }
-    } catch (error) {
-      handleError(error, 'Migration failed');
-    }
-  });
-
 // Templates command
 program
   .command('templates')
@@ -541,7 +420,7 @@ program
         console.log();
       }
 
-      console.log(chalk.gray('Use: claude-flow-codex init --template <name>'));
+      console.log(chalk.gray('Use: ruflo-codex init --template <name>'));
       console.log();
     } catch (error) {
       handleError(error, 'Failed to list templates');
@@ -571,7 +450,7 @@ program
         console.log();
       }
 
-      console.log(chalk.gray('Use: claude-flow-codex generate-skill -n <name> to create a custom skill'));
+      console.log(chalk.gray('Use: ruflo-codex generate-skill -n <name> to create a custom skill'));
       console.log();
     } catch (error) {
       handleError(error, 'Failed to list skills');
@@ -590,7 +469,7 @@ program
         return;
       }
 
-      console.log(chalk.cyan.bold('\n  @claude-flow/codex'));
+      console.log(chalk.cyan.bold('\n  Ruflo Codex'));
       console.log(chalk.gray('  ' + '='.repeat(40)));
       console.log(chalk.white(`  Version:     ${PACKAGE_INFO.version}`));
       console.log(chalk.white(`  Description: ${PACKAGE_INFO.description}`));
@@ -688,14 +567,10 @@ program
     }
   });
 
-// Dual-mode command - collaborative Claude Code + Codex execution
-import { createDualModeCommand } from './dual-mode/index.js';
-program.addCommand(createDualModeCommand());
-
 // Error handling for unknown commands
 program.on('command:*', () => {
   console.error(chalk.red(`Invalid command: ${program.args.join(' ')}`));
-  console.log(chalk.gray(`Run ${chalk.white('claude-flow-codex --help')} for available commands.`));
+  console.log(chalk.gray(`Run ${chalk.white('ruflo-codex --help')} for available commands.`));
   process.exit(1);
 });
 

@@ -1,5 +1,5 @@
 /**
- * @claude-flow/codex - Templates
+ * @ruflo/codex - Templates
  *
  * Built-in templates and skill definitions
  */
@@ -139,7 +139,7 @@ export const ALL_AVAILABLE_SKILLS: string[] = [
   'worker-benchmarks',
   'worker-integration',
   'workflow-automation',
-  // Agent skills (converted from Claude Code agents)
+  // Agent skills (converted from Codex agents)
   'agent-payments',
   'agent-challenges',
   'agent-sandbox',
@@ -234,26 +234,6 @@ export const DIRECTORY_STRUCTURE = {
     'config.yaml': 'Runtime configuration',
     'data/': 'Memory and cache data',
     'logs/': 'Log files',
-  },
-};
-
-/**
- * Feature mapping between Claude Code and Codex
- */
-export const PLATFORM_MAPPING = {
-  claudeCode: {
-    configFile: 'CLAUDE.md',
-    localConfig: 'CLAUDE.local.md',
-    settingsFormat: 'JSON (settings.json)',
-    skillInvocation: '/skill-name',
-    approvalLevels: 3,
-  },
-  codex: {
-    configFile: 'AGENTS.md',
-    localConfig: '.codex/AGENTS.override.md',
-    settingsFormat: 'TOML (config.toml)',
-    skillInvocation: '$skill-name',
-    approvalLevels: 4,
   },
 };
 

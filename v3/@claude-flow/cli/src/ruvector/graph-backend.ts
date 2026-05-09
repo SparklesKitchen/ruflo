@@ -49,7 +49,7 @@ async function getGraphDb(): Promise<any> {
   if (!mod) return null;
 
   // Use persistent path if available, otherwise in-memory
-  const dataDir = join(process.cwd(), '.claude-flow', 'graph');
+  const dataDir = join(process.cwd(), '.ruflo', 'graph');
   try {
     const fs = await import('fs');
     fs.mkdirSync(dataDir, { recursive: true });
