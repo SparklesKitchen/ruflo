@@ -24,9 +24,9 @@ const pkg = JSON.parse(
 );
 
 const banner = `/**
- * @claude-flow/plugin-gastown-bridge v${pkg.version}
+ * @ruflo/plugin-gastown-bridge v${pkg.version}
  *
- * WASM-accelerated Gas Town orchestration for Claude Flow V3
+ * WASM-accelerated Gas Town orchestration for Ruflo V3
  * Bundle optimized: <100KB gzipped total
  *
  * @license MIT
@@ -60,7 +60,7 @@ export default defineConfig([
     },
     external: [
       // Peer dependencies - not bundled
-      '@claude-flow/memory',
+      '@ruflo/memory',
       // WASM modules - loaded dynamically
       'gastown-formula-wasm',
       'ruvector-gnn-wasm',

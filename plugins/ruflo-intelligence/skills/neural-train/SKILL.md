@@ -2,7 +2,7 @@
 name: neural-train
 description: Train SONA + MicroLoRA neural patterns from successful task completions; runs the DISTILL + CONSOLIDATE phases of the 4-step pipeline
 argument-hint: "[--pattern-type coordination|edit|task] [--epochs N] [--microlora]"
-allowed-tools: mcp__claude-flow__neural_train mcp__claude-flow__neural_status mcp__claude-flow__neural_patterns mcp__claude-flow__neural_predict mcp__claude-flow__neural_optimize mcp__claude-flow__neural_compress mcp__claude-flow__hooks_pretrain mcp__claude-flow__hooks_build-agents mcp__claude-flow__hooks_intelligence_trajectory-start mcp__claude-flow__hooks_intelligence_trajectory-step mcp__claude-flow__hooks_intelligence_trajectory-end mcp__claude-flow__hooks_intelligence_pattern-store mcp__claude-flow__hooks_intelligence_learn mcp__claude-flow__hooks_intelligence-reset mcp__claude-flow__ruvllm_sona_create mcp__claude-flow__ruvllm_sona_adapt mcp__claude-flow__ruvllm_microlora_create mcp__claude-flow__ruvllm_microlora_adapt mcp__claude-flow__agentdb_consolidate Bash
+allowed-tools: mcp__codex__neural_train mcp__codex__neural_status mcp__codex__neural_patterns mcp__codex__neural_predict mcp__codex__neural_optimize mcp__codex__neural_compress mcp__codex__hooks_pretrain mcp__codex__hooks_build-agents mcp__codex__hooks_intelligence_trajectory-start mcp__codex__hooks_intelligence_trajectory-step mcp__codex__hooks_intelligence_trajectory-end mcp__codex__hooks_intelligence_pattern-store mcp__codex__hooks_intelligence_learn mcp__codex__hooks_intelligence-reset mcp__codex__ruvllm_sona_create mcp__codex__ruvllm_sona_adapt mcp__codex__ruvllm_microlora_create mcp__codex__ruvllm_microlora_adapt mcp__codex__agentdb_consolidate Bash
 ---
 
 # Neural Training
@@ -17,14 +17,14 @@ Train and consolidate neural patterns. Implements the **DISTILL** and **CONSOLID
 
 ## Standard flow (DISTILL)
 
-1. **Check current neural status** — `mcp__claude-flow__neural_status`.
-2. **Start a trajectory** — `mcp__claude-flow__hooks_intelligence_trajectory-start` with the task context.
-3. **Record steps** — for each significant action, `mcp__claude-flow__hooks_intelligence_trajectory-step`.
-4. **End trajectory** — `mcp__claude-flow__hooks_intelligence_trajectory-end` with `verdict: pass|fail|partial`.
-5. **Learn from the trajectory** — `mcp__claude-flow__hooks_intelligence_learn`.
-6. **Train patterns** — `mcp__claude-flow__neural_train` with `--pattern-type coordination --epochs 10`.
-7. **Store patterns** — `mcp__claude-flow__hooks_intelligence_pattern-store`.
-8. **Verify** — `mcp__claude-flow__neural_patterns` to confirm.
+1. **Check current neural status** — `mcp__codex__neural_status`.
+2. **Start a trajectory** — `mcp__codex__hooks_intelligence_trajectory-start` with the task context.
+3. **Record steps** — for each significant action, `mcp__codex__hooks_intelligence_trajectory-step`.
+4. **End trajectory** — `mcp__codex__hooks_intelligence_trajectory-end` with `verdict: pass|fail|partial`.
+5. **Learn from the trajectory** — `mcp__codex__hooks_intelligence_learn`.
+6. **Train patterns** — `mcp__codex__neural_train` with `--pattern-type coordination --epochs 10`.
+7. **Store patterns** — `mcp__codex__hooks_intelligence_pattern-store`.
+8. **Verify** — `mcp__codex__neural_patterns` to confirm.
 
 ## SONA adaptation (single-domain, <0.05ms)
 
@@ -85,10 +85,10 @@ mcp tool call hooks_intelligence-reset --json
 ## CLI alternatives
 
 ```bash
-npx @claude-flow/cli@latest neural train --pattern-type coordination --epochs 10
-npx @claude-flow/cli@latest neural patterns --list
-npx @claude-flow/cli@latest neural status
-npx @claude-flow/cli@latest neural compress
-npx @claude-flow/cli@latest hooks pretrain --model-type moe --epochs 10
-npx @claude-flow/cli@latest hooks build-agents --agent-types coder,tester
+npx @ruflo/cli@latest neural train --pattern-type coordination --epochs 10
+npx @ruflo/cli@latest neural patterns --list
+npx @ruflo/cli@latest neural status
+npx @ruflo/cli@latest neural compress
+npx @ruflo/cli@latest hooks pretrain --model-type moe --epochs 10
+npx @ruflo/cli@latest hooks build-agents --agent-types coder,tester
 ```

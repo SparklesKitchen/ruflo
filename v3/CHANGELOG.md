@@ -1,4 +1,4 @@
-# Changelog - Claude Flow v3
+# Changelog - Ruflo v3
 
 All notable changes to this project will be documented in this file.
 
@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🚀 Major Changes
 
 #### Architecture Overhaul (10 ADRs)
-- **ADR-001**: Adopted agentic-flow@alpha as core foundation, eliminating 10,000+ duplicate lines
+- **ADR-001**: Adopted agentic@alpha as core foundation, eliminating 10,000+ duplicate lines
 - **ADR-002**: Implemented Domain-Driven Design with bounded contexts and modular architecture
 - **ADR-003**: Unified to single SwarmCoordinator, removing 6 redundant implementations
 - **ADR-004**: Plugin-based microkernel architecture with dynamic extension points
@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **ADR-010**: Removed Deno support, focused on Node.js 20+ LTS
 
 #### Module Constellation
-Complete restructure into 10 independent @claude-flow modules:
+Complete restructure into 10 independent @codex modules:
 - Code reduced from 15,000+ lines to <5,000 lines
 - Each module independently versioned and publishable
 - Cross-platform Windows/macOS/Linux support
@@ -56,9 +56,9 @@ Complete restructure into 10 independent @claude-flow modules:
 - **Memory reduction**: 83.1% achieved
 - **Task orchestration**: 2.8-4.4x parallel speedup
 
-### 🔧 New @claude-flow Modules
+### 🔧 New @codex Modules
 
-#### 1. `@claude-flow/security` - Security Module
+#### 1. `@ruflo/security` - Security Module
 - CVE-1, CVE-2, CVE-3 remediation
 - Input validation and sanitization
 - Secure credential management
@@ -66,7 +66,7 @@ Complete restructure into 10 independent @claude-flow modules:
 - Command injection prevention
 - Cross-platform ACL/keychain integration
 
-#### 2. `@claude-flow/memory` - Memory Unification
+#### 2. `@ruflo/memory` - Memory Unification
 - AgentDB as primary backend
 - HNSW vector indexing (150x faster)
 - Hybrid SQLite + vector storage
@@ -74,15 +74,15 @@ Complete restructure into 10 independent @claude-flow modules:
 - GNN-enhanced retrieval
 - 4-32x quantization support
 
-#### 3. `@claude-flow/integration` - Agentic Flow Integration
-- Deep integration with agentic-flow@alpha
+#### 3. `@ruflo/integration` - Agentic Flow Integration
+- Deep integration with agentic@alpha
 - Eliminates 10,000+ duplicate lines
 - Extends rather than reimplements
 - Shared swarm coordination
 - Unified task orchestration
 - Plugin architecture compliance
 
-#### 4. `@claude-flow/performance` - Performance & Benchmarking
+#### 4. `@ruflo/performance` - Performance & Benchmarking
 - Flash Attention integration
 - SONA learning optimization
 - Real-time performance monitoring
@@ -90,7 +90,7 @@ Complete restructure into 10 independent @claude-flow modules:
 - Memory profiling tools
 - Benchmark suite with 2.49x-7.47x targets
 
-#### 5. `@claude-flow/swarm` - Swarm Coordination
+#### 5. `@ruflo/swarm` - Swarm Coordination
 - Unified SwarmCoordinator (single implementation)
 - 15-agent hierarchical mesh topology
 - Attention-based consensus mechanisms
@@ -98,7 +98,7 @@ Complete restructure into 10 independent @claude-flow modules:
 - Self-healing workflows
 - Smart auto-spawning
 
-#### 6. `@claude-flow/cli` - CLI Modernization
+#### 6. `@ruflo/cli` - CLI Modernization
 - Interactive prompts with validation
 - Command decomposition engine
 - Enhanced hooks integration
@@ -106,7 +106,7 @@ Complete restructure into 10 independent @claude-flow modules:
 - Cross-platform compatibility
 - 20ms cold start performance
 
-#### 7. `@claude-flow/neural` - Neural Features
+#### 7. `@ruflo/neural` - Neural Features
 - SONA learning integration
 - ReasoningBank adaptive learning
 - Pattern recognition and optimization
@@ -114,7 +114,7 @@ Complete restructure into 10 independent @claude-flow modules:
 - Continuous improvement tracking
 - Neural training pipelines
 
-#### 8. `@claude-flow/testing` - TDD Framework
+#### 8. `@ruflo/testing` - TDD Framework
 - London School TDD methodology
 - Mock-first approach
 - Vitest test runner (10x faster)
@@ -122,7 +122,7 @@ Complete restructure into 10 independent @claude-flow modules:
 - Security-focused test patterns
 - Comprehensive coverage reporting
 
-#### 9. `@claude-flow/deployment` - Release Management
+#### 9. `@ruflo/deployment` - Release Management
 - Automated versioning
 - CI/CD pipeline integration
 - Multi-platform builds
@@ -130,7 +130,7 @@ Complete restructure into 10 independent @claude-flow modules:
 - Rollback mechanisms
 - Health check monitoring
 
-#### 10. `@claude-flow/shared` - Shared Utilities
+#### 10. `@ruflo/shared` - Shared Utilities
 - Common types and interfaces
 - Platform detection and adaptation
 - Configuration management
@@ -144,7 +144,7 @@ Complete restructure into 10 independent @claude-flow modules:
 - **226,606 lines removed** from codebase
 - **24MB storage reclaimed**
 - Eliminated 6+ duplicate swarm implementations
-- Removed 10,000+ duplicate lines via agentic-flow integration
+- Removed 10,000+ duplicate lines via agentic integration
 - Consolidated 6+ memory system fragments
 
 #### Dependency Consolidation
@@ -174,7 +174,7 @@ Complete restructure into 10 independent @claude-flow modules:
 #### Core Dependencies
 ```json
 {
-  "agentic-flow": "2.0.1-alpha.74",
+  "agentic": "2.0.1-alpha.74",
   "agentdb": "2.0.0-alpha.3.4",
   "@ruvector/attention": "0.1.3",
   "@ruvector/sona": "0.1.5",
@@ -246,7 +246,7 @@ See [MIGRATION.md](./MIGRATION.md) for detailed upgrade instructions from v2 to 
 - **Bundle Size**: 3.2MB (down from 12.8MB)
 
 ### 🙏 Acknowledgments
-- Built on agentic-flow@alpha by the Anthropic community
+- Built on agentic@alpha by the OpenAI community
 - AgentDB integration for unified memory
 - RuVector for Flash Attention and SONA learning
 - Community feedback and testing
@@ -268,34 +268,34 @@ See [MIGRATION.md](./MIGRATION.md) for detailed upgrade instructions from v2 to 
 ### Installation
 ```bash
 # Install v3 alpha
-npm install agentic-flow@3.0.0-alpha.1
+npm install agentic@3.0.0-alpha.1
 
 # Or specific modules
-npm install @claude-flow/security@latest
-npm install @claude-flow/memory@latest
-npm install @claude-flow/integration@latest
+npm install @ruflo/security@latest
+npm install @ruflo/memory@latest
+npm install @ruflo/integration@latest
 ```
 
 ### Getting Started
 ```bash
 # Initialize v3
-npx agentic-flow@3.0.0-alpha.1 init --v3
+npx agentic@3.0.0-alpha.1 init --v3
 
 # Run security audit
-npx @claude-flow/security audit
+npx @ruflo/security audit
 
 # Start with unified memory
-npx @claude-flow/memory unify --backend agentdb
+npx @ruflo/memory unify --backend agentdb
 
 # Spawn v3 swarm
-npx @claude-flow/swarm coordinate --agents 15
+npx @ruflo/swarm coordinate --agents 15
 ```
 
 ### Support & Feedback
-- **GitHub Issues**: https://github.com/ruvnet/agentic-flow/issues
-- **Documentation**: https://github.com/ruvnet/agentic-flow/tree/v3/docs
+- **GitHub Issues**: https://github.com/ruvnet/agentic/issues
+- **Documentation**: https://github.com/ruvnet/agentic/tree/v3/docs
 - **Migration Guide**: [MIGRATION.md](./MIGRATION.md)
 
 ---
 
-**Full Changelog**: https://github.com/ruvnet/agentic-flow/compare/v2.0.1...v3.0.0-alpha.1
+**Full Changelog**: https://github.com/ruvnet/agentic/compare/v2.0.1...v3.0.0-alpha.1

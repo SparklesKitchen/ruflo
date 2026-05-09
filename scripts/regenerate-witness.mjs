@@ -39,7 +39,7 @@ m.issuedAt = new Date().toISOString();
 // 2. Refresh release versions from package.json
 const pkgVersions = {
   ruflo: JSON.parse(readFileSync(join(ROOT, 'ruflo/package.json'), 'utf-8')).version,
-  '@claude-flow/cli': JSON.parse(readFileSync(join(ROOT, 'v3/@claude-flow/cli/package.json'), 'utf-8')).version,
+  '@ruflo/cli': JSON.parse(readFileSync(join(ROOT, 'v3/@ruflo/cli/package.json'), 'utf-8')).version,
 };
 m.releases = pkgVersions;
 
@@ -96,7 +96,7 @@ writeFileSync(MANIFEST_PATH, JSON.stringify(witness, null, 2) + '\n', 'utf-8');
 
 console.log(`Regenerated ${MANIFEST_PATH}`);
 console.log(`  gitCommit: ${m.gitCommit}`);
-console.log(`  releases:  ruflo@${pkgVersions.ruflo} / cli@${pkgVersions['@claude-flow/cli']}`);
+console.log(`  releases:  ruflo@${pkgVersions.ruflo} / cli@${pkgVersions['@ruflo/cli']}`);
 console.log(`  fixes:     ${m.fixes.length} total / ${verified} verified / ${failed} failed`);
 console.log(`  pubkey:    ${witness.integrity.publicKey.slice(0, 16)}…`);
 console.log(`  signature: ${witness.integrity.signature.slice(0, 16)}…`);

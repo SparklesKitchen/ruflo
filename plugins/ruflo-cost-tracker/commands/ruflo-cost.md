@@ -44,7 +44,7 @@ Cost tracking commands:
 6. Calculate estimated savings for each recommendation
 7. Display: recommendation, current cost, projected cost, savings, impact assessment
 
-**`cost track`** -- Auto-capture token usage for the active Claude Code session and persist to the `cost-tracking` namespace. Run after significant work or at session end so `cost report` has real data.
+**`cost track`** -- Auto-capture token usage for the active Codex session and persist to the `cost-tracking` namespace. Run after significant work or at session end so `cost report` has real data.
 1. Invoke `node plugins/ruflo-cost-tracker/scripts/track.mjs` (no flags = current cwd's most-recent session)
 2. Print: total cost, per-model and per-tier breakdown, persisted memory key
 3. Sets the `cost-tracking` namespace record at key `session-<sessionId>` (consumed by `cost-report` step 1)
@@ -52,7 +52,7 @@ Cost tracking commands:
 **`cost outcome <task> <model> <outcome>`** -- Emit a `hooks_model-outcome` event so the router learns from applied recommendations. Auto-wired into `cost-optimize` step 8.
 1. Validates `outcome ∈ {success, escalated, failure}`
 2. Runs `node plugins/ruflo-cost-tracker/scripts/outcome.mjs "<task>" <model> <outcome>`
-3. The script wraps `npx @claude-flow/cli hooks model-outcome -t ... -m ... -o ...` with explicit-argv spawnSync so quoting is safe
+3. The script wraps `npx @ruflo/cli hooks model-outcome -t ... -m ... -o ...` with explicit-argv spawnSync so quoting is safe
 4. Without this, the router doesn't learn from cost-optimize recommendations and the Tier 1 bypass rate doesn't tighten over time
 
 **`cost summary [--format json|markdown]`** -- Single-shot programmatic dump of all cost data. Other plugins/scripts can shell out and parse the JSON.
@@ -83,17 +83,17 @@ Cost tracking commands:
 2. Optional `TREND_FORMAT=json` for machine-readable output, `TREND_LIMIT=N` to truncate
 3. Reports: first→last deltas + per-run series + regression flags (win rate drop or ≥1.5× latency rise)
 
-**`cost benchmark [--llm] [--anthropic]`** -- Run the corpus benchmark to verify booster claims with measured numbers.
+**`cost benchmark [--llm] [--openai]`** -- Run the corpus benchmark to verify booster claims with measured numbers.
 1. Without flags: booster-only (free, ~85 ms wall-time, no API keys needed)
 2. `--llm`: also run Gemini 2.0 Flash baseline (uses GCP `GOOGLE_AI_API_KEY` secret)
-3. `--anthropic`: also run Claude Sonnet 4.6 + Opus 4.7 (uses GCP `ANTHROPIC_API_KEY` secret)
+3. `--openai`: also run Codex Sonnet 4.6 + Opus 4.7 (uses GCP `OPENAI_API_KEY` secret)
 4. Writes results to `docs/benchmarks/runs/latest.json` and timestamped sibling
 5. Print: win rate (Tier 1 cases), escalation rate (adversarial cases), per-endpoint avg latency, cost/edit, measured speedup
 6. Smoke step 23 fails the build if `winRate < 0.80`. See `cost-benchmark` skill for env-var overrides.
 
 **`cost workers`** -- Inspect the `optimize` and `benchmark` background workers consumed from ruflo-loop-workers.
-1. Call `mcp__claude-flow__hooks_worker-status --worker optimize` -- report last-run timestamp, outcome, and any pending recommendations
-2. Call `mcp__claude-flow__hooks_worker-status --worker benchmark` -- report last-run timestamp, outcome, and any pending benchmark deltas
+1. Call `mcp__codex__hooks_worker-status --worker optimize` -- report last-run timestamp, outcome, and any pending recommendations
+2. Call `mcp__codex__hooks_worker-status --worker benchmark` -- report last-run timestamp, outcome, and any pending benchmark deltas
 3. Cross-link [ruflo-loop-workers ADR-0001 §"12-worker trigger map"](../../ruflo-loop-workers/docs/adrs/0001-loop-workers-contract.md) — the contract this command honors
 4. Display: worker name, status, last-run timestamp, outcome, last-summary
 

@@ -18,7 +18,7 @@ This ADR is the canonical tracking record for those gaps. Each row below is a ca
 
 **Current state.** `agent_spawn` writes a JSON record into an in-memory `Map`: `{ agentId, status: 'idle', taskCount: 0, lastResult: null }`. No subprocess. No `fork()`. No LLM call. The status field never advances on its own. The schema-honesty work in ADR-093 made the lifecycle observable (the audit's `taskCount: 0 forever` is now reachable as the genuine state) but did not wire up an executor.
 
-**Wire that exists, unused.** The `AnthropicProvider` class in `v3/@claude-flow/providers/` makes real `fetch` calls to `api.anthropic.com`. The `ProviderManager` does round-robin and latency-based routing. Neither is imported by the agent spawn / task / swarm code paths.
+**Wire that exists, unused.** The `OpenAIProvider` class in `v3/@ruflo/providers/` makes real `fetch` calls to `api.openai.com`. The `ProviderManager` does round-robin and latency-based routing. Neither is imported by the agent spawn / task / swarm code paths.
 
 **What a real fix requires.**
 - A worker pool that picks up `task_assign` events and runs them against `ProviderManager`.
@@ -48,7 +48,7 @@ The *handler* underneath is still EventEmitter-based and runs in a single Node p
 
 ### G3 — Workflow execution lacks a runtime
 
-**Current state.** `workflow_create` persists a workflow record to `.claude-flow/workflows/store.json`. `workflow_execute` returns `{error: "Workflow not found"}` even when called with a workflow ID that DOES exist in the store. The state machine definition (steps, conditions, deps) is present but no executor walks it.
+**Current state.** `workflow_create` persists a workflow record to `.codex/workflows/store.json`. `workflow_execute` returns `{error: "Workflow not found"}` even when called with a workflow ID that DOES exist in the store. The state machine definition (steps, conditions, deps) is present but no executor walks it.
 
 **What a real fix requires.**
 - A workflow runner that reads the persisted definition, walks the dependency graph, dispatches step actions to the agent layer (which itself needs G1 done first), and persists progress.
@@ -85,9 +85,9 @@ The *handler* underneath is still EventEmitter-based and runs in a single Node p
 
 ### G6 — Auto-memory graph state bloat (100 MB / 20 unique entries)
 
-**Current state.** The `auto-memory-hook.mjs` reads `MEMORY.md` files from `~/.claude/projects/*/memory/`, parses each section as a separate entry, and stores them in `auto-memory-store.json`. Then it builds a similarity graph using character-trigram Jaccard, runs PageRank for 30 iterations, and writes `graph-state.json` and `ranked-context.json`.
+**Current state.** The `auto-memory-hook.mjs` reads `MEMORY.md` files from `~/.codex/projects/*/memory/`, parses each section as a separate entry, and stores them in `auto-memory-store.json`. Then it builds a similarity graph using character-trigram Jaccard, runs PageRank for 30 iterations, and writes `graph-state.json` and `ranked-context.json`.
 
-The audit measured: 5,706 entries, ~20 unique (5,686 are the same MEMORY.md sections duplicated across project directories). `graph-state.json` is 100 MB. `ranked-context.json` is 8.7 MB. The PageRank result is uniform (~0.02 across nodes) — meaningless because the graph is near-complete between near-identical duplicates. Trigram Jaccard isn't semantic — it scores character overlap, not meaning. The same entry is injected into Claude's context 5 times per message.
+The audit measured: 5,706 entries, ~20 unique (5,686 are the same MEMORY.md sections duplicated across project directories). `graph-state.json` is 100 MB. `ranked-context.json` is 8.7 MB. The PageRank result is uniform (~0.02 across nodes) — meaningless because the graph is near-complete between near-identical duplicates. Trigram Jaccard isn't semantic — it scores character overlap, not meaning. The same entry is injected into Codex's context 5 times per message.
 
 **What a real fix requires.**
 - Dedup on content hash before graph construction.

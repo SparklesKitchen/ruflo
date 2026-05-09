@@ -1,8 +1,8 @@
-# Claude-Flow v3 SDK Architecture Analysis
+# Codex-Flow v3 SDK Architecture Analysis
 
-## Deep Review: agentic-flow@alpha + ruvector Ecosystem
+## Deep Review: agentic@alpha + ruvector Ecosystem
 
-This document provides a comprehensive analysis of using `agentic-flow@2.0.1-alpha.50` as the SDK foundation for Claude-Flow v3, including additional capabilities from the ruvector ecosystem.
+This document provides a comprehensive analysis of using `agentic@2.0.1-alpha.50` as the SDK foundation for Codex-Flow v3, including additional capabilities from the ruvector ecosystem.
 
 ---
 
@@ -10,9 +10,9 @@ This document provides a comprehensive analysis of using `agentic-flow@2.0.1-alp
 
 ### Key Findings
 
-**agentic-flow@alpha provides a complete, production-ready SDK** that wraps and fixes the raw @ruvector/* alpha packages. Claude-Flow v3 should use agentic-flow as its primary SDK rather than importing @ruvector/* packages directly.
+**agentic@alpha provides a complete, production-ready SDK** that wraps and fixes the raw @ruvector/* alpha packages. Codex-Flow v3 should use agentic as its primary SDK rather than importing @ruvector/* packages directly.
 
-| Aspect | agentic-flow@alpha | Raw @ruvector/* |
+| Aspect | agentic@alpha | Raw @ruvector/* |
 |--------|-------------------|------------------|
 | Stability | Production wrappers | Alpha APIs (broken) |
 | Performance | 11-200x improvements | Variable |
@@ -24,14 +24,14 @@ This document provides a comprehensive analysis of using `agentic-flow@2.0.1-alp
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     Claude-Flow v3                               │
+│                     Codex-Flow v3                               │
 ├─────────────────────────────────────────────────────────────────┤
 │  Thin Integration Layer (~500 lines)                            │
 │  - Hook event mapping                                           │
 │  - Configuration bridge                                         │
 │  - CLI commands                                                 │
 ├─────────────────────────────────────────────────────────────────┤
-│               agentic-flow@alpha SDK                            │
+│               agentic@alpha SDK                            │
 │  ┌─────────────┬─────────────┬─────────────┬─────────────┐     │
 │  │   Hooks     │  Learning   │   Swarm     │Intelligence │     │
 │  │  (19 tools) │  (9 algos)  │   (QUIC)    │   (Store)   │     │
@@ -135,12 +135,12 @@ Graph Neural Network operations.
 
 ---
 
-## 3. agentic-flow@alpha SDK Structure
+## 3. agentic@alpha SDK Structure
 
 ### 3.1 Package Organization
 
 ```
-agentic-flow/dist/
+agentic/dist/
 ├── core/                     # Production wrappers
 │   ├── index.js              # Unified exports
 │   ├── gnn-wrapper.js        # GNN with 11-22x speedup
@@ -198,13 +198,13 @@ The `core/` wrappers provide production-stable alternatives to broken @ruvector/
 
 **Usage Pattern:**
 ```typescript
-// ✅ CORRECT: Use agentic-flow wrappers
+// ✅ CORRECT: Use agentic wrappers
 import {
   differentiableSearch,
   AgentDBFast,
   MultiHeadAttention,
   createEmbeddingService
-} from 'agentic-flow/core';
+} from 'agentic/core';
 
 // ❌ WRONG: Don't use raw @ruvector/* packages directly
 import { GNN } from '@ruvector/gnn'; // Broken API
@@ -379,20 +379,20 @@ const config = await optimizer.getOptimization(
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    Claude Code Event                         │
+│                    Codex Event                         │
 │                   (PreToolUse, etc.)                        │
 └─────────────────────┬───────────────────────────────────────┘
                       │
                       ▼
 ┌─────────────────────────────────────────────────────────────┐
-│              Claude-Flow Hook Dispatcher                     │
-│         (Maps Claude events → agentic-flow hooks)           │
+│              Codex-Flow Hook Dispatcher                     │
+│         (Maps Codex events → agentic hooks)           │
 └─────────────────────┬───────────────────────────────────────┘
                       │
           ┌───────────┴───────────┐
           ▼                       ▼
 ┌─────────────────┐     ┌─────────────────┐
-│  agentic-flow   │     │  Intelligence   │
+│  agentic   │     │  Intelligence   │
 │  Original Hooks │     │  Bridge Hooks   │
 └────────┬────────┘     └────────┬────────┘
          │                       │
@@ -415,8 +415,8 @@ Cross-platform persistence using better-sqlite3:
 
 ```typescript
 // Database location (auto-detected)
-// Priority 1: .agentic-flow/intelligence.db (project local)
-// Priority 2: ~/.agentic-flow/intelligence.db (home dir)
+// Priority 1: .agentic/intelligence.db (project local)
+// Priority 2: ~/.agentic/intelligence.db (home dir)
 
 const store = IntelligenceStore.getInstance();
 ```
@@ -466,34 +466,34 @@ const result = await integration.completeTrajectory(trajectoryId, results);
 
 ---
 
-## 8. Claude-Flow v3 Integration Strategy
+## 8. Codex-Flow v3 Integration Strategy
 
 ### 8.1 Installation Tiers
 
 **Tier 1: Core (~2MB)**
 ```bash
-npm install claude-flow@3 agentic-flow@alpha
+npm install codex@3 agentic@alpha
 # Includes: hooks, routing, basic learning
 ```
 
 **Tier 2: Learning (~8MB)**
 ```bash
-npx claude-flow enable-learning
+npx ruflo enable-learning
 # Adds: SONA, AgentDB, ReasoningBank
 ```
 
 **Tier 3: Full (~15MB)**
 ```bash
-npx claude-flow enable-swarm
+npx ruflo enable-swarm
 # Adds: QUIC, attention coordination, GNN
 ```
 
 ### 8.2 Integration Layer
 
-Claude-Flow v3 needs a thin integration layer (~500 lines):
+Codex-Flow v3 needs a thin integration layer (~500 lines):
 
 ```typescript
-// src/integrations/agentic-flow.ts
+// src/integrations/agentic.ts
 
 import {
   hookTools,
@@ -501,7 +501,7 @@ import {
   SONAAgentDBTrainer,
   initSwarm,
   SwarmLearningOptimizer
-} from 'agentic-flow';
+} from 'agentic';
 
 // 1. Hook event mapping
 const HOOK_MAP = {
@@ -531,19 +531,19 @@ export async function initSwarmCoordination(config) {
 
 ```bash
 # Learning
-npx claude-flow learn status          # Show learning stats
-npx claude-flow learn force           # Force learning cycle
-npx claude-flow learn export <path>   # Export learned patterns
+npx ruflo learn status          # Show learning stats
+npx ruflo learn force           # Force learning cycle
+npx ruflo learn export <path>   # Export learned patterns
 
 # Hooks
-npx claude-flow hooks list            # List available hooks
-npx claude-flow hooks enable <hook>   # Enable specific hook
-npx claude-flow hooks metrics         # Show hook performance
+npx ruflo hooks list            # List available hooks
+npx ruflo hooks enable <hook>   # Enable specific hook
+npx ruflo hooks metrics         # Show hook performance
 
 # Swarm
-npx claude-flow swarm init <topology> # Initialize swarm
-npx claude-flow swarm status          # Show swarm status
-npx claude-flow swarm optimize        # Get optimization recommendations
+npx ruflo swarm init <topology> # Initialize swarm
+npx ruflo swarm status          # Show swarm status
+npx ruflo swarm optimize        # Get optimization recommendations
 ```
 
 ---
@@ -552,7 +552,7 @@ npx claude-flow swarm optimize        # Get optimization recommendations
 
 ### 9.1 Expected Improvements
 
-| Operation | Before (v2) | After (v3 with agentic-flow) |
+| Operation | Before (v2) | After (v3 with agentic) |
 |-----------|-------------|------------------------------|
 | Agent routing | 50-100ms | 1-5ms (SONA) |
 | Pattern search | 100-200ms | 0.8ms (HNSW) |
@@ -576,7 +576,7 @@ npx claude-flow swarm optimize        # Get optimization recommendations
 
 ### 10.1 DO Use
 
-1. **agentic-flow@alpha as primary SDK** - Production wrappers fix alpha issues
+1. **agentic@alpha as primary SDK** - Production wrappers fix alpha issues
 2. **Core wrappers** - GNN, AgentDB Fast, Attention Native
 3. **SONA + AgentDB integration** - Unified learning with 1.25ms latency
 4. **Hook system** - All 19 hooks for comprehensive integration
@@ -598,15 +598,15 @@ npx claude-flow swarm optimize        # Get optimization recommendations
 
 ---
 
-## 11. Claude-Flow v3 Modular Package Constellation
+## 11. Codex-Flow v3 Modular Package Constellation
 
 ### 11.1 Overview
 
-Claude-Flow v3 will be architected as a **modular constellation of npm packages** similar to the @ruvector/* collection. Each component can operate independently or integrate seamlessly within the ecosystem.
+Codex-Flow v3 will be architected as a **modular constellation of npm packages** similar to the @ruvector/* collection. Each component can operate independently or integrate seamlessly within the ecosystem.
 
 ```
                         ┌─────────────────────────┐
-                        │    @claude-flow/core    │
+                        │    @ruflo/core    │
                         │   (Central Connector)   │
                         │       ~50KB base        │
                         └───────────┬─────────────┘
@@ -615,14 +615,14 @@ Claude-Flow v3 will be architected as a **modular constellation of npm packages*
        │            │               │               │            │
        ▼            ▼               ▼               ▼            ▼
 ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐
-│  @claude-  │ │  @claude-  │ │  @claude-  │ │  @claude-  │ │  @claude-  │
+│  @codex-  │ │  @codex-  │ │  @codex-  │ │  @codex-  │ │  @codex-  │
 │   flow/    │ │   flow/    │ │   flow/    │ │   flow/    │ │   flow/    │
 │   hooks    │ │  learning  │ │   swarm    │ │   memory   │ │   agents   │
 └────────────┘ └────────────┘ └────────────┘ └────────────┘ └────────────┘
        │            │               │               │            │
        ▼            ▼               ▼               ▼            ▼
 ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐
-│  @claude-  │ │  @claude-  │ │  @claude-  │ │  @claude-  │ │  @claude-  │
+│  @codex-  │ │  @codex-  │ │  @codex-  │ │  @codex-  │ │  @codex-  │
 │   flow/    │ │   flow/    │ │   flow/    │ │   flow/    │ │   flow/    │
 │    mcp     │ │   neural   │ │ attention  │ │   vector   │ │    cli     │
 └────────────┘ └────────────┘ └────────────┘ └────────────┘ └────────────┘
@@ -630,23 +630,23 @@ Claude-Flow v3 will be architected as a **modular constellation of npm packages*
 
 ### 11.2 Package Specifications
 
-#### @claude-flow/core (Central Connector)
+#### @ruflo/core (Central Connector)
 
 **Purpose:** Minimal core that connects all packages, provides unified configuration, and manages inter-package communication.
 
 ```typescript
-// Package: @claude-flow/core
-// Size: ~50KB (no dependencies on other @claude-flow/* packages)
+// Package: @ruflo/core
+// Size: ~50KB (no dependencies on other @ruflo/* packages)
 
-export interface ClaudeFlowConfig {
+export interface CodexFlowConfig {
   enabledModules: string[];
   sharedConfig: SharedConfig;
   eventBus: EventBus;
 }
 
-export class ClaudeFlowCore {
+export class CodexFlowCore {
   // Module registry
-  register(module: ClaudeFlowModule): void;
+  register(module: CodexFlowModule): void;
   unregister(moduleId: string): void;
 
   // Cross-module communication
@@ -654,7 +654,7 @@ export class ClaudeFlowCore {
   on(event: string, handler: EventHandler): void;
 
   // Unified configuration
-  configure(config: Partial<ClaudeFlowConfig>): void;
+  configure(config: Partial<CodexFlowConfig>): void;
 
   // Module discovery
   getModule<T>(id: string): T | undefined;
@@ -662,42 +662,42 @@ export class ClaudeFlowCore {
 }
 
 // Usage:
-import { ClaudeFlowCore } from '@claude-flow/core';
-const core = new ClaudeFlowCore();
+import { CodexFlowCore } from '@ruflo/core';
+const core = new CodexFlowCore();
 ```
 
 **Key Features:**
 - Event bus for inter-module communication
 - Shared configuration management
 - Module lifecycle management
-- Zero dependencies on other @claude-flow/* packages
+- Zero dependencies on other @ruflo/* packages
 - Can run standalone for minimal setups
 
 ---
 
-#### @claude-flow/hooks
+#### @ruflo/hooks
 
-**Purpose:** Claude Code event hooks for pre/post operations with intelligent routing.
+**Purpose:** Codex event hooks for pre/post operations with intelligent routing.
 
 ```typescript
-// Package: @claude-flow/hooks
-// Dependencies: @claude-flow/core (optional peer)
-// SDK: agentic-flow/hooks
+// Package: @ruflo/hooks
+// Dependencies: @ruflo/core (optional peer)
+// SDK: agentic/hooks
 
 export interface HookConfig {
   enabled: boolean;
-  events: ClaudeCodeEvent[];
-  learning?: boolean;  // Requires @claude-flow/learning
+  events: CodexCodeEvent[];
+  learning?: boolean;  // Requires @ruflo/learning
 }
 
 // Standalone usage
-import { createHookDispatcher } from '@claude-flow/hooks';
+import { createHookDispatcher } from '@ruflo/hooks';
 const dispatcher = createHookDispatcher();
 dispatcher.register('PreToolUse', preEditHook);
 
 // With core integration
-import { ClaudeFlowCore } from '@claude-flow/core';
-import { HooksModule } from '@claude-flow/hooks';
+import { CodexFlowCore } from '@ruflo/core';
+import { HooksModule } from '@ruflo/hooks';
 core.register(new HooksModule());
 ```
 
@@ -717,14 +717,14 @@ core.register(new HooksModule());
 
 ---
 
-#### @claude-flow/learning
+#### @ruflo/learning
 
 **Purpose:** Self-optimizing learning system with multiple RL algorithms.
 
 ```typescript
-// Package: @claude-flow/learning
-// Dependencies: @claude-flow/core (optional peer)
-// SDK: agentic-flow (SONA + AgentDB)
+// Package: @ruflo/learning
+// Dependencies: @ruflo/core (optional peer)
+// SDK: agentic (SONA + AgentDB)
 
 export interface LearningConfig {
   algorithm: RLAlgorithm;
@@ -734,13 +734,13 @@ export interface LearningConfig {
 }
 
 // Standalone usage
-import { createLearningEngine } from '@claude-flow/learning';
+import { createLearningEngine } from '@ruflo/learning';
 const engine = createLearningEngine({ algorithm: 'PPO' });
 await engine.train(pattern);
 const similar = await engine.query(embedding);
 
 // With core integration
-import { LearningModule } from '@claude-flow/learning';
+import { LearningModule } from '@ruflo/learning';
 core.register(new LearningModule({ profile: 'balanced' }));
 ```
 
@@ -768,14 +768,14 @@ type RLAlgorithm =
 
 ---
 
-#### @claude-flow/swarm
+#### @ruflo/swarm
 
 **Purpose:** Multi-agent swarm coordination with topology support.
 
 ```typescript
-// Package: @claude-flow/swarm
-// Dependencies: @claude-flow/core (optional peer)
-// SDK: agentic-flow/swarm
+// Package: @ruflo/swarm
+// Dependencies: @ruflo/core (optional peer)
+// SDK: agentic/swarm
 
 export interface SwarmConfig {
   topology: 'mesh' | 'hierarchical' | 'ring' | 'star' | 'adaptive';
@@ -785,7 +785,7 @@ export interface SwarmConfig {
 }
 
 // Standalone usage
-import { createSwarm } from '@claude-flow/swarm';
+import { createSwarm } from '@ruflo/swarm';
 const swarm = await createSwarm({
   topology: 'hierarchical',
   maxAgents: 10
@@ -793,7 +793,7 @@ const swarm = await createSwarm({
 await swarm.spawnAgent({ type: 'researcher' });
 
 // With core integration
-import { SwarmModule } from '@claude-flow/swarm';
+import { SwarmModule } from '@ruflo/swarm';
 core.register(new SwarmModule({ topology: 'mesh' }));
 ```
 
@@ -808,14 +808,14 @@ core.register(new SwarmModule({ topology: 'mesh' }));
 
 ---
 
-#### @claude-flow/memory
+#### @ruflo/memory
 
 **Purpose:** Persistent memory and pattern storage.
 
 ```typescript
-// Package: @claude-flow/memory
-// Dependencies: @claude-flow/core (optional peer)
-// SDK: agentic-flow/reasoningbank
+// Package: @ruflo/memory
+// Dependencies: @ruflo/core (optional peer)
+// SDK: agentic/reasoningbank
 
 export interface MemoryConfig {
   backend: 'sqlite' | 'agentdb' | 'hybrid';
@@ -825,13 +825,13 @@ export interface MemoryConfig {
 }
 
 // Standalone usage
-import { createMemoryStore } from '@claude-flow/memory';
+import { createMemoryStore } from '@ruflo/memory';
 const memory = createMemoryStore({ backend: 'hybrid' });
 await memory.store('task/123', pattern);
 const similar = await memory.retrieve('code review', { k: 5 });
 
 // With core integration
-import { MemoryModule } from '@claude-flow/memory';
+import { MemoryModule } from '@ruflo/memory';
 core.register(new MemoryModule());
 ```
 
@@ -844,13 +844,13 @@ core.register(new MemoryModule());
 
 ---
 
-#### @claude-flow/agents
+#### @ruflo/agents
 
 **Purpose:** Agent definitions and dynamic agent generation.
 
 ```typescript
-// Package: @claude-flow/agents
-// Dependencies: @claude-flow/core (optional peer)
+// Package: @ruflo/agents
+// Dependencies: @ruflo/core (optional peer)
 
 export interface AgentDefinition {
   id: string;
@@ -861,14 +861,14 @@ export interface AgentDefinition {
 }
 
 // Standalone usage
-import { defineAgent, loadAgents } from '@claude-flow/agents';
+import { defineAgent, loadAgents } from '@ruflo/agents';
 const researcher = defineAgent({
   type: 'researcher',
   capabilities: ['web-search', 'code-analysis']
 });
 
 // With core integration
-import { AgentsModule } from '@claude-flow/agents';
+import { AgentsModule } from '@ruflo/agents';
 core.register(new AgentsModule());
 ```
 
@@ -881,13 +881,13 @@ core.register(new AgentsModule());
 
 ---
 
-#### @claude-flow/mcp
+#### @ruflo/mcp
 
 **Purpose:** MCP server and tool definitions.
 
 ```typescript
-// Package: @claude-flow/mcp
-// Dependencies: @claude-flow/core (optional peer)
+// Package: @ruflo/mcp
+// Dependencies: @ruflo/core (optional peer)
 
 export interface MCPConfig {
   servers: MCPServerConfig[];
@@ -896,13 +896,13 @@ export interface MCPConfig {
 }
 
 // Standalone usage
-import { startMCPServer } from '@claude-flow/mcp';
+import { startMCPServer } from '@ruflo/mcp';
 const server = await startMCPServer({
   tools: ['swarm_init', 'agent_spawn', 'task_orchestrate']
 });
 
 // With core integration
-import { MCPModule } from '@claude-flow/mcp';
+import { MCPModule } from '@ruflo/mcp';
 core.register(new MCPModule());
 ```
 
@@ -915,13 +915,13 @@ core.register(new MCPModule());
 
 ---
 
-#### @claude-flow/neural
+#### @ruflo/neural
 
 **Purpose:** Neural network operations and attention mechanisms.
 
 ```typescript
-// Package: @claude-flow/neural
-// Dependencies: @claude-flow/core (optional peer)
+// Package: @ruflo/neural
+// Dependencies: @ruflo/core (optional peer)
 // SDK: @ruvector/attention, @ruvector/gnn
 
 export interface NeuralConfig {
@@ -931,12 +931,12 @@ export interface NeuralConfig {
 }
 
 // Standalone usage
-import { createAttentionService } from '@claude-flow/neural';
+import { createAttentionService } from '@ruflo/neural';
 const attention = createAttentionService({ mechanism: 'flash' });
 const result = await attention.compute(Q, K, V);
 
 // With core integration
-import { NeuralModule } from '@claude-flow/neural';
+import { NeuralModule } from '@ruflo/neural';
 core.register(new NeuralModule());
 ```
 
@@ -952,13 +952,13 @@ core.register(new NeuralModule());
 
 ---
 
-#### @claude-flow/attention
+#### @ruflo/attention
 
 **Purpose:** Attention-based agent coordination and consensus.
 
 ```typescript
-// Package: @claude-flow/attention
-// Dependencies: @claude-flow/core, @claude-flow/neural (optional peers)
+// Package: @ruflo/attention
+// Dependencies: @ruflo/core, @ruflo/neural (optional peers)
 
 export interface AttentionCoordinatorConfig {
   mechanism: AttentionMechanism;
@@ -966,24 +966,24 @@ export interface AttentionCoordinatorConfig {
 }
 
 // Standalone usage
-import { createAttentionCoordinator } from '@claude-flow/attention';
+import { createAttentionCoordinator } from '@ruflo/attention';
 const coordinator = createAttentionCoordinator({ mechanism: 'flash' });
 const consensus = await coordinator.coordinateAgents(outputs);
 
 // With core integration
-import { AttentionModule } from '@claude-flow/attention';
+import { AttentionModule } from '@ruflo/attention';
 core.register(new AttentionModule());
 ```
 
 ---
 
-#### @claude-flow/vector
+#### @ruflo/vector
 
 **Purpose:** Vector database operations with HNSW indexing.
 
 ```typescript
-// Package: @claude-flow/vector
-// Dependencies: @claude-flow/core (optional peer)
+// Package: @ruflo/vector
+// Dependencies: @ruflo/core (optional peer)
 // SDK: @ruvector/core, agentdb
 
 export interface VectorConfig {
@@ -994,13 +994,13 @@ export interface VectorConfig {
 }
 
 // Standalone usage
-import { createVectorStore } from '@claude-flow/vector';
+import { createVectorStore } from '@ruflo/vector';
 const vectors = createVectorStore({ dimensions: 384 });
 await vectors.add('id', embedding, metadata);
 const results = await vectors.search(query, { k: 5 });
 
 // With core integration
-import { VectorModule } from '@claude-flow/vector';
+import { VectorModule } from '@ruflo/vector';
 core.register(new VectorModule());
 ```
 
@@ -1011,13 +1011,13 @@ core.register(new VectorModule());
 
 ---
 
-#### @claude-flow/cli
+#### @ruflo/cli
 
 **Purpose:** Command-line interface for all modules.
 
 ```typescript
-// Package: @claude-flow/cli
-// Dependencies: All @claude-flow/* packages (optional peers)
+// Package: @ruflo/cli
+// Dependencies: All @ruflo/* packages (optional peers)
 
 // Commands auto-detect installed modules
 ```
@@ -1025,31 +1025,31 @@ core.register(new VectorModule());
 **Commands:**
 ```bash
 # Core
-npx @claude-flow/cli init           # Initialize project
-npx @claude-flow/cli status         # Show module status
-npx @claude-flow/cli config         # Configure modules
+npx @ruflo/cli init           # Initialize project
+npx @ruflo/cli status         # Show module status
+npx @ruflo/cli config         # Configure modules
 
-# Hooks (if @claude-flow/hooks installed)
-npx @claude-flow/cli hooks list
-npx @claude-flow/cli hooks enable <hook>
+# Hooks (if @ruflo/hooks installed)
+npx @ruflo/cli hooks list
+npx @ruflo/cli hooks enable <hook>
 
-# Learning (if @claude-flow/learning installed)
-npx @claude-flow/cli learn status
-npx @claude-flow/cli learn train <patterns>
-npx @claude-flow/cli learn export
+# Learning (if @ruflo/learning installed)
+npx @ruflo/cli learn status
+npx @ruflo/cli learn train <patterns>
+npx @ruflo/cli learn export
 
-# Swarm (if @claude-flow/swarm installed)
-npx @claude-flow/cli swarm init <topology>
-npx @claude-flow/cli swarm spawn <type>
-npx @claude-flow/cli swarm status
+# Swarm (if @ruflo/swarm installed)
+npx @ruflo/cli swarm init <topology>
+npx @ruflo/cli swarm spawn <type>
+npx @ruflo/cli swarm status
 
-# Memory (if @claude-flow/memory installed)
-npx @claude-flow/cli memory stats
-npx @claude-flow/cli memory consolidate
+# Memory (if @ruflo/memory installed)
+npx @ruflo/cli memory stats
+npx @ruflo/cli memory consolidate
 
-# MCP (if @claude-flow/mcp installed)
-npx @claude-flow/cli mcp start
-npx @claude-flow/cli mcp list-tools
+# MCP (if @ruflo/mcp installed)
+npx @ruflo/cli mcp start
+npx @ruflo/cli mcp list-tools
 ```
 
 ---
@@ -1058,7 +1058,7 @@ npx @claude-flow/cli mcp list-tools
 
 ```
                  core  hooks  learn  swarm  memory  agents  mcp  neural  attn  vector  cli
-@claude-flow/
+@ruflo/
   core            -     -      -      -      -       -      -     -       -     -      -
   hooks           P     -      P      -      P       -      -     -       -     -      -
   learning        P     -      -      -      P       -      -     P       -     P      -
@@ -1079,49 +1079,49 @@ P = Optional peer dependency (enhances features when present)
 
 #### Minimal (Core Only)
 ```bash
-npm install @claude-flow/core
+npm install @ruflo/core
 # 50KB, event bus and configuration only
 ```
 
 #### Hooks Only
 ```bash
-npm install @claude-flow/hooks
+npm install @ruflo/hooks
 # Works standalone, no core required
-# 200KB, Claude Code hook integration
+# 200KB, Codex hook integration
 ```
 
 #### Learning Stack
 ```bash
-npm install @claude-flow/core @claude-flow/learning @claude-flow/memory @claude-flow/vector
+npm install @ruflo/core @ruflo/learning @ruflo/memory @ruflo/vector
 # 3MB, full learning system
 ```
 
 #### Swarm Stack
 ```bash
-npm install @claude-flow/core @claude-flow/swarm @claude-flow/agents @claude-flow/attention
+npm install @ruflo/core @ruflo/swarm @ruflo/agents @ruflo/attention
 # 4MB, multi-agent coordination
 ```
 
 #### Full Installation
 ```bash
-npm install claude-flow
-# Meta-package that includes all @claude-flow/* packages
+npm install codex
+# Meta-package that includes all @ruflo/* packages
 # 15MB, everything included
 ```
 
 #### Mix and Match Examples
 ```bash
 # Hooks + Learning (self-optimizing hooks)
-npm install @claude-flow/hooks @claude-flow/learning
+npm install @ruflo/hooks @ruflo/learning
 
 # Swarm + Memory (persistent swarm state)
-npm install @claude-flow/swarm @claude-flow/memory
+npm install @ruflo/swarm @ruflo/memory
 
 # Neural + Vector (embeddings + search)
-npm install @claude-flow/neural @claude-flow/vector
+npm install @ruflo/neural @ruflo/vector
 
 # CLI with specific modules
-npm install @claude-flow/cli @claude-flow/hooks @claude-flow/swarm
+npm install @ruflo/cli @ruflo/hooks @ruflo/swarm
 ```
 
 ### 11.5 Module Communication Protocol
@@ -1155,7 +1155,7 @@ interface ModuleEvents {
 }
 
 // Cross-module communication example
-// @claude-flow/hooks emits, @claude-flow/learning listens
+// @ruflo/hooks emits, @ruflo/learning listens
 core.on('hook:completed', async (data) => {
   if (data.hookId === 'postEdit') {
     await learningModule.train({
@@ -1169,25 +1169,25 @@ core.on('hook:completed', async (data) => {
 
 ### 11.6 SDK Mapping to Packages
 
-Each @claude-flow/* package maps to specific agentic-flow SDK components:
+Each @ruflo/* package maps to specific agentic SDK components:
 
-| @claude-flow/* | agentic-flow SDK |
+| @ruflo/* | agentic SDK |
 |----------------|------------------|
-| hooks | `agentic-flow/hooks`, `agentic-flow/mcp/fastmcp/tools/hooks` |
-| learning | `agentic-flow/services/sona-agentdb-integration`, `agentic-flow/hooks/swarm-learning-optimizer` |
-| swarm | `agentic-flow/swarm`, `agentic-flow/coordination` |
-| memory | `agentic-flow/reasoningbank`, `agentic-flow/intelligence/IntelligenceStore` |
-| agents | `agentic-flow/agents` |
-| mcp | `agentic-flow/mcp` |
-| neural | `@ruvector/attention`, `@ruvector/gnn`, `agentic-flow/core` |
-| attention | `agentic-flow/coordination/attention-coordinator` |
-| vector | `@ruvector/core`, `agentic-flow/core/agentdb-fast` |
-| cli | `agentic-flow/cli` |
+| hooks | `agentic/hooks`, `agentic/mcp/fastmcp/tools/hooks` |
+| learning | `agentic/services/sona-agentdb-integration`, `agentic/hooks/swarm-learning-optimizer` |
+| swarm | `agentic/swarm`, `agentic/coordination` |
+| memory | `agentic/reasoningbank`, `agentic/intelligence/IntelligenceStore` |
+| agents | `agentic/agents` |
+| mcp | `agentic/mcp` |
+| neural | `@ruvector/attention`, `@ruvector/gnn`, `agentic/core` |
+| attention | `agentic/coordination/attention-coordinator` |
+| vector | `@ruvector/core`, `agentic/core/agentdb-fast` |
+| cli | `agentic/cli` |
 
 ### 11.7 Version Compatibility Matrix
 
 ```
-@claude-flow/*  | agentic-flow | @ruvector/* | Node.js
+@ruflo/*  | agentic | @ruvector/* | Node.js
 ----------------|--------------|-------------|--------
 3.0.x           | 2.0.x-alpha  | 0.1.x       | ≥18.x
 3.1.x           | 2.1.x-alpha  | 0.2.x       | ≥18.x
@@ -1198,9 +1198,9 @@ Each @claude-flow/* package maps to specific agentic-flow SDK components:
 **Standalone (No Core):**
 ```typescript
 // Each package works independently
-import { createHookDispatcher } from '@claude-flow/hooks';
-import { createLearningEngine } from '@claude-flow/learning';
-import { createSwarm } from '@claude-flow/swarm';
+import { createHookDispatcher } from '@ruflo/hooks';
+import { createLearningEngine } from '@ruflo/learning';
+import { createSwarm } from '@ruflo/swarm';
 
 // Manual coordination required
 const dispatcher = createHookDispatcher();
@@ -1215,12 +1215,12 @@ dispatcher.on('postEdit', async (data) => {
 **Integrated (With Core):**
 ```typescript
 // Automatic cross-module communication
-import { ClaudeFlowCore } from '@claude-flow/core';
-import { HooksModule } from '@claude-flow/hooks';
-import { LearningModule } from '@claude-flow/learning';
-import { SwarmModule } from '@claude-flow/swarm';
+import { CodexFlowCore } from '@ruflo/core';
+import { HooksModule } from '@ruflo/hooks';
+import { LearningModule } from '@ruflo/learning';
+import { SwarmModule } from '@ruflo/swarm';
 
-const core = new ClaudeFlowCore();
+const core = new CodexFlowCore();
 core.register(new HooksModule());
 core.register(new LearningModule());
 core.register(new SwarmModule());
@@ -1233,20 +1233,20 @@ core.register(new SwarmModule());
 
 ### 11.9 Shared Types Package
 
-#### @claude-flow/types
+#### @ruflo/types
 
 **Purpose:** Zero-runtime TypeScript definitions shared across all packages.
 
 ```typescript
-// Package: @claude-flow/types
+// Package: @ruflo/types
 // Size: ~20KB (types only, no runtime)
 // Dependencies: None
 
 // Core interfaces
-export interface ClaudeFlowModule {
+export interface CodexFlowModule {
   id: string;
   version: string;
-  initialize(core?: ClaudeFlowCore): Promise<void>;
+  initialize(core?: CodexFlowCore): Promise<void>;
   shutdown(): Promise<void>;
 }
 
@@ -1302,7 +1302,7 @@ export interface MemoryPattern {
 }
 
 // Hook types
-export type ClaudeCodeEvent =
+export type CodexCodeEvent =
   | 'PreToolUse' | 'PostToolUse'
   | 'TaskStart' | 'TaskEnd'
   | 'SessionStart' | 'SessionEnd'
@@ -1323,7 +1323,7 @@ export interface HookResult {
 #### Tool Selection: pnpm Workspaces + Turborepo
 
 ```
-claude-flow/
+codex/
 ├── package.json              # Root workspace config
 ├── pnpm-workspace.yaml       # pnpm workspace definition
 ├── turbo.json                # Turborepo pipeline config
@@ -1422,15 +1422,15 @@ describe('HookDispatcher', () => {
 
 ```typescript
 // packages/integration-tests/core-hooks.test.ts
-import { ClaudeFlowCore } from '@claude-flow/core';
-import { HooksModule } from '@claude-flow/hooks';
-import { LearningModule } from '@claude-flow/learning';
+import { CodexFlowCore } from '@ruflo/core';
+import { HooksModule } from '@ruflo/hooks';
+import { LearningModule } from '@ruflo/learning';
 
 describe('Core + Hooks + Learning Integration', () => {
-  let core: ClaudeFlowCore;
+  let core: CodexFlowCore;
 
   beforeEach(async () => {
-    core = new ClaudeFlowCore();
+    core = new CodexFlowCore();
     core.register(new HooksModule());
     core.register(new LearningModule({ profile: 'realtime' }));
     await core.initialize();
@@ -1494,8 +1494,8 @@ export const createMockLearningEngine = () => ({
 #### Cross-Module Error Propagation
 
 ```typescript
-// @claude-flow/core error types
-export class ClaudeFlowError extends Error {
+// @ruflo/core error types
+export class CodexFlowError extends Error {
   constructor(
     message: string,
     public code: ErrorCode,
@@ -1504,7 +1504,7 @@ export class ClaudeFlowError extends Error {
     public cause?: Error
   ) {
     super(message);
-    this.name = 'ClaudeFlowError';
+    this.name = 'CodexFlowError';
   }
 }
 
@@ -1537,8 +1537,8 @@ export enum ErrorCode {
 #### Graceful Degradation
 
 ```typescript
-// @claude-flow/core graceful degradation
-class ClaudeFlowCore {
+// @ruflo/core graceful degradation
+class CodexFlowCore {
   async safeGetModule<T>(id: string): Promise<T | null> {
     try {
       return this.getModule<T>(id) ?? null;
@@ -1562,7 +1562,7 @@ class ClaudeFlowCore {
     try {
       return await primary();
     } catch (error) {
-      if (error instanceof ClaudeFlowError && errorCodes.includes(error.code)) {
+      if (error instanceof CodexFlowError && errorCodes.includes(error.code)) {
         this.emit('error:fallback', { error, using: 'fallback' });
         return await fallback();
       }
@@ -1575,7 +1575,7 @@ class ClaudeFlowCore {
 #### Circuit Breaker Pattern
 
 ```typescript
-// @claude-flow/core circuit breaker
+// @ruflo/core circuit breaker
 interface CircuitBreakerConfig {
   failureThreshold: number;  // Failures before opening
   resetTimeout: number;      // Ms before half-open
@@ -1592,7 +1592,7 @@ class CircuitBreaker {
       if (Date.now() - this.lastFailure > this.config.resetTimeout) {
         this.state = 'half-open';
       } else {
-        throw new ClaudeFlowError('Circuit open', ErrorCode.MODULE_INIT_FAILED, 'circuit', true);
+        throw new CodexFlowError('Circuit open', ErrorCode.MODULE_INIT_FAILED, 'circuit', true);
       }
     }
 
@@ -1615,7 +1615,7 @@ class CircuitBreaker {
 #### API Key Management
 
 ```typescript
-// @claude-flow/core secrets
+// @ruflo/core secrets
 interface SecretsConfig {
   provider: 'env' | 'keychain' | 'vault';
   keyPrefix?: string;
@@ -1638,7 +1638,7 @@ class SecretsManager {
   async validate(required: string[]): Promise<boolean> {
     for (const key of required) {
       if (!(await this.get(key))) {
-        throw new ClaudeFlowError(
+        throw new CodexFlowError(
           `Missing required secret: ${key}`,
           ErrorCode.MODULE_INIT_FAILED,
           'secrets',
@@ -1654,7 +1654,7 @@ class SecretsManager {
 #### Agent Sandboxing
 
 ```typescript
-// @claude-flow/agents sandboxing
+// @ruflo/agents sandboxing
 interface SandboxConfig {
   maxMemoryMB: number;
   maxCpuPercent: number;
@@ -1675,8 +1675,8 @@ const DEFAULT_SANDBOX: SandboxConfig = {
 #### PII Handling
 
 ```typescript
-// @claude-flow/memory PII scrubbing (from agentic-flow)
-import { scrubPII, containsPII } from 'agentic-flow/reasoningbank';
+// @ruflo/memory PII scrubbing (from agentic)
+import { scrubPII, containsPII } from 'agentic/reasoningbank';
 
 class SecureMemoryStore {
   async store(key: string, data: any, options?: StoreOptions): Promise<void> {
@@ -1695,7 +1695,7 @@ class SecureMemoryStore {
 #### Audit Logging
 
 ```typescript
-// @claude-flow/core audit
+// @ruflo/core audit
 interface AuditEvent {
   timestamp: number;
   module: string;
@@ -1725,20 +1725,20 @@ class AuditLogger {
 #### OpenTelemetry Integration
 
 ```typescript
-// @claude-flow/core telemetry
+// @ruflo/core telemetry
 import { trace, metrics, context } from '@opentelemetry/api';
 
 class Telemetry {
-  private tracer = trace.getTracer('@claude-flow/core');
-  private meter = metrics.getMeter('@claude-flow/core');
+  private tracer = trace.getTracer('@ruflo/core');
+  private meter = metrics.getMeter('@ruflo/core');
 
   // Counters
-  private hookCounter = this.meter.createCounter('claude_flow.hooks.total');
-  private learningCounter = this.meter.createCounter('claude_flow.learning.patterns');
-  private swarmGauge = this.meter.createUpDownCounter('claude_flow.swarm.agents');
+  private hookCounter = this.meter.createCounter('codex_flow.hooks.total');
+  private learningCounter = this.meter.createCounter('codex_flow.learning.patterns');
+  private swarmGauge = this.meter.createUpDownCounter('codex_flow.swarm.agents');
 
   // Histograms
-  private latencyHistogram = this.meter.createHistogram('claude_flow.operation.latency', {
+  private latencyHistogram = this.meter.createHistogram('codex_flow.operation.latency', {
     unit: 'ms',
     description: 'Operation latency'
   });
@@ -1761,11 +1761,11 @@ class Telemetry {
 }
 ```
 
-#### Claude Code Compatible Metrics
+#### Codex Compatible Metrics
 
 ```typescript
-// Export format compatible with Claude Code telemetry
-interface ClaudeCodeMetrics {
+// Export format compatible with Codex telemetry
+interface CodexCodeMetrics {
   // Session metrics
   session_id: string;
   session_duration_ms: number;
@@ -1774,12 +1774,12 @@ interface ClaudeCodeMetrics {
   tools_invoked: Record<string, number>;
   tool_success_rate: number;
 
-  // Learning metrics (Claude-Flow specific)
+  // Learning metrics (Codex-Flow specific)
   patterns_learned: number;
   learning_cycles: number;
   avg_pattern_quality: number;
 
-  // Swarm metrics (Claude-Flow specific)
+  // Swarm metrics (Codex-Flow specific)
   agents_spawned: number;
   tasks_completed: number;
   consensus_rounds: number;
@@ -1828,24 +1828,24 @@ class SwarmTracer {
 
 | v2 API | v3 API | Migration |
 |--------|--------|-----------|
-| `require('claude-flow')` | `import { ClaudeFlowCore } from '@claude-flow/core'` | ESM only |
-| `claudeFlow.init()` | `new ClaudeFlowCore()` | Constructor-based |
-| `claudeFlow.swarm.create()` | `import { createSwarm } from '@claude-flow/swarm'` | Modular import |
-| `claudeFlow.memory.store()` | `memoryModule.store()` | Module instance |
+| `require('codex')` | `import { CodexFlowCore } from '@ruflo/core'` | ESM only |
+| `codexFlow.init()` | `new CodexFlowCore()` | Constructor-based |
+| `codexFlow.swarm.create()` | `import { createSwarm } from '@ruflo/swarm'` | Modular import |
+| `codexFlow.memory.store()` | `memoryModule.store()` | Module instance |
 | Callbacks | Promises/async-await | All async |
 
 #### Automatic Migration (Codemod)
 
 ```bash
 # Install migration tool
-npx @claude-flow/migrate
+npx @ruflo/migrate
 
 # Analyze codebase
-npx @claude-flow/migrate analyze ./src
+npx @ruflo/migrate analyze ./src
 
 # Apply migrations
-npx @claude-flow/migrate run ./src --dry-run
-npx @claude-flow/migrate run ./src
+npx @ruflo/migrate run ./src --dry-run
+npx @ruflo/migrate run ./src
 ```
 
 #### Codemod Transforms
@@ -1856,14 +1856,14 @@ export default function transformer(file, api) {
   const j = api.jscodeshift;
   const root = j(file.source);
 
-  // Transform: require('claude-flow') → import
+  // Transform: require('codex') → import
   root.find(j.CallExpression, {
     callee: { name: 'require' },
-    arguments: [{ value: 'claude-flow' }]
+    arguments: [{ value: 'codex' }]
   }).replaceWith(() =>
     j.importDeclaration(
-      [j.importSpecifier(j.identifier('ClaudeFlowCore'))],
-      j.literal('@claude-flow/core')
+      [j.importSpecifier(j.identifier('CodexFlowCore'))],
+      j.literal('@ruflo/core')
     )
   );
 
@@ -1874,17 +1874,17 @@ export default function transformer(file, api) {
 #### Compatibility Shim (Temporary)
 
 ```typescript
-// @claude-flow/compat - Temporary v2 compatibility
-import { ClaudeFlowCore } from '@claude-flow/core';
-import { HooksModule } from '@claude-flow/hooks';
-import { SwarmModule } from '@claude-flow/swarm';
-import { MemoryModule } from '@claude-flow/memory';
+// @ruflo/compat - Temporary v2 compatibility
+import { CodexFlowCore } from '@ruflo/core';
+import { HooksModule } from '@ruflo/hooks';
+import { SwarmModule } from '@ruflo/swarm';
+import { MemoryModule } from '@ruflo/memory';
 
 // v2-style API
-export function createClaudeFlow(config?: any) {
-  console.warn('[@claude-flow/compat] Deprecated: Migrate to v3 modular imports');
+export function createCodexFlow(config?: any) {
+  console.warn('[@ruflo/compat] Deprecated: Migrate to v3 modular imports');
 
-  const core = new ClaudeFlowCore();
+  const core = new CodexFlowCore();
 
   return {
     init: async () => {
@@ -1919,14 +1919,14 @@ export function createClaudeFlow(config?: any) {
 #### Plugin Interface
 
 ```typescript
-// @claude-flow/core plugin system
-interface ClaudeFlowPlugin {
+// @ruflo/core plugin system
+interface CodexFlowPlugin {
   name: string;
   version: string;
 
   // Lifecycle hooks
-  onCoreInit?(core: ClaudeFlowCore): Promise<void>;
-  onModuleRegister?(module: ClaudeFlowModule): void;
+  onCoreInit?(core: CodexFlowCore): Promise<void>;
+  onModuleRegister?(module: CodexFlowModule): void;
   onEvent?(event: string, data: any): void;
   onShutdown?(): Promise<void>;
 
@@ -1944,7 +1944,7 @@ core.use(myPlugin);
 
 ```typescript
 // Third-party hook example
-const securityPlugin: ClaudeFlowPlugin = {
+const securityPlugin: CodexFlowPlugin = {
   name: 'security-scanner',
   version: '1.0.0',
 
@@ -1978,7 +1978,7 @@ const customAgent: AgentDefinition = {
 };
 
 // Register via plugin
-const analyzerPlugin: ClaudeFlowPlugin = {
+const analyzerPlugin: CodexFlowPlugin = {
   name: 'custom-analyzer',
   version: '1.0.0',
   agents: [customAgent]
@@ -1991,10 +1991,10 @@ core.use(analyzerPlugin);
 
 ```bash
 # Install community extension
-npm install @community/claude-flow-security
+npm install @community/codex-security
 
 # Auto-discovered via naming convention
-# @*/claude-flow-* or claude-flow-plugin-*
+# @*/codex-* or codex-plugin-*
 ```
 
 ---
@@ -2005,17 +2005,17 @@ npm install @community/claude-flow-security
 
 1. **Programmatic** (highest) - `core.configure({ ... })`
 2. **CLI flags** - `--swarm-topology=mesh`
-3. **Environment variables** - `CLAUDE_FLOW_SWARM_TOPOLOGY=mesh`
-4. **Project config** - `.claude-flow.json` or `claude-flow.config.js`
-5. **User config** - `~/.claude-flow/config.json`
+3. **Environment variables** - `RUFLO_SWARM_TOPOLOGY=mesh`
+4. **Project config** - `.codex.json` or `codex.config.js`
+5. **User config** - `~/.codex/config.json`
 6. **Defaults** (lowest) - Built-in defaults
 
 #### Configuration File
 
 ```json
-// .claude-flow.json
+// .codex.json
 {
-  "$schema": "https://claude-flow.dev/schema.json",
+  "$schema": "https://codex.dev/schema.json",
   "version": "3.0",
 
   "core": {
@@ -2042,7 +2042,7 @@ npm install @community/claude-flow-security
 
   "memory": {
     "backend": "hybrid",
-    "path": ".claude-flow/memory",
+    "path": ".codex/memory",
     "consolidationInterval": 3600000
   }
 }
@@ -2051,17 +2051,17 @@ npm install @community/claude-flow-security
 #### Environment Variable Mapping
 
 ```bash
-# Pattern: CLAUDE_FLOW_<MODULE>_<OPTION>
-CLAUDE_FLOW_LEARNING_ALGORITHM=PPO
-CLAUDE_FLOW_SWARM_TOPOLOGY=mesh
-CLAUDE_FLOW_MEMORY_BACKEND=sqlite
-CLAUDE_FLOW_HOOKS_TIMEOUT=10000
+# Pattern: RUFLO_<MODULE>_<OPTION>
+RUFLO_LEARNING_ALGORITHM=PPO
+RUFLO_SWARM_TOPOLOGY=mesh
+RUFLO_MEMORY_BACKEND=sqlite
+RUFLO_HOOKS_TIMEOUT=10000
 ```
 
 #### Configuration API
 
 ```typescript
-// @claude-flow/core configuration
+// @ruflo/core configuration
 class ConfigManager {
   // Load from all sources
   async load(): Promise<ResolvedConfig> {
@@ -2196,7 +2196,7 @@ jobs:
 #### Feature Detection
 
 ```typescript
-// @claude-flow/core feature detection
+// @ruflo/core feature detection
 class FeatureDetector {
   async detect(): Promise<AvailableFeatures> {
     return {
@@ -2216,7 +2216,7 @@ class FeatureDetector {
 
   async checkNetwork(): Promise<boolean> {
     try {
-      await fetch('https://api.anthropic.com/health', { method: 'HEAD' });
+      await fetch('https://api.openai.com/health', { method: 'HEAD' });
       return true;
     } catch {
       return false;
@@ -2238,7 +2238,7 @@ class FeatureDetector {
 #### Degraded Mode Configuration
 
 ```typescript
-// @claude-flow/core degraded mode
+// @ruflo/core degraded mode
 interface DegradedModeConfig {
   // What to do when network unavailable
   offline: {
@@ -2283,7 +2283,7 @@ const DEFAULT_DEGRADED: DegradedModeConfig = {
 
 ### 12.1 SDK Foundation
 
-**agentic-flow@alpha provides everything Claude-Flow v3 needs:**
+**agentic@alpha provides everything Codex-Flow v3 needs:**
 
 - ✅ 19 hook tools for comprehensive integration
 - ✅ 9 RL algorithms for adaptive learning
@@ -2295,64 +2295,64 @@ const DEFAULT_DEGRADED: DegradedModeConfig = {
 
 ### 12.2 Modular Package Architecture
 
-**Claude-Flow v3 will be a modular constellation of 10 npm packages:**
+**Codex-Flow v3 will be a modular constellation of 10 npm packages:**
 
 | Package | Purpose | Size | Standalone |
 |---------|---------|------|------------|
-| `@claude-flow/core` | Central connector | ~50KB | ✅ |
-| `@claude-flow/hooks` | Claude Code events | ~200KB | ✅ |
-| `@claude-flow/learning` | Self-optimization | ~2MB | ✅ |
-| `@claude-flow/swarm` | Multi-agent coordination | ~1MB | ✅ |
-| `@claude-flow/memory` | Persistent storage | ~500KB | ✅ |
-| `@claude-flow/agents` | Agent definitions | ~300KB | ✅ |
-| `@claude-flow/mcp` | MCP server/tools | ~400KB | ✅ |
-| `@claude-flow/neural` | Neural operations | ~1MB | ✅ |
-| `@claude-flow/attention` | Agent consensus | ~200KB | ✅ |
-| `@claude-flow/vector` | HNSW search | ~800KB | ✅ |
-| `@claude-flow/cli` | CLI interface | ~100KB | ❌ |
+| `@ruflo/core` | Central connector | ~50KB | ✅ |
+| `@ruflo/hooks` | Codex events | ~200KB | ✅ |
+| `@ruflo/learning` | Self-optimization | ~2MB | ✅ |
+| `@ruflo/swarm` | Multi-agent coordination | ~1MB | ✅ |
+| `@ruflo/memory` | Persistent storage | ~500KB | ✅ |
+| `@ruflo/agents` | Agent definitions | ~300KB | ✅ |
+| `@ruflo/mcp` | MCP server/tools | ~400KB | ✅ |
+| `@ruflo/neural` | Neural operations | ~1MB | ✅ |
+| `@ruflo/attention` | Agent consensus | ~200KB | ✅ |
+| `@ruflo/vector` | HNSW search | ~800KB | ✅ |
+| `@ruflo/cli` | CLI interface | ~100KB | ❌ |
 
 ### 12.3 Key Architectural Decisions
 
-1. **Use agentic-flow@alpha as underlying SDK** - Don't reinvent, wrap
+1. **Use agentic@alpha as underlying SDK** - Don't reinvent, wrap
 2. **Optional peer dependencies** - Packages work alone or together
 3. **Event-driven communication** - Core provides event bus
 4. **Progressive enhancement** - More packages = more features
-5. **NOT directly import @ruvector/*** - Use agentic-flow wrappers
+5. **NOT directly import @ruvector/*** - Use agentic wrappers
 
 ### 12.4 Implementation Roadmap
 
 **Phase 1: Core Packages**
-- `@claude-flow/core` - Event bus, configuration, module registry
-- `@claude-flow/hooks` - Claude Code event mapping
-- `@claude-flow/cli` - Basic CLI with init/status
+- `@ruflo/core` - Event bus, configuration, module registry
+- `@ruflo/hooks` - Codex event mapping
+- `@ruflo/cli` - Basic CLI with init/status
 
 **Phase 2: Learning Stack**
-- `@claude-flow/learning` - SONA + AgentDB integration
-- `@claude-flow/memory` - ReasoningBank wrapper
-- `@claude-flow/vector` - HNSW indexing
+- `@ruflo/learning` - SONA + AgentDB integration
+- `@ruflo/memory` - ReasoningBank wrapper
+- `@ruflo/vector` - HNSW indexing
 
 **Phase 3: Swarm Stack**
-- `@claude-flow/swarm` - QUIC coordination
-- `@claude-flow/agents` - Agent definitions
-- `@claude-flow/attention` - Consensus mechanisms
+- `@ruflo/swarm` - QUIC coordination
+- `@ruflo/agents` - Agent definitions
+- `@ruflo/attention` - Consensus mechanisms
 
 **Phase 4: Neural Stack**
-- `@claude-flow/neural` - Attention mechanisms
-- `@claude-flow/mcp` - Full MCP server
+- `@ruflo/neural` - Attention mechanisms
+- `@ruflo/mcp` - Full MCP server
 
 ### 12.5 Final Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                         claude-flow (meta-package)                       │
-│                      npm install claude-flow@3                           │
+│                         codex (meta-package)                       │
+│                      npm install codex@3                           │
 ├─────────────────────────────────────────────────────────────────────────┤
-│  @claude-flow/*                                                          │
+│  @ruflo/*                                                          │
 │  ┌───────┬─────────┬───────┬────────┬────────┬──────┬──────┬─────────┐ │
 │  │ core  │  hooks  │ learn │ swarm  │ memory │agents│ mcp  │ neural  │ │
 │  └───────┴─────────┴───────┴────────┴────────┴──────┴──────┴─────────┘ │
 ├─────────────────────────────────────────────────────────────────────────┤
-│                    agentic-flow@2.0.1-alpha (SDK)                        │
+│                    agentic@2.0.1-alpha (SDK)                        │
 │  ┌────────────────────────────────────────────────────────────────────┐ │
 │  │ hooks │ swarm │ reasoningbank │ coordination │ services │ workers │ │
 │  └────────────────────────────────────────────────────────────────────┘ │
@@ -2378,7 +2378,7 @@ This modular architecture enables:
 
 ### 13.1 Overview
 
-The agentic-flow worker system provides **non-blocking background workers** triggered by keywords in prompts. Workers run silently, depositing results into memory for later retrieval.
+The agentic worker system provides **non-blocking background workers** triggered by keywords in prompts. Workers run silently, depositing results into memory for later retrieval.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -2444,7 +2444,7 @@ The agentic-flow worker system provides **non-blocking background workers** trig
 Fast keyword detection with <5ms target latency:
 
 ```typescript
-import { TriggerDetector, getTriggerDetector } from 'agentic-flow/workers';
+import { TriggerDetector, getTriggerDetector } from 'agentic/workers';
 
 const detector = getTriggerDetector();
 
@@ -2467,7 +2467,7 @@ detector.clearCooldown('ultralearn'); // Clear for testing
 Main dispatcher with RuVector integration:
 
 ```typescript
-import { getWorkerDispatchService } from 'agentic-flow/workers';
+import { getWorkerDispatchService } from 'agentic/workers';
 
 const dispatcher = getWorkerDispatchService();
 
@@ -2521,7 +2521,7 @@ const PHASES = [
 ];
 
 // Run unified pipeline
-import { runUnifiedPipeline } from 'agentic-flow/workers';
+import { runUnifiedPipeline } from 'agentic/workers';
 
 const result = await runUnifiedPipeline(
   workerContext,
@@ -2535,7 +2535,7 @@ const result = await runUnifiedPipeline(
 Links workers to optimal agents based on performance:
 
 ```typescript
-import { workerAgentIntegration } from 'agentic-flow/workers';
+import { workerAgentIntegration } from 'agentic/workers';
 
 // Get recommended agents for trigger
 const { primary, fallback, phases } =
@@ -2574,7 +2574,7 @@ const AGENT_CAPABILITIES = {
 Define custom workers via YAML config:
 
 ```yaml
-# workers.yaml or .agentic-flow/workers.yaml
+# workers.yaml or .agentic/workers.yaml
 version: '1.0'
 
 workers:
@@ -2609,7 +2609,7 @@ settings:
 #### Custom Worker Factory
 
 ```typescript
-import { createCustomWorker, createFromPreset } from 'agentic-flow/workers';
+import { createCustomWorker, createFromPreset } from 'agentic/workers';
 
 // From definition
 const worker = createCustomWorker({
@@ -2627,7 +2627,7 @@ const preset = createFromPreset('security-scanner', {
 });
 
 // Register with manager
-import { customWorkerManager } from 'agentic-flow/workers';
+import { customWorkerManager } from 'agentic/workers';
 
 customWorkerManager.register(worker);
 customWorkerManager.registerPreset('code-analyzer');
@@ -2642,7 +2642,7 @@ const result = await customWorkerManager.execute('my-scanner', context);
 Performance testing for worker operations:
 
 ```typescript
-import { workerBenchmarks, runBenchmarks } from 'agentic-flow/workers';
+import { workerBenchmarks, runBenchmarks } from 'agentic/workers';
 
 // Run full suite
 const suite = await runBenchmarks();
@@ -2672,7 +2672,7 @@ console.log(suite.summary);
 Workers integrate with RuVector for learning:
 
 ```typescript
-import { getRuVectorWorkerIntegration } from 'agentic-flow/workers';
+import { getRuVectorWorkerIntegration } from 'agentic/workers';
 
 const ruvector = getRuVectorWorkerIntegration();
 await ruvector.initialize();
@@ -2705,14 +2705,14 @@ const learningResult = await ruvector.completeTrajectory(
 const patterns = await ruvector.findPatterns(topic, 5);
 ```
 
-### 13.7 @claude-flow/workers Package
+### 13.7 @ruflo/workers Package
 
-Claude-Flow v3 workers package specification:
+Codex-Flow v3 workers package specification:
 
 ```typescript
-// @claude-flow/workers
-// Dependencies: @claude-flow/core (optional peer)
-// SDK: agentic-flow/workers
+// @ruflo/workers
+// Dependencies: @ruflo/core (optional peer)
+// SDK: agentic/workers
 
 export interface WorkersConfig {
   enabled: string[];           // Which workers to enable
@@ -2770,13 +2770,13 @@ export {
 
 ### 13.8 Integration with v3 Hooks
 
-Workers can be triggered from Claude Code hooks:
+Workers can be triggered from Codex hooks:
 
 ```typescript
-import { HooksModule } from '@claude-flow/hooks';
-import { WorkersModule } from '@claude-flow/workers';
+import { HooksModule } from '@ruflo/hooks';
+import { WorkersModule } from '@ruflo/workers';
 
-const core = new ClaudeFlowCore();
+const core = new CodexFlowCore();
 core.register(new HooksModule());
 core.register(new WorkersModule());
 
@@ -2803,4 +2803,4 @@ core.on('worker:complete', async ({ workerId, results }) => {
 
 *Document Version: 1.1.0*
 *Last Updated: 2026-01-03*
-*Based on: agentic-flow@2.0.1-alpha.50, ruvector@0.1.95*
+*Based on: agentic@2.0.1-alpha.50, ruvector@0.1.95*

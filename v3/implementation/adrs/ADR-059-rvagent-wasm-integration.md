@@ -26,7 +26,7 @@ pi-quantization. This ADR covers both integrations.
 
 ## Decision
 
-Integrate `@ruvector/rvagent-wasm` as an optional dependency in `@claude-flow/cli`,
+Integrate `@ruvector/rvagent-wasm` as an optional dependency in `@ruflo/cli`,
 following the established pattern used by `@ruvector/learning-wasm` et al.
 
 ### Integration Surface
@@ -111,7 +111,7 @@ distribution that avoids floating-point logarithms entirely. Published as v2.0.1
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│  @claude-flow/cli                                        │
+│  @ruflo/cli                                        │
 │                                                          │
 │  src/ruvector/agent-wasm.ts  ◄── Integration module      │
 │    ├─ createWasmAgent()      (lifecycle)                  │

@@ -15,15 +15,15 @@ npm install neural-trader
 ## Installation
 
 ```bash
-claude --plugin-dir plugins/ruflo-neural-trader
+codex --plugin-dir plugins/ruflo-neural-trader
 ```
 
 ## MCP Integration (112+ Tools)
 
-neural-trader exposes 112+ MCP tools for direct Claude Desktop access:
+neural-trader exposes 112+ MCP tools for direct Codex Desktop access:
 
 ```bash
-claude mcp add neural-trader -- npx neural-trader mcp start
+codex mcp add neural-trader -- npx neural-trader mcp start
 ```
 
 ## Agents
@@ -153,7 +153,7 @@ neural-trader uses Rust/NAPI bindings for zero-overhead performance:
 
 ## Compatibility
 
-- **CLI:** pinned to `@claude-flow/cli` v3.6 major+minor.
+- **CLI:** pinned to `@ruflo/cli` v3.6 major+minor.
 - **Runtime:** `npx neural-trader` (Rust/NAPI bindings — 112+ MCP tools).
 - **Verification:** `bash plugins/ruflo-neural-trader/scripts/smoke.sh` is the contract.
 
@@ -168,7 +168,7 @@ This plugin owns four AgentDB namespaces (kebab-case, follows the convention fro
 | `trading-risk` | Risk metrics per portfolio |
 | `trading-analysis` | Regime detection + market analysis history |
 
-Note: the namespace prefix is `trading-` (the actual intent) rather than `neural-trader-` (the plugin stem). This is a deliberate ergonomic choice — `trading` is the load-bearing concern downstream consumers reason about. Reserved namespaces (`pattern`, `claude-memories`, `default`) MUST NOT be shadowed.
+Note: the namespace prefix is `trading-` (the actual intent) rather than `neural-trader-` (the plugin stem). This is a deliberate ergonomic choice — `trading` is the load-bearing concern downstream consumers reason about. Reserved namespaces (`pattern`, `codex-memories`, `default`) MUST NOT be shadowed.
 
 All access via `memory_*` (namespace-routed). No `agentdb_hierarchical-*` or `agentdb_pattern-store` with namespace arguments — the plugin uses the correct routing throughout.
 

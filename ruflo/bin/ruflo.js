@@ -1,16 +1,16 @@
 #!/usr/bin/env node
-// Ruflo CLI - thin wrapper around @claude-flow/cli with ruflo branding
+// Ruflo CLI - thin wrapper around @ruflo/cli with ruflo branding
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { dirname, resolve, join } from 'node:path';
 import { existsSync } from 'node:fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// Walk up from ruflo/bin/ to find @claude-flow/cli in node_modules
+// Walk up from ruflo/bin/ to find @ruflo/cli in node_modules
 function findCliPath() {
   let dir = resolve(__dirname, '..');
   for (let i = 0; i < 10; i++) {
-    const candidate = join(dir, 'node_modules', '@claude-flow', 'cli', 'bin', 'cli.js');
+    const candidate = join(dir, 'node_modules', '@codex', 'cli', 'bin', 'cli.js');
     if (existsSync(candidate)) return dir;
     const parent = dirname(dir);
     if (parent === dir) break;
@@ -26,8 +26,8 @@ function toImportURL(filePath) {
 
 const pkgDir = findCliPath();
 const cliBase = pkgDir
-  ? join(pkgDir, 'node_modules', '@claude-flow', 'cli')
-  : resolve(__dirname, '../../v3/@claude-flow/cli');
+  ? join(pkgDir, 'node_modules', '@codex', 'cli')
+  : resolve(__dirname, '../../v3/@ruflo/cli');
 
 // MCP mode: delegate to cli.js directly (branding irrelevant for JSON-RPC)
 const cliArgs = process.argv.slice(2);

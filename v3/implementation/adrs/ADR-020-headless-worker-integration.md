@@ -11,15 +11,15 @@
 
 The V3 worker daemon (`WorkerDaemon`) currently runs 12 background workers that perform metrics collection, security auditing, and optimization tasks. These workers execute **local logic** (file scanning, JSON generation).
 
-By integrating `CLAUDE_CODE_HEADLESS` mode, workers can:
-1. **Invoke Claude Code** for intelligent analysis (not just file scanning)
+By integrating `CODEX_HEADLESS` mode, workers can:
+1. **Invoke Codex** for intelligent analysis (not just file scanning)
 2. **Execute in sandboxed environments** per worker type
 3. **Scale across containers** for parallel AI execution
-4. **Chain worker outputs** to Claude Code prompts
+4. **Chain worker outputs** to Codex prompts
 
 ## Decision
 
-Extend the existing `WorkerDaemon` with a new `HeadlessWorkerExecutor` that enables workers to invoke Claude Code headlessly with configurable sandbox profiles.
+Extend the existing `WorkerDaemon` with a new `HeadlessWorkerExecutor` that enables workers to invoke Codex headlessly with configurable sandbox profiles.
 
 ---
 
@@ -45,9 +45,9 @@ Extend the existing `WorkerDaemon` with a new `HeadlessWorkerExecutor` that enab
 │  └─────────────────────────────────────────────────────────────┘   │
 │                                ▼                                    │
 │  ┌─────────────────────────────────────────────────────────────┐   │
-│  │                  Claude Code (Headless)                      │   │
-│  │  CLAUDE_CODE_HEADLESS=true                                   │   │
-│  │  CLAUDE_CODE_SANDBOX_MODE=<per-worker>                       │   │
+│  │                  Codex (Headless)                      │   │
+│  │  CODEX_HEADLESS=true                                   │   │
+│  │  CODEX_SANDBOX_MODE=<per-worker>                       │   │
 │  └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -84,7 +84,7 @@ export interface HeadlessWorkerConfig extends WorkerConfig {
 
   // Headless-specific options
   headless?: {
-    // Prompt template for Claude Code
+    // Prompt template for Codex
     promptTemplate: string;
 
     // Sandbox profile
@@ -256,7 +256,7 @@ export const HEADLESS_WORKERS: HeadlessWorkerConfig[] = [
       sandbox: 'strict',
       model: 'opus',  // Deep analysis
       outputFormat: 'json',
-      contextPatterns: ['**/*.ts', '**/CLAUDE.md', '**/README.md'],
+      contextPatterns: ['**/*.ts', '**/AGENTS.md', '**/README.md'],
     },
   },
   {
@@ -321,7 +321,7 @@ export const HEADLESS_WORKERS: HeadlessWorkerConfig[] = [
       sandbox: 'strict',
       model: 'haiku',
       outputFormat: 'json',
-      contextPatterns: ['.claude-flow/metrics/*.json'],
+      contextPatterns: ['.codex/metrics/*.json'],
     },
   },
 ];
@@ -378,8 +378,8 @@ export class HeadlessWorkerExecutor extends EventEmitter {
     // Build the full prompt
     const fullPrompt = this.buildPrompt(headless.promptTemplate, context);
 
-    // Execute Claude Code headlessly
-    const result = await this.executeClaudeCode(fullPrompt, {
+    // Execute Codex headlessly
+    const result = await this.executeCodexCode(fullPrompt, {
       sandbox: headless.sandbox,
       model: headless.model,
       timeoutMs: headless.timeoutMs || config.intervalMs || 300000,
@@ -453,9 +453,9 @@ Analyze the above codebase and provide your response.`;
   }
 
   /**
-   * Execute Claude Code in headless mode
+   * Execute Codex in headless mode
    */
-  private async executeClaudeCode(
+  private async executeCodexCode(
     prompt: string,
     options: {
       sandbox: 'strict' | 'permissive' | 'disabled';
@@ -466,13 +466,13 @@ Analyze the above codebase and provide your response.`;
     return new Promise((resolve, reject) => {
       const env = {
         ...process.env,
-        CLAUDE_CODE_HEADLESS: 'true',
-        CLAUDE_CODE_SANDBOX_MODE: options.sandbox,
-        ANTHROPIC_MODEL: options.model || 'claude-sonnet-4-20250514',
+        CODEX_HEADLESS: 'true',
+        CODEX_SANDBOX_MODE: options.sandbox,
+        OpenAI_MODEL: options.model || 'codex-sonnet-4-20250514',
       };
 
-      // Use claude CLI directly
-      const child = spawn('claude', ['--print', prompt], {
+      // Use codex CLI directly
+      const child = spawn('codex', ['--print', prompt], {
         cwd: this.projectRoot,
         env,
         timeout: options.timeoutMs,
@@ -511,12 +511,12 @@ Analyze the above codebase and provide your response.`;
   }
 
   /**
-   * Check if Claude Code is available
+   * Check if Codex is available
    */
   async isAvailable(): Promise<boolean> {
     try {
       const { execSync } = await import('child_process');
-      execSync('claude --version', { stdio: 'pipe' });
+      execSync('codex --version', { stdio: 'pipe' });
       return true;
     } catch {
       return false;
@@ -547,7 +547,7 @@ export class WorkerDaemon extends EventEmitter {
   }
 
   /**
-   * Initialize headless executor if Claude Code is available
+   * Initialize headless executor if Codex is available
    */
   private async initHeadlessExecutor(): Promise<void> {
     this.headlessExecutor = new HeadlessWorkerExecutor(this.projectRoot, {
@@ -557,9 +557,9 @@ export class WorkerDaemon extends EventEmitter {
     this.headlessAvailable = await this.headlessExecutor.isAvailable();
 
     if (this.headlessAvailable) {
-      this.log('info', 'Claude Code headless mode available - AI workers enabled');
+      this.log('info', 'Codex headless mode available - AI workers enabled');
     } else {
-      this.log('warn', 'Claude Code not found - AI workers will run in local mode');
+      this.log('warn', 'Codex not found - AI workers will run in local mode');
     }
   }
 
@@ -580,7 +580,7 @@ export class WorkerDaemon extends EventEmitter {
       case 'map':
         return this.runMapWorker();
       case 'audit':
-        return this.runAuditWorkerLocal(); // Fallback if no Claude Code
+        return this.runAuditWorkerLocal(); // Fallback if no Codex
       // ... other workers ...
     }
   }
@@ -597,7 +597,7 @@ export class WorkerDaemon extends EventEmitter {
         envFilesProtected: true,
         gitIgnoreExists: true,
       },
-      note: 'Install Claude Code for AI-powered security analysis',
+      note: 'Install Codex for AI-powered security analysis',
     };
   }
 }
@@ -611,16 +611,16 @@ export class WorkerDaemon extends EventEmitter {
 
 ```bash
 # Start daemon with headless workers
-npx claude-flow@v3alpha daemon start --headless
+npx ruflo@v3alpha daemon start --headless
 
 # Start with specific sandbox mode for all workers
-npx claude-flow@v3alpha daemon start --sandbox strict
+npx ruflo@v3alpha daemon start --sandbox strict
 
 # Trigger headless worker manually
-npx claude-flow@v3alpha daemon trigger -w audit --headless
+npx ruflo@v3alpha daemon trigger -w audit --headless
 
 # Show worker modes
-npx claude-flow@v3alpha daemon status --show-modes
+npx ruflo@v3alpha daemon status --show-modes
 ```
 
 ### Output Example
@@ -632,7 +632,7 @@ npx claude-flow@v3alpha daemon status --show-modes
 │ Status: ● RUNNING (background)                      │
 │ PID: 12345                                          │
 │ Started: 2026-01-07T23:00:00Z                       │
-│ Claude Code: ✓ Available (headless enabled)        │
+│ Codex: ✓ Available (headless enabled)        │
 │ Workers: 5 enabled (3 headless, 2 local)            │
 └─────────────────────────────────────────────────────┘
 
@@ -676,7 +676,7 @@ export class ContainerWorkerPool {
     try {
       // Mount workspace and execute
       const result = await container.exec([
-        'npx', 'claude-flow@v3alpha', 'daemon', 'trigger',
+        'npx', 'codex@v3alpha', 'daemon', 'trigger',
         '-w', worker.type,
         '--headless',
         '--sandbox', worker.headless?.sandbox || 'strict',
@@ -706,7 +706,7 @@ version: '3.8'
 
 services:
   worker-pool:
-    image: ghcr.io/ruvnet/claude-flow-headless:latest
+    image: ghcr.io/ruvnet/codex-headless:latest
     deploy:
       replicas: 3
       resources:
@@ -714,16 +714,16 @@ services:
           cpus: '2'
           memory: 4G
     environment:
-      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
-      - CLAUDE_CODE_HEADLESS=true
-      - CLAUDE_CODE_SANDBOX_MODE=strict
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - CODEX_HEADLESS=true
+      - CODEX_SANDBOX_MODE=strict
     volumes:
       - workspace:/workspace:ro
-      - claude-flow-state:/root/.claude-flow
+      - codex-state:/root/.codex
     command: daemon start --foreground --workers audit,optimize,testgaps
 
   queue-manager:
-    image: ghcr.io/ruvnet/claude-flow-headless:latest
+    image: ghcr.io/ruvnet/codex-headless:latest
     environment:
       - REDIS_URL=redis://redis:6379
     depends_on:
@@ -737,7 +737,7 @@ services:
 
 volumes:
   workspace:
-  claude-flow-state:
+  codex-state:
   redis-data:
 ```
 
@@ -772,7 +772,7 @@ volumes:
 ### Phase 1: Core Integration (Week 1) ✅ COMPLETE
 1. ✅ Add `HeadlessWorkerExecutor` to existing daemon
 2. ✅ Create headless worker configurations
-3. ✅ Implement graceful fallback for missing Claude Code
+3. ✅ Implement graceful fallback for missing Codex
 4. ✅ Add `--headless` flag to CLI
 
 ### Phase 2: Sandbox Profiles (Week 2) ✅ COMPLETE
@@ -783,7 +783,7 @@ volumes:
 
 ### Phase 3: Container Pool (Week 3) ✅ COMPLETE
 1. ✅ Create `ContainerWorkerPool` (src/services/container-worker-pool.ts)
-2. ✅ Docker image with pre-installed Claude Code (docker/Dockerfile.headless)
+2. ✅ Docker image with pre-installed Codex (docker/Dockerfile.headless)
 3. ✅ Docker Compose for local development (docker/docker-compose.workers.yml)
 4. ⏳ Kubernetes manifests for production (future enhancement)
 
@@ -802,7 +802,7 @@ volumes:
 1. **AI-Powered Workers** - Intelligent analysis beyond pattern matching
 2. **Sandboxed Execution** - Security-first worker execution
 3. **Scalable** - Container pools for high throughput
-4. **Graceful Degradation** - Works without Claude Code (local mode)
+4. **Graceful Degradation** - Works without Codex (local mode)
 5. **Unified System** - Single daemon manages all worker types
 
 ### Negative
@@ -820,10 +820,10 @@ volumes:
 
 ## References
 
-- ADR-019: @claude-flow/headless Runtime Package
+- ADR-019: @ruflo/headless Runtime Package
 - ADR-014: Workers System
 - V3 Worker Daemon: `src/services/worker-daemon.ts`
-- Claude Code Environment Variables
+- Codex Environment Variables
 
 ---
 

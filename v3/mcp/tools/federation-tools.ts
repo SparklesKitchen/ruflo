@@ -12,7 +12,7 @@
  * - federation/vote - Vote on consensus proposal
  *
  * Implements ADR-005: MCP-First API Design
- * Implements ADR-001: agentic-flow@alpha compatibility
+ * Implements ADR-001: agentic@alpha compatibility
  */
 
 import { z } from 'zod';
@@ -24,7 +24,7 @@ import {
   type EphemeralAgent,
   type SpawnResult,
   type ConsensusProposal,
-} from '../../@claude-flow/swarm/src/federation-hub.js';
+} from '../../@ruflo/swarm/src/federation-hub.js';
 
 // ============================================================================
 // Input Schemas

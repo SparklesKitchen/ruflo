@@ -4,7 +4,7 @@ title: Adopt a session-as-skill architecture for ruflo-browser, backed by RVF, r
 status: Proposed
 date: 2026-05-04
 authors:
-  - planner (Claude Code)
+  - planner (Codex)
 tags: [plugin, browser, playwright, rvf, ruvector, agentdb, aidefence, mcp, skills]
 ---
 
@@ -12,9 +12,9 @@ tags: [plugin, browser, playwright, rvf, ruvector, agentdb, aidefence, mcp, skil
 
 ### Today's `ruflo-browser`
 
-The current plugin (v0.1.0) is a thin wrapper around 23 Playwright-backed MCP tools (`mcp__claude-flow__browser_*`). Surface inventory:
+The current plugin (v0.1.0) is a thin wrapper around 23 Playwright-backed MCP tools (`mcp__codex__browser_*`). Surface inventory:
 
-- `.claude-plugin/plugin.json` — name, description, keywords (`browser`, `playwright`, `testing`, `automation`, `scraping`)
+- `.codex-plugin/plugin.json` — name, description, keywords (`browser`, `playwright`, `testing`, `automation`, `scraping`)
 - `agents/browser-agent.md` — single Sonnet agent that wires the 23 MCP tools together; suggests storing selectors in a `browser-patterns` AgentDB namespace; calls `hooks post-task --train-neural`
 - `commands/ruflo-browser.md` — one slash command that lists/screenshots/closes sessions via `browser_session-list`
 - `skills/browser-test/SKILL.md` — six-step Playwright UI testing recipe
@@ -25,15 +25,15 @@ Real and useful, but flat: every browser session is ephemeral, every selector th
 
 ### Browserbase's `skills/skill` repo (the reference)
 
-Browserbase ships a marketplace (`.claude-plugin/marketplace.json` declares 4 plugins) plus a directory of 10 skills under `skills/`. The architectural moves worth borrowing — verified against the live repo at `https://github.com/browserbase/skills/tree/main` on 2026-05-04 — are:
+Browserbase ships a marketplace (`.codex-plugin/marketplace.json` declares 4 plugins) plus a directory of 10 skills under `skills/`. The architectural moves worth borrowing — verified against the live repo at `https://github.com/browserbase/skills/tree/main` on 2026-05-04 — are:
 
 1. **A single CLI primitive (`browse`) under every skill.** Per `skills/browser/REFERENCE.md`, `browse open|snapshot|click|fill|eval|stop` is the entire interactive surface. Higher-level skills (`ui-test`, `company-research`, `cookie-sync`) compose the primitive rather than re-inventing it. The skill registers `Bash` as its only `allowed-tools` and shells out.
 2. **Sessions are named, not anonymous.** The `BROWSE_SESSION=<name>` environment variable (`skills/ui-test/SKILL.md`) plus `--session <name>` flag (`skills/browser/REFERENCE.md`) make sessions addressable across CLI invocations and across parallel agents.
 3. **Persistent contexts as a separate, addressable artifact.** `--context-id <id>` + `--persist` flags (REFERENCE.md) decouple "which browser instance" from "which auth/cookie state". `cookie-sync/SKILL.md` then defines a deliberate sync protocol from local Chrome → persistent context.
 4. **Trace-as-firehose with per-page bisection.** `browser-trace/SKILL.md` defines `.o11y/<run-id>/` containing `manifest.json`, `cdp/raw.ndjson`, `cdp/summary.json`, `cdp/pages/*/`, `screenshots/`, `dom/`. Critically: **the tracer attaches as a second, read-only CDP client** so any session being driven by automation can be observed in parallel.
-5. **A self-improving outer/inner loop.** `autobrowse/SKILL.md` codifies the pattern: an inner agent (`scripts/evaluate.mjs`) executes browse commands and produces a trace under `traces/<task>/run-NNN/`; an outer agent reads the trace, edits `strategy.md` with one concrete improvement, and re-runs. A task graduates when it passes 2-of-last-3 runs, and the graduated artifact is a self-contained `SKILL.md` installed to `~/.claude/skills/`.
+5. **A self-improving outer/inner loop.** `autobrowse/SKILL.md` codifies the pattern: an inner agent (`scripts/evaluate.mjs`) executes browse commands and produces a trace under `traces/<task>/run-NNN/`; an outer agent reads the trace, edits `strategy.md` with one concrete improvement, and re-runs. A task graduates when it passes 2-of-last-3 runs, and the graduated artifact is a self-contained `SKILL.md` installed to `~/.codex/skills/`.
 6. **Domain skills compose the primitive.** `company-research/SKILL.md` wraps `browse` with `extract_page.mjs`, `list_urls.mjs`, `compile_report.mjs`, then enforces a Plan→Research→Synthesize methodology with subagent isolation. The lesson: **domain logic does not extend `browse`, it sits on top of it.**
-7. **Marketplace declares plugins, plugins reference local skills.** `.claude-plugin/marketplace.json` ships 4 plugins (`browse`, `functions`, `browserbase-cli`, `browser-trace`), each with `"skills": "./skills/<name>"`. Plugin and skill are different units of distribution.
+7. **Marketplace declares plugins, plugins reference local skills.** `.codex-plugin/marketplace.json` ships 4 plugins (`browse`, `functions`, `browserbase-cli`, `browser-trace`), each with `"skills": "./skills/<name>"`. Plugin and skill are different units of distribution.
 
 What Browserbase does *not* offer that we need: persistent semantic memory of selectors and page structures, PII/prompt-injection scanning of scraped content, federated session sharing, or learning-from-trajectory beyond the file-based `strategy.md` loop. Those are exactly the gaps Ruflo's existing subsystems already fill.
 
@@ -118,7 +118,7 @@ Borrowed pattern: the *idea* of a deliberate sync boundary from `cookie-sync/SKI
 | `browser-login` | (new) | `cookie-sync/SKILL.md` | Drive an auth flow once, sanitize+vault cookies into `browser-cookies`, return a context handle for reuse. |
 | `browser-form-fill` | (subset of `browser-test`) | `browser/REFERENCE.md` `fill`/`type`/`select` | Form interaction with field-name → value mapping; integrates `browser-templates` for known forms. |
 | `browser-screenshot-diff` | (new) | `browser-trace`'s screenshot ground-truth pattern | Pixel and DOM diff between two session screenshots (same step-id, two RVF ids); used for visual regression. |
-| `browser-auth-flow` | (new) | `ui-test`'s adversarial mindset + `cookie-sync` | Probe an auth flow for redirect leaks, missing CSRF, weak session cookies; output goes to `findings.md`. |
+| `browser-auth` | (new) | `ui-test`'s adversarial mindset + `cookie-sync` | Probe an auth flow for redirect leaks, missing CSRF, weak session cookies; output goes to `findings.md`. |
 | `browser-test` (kept) | unchanged shape | composes `browser-record` + `browser-replay` | Existing recipe, now backed by a session container instead of an ephemeral run. |
 
 Each new skill follows the existing convention: kebab-case directory under `skills/`, a `SKILL.md` with frontmatter (`name`, `description`, `argument-hint`, `allowed-tools`), and an `EXAMPLES.md` for non-obvious flows. Allowed tools must be enumerated explicitly per skill (no skill gets all 23 MCP browser tools — the Browserbase principle of `Bash`-only with a CLI primitive is too austere for our MCP-first world, but the same restraint applies).
@@ -161,7 +161,7 @@ Borrowed pattern: Browserbase's two-tier split (`browse` interactive vs. `bb` li
 - `skills/browser-scrape/SKILL.md` becomes a thin shim that calls the new `browser-extract` skill and is deprecated in plugin v0.3.0 (one minor version of overlap).
 - `agents/browser-agent.md` is updated to know about RVF session ids and the new MCP tools. The free-form `memory store` lines are replaced with a single line referencing AgentDB namespaces above.
 - `commands/ruflo-browser.md` is replaced with the verb dispatcher in §6. Old behavior (list + screenshot + close) maps to `ls` + `show` + `purge`.
-- `.claude-plugin/plugin.json` bumps to `0.2.0` with new keywords (`rvf`, `replay`, `trajectory`).
+- `.codex-plugin/plugin.json` bumps to `0.2.0` with new keywords (`rvf`, `replay`, `trajectory`).
 - A `marketplace.json` mirror is **not** introduced yet — ruflo's plugin marketplace is centralized at the repo root. We will revisit only if the plugin grows beyond ~8 skills (Browserbase's split happened at 10).
 
 ### 9. Pinning and contract
@@ -186,7 +186,7 @@ Following the precedent of ADR-0001 in `ruflo-ruvector`:
 **Negative:**
 
 - Significant migration cost: every existing flow that calls `browser_open` directly will continue to work but loses the new guarantees unless it routes through `browser_session_record`. We will run both paths during the v0.2 line.
-- AgentDB and AIDefence become hard dependencies of `ruflo-browser`. Today the plugin runs against a stock `claude-flow` install; under this proposal it requires the AgentDB controllers and AIDefence to be initialized. This must be enforced by `ruflo-browser doctor` and by `init-project` updates.
+- AgentDB and AIDefence become hard dependencies of `ruflo-browser`. Today the plugin runs against a stock `codex` install; under this proposal it requires the AgentDB controllers and AIDefence to be initialized. This must be enforced by `ruflo-browser doctor` and by `init-project` updates.
 - RVF compaction on session end adds 100-500ms of overhead; for short scrapes this is noticeable. We mitigate with `--no-rvf` for explicit one-off scrapes (escape hatch only).
 - Browserbase's `--context-id` is server-side and survives across machines; ours is AgentDB-local. Cross-machine reuse requires federation export + import. Acceptable trade-off — we own the substrate.
 
@@ -220,6 +220,6 @@ A `scripts/smoke.sh` materializes these as 7 numbered tests; the contract is "7 
 - `https://github.com/browserbase/skills/blob/main/skills/cookie-sync/SKILL.md` — cookie sync to persistent context, which we re-frame as AgentDB-vaulted context.
 - `https://github.com/browserbase/skills/blob/main/skills/ui-test/SKILL.md` — adversarial agent coordination and `BROWSE_SESSION` env-named sessions.
 - `https://github.com/browserbase/skills/blob/main/skills/company-research/SKILL.md` — domain-skills-on-top-of-primitive composition pattern.
-- `https://github.com/browserbase/skills/blob/main/.claude-plugin/marketplace.json` — multi-plugin marketplace shape (deferred for ruflo-browser).
+- `https://github.com/browserbase/skills/blob/main/.codex-plugin/marketplace.json` — multi-plugin marketplace shape (deferred for ruflo-browser).
 - Playwright (`https://playwright.dev/`) — the underlying runner; pinning precedent applies.
 - Ruflo subsystems referenced: AgentDB controllers, RVF (`rvf` CLI), ruvector hooks (`trajectory-*`, `pattern-*`), AIDefence (`aidefence_has_pii`, `aidefence_is_safe`, `aidefence_scan`), Federation (zero-trust cross-installation sharing).

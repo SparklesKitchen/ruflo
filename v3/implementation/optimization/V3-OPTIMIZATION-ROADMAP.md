@@ -1,8 +1,8 @@
-# Claude-Flow V3 Optimization Implementation Roadmap
+# Codex-Flow V3 Optimization Implementation Roadmap
 
 ## 🚀 Executive Summary
 
-This roadmap implements the comprehensive optimization recommendations for claude-flow V3, incorporating security-first development, enhanced parallel execution, phased performance targets, and intelligent learning integration.
+This roadmap implements the comprehensive optimization recommendations for codex V3, incorporating security-first development, enhanced parallel execution, phased performance targets, and intelligent learning integration.
 
 **Key Optimizations Applied:**
 - ✅ **Agent-Skills Perfect Alignment**: 15 agents → 9 specialized skills (4 new skills created)
@@ -48,7 +48,7 @@ Phase 4 (Weeks 13-16): Stretch targets + Final polish
   - Learning system optimized for V3 development
   - Agent routing intelligence enhanced
 
-- [x] **Settings Optimization**: Enhanced .claude/settings.json
+- [x] **Settings Optimization**: Enhanced .codex/settings.json
   - V3-specific environment variables
   - Enhanced hooks with security checks
   - Learning integration with pattern extraction
@@ -138,7 +138,7 @@ Week 5-9 Reduced Dependencies:
 - MCP: <100ms p95 response time
 
 **Critical Success Factors:**
-- agentic-flow integration complete
+- agentic integration complete
 - All V3 features operational
 - High-performance targets achieved
 

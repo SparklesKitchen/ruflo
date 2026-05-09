@@ -6,7 +6,7 @@
 
 ## Context
 
-The MCP bridge grew to 331+ tools from multiple backends (ruvector, ruflo, agentic-flow, Claude Code, Gemini, Codex). Exposing all tools simultaneously caused:
+The MCP bridge grew to 331+ tools from multiple backends (ruvector, ruflo, agentic, Codex, Gemini, Codex). Exposing all tools simultaneously caused:
 
 1. **Context flooding** — AI models struggle to select the right tool from 300+ options
 2. **Startup overhead** — loading all backends when only a subset is needed
@@ -28,8 +28,8 @@ Reorganize all tools into **12 logical groups** that can be independently enable
 | **security** | ruflo | ~25 | disabled | `MCP_GROUP_SECURITY` |
 | **browser** | ruflo | ~23 | disabled | `MCP_GROUP_BROWSER` |
 | **neural** | ruflo | ~20 | disabled | `MCP_GROUP_NEURAL` |
-| **agentic-flow** | agentic-flow@alpha | 15 | disabled | `MCP_GROUP_AGENTIC_FLOW` |
-| **claude-code** | claude mcp serve | varies | disabled | `MCP_GROUP_CLAUDE_CODE` |
+| **agentic** | agentic@alpha | 15 | disabled | `MCP_GROUP_AGENTIC_FLOW` |
+| **codex-code** | codex mcp serve | varies | disabled | `MCP_GROUP_CODEX` |
 | **gemini** | gemini-mcp-server | varies | disabled | `MCP_GROUP_GEMINI` |
 | **codex** | @openai/codex | varies | disabled | `MCP_GROUP_CODEX` |
 
@@ -52,13 +52,13 @@ Reorganize all tools into **12 logical groups** that can be independently enable
 │  └─────────────────────────────────────────────────┘   │
 │         ▼                    ▼                ▼         │
 │  ┌──────────┐  ┌──────────────┐  ┌─────────────────┐  │
-│  │ ruvector │  │    ruflo     │  │ agentic-flow    │  │
+│  │ ruvector │  │    ruflo     │  │ agentic    │  │
 │  │ (stdio)  │  │   (stdio)   │  │    (stdio)      │  │
 │  └──────────┘  └──────────────┘  └─────────────────┘  │
 │                                                         │
 │  Optional (disabled by default):                        │
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐             │
-│  │  Claude  │  │  Gemini  │  │  Codex   │             │
+│  │  Codex  │  │  Gemini  │  │  Codex   │             │
 │  └──────────┘  └──────────┘  └──────────┘             │
 └─────────────────────────────────────────────────────────┘
 ```
@@ -98,7 +98,7 @@ The system prompt instructs the AI to call `guidance` when:
 
 ### Agentic-Flow Integration
 
-`agentic-flow@alpha` (npm package) provides 15 tools:
+`agentic@alpha` (npm package) provides 15 tools:
 
 | Tool | Description |
 |------|-------------|
@@ -148,10 +148,10 @@ MCP_GROUP_SECURITY=true
 MCP_GROUP_BROWSER=true
 MCP_GROUP_NEURAL=true
 MCP_GROUP_AGENTIC_FLOW=true
-MCP_GROUP_CLAUDE_CODE=true
+MCP_GROUP_CODEX=true
 MCP_GROUP_GEMINI=true
 MCP_GROUP_CODEX=true
-ANTHROPIC_API_KEY=sk-ant-...
+OPENAI_API_KEY=sk-ant-...
 ```
 
 ## API Endpoints

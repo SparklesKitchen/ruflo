@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document defines the **deployment and release strategy** for Claude-Flow v3. Agent #15 (Release Engineer) leads this effort with coordination from Agent #1 (Queen Coordinator).
+This document defines the **deployment and release strategy** for Codex-Flow v3. Agent #15 (Release Engineer) leads this effort with coordination from Agent #1 (Queen Coordinator).
 
 ---
 
@@ -57,12 +57,12 @@ v3.0.0          → Stable release
 
 ```json
 {
-  "name": "@anthropic/claude-flow",
+  "name": "@openai/codex",
   "version": "3.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "claude-flow": "bin/claude-flow.js"
+    "codex": "bin/codex.js"
   },
   "engines": {
     "node": ">=20.0.0"
@@ -80,7 +80,7 @@ v3.0.0          → Stable release
 ### GitHub Release
 
 ```markdown
-## Claude-Flow v3.0.0
+## Codex-Flow v3.0.0
 
 ### Highlights
 - 2.49x-7.47x performance improvement (Flash Attention)
@@ -94,7 +94,7 @@ v3.0.0          → Stable release
 - Deprecated v2 APIs removed (see migration guide)
 
 ### New Features
-- [ ] agentic-flow@alpha integration
+- [ ] agentic@alpha integration
 - [ ] 9 RL algorithms for continuous learning
 - [ ] SONA adaptive learning modes
 - [ ] Cross-platform Windows support (sql.js)
@@ -108,7 +108,7 @@ v3.0.0          → Stable release
 See [MIGRATION-GUIDE.md](./v3/implementation/migration/MIGRATION-GUIDE.md)
 
 ---
-**Full Changelog**: https://github.com/anthropic/claude-flow/compare/v2.7.47...v3.0.0
+**Full Changelog**: https://github.com/openai/codex/compare/v2.7.47...v3.0.0
 ```
 
 ---
@@ -251,7 +251,7 @@ jobs:
 
             ## Installation
             ```bash
-            npm install -g @anthropic/claude-flow@${{ github.ref_name }}
+            npm install -g @openai/codex@${{ github.ref_name }}
             ```
 
             ## Documentation
@@ -369,13 +369,13 @@ import { program } from 'commander';
 import { migrate } from '../src/migration/migrator';
 
 program
-  .name('claude-flow-migrate')
-  .description('Migrate Claude-Flow v2 to v3')
+  .name('codex-migrate')
+  .description('Migrate Codex-Flow v2 to v3')
   .option('-d, --dry-run', 'Show what would be migrated')
   .option('-b, --backup', 'Create backup before migration')
   .option('--config <path>', 'Path to config file')
   .action(async (options) => {
-    console.log('Claude-Flow v2 → v3 Migration');
+    console.log('Codex-Flow v2 → v3 Migration');
     console.log('================================\n');
 
     const result = await migrate({
@@ -471,12 +471,12 @@ jobs:
     environment: production
     steps:
       - name: Deprecate current version
-        run: npm deprecate @anthropic/claude-flow@latest "Rolling back due to: ${{ inputs.reason }}"
+        run: npm deprecate @openai/codex@latest "Rolling back due to: ${{ inputs.reason }}"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Promote previous version
-        run: npm dist-tag add @anthropic/claude-flow@${{ inputs.version }} latest
+        run: npm dist-tag add @openai/codex@${{ inputs.version }} latest
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -497,13 +497,13 @@ jobs:
         with:
           payload: |
             {
-              "text": "🚨 Claude-Flow rollback executed",
+              "text": "🚨 Codex-Flow rollback executed",
               "blocks": [
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*Claude-Flow Rollback*\nVersion: v${{ inputs.version }}\nReason: ${{ inputs.reason }}"
+                    "text": "*Codex-Flow Rollback*\nVersion: v${{ inputs.version }}\nReason: ${{ inputs.reason }}"
                   }
                 }
               ]
@@ -555,20 +555,20 @@ export async function reportReleaseMetrics(): Promise<void> {
 # Post-release health checks
 checks:
   - name: npm install
-    command: npm install -g @anthropic/claude-flow@latest
+    command: npm install -g @openai/codex@latest
     timeout: 60s
 
   - name: CLI startup
-    command: claude-flow --version
+    command: codex --version
     expected: "3.0.0"
     timeout: 5s
 
   - name: Basic swarm
-    command: claude-flow swarm init test --dry-run
+    command: codex swarm init test --dry-run
     timeout: 10s
 
   - name: MCP server
-    command: claude-flow mcp start --health-check
+    command: codex mcp start --health-check
     timeout: 30s
 ```
 
@@ -579,11 +579,11 @@ checks:
 ### Announcement Template
 
 ```markdown
-# 🚀 Claude-Flow v3.0.0 Released!
+# 🚀 Codex-Flow v3.0.0 Released!
 
-We're excited to announce the release of Claude-Flow v3.0.0, a major update
+We're excited to announce the release of Codex-Flow v3.0.0, a major update
 that brings significant performance improvements, enhanced security, and
-deep integration with the agentic-flow ecosystem.
+deep integration with the agentic ecosystem.
 
 ## Highlights
 
@@ -601,14 +601,14 @@ deep integration with the agentic-flow ecosystem.
 ### 🏗️ Architecture
 - Unified SwarmCoordinator (merged 4 coordination systems)
 - 40% smaller codebase (130k → 78k lines)
-- agentic-flow@alpha native integration
+- agentic@alpha native integration
 - Cross-platform Windows support
 
 ## Upgrade
 
 ```bash
-npm install -g @anthropic/claude-flow@3.0.0
-claude-flow migrate --from v2
+npm install -g @openai/codex@3.0.0
+codex migrate --from v2
 ```
 
 ## Links

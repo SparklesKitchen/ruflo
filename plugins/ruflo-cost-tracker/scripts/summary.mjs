@@ -3,7 +3,7 @@
 // Other plugins / scripts can shell out: `node summary.mjs --format json` and
 // parse the result. This is the plugin-local equivalent of the MCP tool
 // `cost_summary` that ADR-0002 considered but explicitly deferred (would
-// require modifying @claude-flow/cli source — out of scope for this plugin).
+// require modifying @ruflo/cli source — out of scope for this plugin).
 //
 // Output (JSON shape — stable contract for consumers):
 // {
@@ -26,8 +26,8 @@ import { spawnSync } from 'node:child_process';
 // summary only does list/retrieve across cost-tracking + federation-spend
 // namespaces; substring search is unused so the JSON backend is sufficient.
 const CLI_PKG = process.env.CLI_CORE === '1'
-  ? '@claude-flow/cli-core@alpha'
-  : '@claude-flow/cli@latest';
+  ? '@ruflo/cli-core@alpha'
+  : '@ruflo/cli@latest';
 
 const NS = process.env.SUMMARY_NAMESPACE || 'cost-tracking';
 const FED_NS = process.env.SUMMARY_FED_NAMESPACE || 'federation-spend';

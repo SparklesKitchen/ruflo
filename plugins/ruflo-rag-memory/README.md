@@ -1,15 +1,15 @@
 # ruflo-rag-memory
 
-Retrieval-Augmented Generation memory with HNSW vector search, AgentDB persistence, and Claude Code memory bridge.
+Retrieval-Augmented Generation memory with HNSW vector search, AgentDB persistence, and Codex memory bridge.
 
 ## Overview
 
-Provides semantic store/search/recall over AgentDB with HNSW-indexed vector search (150x-12,500x faster than brute force). Bridges Claude Code's native auto-memory into AgentDB with 384-dim ONNX embeddings for unified cross-session semantic retrieval.
+Provides semantic store/search/recall over AgentDB with HNSW-indexed vector search (150x-12,500x faster than brute force). Bridges Codex's native auto-memory into AgentDB with 384-dim ONNX embeddings for unified cross-session semantic retrieval.
 
 ## Installation
 
 ```bash
-claude --plugin-dir plugins/ruflo-rag-memory
+codex --plugin-dir plugins/ruflo-rag-memory
 ```
 
 ## Requires
@@ -27,7 +27,7 @@ claude --plugin-dir plugins/ruflo-rag-memory
 | Skill | Usage | Description |
 |-------|-------|-------------|
 | `memory-search` | `/memory-search <query>` | Semantic vector search across all namespaces |
-| `memory-bridge` | `/memory-bridge [--all-projects]` | Import Claude Code auto-memory into AgentDB |
+| `memory-bridge` | `/memory-bridge [--all-projects]` | Import Codex auto-memory into AgentDB |
 
 ## Commands
 
@@ -54,7 +54,7 @@ recall "how did we handle rate limiting?"
 ## Architecture
 
 ```
-Claude Code Auto-Memory (~/.claude/projects/*/memory/*.md)
+Codex Auto-Memory (~/.codex/projects/*/memory/*.md)
         │
         ▼ (ONNX all-MiniLM-L6-v2, 384-dim)
     Memory Bridge
@@ -67,7 +67,7 @@ Claude Code Auto-Memory (~/.claude/projects/*/memory/*.md)
         ├── solutions namespace
         ├── feedback namespace
         ├── security namespace
-        └── claude-memories namespace
+        └── codex-memories namespace
         │
         ▼ (HNSW ANN index)
     Semantic Search (150x-12,500x faster)
@@ -75,7 +75,7 @@ Claude Code Auto-Memory (~/.claude/projects/*/memory/*.md)
 
 ## Encryption at rest (ruflo 3.6.25+)
 
-The AgentDB SQLite blob written by this plugin (`.swarm/memory.db`) supports opt-in AES-256-GCM encryption at rest per [ADR-096](../../v3/docs/adr/ADR-096-encryption-at-rest.md). When `CLAUDE_FLOW_ENCRYPT_AT_REST=1` and `CLAUDE_FLOW_ENCRYPTION_KEY` is set:
+The AgentDB SQLite blob written by this plugin (`.swarm/memory.db`) supports opt-in AES-256-GCM encryption at rest per [ADR-096](../../v3/docs/adr/ADR-096-encryption-at-rest.md). When `RUFLO_ENCRYPT_AT_REST=1` and `RUFLO_ENCRYPTION_KEY` is set:
 
 - Each write of `.swarm/memory.db` is encrypted with a fresh 12-byte IV (`writeFileRestricted({encrypt:true})`).
 - Reads use `readFileMaybeEncrypted(path, null)` — magic-byte sniff (`RFE1`) so legacy plaintext memory.db files keep working unchanged during the migration window.
@@ -93,11 +93,11 @@ Verify gate state with `ruflo doctor -c encryption`. Off by default; flipping it
 | `solutions` | Bug fixes and solutions | `fix-race-condition` |
 | `feedback` | User feedback and corrections | `feedback-test-style` |
 | `security` | Vulnerability patterns | `vuln-sql-injection` |
-| `claude-memories` | Bridged Claude Code memories | `auto-imported` |
+| `codex-memories` | Bridged Codex memories | `auto-imported` |
 
-## Claude Memory Bridge
+## Codex Memory Bridge
 
-Auto-imports Claude Code's native `~/.claude/projects/*/memory/*.md` files into AgentDB on session start with ONNX vector embeddings.
+Auto-imports Codex's native `~/.codex/projects/*/memory/*.md` files into AgentDB on session start with ONNX vector embeddings.
 
 ```bash
 # Manual import (current project)
@@ -110,7 +110,7 @@ Auto-imports Claude Code's native `~/.claude/projects/*/memory/*.md` files into 
 # Via MCP: memory_bridge_status({})
 ```
 
-Results include source attribution: `claude-code`, `auto-memory`, or `agentdb`.
+Results include source attribution: `codex-code`, `auto-memory`, or `agentdb`.
 
 ## SmartRetrieval (ADR-090)
 
@@ -124,10 +124,10 @@ Results include source attribution: `claude-code`, `auto-memory`, or `agentdb`.
 
 ```bash
 # CLI
-npx @claude-flow/cli@latest memory search --query "auth patterns" --smart --limit 10
+npx @ruflo/cli@latest memory search --query "auth patterns" --smart --limit 10
 
 # MCP
-mcp__claude-flow__memory_search({ query: "auth patterns", smart: true, limit: 10 })
+mcp__codex__memory_search({ query: "auth patterns", smart: true, limit: 10 })
 ```
 
 Best for multi-session recall, temporal queries ("what did we decide last week?"), and diverse result sets.
@@ -139,7 +139,7 @@ Queries across all namespaces simultaneously with MMR diversity reranking:
 ```bash
 # Via MCP: memory_search_unified({ query: "auth security", limit: 5 })
 # Via CLI:
-npx @claude-flow/cli@latest memory search --query "auth security" --limit 5
+npx @ruflo/cli@latest memory search --query "auth security" --limit 5
 ```
 
 ## HNSW Performance
@@ -161,21 +161,21 @@ When `ruflo-ruvector` is also loaded, rag-memory delegates to ruvector's backend
 
 ## Compatibility
 
-- **CLI:** pinned to `@claude-flow/cli` v3.6 major+minor.
+- **CLI:** pinned to `@ruflo/cli` v3.6 major+minor.
 - **Verification:** `bash plugins/ruflo-rag-memory/scripts/smoke.sh` is the contract.
 
-## Namespace coordination — claude-memories consumer
+## Namespace coordination — codex-memories consumer
 
-This plugin is the **canonical user-facing consumer** of the `claude-memories` reserved namespace defined in [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md). The auto-import flow:
+This plugin is the **canonical user-facing consumer** of the `codex-memories` reserved namespace defined in [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md). The auto-import flow:
 
 ```
-Claude Code SessionStart hook
-  → memory_import_claude (MCP)
-  → claude-memories namespace (reserved, ruflo-agentdb owned)
+Codex SessionStart hook
+  → memory_import_codex (MCP)
+  → codex-memories namespace (reserved, ruflo-agentdb owned)
   → exposed by this plugin's memory-bridge skill + memory_search_unified
 ```
 
-This plugin does **not** own `claude-memories` — it consumes it. Reserved namespaces (`pattern`, `claude-memories`, `default`) MUST NOT be shadowed.
+This plugin does **not** own `codex-memories` — it consumes it. Reserved namespaces (`pattern`, `codex-memories`, `default`) MUST NOT be shadowed.
 
 Other namespaces (`patterns`, `tasks`, `solutions`, `feedback`, `security`) are accessed via `memory_*` (namespace-routed). The plugin uses correct routing throughout — no `agentdb_hierarchical-*` or `agentdb_pattern-store` with namespace arguments.
 
@@ -188,11 +188,11 @@ bash plugins/ruflo-rag-memory/scripts/smoke.sh
 
 ## Architecture Decisions
 
-- [`ADR-0001` — ruflo-rag-memory plugin contract (claude-memories reserved-namespace consumer, smoke as contract)](./docs/adrs/0001-rag-memory-contract.md)
+- [`ADR-0001` — ruflo-rag-memory plugin contract (codex-memories reserved-namespace consumer, smoke as contract)](./docs/adrs/0001-rag-memory-contract.md)
 
 ## Related Plugins
 
-- `ruflo-agentdb` — Full AgentDB controller bridge (15 `agentdb_*` MCP tools); namespace convention owner; owns the `claude-memories` reserved namespace
+- `ruflo-agentdb` — Full AgentDB controller bridge (15 `agentdb_*` MCP tools); namespace convention owner; owns the `codex-memories` reserved namespace
 - `ruflo-ruvector` — Advanced vector operations (FlashAttention-3, Graph RAG, hybrid search)
 - `ruflo-rvf` — Portable RVF memory format for cross-machine export/import
 - `ruflo-knowledge-graph` — Entity extraction and graph traversal over memory

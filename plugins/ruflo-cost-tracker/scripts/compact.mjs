@@ -2,10 +2,10 @@
 // cost-compact — wraps getTokenOptimizer().getCompactContext() so the
 // cost-compact-context skill can invoke a single command instead of an
 // inlined Node one-liner. A proper MCP tool wrapping getTokenOptimizer is
-// still deferred (would require modifying @claude-flow/cli source); this
+// still deferred (would require modifying @ruflo/cli source); this
 // is the plugin-local equivalent.
 //
-// Resolution: must run from a directory where `@claude-flow/integration`
+// Resolution: must run from a directory where `@ruflo/integration`
 // resolves (typically anywhere under `v3/`). The script resolves from
 // process.cwd() rather than from its own location so the user's `cd v3`
 // works without npm-installing the bridge into the plugin tree.
@@ -30,7 +30,7 @@ async function main() {
   let mod;
   try {
     const requireFromCwd = createRequire(join(process.cwd(), 'package.json'));
-    const resolved = requireFromCwd.resolve('@claude-flow/integration/token-optimizer');
+    const resolved = requireFromCwd.resolve('@ruflo/integration/token-optimizer');
     mod = await import(pathToFileURL(resolved).href);
   } catch (err) {
     const out = {
@@ -42,7 +42,7 @@ async function main() {
     };
     if (process.env.COMPACT_QUIET === '1') return console.log(JSON.stringify(out));
     console.log(`# cost-compact-context\n\nbridge unavailable: ${out.reason}`);
-    console.log('Run from a directory where `@claude-flow/integration` resolves, e.g. `cd v3 && ...`.');
+    console.log('Run from a directory where `@ruflo/integration` resolves, e.g. `cd v3 && ...`.');
     return;
   }
 
@@ -67,13 +67,13 @@ async function main() {
   console.log('|---|---:|');
   console.log(`| Memories retrieved | ${out.memoriesRetrieved} |`);
   console.log(`| Tokens saved (bridge-reported) | ${out.tokensSaved} |`);
-  console.log(`| agentic-flow bridge available | ${out.agenticFlowAvailable} |`);
+  console.log(`| agentic bridge available | ${out.agenticFlowAvailable} |`);
   console.log(`| Cache hit rate | ${out.cacheHitRate} |`);
   console.log('');
   console.log(`> ${out.upstreamReported}`);
   if (!out.agenticFlowAvailable) {
     console.log('');
-    console.log('agentic-flow not installed — bridge returns inert results. No compact-context savings.');
+    console.log('agentic not installed — bridge returns inert results. No compact-context savings.');
   }
 }
 

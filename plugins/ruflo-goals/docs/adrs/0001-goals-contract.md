@@ -4,7 +4,7 @@ title: ruflo-goals plugin contract — pinning, namespace coordination + legacy 
 status: Proposed
 date: 2026-05-04
 authors:
-  - reviewer (Claude Code)
+  - reviewer (Codex)
 tags: [plugin, goals, goap, research, horizon, dossier, namespace, smoke-test]
 ---
 

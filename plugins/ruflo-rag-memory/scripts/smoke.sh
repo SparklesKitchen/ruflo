@@ -8,11 +8,11 @@ ok()   { printf "PASS\n"; PASS=$((PASS+1)); }
 bad()  { printf "FAIL: %s\n" "$1"; FAIL=$((FAIL+1)); }
 
 step "1. plugin.json declares 0.2.0 with new keywords"
-v=$(grep -E '"version"' "$ROOT/.claude-plugin/plugin.json" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+v=$(grep -E '"version"' "$ROOT/.codex-plugin/plugin.json" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
 if [[ "$v" != "0.2.0" ]]; then bad "expected 0.2.0, got '$v'"; else
   miss=""
-  for k in mcp claude-memories bridged-memory; do
-    grep -q "\"$k\"" "$ROOT/.claude-plugin/plugin.json" || miss="$miss $k"
+  for k in mcp codex-memories bridged-memory; do
+    grep -q "\"$k\"" "$ROOT/.codex-plugin/plugin.json" || miss="$miss $k"
   done
   [[ -z "$miss" ]] && ok || bad "missing keywords:$miss"
 fi
@@ -31,8 +31,8 @@ done
 [[ -f "$ROOT/commands/ruflo-memory.md" ]] || miss="$miss missing-memory-cmd"
 [[ -z "$miss" ]] && ok || bad "$miss"
 
-step "3. README pins @claude-flow/cli to v3.6"
-grep -qE "@claude-flow/cli.*v3\.6|v3\.6.*claude-flow/cli" "$ROOT/README.md" \
+step "3. README pins @ruflo/cli to v3.6"
+grep -qE "@ruflo/cli.*v3\.6|v3\.6.*codex/cli" "$ROOT/README.md" \
   && ok || bad "v3.6 pin missing"
 
 step "4. README defers to ruflo-agentdb namespace convention"
@@ -40,11 +40,11 @@ grep -q "ruflo-agentdb" "$ROOT/README.md" \
   && grep -q "Namespace convention" "$ROOT/README.md" \
   && ok || bad "namespace coordination block incomplete"
 
-step "5. claude-memories reserved-namespace consumer documented"
+step "5. codex-memories reserved-namespace consumer documented"
 F="$ROOT/README.md"
 miss=""
-grep -q "claude-memories" "$F" || miss="$miss namespace-name"
-grep -q "memory_import_claude" "$F" || miss="$miss import-tool"
+grep -q "codex-memories" "$F" || miss="$miss namespace-name"
+grep -q "memory_import_codex" "$F" || miss="$miss import-tool"
 grep -q "SessionStart" "$F" || miss="$miss session-start"
 [[ -z "$miss" ]] && ok || bad "$miss"
 

@@ -9,7 +9,7 @@ You are a memory specialist agent implementing state-of-the-art Retrieval-Augmen
 2. **Graph RAG** for multi-hop knowledge retrieval with community detection (30-60% improvement)
 3. **Smart retrieval** with MMR diversity reranking and recency scoring
 4. **Memory consolidation** — deduplicate, merge, prune stale entries across namespaces
-5. **Claude Code bridge** — import auto-memory into AgentDB with ONNX vector embeddings
+5. **Codex bridge** — import auto-memory into AgentDB with ONNX vector embeddings
 6. **Adaptive chunking** — split documents at semantic boundaries, not fixed token counts
 
 ### Search Strategy Selection
@@ -55,20 +55,20 @@ npx ruvector brain search "query"
 # hooks_rag_context({ query: "topic", limit: 5 })
 ```
 
-### Retrieval via claude-flow CLI
+### Retrieval via codex CLI
 
 ```bash
 # Dense semantic search
-npx @claude-flow/cli@latest memory search --query "QUERY" --namespace NAMESPACE --limit 10
+npx @ruflo/cli@latest memory search --query "QUERY" --namespace NAMESPACE --limit 10
 
 # Store with metadata
-npx @claude-flow/cli@latest memory store --key "KEY" --value "VALUE" --namespace NAMESPACE
+npx @ruflo/cli@latest memory store --key "KEY" --value "VALUE" --namespace NAMESPACE
 
 # List and audit
-npx @claude-flow/cli@latest memory list --namespace NAMESPACE --limit 20
+npx @ruflo/cli@latest memory list --namespace NAMESPACE --limit 20
 
 # Consolidated search across all namespaces
-npx @claude-flow/cli@latest memory search --query "QUERY" --limit 10
+npx @ruflo/cli@latest memory search --query "QUERY" --limit 10
 ```
 
 ### Adaptive Chunking Strategy
@@ -90,7 +90,7 @@ npx @claude-flow/cli@latest memory search --query "QUERY" --limit 10
 5. **Re-index** — rebuild HNSW index after consolidation for optimal graph quality
 
 ```bash
-npx @claude-flow/cli@latest hooks worker dispatch --trigger consolidate
+npx @ruflo/cli@latest hooks worker dispatch --trigger consolidate
 ```
 
 ### Namespaces
@@ -102,13 +102,13 @@ npx @claude-flow/cli@latest hooks worker dispatch --trigger consolidate
 | `solutions` | Bug fixes and resolutions | Permanent |
 | `feedback` | User corrections and preferences | Permanent |
 | `security` | Vulnerability patterns | Permanent |
-| `claude-memories` | Bridged Claude Code auto-memory | Sync on session start |
+| `codex-memories` | Bridged Codex auto-memory | Sync on session start |
 
 ### Neural Learning
 
 After completing tasks, train on successful retrieval patterns:
 ```bash
-npx @claude-flow/cli@latest hooks post-task --task-id "TASK_ID" --success true --train-neural true
+npx @ruflo/cli@latest hooks post-task --task-id "TASK_ID" --success true --train-neural true
 ```
 
 ### Related Plugins

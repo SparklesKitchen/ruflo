@@ -1,14 +1,14 @@
 ---
 layout: default
 title: RuFlo Marketplace
-description: Claude Code native agents, swarms, workers, and MCP tools for continuous software engineering
+description: Codex native agents, swarms, workers, and MCP tools for continuous software engineering
 ---
 
 # RuFlo Marketplace
 
-**Installable agentic workflows for Claude Code -- not just commands.**
+**Installable agentic workflows for Codex -- not just commands.**
 
-RuFlo provides native Claude Code plugins for multi-agent orchestration, /loop workers, security auditing, memory-powered RAG, and test generation.
+RuFlo provides native Codex plugins for multi-agent orchestration, /loop workers, security auditing, memory-powered RAG, and test generation.
 
 ## Quick Install
 
@@ -48,17 +48,17 @@ RuFlo provides native Claude Code plugins for multi-agent orchestration, /loop w
 
 ## How It Works
 
-RuFlo plugins extend Claude Code with:
-- **Skills** -- Teach Claude Code new workflows (swarm init, /loop workers, security scans)
+RuFlo plugins extend Codex with:
+- **Skills** -- Teach Codex new workflows (swarm init, /loop workers, security scans)
 - **Commands** -- Slash commands for common operations (/status, /audit, /memory)
 - **Agents** -- Specialized agent definitions (coder, reviewer, architect, security-auditor)
 - **MCP Server** -- 314 tools for coordination, memory, neural learning, and more
 
-## Claude Code Native Integration
+## Codex Native Integration
 
-RuFlo plugins use Claude Code's native capabilities when available:
+RuFlo plugins use Codex's native capabilities when available:
 
-| Feature | Plugin | Claude Code Native |
+| Feature | Plugin | Codex Native |
 |---------|--------|--------------------|
 | Periodic workers | ruflo-loop-workers | `/loop` + `ScheduleWakeup` |
 | Live monitoring | ruflo-swarm | `Monitor` tool |
@@ -80,6 +80,6 @@ RuFlo plugins use Claude Code's native capabilities when available:
 ## Links
 
 - [GitHub Repository](https://github.com/ruvnet/ruflo)
-- [npm Packages](https://www.npmjs.com/package/@claude-flow/cli)
+- [npm Packages](https://www.npmjs.com/package/@ruflo/cli)
 - [ADR-091: Native Integration](https://github.com/ruvnet/ruflo/blob/main/v3/docs/adr/ADR-091-loop-monitor-native-integration.md)
 - [Issues & Support](https://github.com/ruvnet/ruflo/issues)

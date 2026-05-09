@@ -27,13 +27,13 @@ Sandboxed WASM agent creation, execution, and gallery sharing.
 
 ## Compatibility
 
-- **CLI:** pinned to `@claude-flow/cli` v3.6 major+minor.
-- **WASM runtime:** built on `@ruvector/rvagent-wasm` + `@ruvector/ruvllm-wasm`. Both are declared in `@claude-flow/cli`'s `optionalDependencies` per [ADR-070 (Implemented)](../../v3/implementation/adrs/ADR-070-rvagent-wasm-completion.md). Without those packages, runtime falls through to the graceful-degradation path and the MCP tools no-op.
+- **CLI:** pinned to `@ruflo/cli` v3.6 major+minor.
+- **WASM runtime:** built on `@ruvector/rvagent-wasm` + `@ruvector/ruvllm-wasm`. Both are declared in `@ruflo/cli`'s `optionalDependencies` per [ADR-070 (Implemented)](../../v3/implementation/adrs/ADR-070-rvagent-wasm-completion.md). Without those packages, runtime falls through to the graceful-degradation path and the MCP tools no-op.
 - **Verification:** `bash plugins/ruflo-wasm/scripts/smoke.sh` is the contract.
 
 ## MCP surface (10 tools)
 
-All defined at `v3/@claude-flow/cli/src/mcp-tools/wasm-agent-tools.ts`:
+All defined at `v3/@ruflo/cli/src/mcp-tools/wasm-agent-tools.ts`:
 
 ### Agent lifecycle (7)
 
@@ -63,7 +63,7 @@ For prompt-injection defense inside the sandbox, the [ruflo-aidefence 3-gate pat
 
 ## Namespace coordination
 
-This plugin owns the `wasm-gallery` AgentDB namespace (kebab-case, follows the convention from [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md)). Reserved namespaces (`pattern`, `claude-memories`, `default`) MUST NOT be shadowed.
+This plugin owns the `wasm-gallery` AgentDB namespace (kebab-case, follows the convention from [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md)). Reserved namespaces (`pattern`, `codex-memories`, `default`) MUST NOT be shadowed.
 
 `wasm-gallery` indexes published WASM agents (manifest, version, signature, download count). Accessed via `memory_*` (namespace-routed).
 

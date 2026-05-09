@@ -9,7 +9,7 @@ Generates sequentially numbered database migrations with up/down SQL pairs for r
 ## Installation
 
 ```bash
-claude --plugin-dir plugins/ruflo-migrations
+codex --plugin-dir plugins/ruflo-migrations
 ```
 
 ## Agents
@@ -61,12 +61,12 @@ migrations/
 
 ## Compatibility
 
-- **CLI:** pinned to `@claude-flow/cli` v3.6 major+minor.
+- **CLI:** pinned to `@ruflo/cli` v3.6 major+minor.
 - **Verification:** `bash plugins/ruflo-migrations/scripts/smoke.sh` is the contract.
 
 ## Namespace coordination
 
-This plugin owns the `migrations` AgentDB namespace (kebab-case is implicit when the plugin name is the intent — same documented exception as `federation`). Follows the convention from [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md). Reserved namespaces (`pattern`, `claude-memories`, `default`) MUST NOT be shadowed.
+This plugin owns the `migrations` AgentDB namespace (kebab-case is implicit when the plugin name is the intent — same documented exception as `federation`). Follows the convention from [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md). Reserved namespaces (`pattern`, `codex-memories`, `default`) MUST NOT be shadowed.
 
 `migrations` is accessed via `memory_*` tools (namespace-routed). Tracks migration metadata, applied/pending status, and validation results.
 

@@ -10,12 +10,12 @@ This plugin requires a **Cognitum Seed** device. Get one at **https://cognitum.o
 
 Treats every Cognitum Seed device as a Ruflo agent with hardware capabilities. Devices progress through a 5-tier trust model, emit telemetry vectors for anomaly detection, participate in mesh networks, and maintain Ed25519 witness chains for provenance.
 
-Backed by `@claude-flow/plugin-iot-cognitum` (239 tests, 32 source files).
+Backed by `@ruflo/plugin-iot-cognitum` (239 tests, 32 source files).
 
 ## Installation
 
 ```bash
-claude --plugin-dir plugins/ruflo-iot-cognitum
+codex --plugin-dir plugins/ruflo-iot-cognitum
 ```
 
 ## Agents
@@ -136,7 +136,7 @@ pending → canary → rolling → complete
 
 ## Compatibility
 
-- **CLI:** pinned to `@claude-flow/cli` v3.6 major+minor.
+- **CLI:** pinned to `@ruflo/cli` v3.6 major+minor.
 - **Hardware:** requires Cognitum Seed device. SDK: `@cognitum-one/sdk/seed`.
 - **Verification:** `bash plugins/ruflo-iot-cognitum/scripts/smoke.sh` is the contract.
 
@@ -152,7 +152,7 @@ This plugin owns five AgentDB namespaces, all compliant with the [ruflo-agentdb 
 | `iot-anomalies` | Skill-level anomaly index (alias of above) |
 | `iot-audit` | Witness-chain gap records |
 
-Reserved namespaces (`pattern`, `claude-memories`, `default`) MUST NOT be shadowed.
+Reserved namespaces (`pattern`, `codex-memories`, `default`) MUST NOT be shadowed.
 
 ## Trust model parallel with federation
 

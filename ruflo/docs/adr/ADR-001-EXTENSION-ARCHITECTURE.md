@@ -178,7 +178,7 @@ All extensions connect to a shared Cloud SQL instance with the RuVector extensio
 
 Centralized credential storage:
 - Database credentials
-- API keys (Anthropic, OpenAI, Airtable)
+- API keys (OpenAI, OpenAI, Airtable)
 - OAuth tokens (RingCentral, PandaDoc)
 
 ### 3. Shared Packages

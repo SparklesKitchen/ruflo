@@ -2,14 +2,14 @@
 
 ## Overview
 
-This document defines the Domain-Driven Design (DDD) architecture for integrating OpenAI Codex support into claude-flow via the `@claude-flow/codex` package. The design follows the existing V3 architecture patterns while introducing new bounded contexts for Codex-specific functionality.
+This document defines the Domain-Driven Design (DDD) architecture for integrating OpenAI Codex support into codex via the `@ruflo/codex` package. The design follows the existing V3 architecture patterns while introducing new bounded contexts for Codex-specific functionality.
 
 ## Package Information
 
-- **Package Name**: `@claude-flow/codex`
-- **Location**: `v3/@claude-flow/codex/`
+- **Package Name**: `@ruflo/codex`
+- **Location**: `v3/@ruflo/codex/`
 - **Future Umbrella**: `coflow` (npm/npx coflow)
-- **Compatibility**: Maintains `claude-flow` branding during transition
+- **Compatibility**: Maintains `codex` branding during transition
 
 ## Strategic Design
 
@@ -17,7 +17,7 @@ This document defines the Domain-Driven Design (DDD) architecture for integratin
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                           Claude Flow V3 Core Domain                         │
+│                           Ruflo V3 Core Domain                         │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────────────────┐ │
@@ -32,9 +32,9 @@ This document defines the Domain-Driven Design (DDD) architecture for integratin
 │  │                     Platform Adaptation Layer                           ││
 │  ├─────────────────────────────────────────────────────────────────────────┤│
 │  │  ┌─────────────────────────┐    ┌─────────────────────────────────────┐││
-│  │  │   Claude Code Context   │    │       Codex Context (NEW)          │││
+│  │  │   Codex Context   │    │       Codex Context (NEW)          │││
 │  │  │                         │    │                                     │││
-│  │  │  - CLAUDE.md Generator  │    │  - AGENTS.md Generator             │││
+│  │  │  - AGENTS.md Generator  │    │  - AGENTS.md Generator             │││
 │  │  │  - Skills (.md format)  │    │  - Skills (SKILL.md format)        │││
 │  │  │  - settings.json        │    │  - config.toml                      │││
 │  │  │  - Hooks System         │    │  - Automations                      │││
@@ -52,8 +52,8 @@ This document defines the Domain-Driven Design (DDD) architecture for integratin
 **Purpose**: Abstract platform-specific configurations behind a unified interface.
 
 **Ubiquitous Language**:
-- **Platform**: Target CLI tool (Claude Code or Codex)
-- **Manifest**: Platform-specific project instructions file (CLAUDE.md or AGENTS.md)
+- **Platform**: Target CLI tool (Codex or Codex)
+- **Manifest**: Platform-specific project instructions file (AGENTS.md or AGENTS.md)
 - **Skill**: Reusable task-specific instruction set
 - **Configuration**: Platform settings (JSON or TOML)
 - **Automation**: Scheduled or triggered background tasks
@@ -75,9 +75,9 @@ This document defines the Domain-Driven Design (DDD) architecture for integratin
 - **Sandbox Mode**: Filesystem access restrictions
 - **Progressive Disclosure**: Lazy loading of skill instructions
 
-#### 3. Claude Code Adapter Context (Existing)
+#### 3. Codex Adapter Context (Existing)
 
-**Purpose**: Handle all Claude Code-specific generation (already implemented).
+**Purpose**: Handle all Codex-specific generation (already implemented).
 
 #### 4. Init Context (Extended)
 
@@ -111,7 +111,7 @@ interface PlatformConfiguration {
 }
 
 enum Platform {
-  CLAUDE_CODE = 'claude-code',
+  CODEX = 'codex-code',
   CODEX = 'codex',
   DUAL = 'dual'
 }
@@ -157,7 +157,7 @@ interface Skill {
   assets?: SkillAsset[];
 
   // Behavior
-  toClaudeFormat(): string;
+  toCodexFormat(): string;
   toCodexFormat(): SkillDirectory;
 }
 
@@ -280,7 +280,7 @@ class ManifestPath {
     if (this.platform === Platform.CODEX) {
       return this.isOverride ? 'AGENTS.override.md' : 'AGENTS.md';
     }
-    return this.isOverride ? 'CLAUDE.local.md' : 'CLAUDE.md';
+    return this.isOverride ? '.codex/AGENTS.override.md' : 'AGENTS.md';
   }
 
   get fullPath(): string {
@@ -306,8 +306,8 @@ class ConfigurationPath {
         : path.join(this.basePath, '.agents', 'config.toml');
     }
     return this.scope === 'global'
-      ? path.join(os.homedir(), '.claude', 'settings.json')
-      : path.join(this.basePath, '.claude', 'settings.json');
+      ? path.join(os.homedir(), '.codex', 'settings.json')
+      : path.join(this.basePath, '.codex', 'settings.json');
   }
 }
 ```
@@ -406,7 +406,7 @@ class SkillLibraryAggregate {
       if (this.platform === Platform.CODEX) {
         return skill.toCodexFormat();
       }
-      return skill.toClaudeFormat();
+      return skill.toCodexFormat();
     });
   }
 
@@ -427,16 +427,16 @@ class SkillLibraryAggregate {
 ```typescript
 class PlatformDetectionService {
   detect(projectPath: string): DetectedPlatform {
-    const hasClaudeDir = fs.existsSync(path.join(projectPath, '.claude'));
+    const hasCodexDir = fs.existsSync(path.join(projectPath, '.codex'));
     const hasAgentsDir = fs.existsSync(path.join(projectPath, '.agents'));
-    const hasClaudeMd = fs.existsSync(path.join(projectPath, 'CLAUDE.md'));
+    const hasCodexMd = fs.existsSync(path.join(projectPath, 'AGENTS.md'));
     const hasAgentsMd = fs.existsSync(path.join(projectPath, 'AGENTS.md'));
 
-    if (hasClaudeDir && hasAgentsDir) {
+    if (hasCodexDir && hasAgentsDir) {
       return { platform: Platform.DUAL, existing: true };
     }
-    if (hasClaudeDir || hasClaudeMd) {
-      return { platform: Platform.CLAUDE_CODE, existing: true };
+    if (hasCodexDir || hasCodexMd) {
+      return { platform: Platform.CODEX, existing: true };
     }
     if (hasAgentsDir || hasAgentsMd) {
       return { platform: Platform.CODEX, existing: true };
@@ -448,14 +448,14 @@ class PlatformDetectionService {
   async detectUserPreference(): Promise<Platform> {
     // Check for global Codex config
     const codexConfig = path.join(os.homedir(), '.codex', 'config.toml');
-    const claudeConfig = path.join(os.homedir(), '.claude');
+    const codexConfig = path.join(os.homedir(), '.codex');
 
     const hasCodex = fs.existsSync(codexConfig);
-    const hasClaude = fs.existsSync(claudeConfig);
+    const hasCodex = fs.existsSync(codexConfig);
 
-    if (hasCodex && !hasClaude) return Platform.CODEX;
-    if (hasClaude && !hasCodex) return Platform.CLAUDE_CODE;
-    if (hasCodex && hasClaude) return Platform.DUAL;
+    if (hasCodex && !hasCodex) return Platform.CODEX;
+    if (hasCodex && !hasCodex) return Platform.CODEX;
+    if (hasCodex && hasCodex) return Platform.DUAL;
 
     return Platform.UNKNOWN;
   }
@@ -466,9 +466,9 @@ class PlatformDetectionService {
 
 ```typescript
 class SkillConversionService {
-  convertClaudeToCodex(skill: ClaudeSkill): CodexSkill {
-    // Parse YAML frontmatter from Claude skill
-    const { metadata, content } = this.parseClaudeSkill(skill);
+  convertCodexToCodex(skill: CodexSkill): CodexSkill {
+    // Parse YAML frontmatter from Codex skill
+    const { metadata, content } = this.parseCodexSkill(skill);
 
     // Create SKILL.md content
     const skillMd = this.generateSkillMd(metadata, content);
@@ -488,16 +488,16 @@ class SkillConversionService {
     });
   }
 
-  convertCodexToClaude(skill: CodexSkill): ClaudeSkill {
+  convertCodexToCodex(skill: CodexSkill): CodexSkill {
     // Parse SKILL.md
     const { frontmatter, body } = this.parseSkillMd(skill.skillMd);
 
-    // Generate Claude skill format
-    const claudeContent = this.generateClaudeSkill(frontmatter, body);
+    // Generate Codex skill format
+    const codexContent = this.generateCodexSkill(frontmatter, body);
 
-    return new ClaudeSkill({
+    return new CodexSkill({
       name: frontmatter.name,
-      content: claudeContent
+      content: codexContent
     });
   }
 
@@ -516,20 +516,20 @@ ${content}`;
 
 ```typescript
 class ConfigurationMigrationService {
-  migrateClaudeToCodex(claudeSettings: ClaudeSettings): CodexConfiguration {
+  migrateCodexToCodex(codexSettings: CodexSettings): CodexConfiguration {
     return {
       model: 'gpt-5.3-codex',
-      approvalPolicy: this.mapApprovalPolicy(claudeSettings),
-      sandboxMode: this.mapSandboxMode(claudeSettings),
+      approvalPolicy: this.mapApprovalPolicy(codexSettings),
+      sandboxMode: this.mapSandboxMode(codexSettings),
       webSearch: 'cached',
-      features: this.mapFeatures(claudeSettings),
-      mcpServers: this.migrateMcpServers(claudeSettings.mcpServers),
-      skills: this.mapSkillsConfig(claudeSettings),
+      features: this.mapFeatures(codexSettings),
+      mcpServers: this.migrateMcpServers(codexSettings.mcpServers),
+      skills: this.mapSkillsConfig(codexSettings),
       profiles: new Map()
     };
   }
 
-  migrateCodexToClaude(codexConfig: CodexConfiguration): ClaudeSettings {
+  migrateCodexToCodex(codexConfig: CodexConfiguration): CodexSettings {
     return {
       hooks: this.mapHooksFromApprovalPolicy(codexConfig.approvalPolicy),
       mcpServers: this.migrateMcpServersToJson(codexConfig.mcpServers),
@@ -537,8 +537,8 @@ class ConfigurationMigrationService {
     };
   }
 
-  private mapApprovalPolicy(settings: ClaudeSettings): ApprovalPolicy {
-    // Map Claude Code permission mode to Codex approval policy
+  private mapApprovalPolicy(settings: CodexSettings): ApprovalPolicy {
+    // Map Codex permission mode to Codex approval policy
     const hooks = settings.hooks || {};
     if (hooks.preToolUse?.autoApprove) {
       return ApprovalPolicy.NEVER;
@@ -546,7 +546,7 @@ class ConfigurationMigrationService {
     return ApprovalPolicy.ON_REQUEST;
   }
 
-  private mapSandboxMode(settings: ClaudeSettings): SandboxMode {
+  private mapSandboxMode(settings: CodexSettings): SandboxMode {
     // Default to workspace-write for safety
     return SandboxMode.WORKSPACE_WRITE;
   }
@@ -728,21 +728,21 @@ class InitializationApplicationService {
   }
 
   async convertToCodex(projectPath: string): Promise<ConversionResult> {
-    // Load existing Claude Code configuration
-    const claudeManifest = await this.loadClaudeManifest(projectPath);
-    const claudeSkills = await this.loadClaudeSkills(projectPath);
-    const claudeSettings = await this.loadClaudeSettings(projectPath);
+    // Load existing Codex configuration
+    const codexManifest = await this.loadCodexManifest(projectPath);
+    const codexSkills = await this.loadCodexSkills(projectPath);
+    const codexSettings = await this.loadCodexSettings(projectPath);
 
     // Convert manifest
-    const codexManifest = this.convertManifest(claudeManifest);
+    const codexManifest = this.convertManifest(codexManifest);
 
     // Convert skills
-    const codexSkills = claudeSkills.map(skill =>
-      this.conversionService.convertClaudeToCodex(skill)
+    const codexSkills = codexSkills.map(skill =>
+      this.conversionService.convertCodexToCodex(skill)
     );
 
     // Convert configuration
-    const codexConfig = this.configMigration.migrateClaudeToCodex(claudeSettings);
+    const codexConfig = this.configMigration.migrateCodexToCodex(codexSettings);
 
     // Save converted artifacts
     await this.manifestRepo.save(codexManifest);
@@ -760,8 +760,8 @@ class InitializationApplicationService {
   }
 
   async initializeDualMode(options: DualModeInitOptions): Promise<DualModeResult> {
-    // Initialize for Claude Code
-    const claudeResult = await this.initializeForClaude(options);
+    // Initialize for Codex
+    const codexResult = await this.initializeForCodex(options);
 
     // Initialize for Codex
     const codexResult = await this.initializeForCodex(options);
@@ -770,9 +770,9 @@ class InitializationApplicationService {
     await this.createSyncConfiguration(options.projectPath);
 
     return {
-      claude: claudeResult,
       codex: codexResult,
-      syncConfigPath: path.join(options.projectPath, '.claude-flow', 'platform-sync.yaml')
+      codex: codexResult,
+      syncConfigPath: path.join(options.projectPath, '.codex', 'platform-sync.yaml')
     };
   }
 }
@@ -851,7 +851,7 @@ class PlatformConversionCompleted implements DomainEvent {
 ## Package Structure
 
 ```
-v3/@claude-flow/
+v3/@ruflo/
 ├── cli/
 │   └── src/
 │       └── commands/
@@ -918,9 +918,9 @@ v3/@claude-flow/
 ### With Existing Init System
 
 ```typescript
-// v3/@claude-flow/cli/src/commands/init.ts
+// v3/@ruflo/cli/src/commands/init.ts
 
-import { CodexInitializer } from '@claude-flow/codex';
+import { CodexInitializer } from '@ruflo/codex';
 
 // Add new options
 const initCommand: Command = {
@@ -935,19 +935,19 @@ const initCommand: Command = {
     },
     {
       name: 'dual',
-      description: 'Initialize for both Claude Code and Codex',
-      type: 'boolean',
-      default: false,
-    },
-    {
-      name: 'from-claude',
-      description: 'Convert existing Claude Code setup to Codex',
+      description: 'Initialize for both Codex and Codex',
       type: 'boolean',
       default: false,
     },
     {
       name: 'from-codex',
-      description: 'Convert existing Codex setup to Claude Code',
+      description: 'Convert existing Codex setup to Codex',
+      type: 'boolean',
+      default: false,
+    },
+    {
+      name: 'from-codex',
+      description: 'Convert existing Codex setup to Codex',
       type: 'boolean',
       default: false,
     },
@@ -955,7 +955,7 @@ const initCommand: Command = {
   action: async (ctx) => {
     const codex = ctx.flags.codex as boolean;
     const dual = ctx.flags.dual as boolean;
-    const fromClaude = ctx.flags['from-claude'] as boolean;
+    const fromCodex = ctx.flags['from-codex'] as boolean;
     const fromCodex = ctx.flags['from-codex'] as boolean;
 
     if (codex || dual) {
@@ -963,12 +963,12 @@ const initCommand: Command = {
       // ... codex initialization logic
     }
 
-    if (fromClaude) {
+    if (fromCodex) {
       const converter = new PlatformConverter();
       await converter.convertToCodex(ctx.cwd);
     }
 
-    // ... existing Claude Code init logic
+    // ... existing Codex init logic
   }
 };
 ```
@@ -977,7 +977,7 @@ const initCommand: Command = {
 
 This DDD design provides:
 
-1. **Clear Bounded Contexts** - Platform Adapter, Codex Adapter, Claude Code Adapter
+1. **Clear Bounded Contexts** - Platform Adapter, Codex Adapter, Codex Adapter
 2. **Rich Domain Model** - Entities, Value Objects, Aggregates for each concept
 3. **Domain Services** - Platform detection, skill conversion, config migration
 4. **Repository Pattern** - Abstract persistence for manifests, skills, configurations

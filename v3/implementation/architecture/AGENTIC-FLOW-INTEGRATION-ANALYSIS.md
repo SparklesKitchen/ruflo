@@ -1,9 +1,9 @@
-# agentic-flow@alpha Deep Analysis & Integration Optimization
+# agentic@alpha Deep Analysis & Integration Optimization
 
 ## Executive Summary
 
-**Current State**: Claude-Flow v2.7.47 uses `agentic-flow@^1.9.4`
-**Latest Alpha**: `agentic-flow@2.0.1-alpha.50` (published yesterday)
+**Current State**: Codex-Flow v2.7.47 uses `agentic@^1.9.4`
+**Latest Alpha**: `agentic@2.0.1-alpha.50` (published yesterday)
 **Upgrade Impact**: Major performance and capability improvements
 
 ### Key Findings
@@ -28,7 +28,7 @@
 export * as reasoningbank from "./reasoningbank/index.js";
 
 // Parallel agent execution
-import { webResearchAgent, codeReviewAgent, dataAgent, claudeAgent } from "./agents/*";
+import { webResearchAgent, codeReviewAgent, dataAgent, codexAgent } from "./agents/*";
 
 // Agent loading
 import { getAgent, listAgents } from "./utils/agentLoader.js";
@@ -135,13 +135,13 @@ export {
 
 ---
 
-## 2. Current Claude-Flow Integration Points
+## 2. Current Codex-Flow Integration Points
 
 ### 2.1 Existing Integrations (29 files)
 
 | File | Integration Type | Status |
 |------|-----------------|--------|
-| `src/services/agentic-flow-hooks/` | Hook system | Full pipeline |
+| `src/services/agentic-hooks/` | Hook system | Full pipeline |
 | `src/reasoningbank/reasoningbank-adapter.js` | Memory backend | ReasoningBank v1 |
 | `src/neural/` | Neural integration | Partial |
 | `src/hooks/` | Hook matchers | Basic |
@@ -149,7 +149,7 @@ export {
 
 ### 2.2 Hook System Analysis
 
-**Current Implementation** (`src/services/agentic-flow-hooks/`):
+**Current Implementation** (`src/services/agentic-hooks/`):
 - `hook-manager.ts` - Central manager with pipelines
 - `llm-hooks.ts` - Pre/post LLM call hooks
 - `memory-hooks.ts` - Memory operation hooks
@@ -166,7 +166,7 @@ export {
 
 **Current** (`src/reasoningbank/reasoningbank-adapter.js`):
 ```javascript
-import * as ReasoningBank from 'agentic-flow/reasoningbank';
+import * as ReasoningBank from 'agentic/reasoningbank';
 
 // Uses v1 API
 await ReasoningBank.initialize();
@@ -186,12 +186,12 @@ await ReasoningBank.initialize();
 
 **Current dependency**:
 ```json
-"agentic-flow": "^1.9.4"
+"agentic": "^1.9.4"
 ```
 
 **Upgrade to**:
 ```json
-"agentic-flow": "^2.0.1-alpha.0"
+"agentic": "^2.0.1-alpha.0"
 ```
 
 **Benefits**:
@@ -208,7 +208,7 @@ await ReasoningBank.initialize();
 
 ```typescript
 // src/v3/core/enhanced-agentdb.ts
-import { EnhancedAgentDBWrapper } from 'agentic-flow/core';
+import { EnhancedAgentDBWrapper } from 'agentic/core';
 
 export const createEnhancedDB = () => new EnhancedAgentDBWrapper({
   dimension: 384,
@@ -235,7 +235,7 @@ export const createEnhancedDB = () => new EnhancedAgentDBWrapper({
 
 ```typescript
 // src/v3/coordination/attention-swarm.ts
-import { AttentionCoordinator, createAttentionCoordinator } from 'agentic-flow/coordination';
+import { AttentionCoordinator, createAttentionCoordinator } from 'agentic/coordination';
 
 export class AttentionSwarmCoordinator {
   private coordinator: AttentionCoordinator;
@@ -270,7 +270,7 @@ import {
   storePattern,
   findSimilarPatterns,
   forceLearningCycle
-} from 'agentic-flow/mcp/fastmcp/tools/hooks';
+} from 'agentic/mcp/fastmcp/tools/hooks';
 
 // Pre-task: Query learned patterns
 async function preTaskHook(task: Task) {
@@ -312,7 +312,7 @@ async function postTaskHook(task: Task, result: TaskResult) {
 **Upgrade to**: Hybrid backend (best of both)
 
 ```typescript
-import { HybridReasoningBank } from 'agentic-flow/reasoningbank';
+import { HybridReasoningBank } from 'agentic/reasoningbank';
 
 const reasoningBank = new HybridReasoningBank({
   sqlitePath: '.swarm/memory.db',
@@ -347,7 +347,7 @@ import {
   CausalMemoryGraph, // Causal relationships
   CausalRecall,      // Cause-effect retrieval
   NightlyLearner     // Background learning
-} from 'agentic-flow/reasoningbank';
+} from 'agentic/reasoningbank';
 
 // Reflexion: Learn from mistakes
 const reflexion = new ReflexionMemory(agentDB);
@@ -377,7 +377,7 @@ await learner.scheduleLearning({ interval: '0 2 * * *' }); // 2 AM daily
 
 **v2 provides auto-detection**:
 ```typescript
-import { shouldUseNativePackage, getWrapperPerformance } from 'agentic-flow/core';
+import { shouldUseNativePackage, getWrapperPerformance } from 'agentic/core';
 
 // Check if native package should be used
 const useNative = shouldUseNativePackage('@ruvector/gnn');
@@ -399,7 +399,7 @@ const agentdbPerf = getWrapperPerformance('agentdb-fast');
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    Claude-Flow v3                           │
+│                    Codex-Flow v3                           │
 ├─────────────────────────────────────────────────────────────┤
 │  ┌─────────────────────────────────────────────────────┐   │
 │  │           v2 Compatibility Layer                     │   │
@@ -409,7 +409,7 @@ const agentdbPerf = getWrapperPerformance('agentdb-fast');
 │  └─────────────────────────────────────────────────────┘   │
 │                            │                                │
 │  ┌─────────────────────────────────────────────────────┐   │
-│  │        agentic-flow@2.0.1-alpha.50 Core              │   │
+│  │        agentic@2.0.1-alpha.50 Core              │   │
 │  │   ┌───────────────┐ ┌───────────────┐               │   │
 │  │   │ Enhanced      │ │  Attention    │               │   │
 │  │   │ AgentDB       │ │  Coordinator  │               │   │
@@ -429,7 +429,7 @@ const agentdbPerf = getWrapperPerformance('agentdb-fast');
 
 ### 4.2 Integration Points Map
 
-| Claude-Flow Component | agentic-flow v2 Integration | Priority |
+| Codex-Flow Component | agentic v2 Integration | Priority |
 |-----------------------|-----------------------------|----------|
 | `SwarmCoordinator` | `AttentionCoordinator` | HIGH |
 | `AgentManager` | `EnhancedAgentDBWrapper` | HIGH |
@@ -459,8 +459,8 @@ src/v3/
 
 **Modified Files**:
 ```
-package.json                         # Upgrade agentic-flow version
-src/services/agentic-flow-hooks/     # Add intelligence bridge
+package.json                         # Upgrade agentic version
+src/services/agentic-hooks/     # Add intelligence bridge
 src/reasoningbank/reasoningbank-adapter.js  # Use HybridReasoningBank
 ```
 
@@ -500,7 +500,7 @@ src/reasoningbank/reasoningbank-adapter.js  # Use HybridReasoningBank
 ## 6. Implementation Checklist
 
 ### Phase 1: Core Upgrade (Week 1)
-- [ ] Update package.json: `"agentic-flow": "^2.0.1-alpha.0"`
+- [ ] Update package.json: `"agentic": "^2.0.1-alpha.0"`
 - [ ] Create `src/v3/core/enhanced-agentdb.ts`
 - [ ] Update tests for new APIs
 - [ ] Verify backward compatibility
@@ -557,7 +557,7 @@ src/reasoningbank/reasoningbank-adapter.js  # Use HybridReasoningBank
 
 ### Immediate Actions (Week 1)
 
-1. **Upgrade dependency**: `agentic-flow@^2.0.1-alpha.0`
+1. **Upgrade dependency**: `agentic@^2.0.1-alpha.0`
 2. **Create EnhancedAgentDBWrapper integration**
 3. **Test existing functionality**
 
@@ -583,7 +583,7 @@ src/reasoningbank/reasoningbank-adapter.js  # Use HybridReasoningBank
 
 ### 9.1 QUIC Transport Architecture
 
-agentic-flow v2 includes a production-ready QUIC transport layer:
+agentic v2 includes a production-ready QUIC transport layer:
 
 ```typescript
 // dist/transport/quic.js
@@ -659,9 +659,9 @@ export class ReasoningBankWasm {
 
 ```typescript
 // src/v3/transport/quic-integration.ts
-import { QuicTransport, QuicConnectionPool } from 'agentic-flow/transport';
+import { QuicTransport, QuicConnectionPool } from 'agentic/transport';
 
-export class ClaudeFlowQuicTransport {
+export class CodexFlowQuicTransport {
   private pool: QuicConnectionPool;
 
   async initialize() {
@@ -700,7 +700,7 @@ export class ClaudeFlowQuicTransport {
 
 ```javascript
 // v1 API usage (current)
-import * as ReasoningBank from 'agentic-flow/reasoningbank';
+import * as ReasoningBank from 'agentic/reasoningbank';
 
 await ReasoningBank.initialize();
 ReasoningBank.db.upsertMemory(memory);
@@ -714,8 +714,8 @@ ReasoningBank.db.getAllActiveMemories();
 
 ```typescript
 // v2 API (recommended)
-import { HybridReasoningBank, computeEmbedding } from 'agentic-flow/reasoningbank';
-import { EnhancedAgentDBWrapper } from 'agentic-flow/core';
+import { HybridReasoningBank, computeEmbedding } from 'agentic/reasoningbank';
+import { EnhancedAgentDBWrapper } from 'agentic/core';
 
 const bank = new HybridReasoningBank({
   sqlitePath: '.swarm/memory.db',
@@ -747,7 +747,7 @@ import {
   recordTrajectoryStep,
   endTaskTrajectory,
   forceLearningCycle
-} from 'agentic-flow/mcp/fastmcp/tools/hooks';
+} from 'agentic/mcp/fastmcp/tools/hooks';
 
 // Add trajectory tracking to existing neural integration
 class EnhancedNeuralIntegration extends NeuralDomainMapperIntegration {
@@ -778,7 +778,7 @@ class EnhancedNeuralIntegration extends NeuralDomainMapperIntegration {
 
 ### 10.3 Hook System Analysis
 
-**Current Implementation** (`src/services/agentic-flow-hooks/`):
+**Current Implementation** (`src/services/agentic-hooks/`):
 
 | File | Current Hooks | v2 Enhancement |
 |------|--------------|----------------|
@@ -790,7 +790,7 @@ class EnhancedNeuralIntegration extends NeuralDomainMapperIntegration {
 
 ### 10.4 Skills Analysis
 
-**Current Skills Using agentic-flow**:
+**Current Skills Using agentic**:
 
 | Skill | Import | v2 Migration |
 |-------|--------|--------------|
@@ -823,7 +823,7 @@ export const sonaTools = [
 ];
 ```
 
-### 11.2 SONA Integration for Claude-Flow v3
+### 11.2 SONA Integration for Codex-Flow v3
 
 ```typescript
 // src/v3/learning/sona-integration.ts
@@ -833,7 +833,7 @@ import {
   sona_trajectory_end,
   sona_pattern_find,
   sona_pattern_store
-} from 'agentic-flow/mcp/fastmcp/tools/sona-tools';
+} from 'agentic/mcp/fastmcp/tools/sona-tools';
 
 export class SOANLearningSystem {
   private activeTrajectories = new Map<string, string>();
@@ -902,7 +902,7 @@ export class SOANLearningSystem {
 ```json
 {
   "dependencies": {
-    "agentic-flow": "^2.0.1-alpha.0"
+    "agentic": "^2.0.1-alpha.0"
   }
 }
 ```
@@ -918,8 +918,8 @@ export class SOANLearningSystem {
 
 ```typescript
 // src/v3/memory/hybrid-adapter.ts
-import { HybridReasoningBank } from 'agentic-flow/reasoningbank';
-import { EnhancedAgentDBWrapper } from 'agentic-flow/core';
+import { HybridReasoningBank } from 'agentic/reasoningbank';
+import { EnhancedAgentDBWrapper } from 'agentic/core';
 
 export class HybridMemoryAdapter {
   private bank: HybridReasoningBank;
@@ -968,7 +968,7 @@ export class HybridMemoryAdapter {
 
 ```typescript
 // src/v3/swarm/attention-swarm.ts
-import { AttentionCoordinator } from 'agentic-flow/coordination';
+import { AttentionCoordinator } from 'agentic/coordination';
 
 export class AttentionSwarmCoordinator {
   private coordinator: AttentionCoordinator;
@@ -1009,7 +1009,7 @@ import {
   storePattern,
   findSimilarPatterns,
   getIntelligenceStats
-} from 'agentic-flow/mcp/fastmcp/tools/hooks';
+} from 'agentic/mcp/fastmcp/tools/hooks';
 
 export function registerIntelligenceHooks(hookManager: AgenticHookManager) {
   // Pre-task: Query learned patterns
@@ -1066,7 +1066,7 @@ export function registerIntelligenceHooks(hookManager: AgenticHookManager) {
 ## 13. Migration Timeline
 
 ### Week 1: Core Upgrade
-- [ ] Update `package.json` to `agentic-flow@^2.0.1-alpha.0`
+- [ ] Update `package.json` to `agentic@^2.0.1-alpha.0`
 - [ ] Run tests to identify breaking changes
 - [ ] Create adapter layer for backward compatibility
 - [ ] Update CI/CD for new dependencies
@@ -1126,7 +1126,7 @@ See companion document: **[LEARNING-OPTIMIZED-PLAN.md](./LEARNING-OPTIMIZED-PLAN
 
 ### 15.2 Combined Learning Tools (28 Total)
 
-**agentic-flow (19 hooks)**: Intelligence bridge, SONA trajectory, pattern storage
+**agentic (19 hooks)**: Intelligence bridge, SONA trajectory, pattern storage
 **agentdb (9 learning)**: RL sessions, reflexion, skills, causal discovery
 
 ### 15.3 Optimized Learning Pipeline
@@ -1153,7 +1153,7 @@ Nightly  → FlashAttention Consolidation + A/B Experiments + Transfer Learning
 
 ```bash
 # Minimal install - works on all platforms
-npm install claude-flow@3 --save
+npm install codex@3 --save
 # ~2MB, no native dependencies, pure JavaScript
 ```
 
@@ -1167,37 +1167,37 @@ npm install claude-flow@3 --save
 
 ```bash
 # Install components as needed
-npx claude-flow install <component>
+npx ruflo install <component>
 
 # Available components:
-npx claude-flow install learning      # RL + trajectory tracking
-npx claude-flow install memory        # Persistent memory (SQLite/WASM)
-npx claude-flow install attention     # Flash/MoE attention mechanisms
-npx claude-flow install transport     # QUIC transport layer
-npx claude-flow install neural        # Neural pattern training
-npx claude-flow install gnn           # GNN query enhancement
+npx ruflo install learning      # RL + trajectory tracking
+npx ruflo install memory        # Persistent memory (SQLite/WASM)
+npx ruflo install attention     # Flash/MoE attention mechanisms
+npx ruflo install transport     # QUIC transport layer
+npx ruflo install neural        # Neural pattern training
+npx ruflo install gnn           # GNN query enhancement
 ```
 
 ### 16.4 Platform-Specific Installation
 
 #### Linux (Fastest)
 ```bash
-npm install claude-flow@3
-npx claude-flow install native   # NAPI bindings (50-200x faster)
+npm install codex@3
+npx ruflo install native   # NAPI bindings (50-200x faster)
 # Total: ~15MB with native bindings
 ```
 
 #### macOS (Apple Silicon + Intel)
 ```bash
-npm install claude-flow@3
-npx claude-flow install native   # Universal binary
+npm install codex@3
+npx ruflo install native   # Universal binary
 # Fallback: WASM if Rosetta issues
 ```
 
 #### Windows
 ```bash
-npm install claude-flow@3
-npx claude-flow install wasm     # WASM backend (recommended)
+npm install codex@3
+npx ruflo install wasm     # WASM backend (recommended)
 # Note: NAPI optional but requires build tools
 ```
 
@@ -1254,7 +1254,7 @@ const platform = {
 ### 16.7 Feature Flags
 
 ```typescript
-// .claude-flow/config.json
+// .codex/config.json
 {
   "core": {
     "runtime": "auto",           // auto | napi | wasm | js
@@ -1287,19 +1287,19 @@ const platform = {
 
 ```bash
 # Minimal CLI usage
-npm install -g claude-flow@3
+npm install -g codex@3
 
 # Basic swarm coordination
-npm install claude-flow@3
+npm install codex@3
 
 # With persistent memory
-npm install claude-flow@3 && npx claude-flow install memory
+npm install codex@3 && npx ruflo install memory
 
 # Full learning system
-npm install claude-flow@3 && npx claude-flow install learning memory
+npm install codex@3 && npx ruflo install learning memory
 
 # Maximum performance (Linux/Mac)
-npm install claude-flow@3 && npx claude-flow install --all --native
+npm install codex@3 && npx ruflo install --all --native
 ```
 
 ---
@@ -1334,17 +1334,17 @@ npm install claude-flow@3 && npx claude-flow install --all --native
 
 ```bash
 # Run performance benchmarks
-npx claude-flow benchmark
+npx ruflo benchmark
 
 # Specific component benchmarks
-npx claude-flow benchmark memory --iterations 1000
-npx claude-flow benchmark learning --episodes 100
-npx claude-flow benchmark attention --batch-size 32
+npx ruflo benchmark memory --iterations 1000
+npx ruflo benchmark learning --episodes 100
+npx ruflo benchmark attention --batch-size 32
 
 # Compare runtimes
-npx claude-flow benchmark --runtime napi
-npx claude-flow benchmark --runtime wasm
-npx claude-flow benchmark --runtime js
+npx ruflo benchmark --runtime napi
+npx ruflo benchmark --runtime wasm
+npx ruflo benchmark --runtime js
 ```
 
 ### 17.4 Regression Detection
@@ -1416,11 +1416,11 @@ const learningConfig = {
 
 ```bash
 # View real-time metrics
-npx claude-flow metrics
+npx ruflo metrics
 
 # Export metrics for external systems
-npx claude-flow metrics --format prometheus
-npx claude-flow metrics --format json > metrics.json
+npx ruflo metrics --format prometheus
+npx ruflo metrics --format json > metrics.json
 ```
 
 ### 19.2 Key Metrics
@@ -1437,11 +1437,11 @@ npx claude-flow metrics --format json > metrics.json
 ### 19.3 Logging Levels
 
 ```typescript
-// .claude-flow/config.json
+// .codex/config.json
 {
   "logging": {
     "level": "info",           // error | warn | info | debug | trace
-    "file": ".claude-flow/logs/claude-flow.log",
+    "file": ".codex/logs/codex.log",
     "maxSize": "10MB",
     "maxFiles": 5,
     "components": {
@@ -1460,10 +1460,10 @@ npx claude-flow metrics --format json > metrics.json
 
 ```bash
 # Audit before install
-npm audit claude-flow@3
+npm audit codex@3
 
 # Verify checksums
-npx claude-flow verify --checksums
+npx ruflo verify --checksums
 ```
 
 ### 20.2 Data Privacy
@@ -1478,7 +1478,7 @@ npx claude-flow verify --checksums
 ### 20.3 MCP Tool Access Control
 
 ```typescript
-// .claude-flow/config.json
+// .codex/config.json
 {
   "security": {
     "mcpToolAllowlist": [
@@ -1500,6 +1500,6 @@ npx claude-flow verify --checksums
 ---
 
 *Deep review completed: 2026-01-03*
-*agentic-flow version analyzed: 2.0.1-alpha.50*
+*agentic version analyzed: 2.0.1-alpha.50*
 *agentdb version analyzed: 2.0.0-alpha.3.1*
-*Claude-Flow version: 2.7.47*
+*Codex-Flow version: 2.7.47*

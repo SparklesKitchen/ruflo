@@ -4,7 +4,7 @@ title: ruflo-migrations plugin contract — pinning, namespace-routing fix, name
 status: Proposed
 date: 2026-05-04
 authors:
-  - reviewer (Claude Code)
+  - reviewer (Codex)
 tags: [plugin, migrations, schema, namespace, smoke-test]
 ---
 

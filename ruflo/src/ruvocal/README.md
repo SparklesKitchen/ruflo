@@ -4,7 +4,7 @@
 
 [![Try the Web UI — flo.ruv.io](https://img.shields.io/badge/✨_Try_it-flo.ruv.io-6366f1?style=for-the-badge&logo=svelte&logoColor=white)](https://flo.ruv.io/)
 
-RuVocal is the SvelteKit web app that lets you chat with Qwen, Claude, Gemini, or OpenAI while [RuFlo](https://github.com/ruvnet/ruflo) invokes the same ~210 MCP tools the CLI uses — agent orchestration, persistent memory, swarm coordination, code review, GitHub ops — all directly from chat. No install, no API key needed to try the hosted demo.
+RuVocal is the SvelteKit web app that lets you chat with Qwen, Codex, Gemini, or OpenAI while [RuFlo](https://github.com/ruvnet/ruflo) invokes the same ~210 MCP tools the CLI uses — agent orchestration, persistent memory, swarm coordination, code review, GitHub ops — all directly from chat. No install, no API key needed to try the hosted demo.
 
 It started as a fork of the [HuggingFace chat-ui](https://github.com/huggingface/chat-ui) v0.20.0 and has been extended with a WASM-MCP integration layer, parallel tool execution, an in-browser tool gallery, and a "RuFlo Capabilities" tour modal. See [ADR-033](../../docs/adr/ADR-033-RUVOCAL-WASM-MCP-INTEGRATION.md) for the architecture.
 
@@ -16,7 +16,7 @@ It started as a fork of the [HuggingFace chat-ui](https://github.com/huggingface
 | ⚡ **Parallel tool calls** | One model turn fires 4–6+ tools at once via `Promise.all`. The UI shows a *Step N — X tools completed* badge per turn |
 | 📘 **RuFlo Capabilities modal** | Question-mark icon → multi-section tour: models, tools, architecture, shortcuts |
 | 💾 **AgentDB-backed memory** | "Remember my favorite color is indigo" → recalled weeks later via HNSW vector search |
-| 🧠 **6 curated frontier models** | Qwen 3.6 Max (default), Claude Sonnet 4.6, Claude Haiku 4.5, Gemini 2.5 Pro, Gemini 2.5 Flash, OpenAI — via OpenRouter |
+| 🧠 **6 curated frontier models** | Qwen 3.6 Max (default), Codex Sonnet 4.6, Codex Haiku 4.5, Gemini 2.5 Pro, Gemini 2.5 Flash, OpenAI — via OpenRouter |
 | 🔌 **Bring-your-own MCP servers** | Add HTTP/SSE/stdio endpoints from the chat input; they join the parallel-execution flow |
 | 🦾 **ruvLLM ready** | Native support for [ruvLLM](https://github.com/ruvnet/RuVector/tree/main/examples/ruvLLM) — RuFlo's self-improving local model layer |
 | 🏠 **Self-hostable** | Multi-stage Dockerfile (`INCLUDE_DB=true` builds in MongoDB), `cloudbuild.yaml` for Google Cloud Run |
@@ -46,7 +46,7 @@ OPENAI_API_KEY=sk-or-v1-...
 # Curated RuFlo model list (optional — defaults to /models from the base URL)
 TASK_MODEL=qwen/qwen3.6-max-preview
 PUBLIC_APP_NAME=RuFlo
-PUBLIC_APP_DESCRIPTION="Intelligent workflow automation assistant powered by Claude/Gemini/Qwen and MCP tools."
+PUBLIC_APP_DESCRIPTION="Intelligent workflow automation assistant powered by Codex/Gemini/Qwen and MCP tools."
 ```
 
 Any OpenAI-compatible endpoint works (vLLM, Ollama, LM Studio, llama.cpp, Together, Groq, self-hosted, …):
@@ -124,7 +124,7 @@ Display: `PUBLIC_LLM_ROUTER_ALIAS_ID` (default `omni`), `PUBLIC_LLM_ROUTER_DISPL
 ```env
 PUBLIC_APP_NAME=RuFlo
 PUBLIC_APP_ASSETS=chatui
-PUBLIC_APP_DESCRIPTION="Intelligent workflow automation assistant powered by Claude/Gemini/Qwen and MCP tools."
+PUBLIC_APP_DESCRIPTION="Intelligent workflow automation assistant powered by Codex/Gemini/Qwen and MCP tools."
 PUBLIC_APP_DATA_SHARING=
 ```
 
@@ -149,7 +149,7 @@ npm run preview       # preview the build locally
 - **Capabilities modal** — `src/lib/components/RufloHelpModal.svelte`
 - **Dynamic follow-ups** — tool-call-aware suggested next prompts in `ChatWindow.svelte`
 
-For deeper internals, see [`CLAUDE.md`](./CLAUDE.md) (Claude Code agent guide) and [ADR-033](../../docs/adr/ADR-033-RUVOCAL-WASM-MCP-INTEGRATION.md).
+For deeper internals, see [`AGENTS.md`](./AGENTS.md) (Codex agent guide) and [ADR-033](../../docs/adr/ADR-033-RUVOCAL-WASM-MCP-INTEGRATION.md).
 
 ## Related
 

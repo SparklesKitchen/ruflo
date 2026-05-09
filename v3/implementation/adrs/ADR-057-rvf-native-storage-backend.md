@@ -4,9 +4,9 @@
 |-------|-------|
 | **Status** | Proposed |
 | **Date** | 2026-02-28 |
-| **Authors** | Claude Flow Team |
+| **Authors** | Ruflo Team |
 | **Supersedes** | — |
-| **Related** | ADR-053 (AgentDB Controller Activation), ADR-054 (RVF Plugin Marketplace), ADR-055 (Controller Bug Remediation), ADR-056 (agentic-flow v3 Integration) |
+| **Related** | ADR-053 (AgentDB Controller Activation), ADR-054 (RVF Plugin Marketplace), ADR-055 (Controller Bug Remediation), ADR-056 (agentic v3 Integration) |
 
 ---
 
@@ -18,9 +18,9 @@
 
 ```
 ruflo (5KB wrapper)
-  └─ @claude-flow/cli (9MB)
-       ├─ @claude-flow/shared (11MB) ← depends on sql.js (18MB WASM)
-       ├─ @claude-flow/mcp (650KB)
+  └─ @ruflo/cli (9MB)
+       ├─ @ruflo/shared (11MB) ← depends on sql.js (18MB WASM)
+       ├─ @ruflo/mcp (650KB)
        ├─ semver (tiny)
        └─ @noble/ed25519 (tiny)
 ```
@@ -29,9 +29,9 @@ ruflo (5KB wrapper)
 
 | Consumer | File | Purpose | Lines |
 |----------|------|---------|-------|
-| `@claude-flow/shared` | `events/event-store.ts` | Append-only event sourcing log | 589 |
-| `@claude-flow/memory` | `sqljs-backend.ts` | Memory entries + brute-force vector search | 767 |
-| `@claude-flow/embeddings` | `persistent-cache.ts` | LRU embedding cache with TTL | 411 |
+| `@ruflo/shared` | `events/event-store.ts` | Append-only event sourcing log | 589 |
+| `@ruflo/memory` | `sqljs-backend.ts` | Memory entries + brute-force vector search | 767 |
+| `@ruflo/embeddings` | `persistent-cache.ts` | LRU embedding cache with TTL | 411 |
 
 ### What sql.js Actually Does
 
@@ -55,7 +55,7 @@ recommendations.push('Consider using better-sqlite3 with HNSW for faster vector 
 
 ### The Opportunity
 
-RVF (RuVector Format) is a binary container format already used in the Claude Flow ecosystem (ADR-054). It provides everything sql.js does **plus native HNSW indexing** in a fraction of the footprint:
+RVF (RuVector Format) is a binary container format already used in the Ruflo ecosystem (ADR-054). It provides everything sql.js does **plus native HNSW indexing** in a fraction of the footprint:
 
 | Capability | sql.js | RVF |
 |-----------|--------|-----|
@@ -74,37 +74,37 @@ RVF (RuVector Format) is a binary container format already used in the Claude Fl
 
 ## 2. Decision
 
-**Replace sql.js with RVF as the native storage backend** across `@claude-flow/shared`, `@claude-flow/memory`, and `@claude-flow/embeddings`. Provide automatic and manual migration paths for existing SQLite (`.db`) and JSON (`.json`) data files with full backward compatibility.
+**Replace sql.js with RVF as the native storage backend** across `@ruflo/shared`, `@ruflo/memory`, and `@ruflo/embeddings`. Provide automatic and manual migration paths for existing SQLite (`.db`) and JSON (`.json`) data files with full backward compatibility.
 
 ### Storage Architecture
 
 ```
 Before (sql.js):
 ┌─────────────────────────────────────┐
-│  @claude-flow/shared                │
+│  @ruflo/shared                │
 │  ├─ EventStore → sql.js (18MB WASM) │
 │  └─ event-store.db                  │
 ├─────────────────────────────────────┤
-│  @claude-flow/memory                │
+│  @ruflo/memory                │
 │  ├─ SqlJsBackend → sql.js           │
 │  └─ memory.db                       │
 ├─────────────────────────────────────┤
-│  @claude-flow/embeddings            │
+│  @ruflo/embeddings            │
 │  ├─ PersistentCache → sql.js        │
 │  └─ embeddings.db                   │
 └─────────────────────────────────────┘
 
 After (RVF):
 ┌─────────────────────────────────────┐
-│  @claude-flow/shared                │
+│  @ruflo/shared                │
 │  ├─ EventStore → RvfEventLog        │
 │  └─ events.rvf (LOG_SEG)            │
 ├─────────────────────────────────────┤
-│  @claude-flow/memory                │
+│  @ruflo/memory                │
 │  ├─ RvfBackend → RVF native         │
 │  └─ memory.rvf (VEC_SEG + KV_SEG)   │
 ├─────────────────────────────────────┤
-│  @claude-flow/embeddings            │
+│  @ruflo/embeddings            │
 │  ├─ RvfEmbeddingCache → RVF native  │
 │  └─ embeddings.rvf (VEC_SEG)        │
 └─────────────────────────────────────┘
@@ -509,14 +509,14 @@ If a future RVF version adds incompatible features, the reader can detect this a
 The existing `EmbeddingProvider` type union supports 4 providers:
 
 ```typescript
-// v3/@claude-flow/embeddings/src/types.ts
-export type EmbeddingProvider = 'openai' | 'transformers' | 'mock' | 'agentic-flow';
+// v3/@ruflo/embeddings/src/types.ts
+export type EmbeddingProvider = 'openai' | 'transformers' | 'mock' | 'agentic';
 ```
 
-Auto-selection hierarchy: `agentic-flow > transformers > mock`
+Auto-selection hierarchy: `agentic > transformers > mock`
 
 The two local providers carry heavy dependencies:
-- **`agentic-flow`**: 540MB (ONNX runtime, OpenTelemetry, Anthropic SDK)
+- **`agentic`**: 540MB (ONNX runtime, OpenTelemetry, OpenAI SDK)
 - **`@xenova/transformers`**: ~45MB (ONNX models, tokenizers)
 
 Both download large ONNX model files at runtime. For the CLI's core use cases (memory search, pattern matching, SONA learning), these are overkill.
@@ -625,14 +625,14 @@ export class RvfEmbeddingService extends BaseEmbeddingService {
 
 ```typescript
 // types.ts — add 'rvf' to union
-export type EmbeddingProvider = 'openai' | 'transformers' | 'mock' | 'agentic-flow' | 'rvf';
+export type EmbeddingProvider = 'openai' | 'transformers' | 'mock' | 'agentic' | 'rvf';
 ```
 
 #### Updated Auto-Selection Hierarchy
 
 ```typescript
 // createEmbeddingServiceAsync — new auto-select order
-// rvf > agentic-flow > transformers > mock
+// rvf > agentic > transformers > mock
 if (provider === 'auto') {
   // 1. Try RVF first (52KB WASM, zero external deps, always available)
   try {
@@ -642,7 +642,7 @@ if (provider === 'auto') {
     return service;
   } catch { /* fall through */ }
 
-  // 2. Try agentic-flow (540MB, ONNX-based, highest quality)
+  // 2. Try agentic (540MB, ONNX-based, highest quality)
   // ... existing code ...
 
   // 3. Try transformers (45MB, built-in)
@@ -658,12 +658,12 @@ if (provider === 'auto') {
 | Provider | Size | Quality | Speed | Use Case |
 |----------|------|---------|-------|----------|
 | **`rvf`** | 52KB | Hash-based (good for matching) | <1ms | CLI memory search, pattern matching, SONA |
-| **`agentic-flow`** | 540MB | Neural (best semantic) | ~10ms | Semantic search, RAG, document similarity |
-| **`transformers`** | 45MB | Neural (good semantic) | ~50ms | Local semantic search without agentic-flow |
+| **`agentic`** | 540MB | Neural (best semantic) | ~10ms | Semantic search, RAG, document similarity |
+| **`transformers`** | 45MB | Neural (good semantic) | ~50ms | Local semantic search without agentic |
 | **`openai`** | 0KB | Neural (best) | ~100ms | Production semantic search with API |
 | **`mock`** | 0KB | Random (testing only) | <0.1ms | Unit tests, development |
 
-The `rvf` provider is **not a replacement for neural embeddings** — it provides fast, deterministic, hash-based embeddings that are excellent for exact and near-exact matching. For semantic similarity, `agentic-flow` or `openai` remain preferred. The key advantage is that `rvf` is **always available** (52KB, no downloads) and provides HNSW-indexed search out of the box.
+The `rvf` provider is **not a replacement for neural embeddings** — it provides fast, deterministic, hash-based embeddings that are excellent for exact and near-exact matching. For semantic similarity, `agentic` or `openai` remain preferred. The key advantage is that `rvf` is **always available** (52KB, no downloads) and provides HNSW-indexed search out of the box.
 
 ---
 
@@ -835,7 +835,7 @@ export class PersistentSonaCoordinator extends SonaCoordinator {
 
 #### Integration with RuVectorProvider
 
-The existing `RuVectorProvider` in `@claude-flow/providers` gains RVF-backed persistence:
+The existing `RuVectorProvider` in `@ruflo/providers` gains RVF-backed persistence:
 
 ```typescript
 // ruvector-provider.ts — extended with RVF persistence
@@ -907,82 +907,82 @@ data/
 
 | Task | Package | Description |
 |------|---------|-------------|
-| P1.1 | `@claude-flow/memory` | Create `RvfBackend` implementing `IMemoryBackend` interface |
-| P1.2 | `@claude-flow/memory` | Map `KV_SEG` to memory entry CRUD operations |
-| P1.3 | `@claude-flow/memory` | Map `VEC_SEG` to embedding storage with typed quantization |
-| P1.4 | `@claude-flow/memory` | Map `INDEX_SEG` to HNSW search (replace brute-force cosine) |
-| P1.5 | `@claude-flow/memory` | Add `RvfBackend` to `DatabaseProvider` selection chain |
+| P1.1 | `@ruflo/memory` | Create `RvfBackend` implementing `IMemoryBackend` interface |
+| P1.2 | `@ruflo/memory` | Map `KV_SEG` to memory entry CRUD operations |
+| P1.3 | `@ruflo/memory` | Map `VEC_SEG` to embedding storage with typed quantization |
+| P1.4 | `@ruflo/memory` | Map `INDEX_SEG` to HNSW search (replace brute-force cosine) |
+| P1.5 | `@ruflo/memory` | Add `RvfBackend` to `DatabaseProvider` selection chain |
 
 ### Phase 2: Event Store Migration (Week 2-3)
 
 | Task | Package | Description |
 |------|---------|-------------|
-| P2.1 | `@claude-flow/shared` | Create `RvfEventLog` implementing `IEventStore` interface |
-| P2.2 | `@claude-flow/shared` | Map `LOG_SEG` to append-only event operations |
-| P2.3 | `@claude-flow/shared` | Map `SNAP_SEG` to snapshot save/load |
-| P2.4 | `@claude-flow/shared` | Move `sql.js` from `dependencies` to `optionalDependencies` |
+| P2.1 | `@ruflo/shared` | Create `RvfEventLog` implementing `IEventStore` interface |
+| P2.2 | `@ruflo/shared` | Map `LOG_SEG` to append-only event operations |
+| P2.3 | `@ruflo/shared` | Map `SNAP_SEG` to snapshot save/load |
+| P2.4 | `@ruflo/shared` | Move `sql.js` from `dependencies` to `optionalDependencies` |
 
 ### Phase 3: Embedding Cache Migration (Week 3)
 
 | Task | Package | Description |
 |------|---------|-------------|
-| P3.1 | `@claude-flow/embeddings` | Create `RvfEmbeddingCache` implementing `IPersistentCache` |
-| P3.2 | `@claude-flow/embeddings` | LRU eviction via RVF metadata (no SQL DELETE needed) |
-| P3.3 | `@claude-flow/embeddings` | TTL via RVF expiry flags (segment-level) |
-| P3.4 | `@claude-flow/embeddings` | Move `sql.js` from `dependencies` to `optionalDependencies` |
+| P3.1 | `@ruflo/embeddings` | Create `RvfEmbeddingCache` implementing `IPersistentCache` |
+| P3.2 | `@ruflo/embeddings` | LRU eviction via RVF metadata (no SQL DELETE needed) |
+| P3.3 | `@ruflo/embeddings` | TTL via RVF expiry flags (segment-level) |
+| P3.4 | `@ruflo/embeddings` | Move `sql.js` from `dependencies` to `optionalDependencies` |
 
 ### Phase 4: Migration Tooling (Week 3-4)
 
 | Task | Package | Description |
 |------|---------|-------------|
-| P4.1 | `@claude-flow/cli` | `ruflo migrate status --storage` — detect formats, report state |
-| P4.2 | `@claude-flow/cli` | `ruflo migrate run --storage` — batch migration with progress |
-| P4.3 | `@claude-flow/cli` | `ruflo migrate rollback --storage` — restore from `.bak` |
-| P4.4 | `@claude-flow/cli` | `ruflo migrate validate --storage` — integrity verification |
-| P4.5 | `@claude-flow/memory` | Automatic migration in `DatabaseProvider.openStorage()` |
+| P4.1 | `@ruflo/cli` | `ruflo migrate status --storage` — detect formats, report state |
+| P4.2 | `@ruflo/cli` | `ruflo migrate run --storage` — batch migration with progress |
+| P4.3 | `@ruflo/cli` | `ruflo migrate rollback --storage` — restore from `.bak` |
+| P4.4 | `@ruflo/cli` | `ruflo migrate validate --storage` — integrity verification |
+| P4.5 | `@ruflo/memory` | Automatic migration in `DatabaseProvider.openStorage()` |
 
 ### Phase 5: RVF Embedding Provider (Week 4)
 
 | Task | Package | Description |
 |------|---------|-------------|
-| P5.1 | `@claude-flow/embeddings` | Add `'rvf'` to `EmbeddingProvider` type union |
-| P5.2 | `@claude-flow/embeddings` | Implement `RvfEmbeddingService` with hash-based embeddings |
-| P5.3 | `@claude-flow/embeddings` | Update `createEmbeddingServiceAsync` auto-select: `rvf > agentic-flow > transformers > mock` |
-| P5.4 | `@claude-flow/embeddings` | Add `RvfEmbeddingConfig` interface |
-| P5.5 | `@claude-flow/embeddings` | Tests: RVF provider passes `IEmbeddingService` test suite |
+| P5.1 | `@ruflo/embeddings` | Add `'rvf'` to `EmbeddingProvider` type union |
+| P5.2 | `@ruflo/embeddings` | Implement `RvfEmbeddingService` with hash-based embeddings |
+| P5.3 | `@ruflo/embeddings` | Update `createEmbeddingServiceAsync` auto-select: `rvf > agentic > transformers > mock` |
+| P5.4 | `@ruflo/embeddings` | Add `RvfEmbeddingConfig` interface |
+| P5.5 | `@ruflo/embeddings` | Tests: RVF provider passes `IEmbeddingService` test suite |
 
 ### Phase 6: ruvLLM Learning Persistence (Week 4-5)
 
 | Task | Package | Description |
 |------|---------|-------------|
-| P6.1 | `@claude-flow/memory` | Create `RvfLearningStore` class (VEC + KV + LOG segments for SONA) |
-| P6.2 | `@claude-flow/memory` | Implement `savePatterns` / `loadPatterns` for ReasoningBank persistence |
-| P6.3 | `@claude-flow/memory` | Implement LoRA adapter serialization to RVF OVERLAY segment |
-| P6.4 | `@claude-flow/memory` | Implement EWC++ Fisher diagonal persistence to META_SEG |
-| P6.5 | `@claude-flow/providers` | Extend `RuVectorProvider` with RVF-backed `searchMemory()` |
-| P6.6 | `@claude-flow/memory` | Create `PersistentSonaCoordinator` wrapping `SonaCoordinator` |
+| P6.1 | `@ruflo/memory` | Create `RvfLearningStore` class (VEC + KV + LOG segments for SONA) |
+| P6.2 | `@ruflo/memory` | Implement `savePatterns` / `loadPatterns` for ReasoningBank persistence |
+| P6.3 | `@ruflo/memory` | Implement LoRA adapter serialization to RVF OVERLAY segment |
+| P6.4 | `@ruflo/memory` | Implement EWC++ Fisher diagonal persistence to META_SEG |
+| P6.5 | `@ruflo/providers` | Extend `RuVectorProvider` with RVF-backed `searchMemory()` |
+| P6.6 | `@ruflo/memory` | Create `PersistentSonaCoordinator` wrapping `SonaCoordinator` |
 
 ### Phase 7: Progressive Download System (Week 5-6)
 
 | Task | Package | Description |
 |------|---------|-------------|
-| P7.1 | `@claude-flow/cli` | Implement `ProgressiveDownloader` class |
-| P7.2 | `@claude-flow/cli` | Create capability manifest schema and seed registry |
-| P7.3 | `@claude-flow/cli` | `ruflo capabilities status/install/remove/list/prefetch` CLI commands |
-| P7.4 | `@claude-flow/embeddings` | Integrate progressive download into `createEmbeddingServiceAsync` |
-| P7.5 | `@claude-flow/providers` | Integrate progressive download into `RuVectorProvider` for LLM models |
-| P7.6 | `@claude-flow/cli` | Package Phase 1-2 capabilities as .rvf files on CDN/IPFS |
+| P7.1 | `@ruflo/cli` | Implement `ProgressiveDownloader` class |
+| P7.2 | `@ruflo/cli` | Create capability manifest schema and seed registry |
+| P7.3 | `@ruflo/cli` | `ruflo capabilities status/install/remove/list/prefetch` CLI commands |
+| P7.4 | `@ruflo/embeddings` | Integrate progressive download into `createEmbeddingServiceAsync` |
+| P7.5 | `@ruflo/providers` | Integrate progressive download into `RuVectorProvider` for LLM models |
+| P7.6 | `@ruflo/cli` | Package Phase 1-2 capabilities as .rvf files on CDN/IPFS |
 
 ### Phase 8: Dependency Cleanup (Week 6-7)
 
 | Task | Package | Description |
 |------|---------|-------------|
-| P8.1 | `@claude-flow/shared` | Remove `sql.js` from hard dependencies |
-| P8.2 | `@claude-flow/memory` | Remove `sql.js` from hard dependencies |
-| P8.3 | `@claude-flow/embeddings` | Remove `sql.js` from hard dependencies |
+| P8.1 | `@ruflo/shared` | Remove `sql.js` from hard dependencies |
+| P8.2 | `@ruflo/memory` | Remove `sql.js` from hard dependencies |
+| P8.3 | `@ruflo/embeddings` | Remove `sql.js` from hard dependencies |
 | P8.4 | All | Lazy-load sql.js only for legacy `.db` file reads |
 | P8.5 | All | Update Docker images to exclude sql.js entirely |
-| P8.6 | All | Move agentic-flow, @xenova/transformers to progressive downloads |
+| P8.6 | All | Move agentic, @xenova/transformers to progressive downloads |
 | P8.7 | Root | Publish updated packages to npm |
 
 ---
@@ -1095,18 +1095,18 @@ export class RvfEventLog implements IEventStore {
 
 | Package | Hard Deps | Total Install Weight |
 |---------|-----------|---------------------|
-| `@claude-flow/shared` | sql.js (18MB) | ~30MB |
-| `@claude-flow/memory` | sql.js (18MB, deduped) | ~5MB own |
-| `@claude-flow/embeddings` | sql.js (18MB, deduped) | ~3MB own |
+| `@ruflo/shared` | sql.js (18MB) | ~30MB |
+| `@ruflo/memory` | sql.js (18MB, deduped) | ~5MB own |
+| `@ruflo/embeddings` | sql.js (18MB, deduped) | ~3MB own |
 | **Total sql.js contribution** | | **~18MB (deduped)** |
 
 ### After (RVF)
 
 | Package | Hard Deps | Total Install Weight |
 |---------|-----------|---------------------|
-| `@claude-flow/shared` | `@ruvector/rvf` (WASM: 52KB, native: ~2MB) | ~13MB (−17MB) |
-| `@claude-flow/memory` | (uses shared's rvf) | ~5MB (no change) |
-| `@claude-flow/embeddings` | (uses shared's rvf) | ~3MB (no change) |
+| `@ruflo/shared` | `@ruvector/rvf` (WASM: 52KB, native: ~2MB) | ~13MB (−17MB) |
+| `@ruflo/memory` | (uses shared's rvf) | ~5MB (no change) |
+| `@ruflo/embeddings` | (uses shared's rvf) | ~3MB (no change) |
 | **Total RVF contribution** | | **52KB WASM or ~2MB native** |
 
 ### Net savings
@@ -1119,7 +1119,7 @@ export class RvfEventLog implements IEventStore {
 | Quantization | fp32 only | fp16/int8/int4/binary | **2-8x memory reduction** |
 | Docker lite image | 324MB | ~306MB | **−18MB** |
 | Cold start vectors | Load all into memory | Progressive 3-layer | **70% recall on first query** |
-| Embedding provider (auto) | 540MB (agentic-flow) | 52KB (rvf) | **−540MB for basic use** |
+| Embedding provider (auto) | 540MB (agentic) | 52KB (rvf) | **−540MB for basic use** |
 | SONA learning persistence | None (lost on restart) | RVF file | **Full cross-session continuity** |
 | LoRA adapter storage | Manual JSON export | Auto-persisted OVERLAY | **Zero-effort persistence** |
 
@@ -1133,7 +1133,7 @@ export class RvfEventLog implements IEventStore {
 | Migration corrupts data | Low | High | Atomic write (temp + rename); `.bak` always kept |
 | WASM fallback slower than sql.js | Medium | Low | RVF WASM kernel is 52KB vs 18MB; simpler = faster |
 | Users depend on SQLite tooling | Medium | Low | Legacy read support permanent; `--backend sqljs` flag |
-| `@ruvector/rvf` npm availability | Low | High | Vendor WASM binary into `@claude-flow/shared` as fallback |
+| `@ruvector/rvf` npm availability | Low | High | Vendor WASM binary into `@ruflo/shared` as fallback |
 
 ---
 
@@ -1159,7 +1159,7 @@ Integration Tests:
   ✓ CLI `migrate status/run/rollback/validate` commands
   ✓ Mixed-format project (some .db, some .rvf) works
   ✓ Auto-select picks 'rvf' provider when no heavy deps installed
-  ✓ Auto-select picks 'agentic-flow' when available (higher quality)
+  ✓ Auto-select picks 'agentic' when available (higher quality)
   ✓ PersistentSonaCoordinator survives process restart with patterns intact
   ✓ RuVectorProvider.searchMemory works offline via RVF (no HTTP server)
 
@@ -1177,7 +1177,7 @@ Backward Compatibility Tests:
   ✓ --backend sqljs flag still works (lazy-loads sql.js)
   ✓ --backend json flag still works
   ✓ Docker image without sql.js starts and serves MCP
-  ✓ Existing 'agentic-flow' provider unaffected by new 'rvf' provider
+  ✓ Existing 'agentic' provider unaffected by new 'rvf' provider
 ```
 
 ---
@@ -1194,7 +1194,7 @@ Backward Compatibility Tests:
 - **Unified format** — one `.rvf` file replaces separate `.db` + index files
 - **COW branching** — cheap snapshots for event sourcing (<3ms)
 - **Docker images shrink** further when sql.js is fully eliminated
-- **Zero-dep local embeddings** — 52KB RVF provider replaces 540MB agentic-flow for basic use
+- **Zero-dep local embeddings** — 52KB RVF provider replaces 540MB agentic for basic use
 - **Persistent learning** — SONA patterns, LoRA adapters, EWC weights survive restarts
 - **Offline intelligence** — `RuVectorProvider.searchMemory` works without HTTP server
 
@@ -1229,7 +1229,7 @@ RVF's segment model enables a **progressive download** approach where capabiliti
 
 ```
 Phase 0: Core CLI (always installed)
-  ruflo (5KB) → @claude-flow/cli (9MB) → @claude-flow/shared (~13MB with RVF)
+  ruflo (5KB) → @ruflo/cli (9MB) → @ruflo/shared (~13MB with RVF)
   Total: ~22MB — MCP server, memory, events, CLI commands
 
 Phase 1: Lightweight Embeddings (downloaded on first use)

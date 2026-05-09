@@ -1,19 +1,19 @@
 /**
- * @claude-flow/teammate-plugin
+ * @ruflo/teammate-plugin
  *
- * Native TeammateTool integration plugin for Claude Flow.
- * Bridges Claude Code v2.1.19+ multi-agent capabilities with Claude Flow.
+ * Native TeammateTool integration plugin for Ruflo.
+ * Bridges Codex v2.1.19+ multi-agent capabilities with Ruflo.
  *
  * @example
  * ```typescript
- * import { createTeammateBridge, TEAMMATE_MCP_TOOLS } from '@claude-flow/teammate-plugin';
+ * import { createTeammateBridge, TEAMMATE_MCP_TOOLS } from '@ruflo/teammate-plugin';
  *
  * // Initialize bridge
  * const bridge = await createTeammateBridge();
  *
  * // Check compatibility
  * const version = bridge.getVersionInfo();
- * console.log(`Claude Code: ${version.claudeCode}, Compatible: ${version.compatible}`);
+ * console.log(`Codex: ${version.codexCode}, Compatible: ${version.compatible}`);
  *
  * // Create team
  * const team = await bridge.spawnTeam({
@@ -32,9 +32,9 @@
  * });
  * ```
  *
- * @module @claude-flow/teammate-plugin
+ * @module @ruflo/teammate-plugin
  * @version 1.0.0-alpha.1
- * @requires Claude Code >= 2.1.19
+ * @requires Codex >= 2.1.19
  */
 
 // Core exports
@@ -95,7 +95,7 @@ export {
   // MCP param limits
   MCP_PARAM_LIMITS,
   // Version & Security
-  MINIMUM_CLAUDE_CODE_VERSION,
+  MINIMUM_CODEX_VERSION,
   SECURITY_LIMITS,
   DEFAULT_PLUGIN_CONFIG,
 

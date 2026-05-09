@@ -9,7 +9,7 @@ Ingests market data from REST APIs and WebSocket feeds, normalizes to OHLCV vect
 ## Installation
 
 ```bash
-claude --plugin-dir plugins/ruflo-market-data
+codex --plugin-dir plugins/ruflo-market-data
 ```
 
 ## Agents
@@ -61,7 +61,7 @@ Each pattern is encoded as a 64-dimension padded vector for HNSW indexing.
 
 ## Compatibility
 
-- **CLI:** pinned to `@claude-flow/cli` v3.6 major+minor.
+- **CLI:** pinned to `@ruflo/cli` v3.6 major+minor.
 - **Verification:** `bash plugins/ruflo-market-data/scripts/smoke.sh` is the contract.
 
 ## Namespace coordination
@@ -71,7 +71,7 @@ This plugin owns two AgentDB namespaces (kebab-case, follows the convention from
 - `market-data` — normalized OHLCV vectors per symbol+date
 - `market-patterns` — detected candlestick patterns with reliability scores
 
-Both accessed via `memory_*` (namespace-routed). Reserved namespaces (`pattern`, `claude-memories`, `default`) MUST NOT be shadowed.
+Both accessed via `memory_*` (namespace-routed). Reserved namespaces (`pattern`, `codex-memories`, `default`) MUST NOT be shadowed.
 
 > **Routing note:** Earlier versions of these skills used `agentdb_hierarchical-*` and `agentdb_pattern-*` with namespace arguments — those tool families route by tier/ReasoningBank and ignore namespace strings. ADR-0001 fixed the skills to use `memory_*` for namespaced reads/writes.
 

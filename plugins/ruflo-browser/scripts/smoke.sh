@@ -16,21 +16,21 @@ bad()  { printf "FAIL: %s\n" "$1"; FAIL=$((FAIL+1)); }
 
 # 1. plugin.json version + keywords
 step "plugin.json declares version 0.2.0 with new keywords"
-v=$(grep -E '"version"[[:space:]]*:' "$ROOT/.claude-plugin/plugin.json" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+v=$(grep -E '"version"[[:space:]]*:' "$ROOT/.codex-plugin/plugin.json" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
 if [[ "$v" != "0.2.0" ]]; then
   bad "expected 0.2.0, got '$v'"
 else
   missing=""
   for kw in rvf replay trajectory agentdb aidefence; do
-    grep -q "\"$kw\"" "$ROOT/.claude-plugin/plugin.json" || missing="$missing $kw"
+    grep -q "\"$kw\"" "$ROOT/.codex-plugin/plugin.json" || missing="$missing $kw"
   done
   [[ -z "$missing" ]] && ok || bad "missing keywords:$missing"
 fi
 
 # 2. All 8 skills present
-step "all 8 skills (browser-record/replay/extract/login/form-fill/screenshot-diff/auth-flow/test) exist"
+step "all 8 skills (browser-record/replay/extract/login/form-fill/screenshot-diff/auth/test) exist"
 missing=""
-for s in browser-record browser-replay browser-extract browser-login browser-form-fill browser-screenshot-diff browser-auth-flow browser-test; do
+for s in browser-record browser-replay browser-extract browser-login browser-form-fill browser-screenshot-diff browser-auth browser-test; do
   [[ -f "$ROOT/skills/$s/SKILL.md" ]] || missing="$missing $s"
 done
 [[ -z "$missing" ]] && ok || bad "missing:$missing"
@@ -106,14 +106,14 @@ fi
 # 11. README enumerates all 8 skills + verb dispatcher
 step "README enumerates all 8 skills + verb dispatcher"
 missing=""
-for tok in browser-record browser-replay browser-extract browser-login browser-form-fill browser-screenshot-diff browser-auth-flow browser-test 'ls' 'doctor'; do
+for tok in browser-record browser-replay browser-extract browser-login browser-form-fill browser-screenshot-diff browser-auth browser-test 'ls' 'doctor'; do
   grep -q "$tok" "$ROOT/README.md" || missing="$missing $tok"
 done
 [[ -z "$missing" ]] && ok || bad "missing:$missing"
 
 # 12. The 5 browser_session_* lifecycle tools are present in the CLI source
 step "5 browser_session_* lifecycle tools registered in mcp-tools"
-TOOLS_FILE="$ROOT/../../v3/@claude-flow/cli/src/mcp-tools/browser-session-tools.ts"
+TOOLS_FILE="$ROOT/../../v3/@ruflo/cli/src/mcp-tools/browser-session-tools.ts"
 if [[ ! -f "$TOOLS_FILE" ]]; then
   bad "browser-session-tools.ts not found at $TOOLS_FILE"
 else
@@ -124,7 +124,7 @@ else
   if [[ -n "$missing" ]]; then
     bad "missing tool definitions:$missing"
   else
-    grep -q 'browserSessionTools' "$ROOT/../../v3/@claude-flow/cli/src/mcp-client.ts" \
+    grep -q 'browserSessionTools' "$ROOT/../../v3/@ruflo/cli/src/mcp-client.ts" \
       && ok || bad "browserSessionTools not imported in mcp-client.ts"
   fi
 fi

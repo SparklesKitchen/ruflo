@@ -1,10 +1,10 @@
-# Claude-Flow v3: Hooks & Learning Integration
+# Codex-Flow v3: Hooks & Learning Integration
 
 ## Executive Summary
 
-**Key Finding**: `agentic-flow@alpha` provides nearly everything needed for a self-optimizing learning system. Combined with Claude Code's hooks API, we have a complete solution.
+**Key Finding**: `agentic@alpha` provides nearly everything needed for a self-optimizing learning system. Combined with Codex's hooks API, we have a complete solution.
 
-### What agentic-flow@alpha Already Provides
+### What agentic@alpha Already Provides
 
 | Capability | Status | Details |
 |------------|--------|---------|
@@ -15,7 +15,7 @@
 | Attention Mechanisms | ✓ Ready | MoE, Flash, Graph, Hyperbolic |
 | Memory Compression | ✓ Ready | 50-97% memory savings |
 
-### What Claude Code Provides
+### What Codex Provides
 
 | Capability | Status | Details |
 |------------|--------|---------|
@@ -26,7 +26,7 @@
 
 ---
 
-## 1. agentic-flow@alpha Hook Inventory
+## 1. agentic@alpha Hook Inventory
 
 ### 1.1 Original Hook Tools (10)
 
@@ -81,7 +81,7 @@ securityScan()              // Parallel SAST
 
 ## 2. Multi-Algorithm Learning Engine
 
-agentic-flow@alpha includes 9 specialized RL algorithms automatically selected by task type:
+agentic@alpha includes 9 specialized RL algorithms automatically selected by task type:
 
 | Task Type | Algorithm | Reason |
 |-----------|-----------|--------|
@@ -98,7 +98,7 @@ agentic-flow@alpha includes 9 specialized RL algorithms automatically selected b
 ### Usage
 
 ```typescript
-import { learnFromEpisode, getAlgorithmForTask } from 'agentic-flow/hooks';
+import { learnFromEpisode, getAlgorithmForTask } from 'agentic/hooks';
 
 // Automatic algorithm selection
 const { algorithm, reason } = getAlgorithmForTask('agent-routing');
@@ -117,11 +117,11 @@ await learnFromEpisode(
 
 ---
 
-## 3. Claude Code Hook Integration
+## 3. Codex Hook Integration
 
 ### 3.1 Hook Event Mapping
 
-| Claude Code Event | agentic-flow Tool | Purpose |
+| Codex Event | agentic Tool | Purpose |
 |-------------------|-------------------|---------|
 | `PreToolUse` | `hook_pre_command`, `hook_pre_edit` | Predict & prevent errors |
 | `PostToolUse` | `hook_post_command`, `hook_post_edit` | Learn from outcomes |
@@ -140,14 +140,14 @@ await learnFromEpisode(
         "matcher": "Bash",
         "hooks": [{
           "type": "command",
-          "command": "npx agentic-flow@alpha hooks pre-command --validate --predict --cache"
+          "command": "npx agentic@alpha hooks pre-command --validate --predict --cache"
         }]
       },
       {
         "matcher": "Edit|Write",
         "hooks": [{
           "type": "command",
-          "command": "npx agentic-flow@alpha hooks pre-edit --analyze-impact --check-patterns"
+          "command": "npx agentic@alpha hooks pre-edit --analyze-impact --check-patterns"
         }]
       }
     ],
@@ -156,14 +156,14 @@ await learnFromEpisode(
         "matcher": "Bash",
         "hooks": [{
           "type": "command",
-          "command": "npx agentic-flow@alpha hooks post-command --learn --store-pattern --batch"
+          "command": "npx agentic@alpha hooks post-command --learn --store-pattern --batch"
         }]
       },
       {
         "matcher": "Edit|Write",
         "hooks": [{
           "type": "command",
-          "command": "npx agentic-flow@alpha hooks post-edit --extract-patterns --train-neural"
+          "command": "npx agentic@alpha hooks post-edit --extract-patterns --train-neural"
         }]
       }
     ],
@@ -171,7 +171,7 @@ await learnFromEpisode(
       {
         "hooks": [{
           "type": "command",
-          "command": "npx agentic-flow@alpha hooks session-start --restore-memory --warm-cache"
+          "command": "npx agentic@alpha hooks session-start --restore-memory --warm-cache"
         }]
       }
     ],
@@ -179,7 +179,7 @@ await learnFromEpisode(
       {
         "hooks": [{
           "type": "command",
-          "command": "npx agentic-flow@alpha hooks session-end --consolidate --export-metrics"
+          "command": "npx agentic@alpha hooks session-end --consolidate --export-metrics"
         }]
       }
     ]
@@ -191,7 +191,7 @@ await learnFromEpisode(
 
 ## 4. TensorCompress Tiered Storage
 
-agentic-flow@alpha includes automatic memory optimization:
+agentic@alpha includes automatic memory optimization:
 
 | Access Frequency | Compression Tier | Memory Savings |
 |------------------|------------------|----------------|
@@ -211,12 +211,12 @@ agentic-flow@alpha includes automatic memory optimization:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Claude Code Hook Events                       │
+│                    Codex Hook Events                       │
 │  PreToolUse → SessionStart → UserPrompt → PostToolUse → Stop    │
 └───────────────────────────┬─────────────────────────────────────┘
                             │
 ┌───────────────────────────▼─────────────────────────────────────┐
-│              agentic-flow@alpha Intelligence Bridge              │
+│              agentic@alpha Intelligence Bridge              │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐             │
 │  │ 9 RL Algos  │  │ Trajectory  │  │ Pattern     │             │
 │  │ Auto-Select │  │ Tracking    │  │ Storage     │             │
@@ -288,8 +288,8 @@ cf_rl_algorithm_usage           # Algorithm selection frequency
 ### 6.2 Built-in Dashboard
 
 ```bash
-npx agentic-flow@alpha metrics --format prometheus
-npx agentic-flow@alpha stats --learning
+npx agentic@alpha metrics --format prometheus
+npx agentic@alpha stats --learning
 ```
 
 ---
@@ -299,22 +299,22 @@ npx agentic-flow@alpha stats --learning
 ### 7.1 Minimal Setup (Learning Only)
 
 ```bash
-npm install agentic-flow@alpha
-npx agentic-flow@alpha hooks install --learning
+npm install agentic@alpha
+npx agentic@alpha hooks install --learning
 ```
 
 ### 7.2 Full Setup (All Features)
 
 ```bash
-npm install agentic-flow@alpha
-npx agentic-flow@alpha hooks install --all --parallel
+npm install agentic@alpha
+npx agentic@alpha hooks install --all --parallel
 
-# Configure Claude Code hooks
-cat >> ~/.claude/settings.json << 'EOF'
+# Configure Codex hooks
+cat >> ~/.codex/settings.json << 'EOF'
 {
   "hooks": {
-    "PreToolUse": [{"matcher": "Bash|Edit", "hooks": [{"type": "command", "command": "npx agentic-flow@alpha hooks pre-task"}]}],
-    "PostToolUse": [{"matcher": "Bash|Edit", "hooks": [{"type": "command", "command": "npx agentic-flow@alpha hooks post-task --learn"}]}]
+    "PreToolUse": [{"matcher": "Bash|Edit", "hooks": [{"type": "command", "command": "npx agentic@alpha hooks pre-task"}]}],
+    "PostToolUse": [{"matcher": "Bash|Edit", "hooks": [{"type": "command", "command": "npx agentic@alpha hooks post-task --learn"}]}]
   }
 }
 EOF
@@ -322,7 +322,7 @@ EOF
 
 ---
 
-## 8. What agentic-flow@alpha Provides (Summary)
+## 8. What agentic@alpha Provides (Summary)
 
 ### Already Implemented:
 - [x] 19 hook tools (10 original + 9 intelligence)
@@ -336,8 +336,8 @@ EOF
 - [x] Speculative embedding for related files
 - [x] AST analysis, complexity metrics, security scanning
 
-### Claude-Flow v3 Needs to Add:
-- [ ] Claude Code hook configuration adapter
+### Codex-Flow v3 Needs to Add:
+- [ ] Codex hook configuration adapter
 - [ ] OpenTelemetry metric export wrapper
 - [ ] Cross-session learning persistence
 - [ ] Swarm coordination integration
@@ -347,7 +347,7 @@ EOF
 
 ## 9. Recommendation
 
-**Use agentic-flow@alpha as the learning backbone for Claude-Flow v3.**
+**Use agentic@alpha as the learning backbone for Codex-Flow v3.**
 
 The package already provides:
 - Complete RL learning system (9 algorithms)
@@ -356,8 +356,8 @@ The package already provides:
 - Parallel processing (7 workers)
 - SQLite persistence (cross-session)
 
-Claude-Flow v3 should focus on:
-1. **Thin integration layer** - Connect Claude Code hooks to agentic-flow hooks
+Codex-Flow v3 should focus on:
+1. **Thin integration layer** - Connect Codex hooks to agentic hooks
 2. **Configuration UI** - Let users customize learning parameters
 3. **Swarm coordination** - Use learning to optimize swarm topology selection
 4. **Metrics dashboard** - Visualize learning progress
@@ -365,4 +365,4 @@ Claude-Flow v3 should focus on:
 ---
 
 *Document created: 2026-01-03*
-*agentic-flow version: 2.0.1-alpha.50*
+*agentic version: 2.0.1-alpha.50*

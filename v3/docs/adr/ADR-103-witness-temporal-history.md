@@ -2,7 +2,7 @@
 
 **Status**: Accepted
 **Date**: 2026-05-08
-**Version**: ruflo-core@0.2.1+ / @claude-flow/cli@3.7.0-alpha.18+
+**Version**: ruflo-core@0.2.1+ / @ruflo/cli@3.7.0-alpha.18+
 **Related**: ADR-102 (CI smoke harness), #1867, #1859, #1862, project memory `project_verification_process.md`
 
 ## Context
@@ -30,7 +30,7 @@ The regen logic was originally inline in shell heredocs (per the
 `scripts/regen-witness.mjs`. Both forms hard-code ruflo's paths and
 fix list. Other projects can't adopt the witness pattern without
 copy-pasting and rewriting. Given that several downstream consumers
-of `ruflo` and `@claude-flow/cli` ship their own fixes, this is a
+of `ruflo` and `@ruflo/cli` ship their own fixes, this is a
 real adoption blocker.
 
 ## Decision
@@ -78,7 +78,7 @@ The witness scripts move to `plugins/ruflo-core/scripts/witness/`:
 | `verify.mjs` | Validate signature + markers against the live tree |
 | `history.mjs` | Query the temporal log: `summary`, `regressions`, `timeline`, `list` |
 
-Plus exposure as Claude Code surface area:
+Plus exposure as Codex surface area:
 
 | File | Purpose |
 |---|---|
@@ -158,7 +158,7 @@ to a small set of commits to read.
 - No cross-project history aggregation. Each project's JSONL is local.
   Multi-project rollups would need a separate ingestion service.
 - The `verify.mjs` script duplicates a small amount of logic with
-  `v3/@claude-flow/cli/src/commands/verify.ts`. Acceptable for now
+  `v3/@ruflo/cli/src/commands/verify.ts`. Acceptable for now
   (the standalone needs to work without the CLI installed); could be
   unified later if both move to the plugin.
 
@@ -166,7 +166,7 @@ to a small set of commits to read.
 
 - `plugins/ruflo-core/skills/witness/SKILL.md` — adoption guide
 - `plugins/ruflo-core/agents/witness-curator.md` — agent definition
-- `~/.claude/.../project_verification_process.md` — original inline
+- `~/.codex/.../project_verification_process.md` — original inline
   regen process; superseded by this ADR's plugin-extracted form
 - ADR-102 — CI smoke harness pattern (this ADR generalizes the
   smoke-test layer to a fully temporal verification layer)

@@ -4,7 +4,7 @@ title: ruflo-rvf plugin contract — pinning, namespace coordination, RVF cross-
 status: Proposed
 date: 2026-05-04
 authors:
-  - reviewer (Claude Code)
+  - reviewer (Codex)
 tags: [plugin, rvf, session-persistence, portable-memory, namespace, smoke-test]
 ---
 

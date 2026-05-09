@@ -1,7 +1,7 @@
 /**
  * Prime Radiant Plugin - Entry Point
  *
- * Mathematical AI Interpretability for Claude Flow V3
+ * Mathematical AI Interpretability for Ruflo V3
  *
  * Provides:
  * - Sheaf Laplacian coherence detection (CohomologyEngine)
@@ -259,15 +259,15 @@ export const pluginMetadata = {
     'Mathematical AI interpretability with sheaf cohomology, spectral analysis, and causal inference',
   author: 'rUv',
   license: 'MIT',
-  repository: 'https://github.com/ruvnet/claude-flow',
+  repository: 'https://github.com/SparklesKitchen/ruflo',
   wasmSize: '92KB',
   dependencies: {
     required: [
-      '@claude-flow/memory',
-      '@claude-flow/security',
-      '@claude-flow/coordination',
+      '@ruflo/memory',
+      '@ruflo/security',
+      '@ruflo/coordination',
     ],
-    optional: ['@claude-flow/embeddings', '@claude-flow/aidefence'],
+    optional: ['@ruflo/embeddings', '@ruflo/aidefence'],
   },
   capabilities: [
     'coherence-checking',

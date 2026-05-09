@@ -1,4 +1,4 @@
-# Claude-Flow v3: Optimized Implementation Plan
+# Codex-Flow v3: Optimized Implementation Plan
 
 ## Core Priorities
 
@@ -56,9 +56,9 @@ export class SecureFoundation {
 // package.json - Updated secure dependencies
 {
   "dependencies": {
-    "@anthropic-ai/claude-code": "^2.0.31",
+    "@openai-ai/codex-code": "^2.0.31",
     "@modelcontextprotocol/sdk": "^1.24.0",
-    "agentic-flow": "^2.0.1-alpha.0",
+    "agentic": "^2.0.1-alpha.0",
     "bcrypt": "^5.1.1",
     "zod": "^3.22.0"
   }
@@ -92,11 +92,11 @@ export type InitConfig = z.infer<typeof InitConfigSchema>;
 
 ## 2. Speed Optimization
 
-### 2.1 agentic-flow Flash Attention Integration
+### 2.1 agentic Flash Attention Integration
 
 ```typescript
 // src/v3/speed/flash-attention-coordinator.ts
-import { EnhancedAgentDBWrapper, AttentionCoordinator } from 'agentic-flow/core';
+import { EnhancedAgentDBWrapper, AttentionCoordinator } from 'agentic/core';
 
 export class FlashCoordinator {
   private wrapper: EnhancedAgentDBWrapper;
@@ -479,7 +479,7 @@ export class MemoryManager {
 ```typescript
 // src/v3/compatibility/config-migration.ts
 export async function autoMigrateConfig(): Promise<void> {
-  const configPath = '.claude/config.json';
+  const configPath = '.codex/config.json';
 
   if (!await fileExists(configPath)) {
     // Fresh install - create v3 config
@@ -560,7 +560,7 @@ export class InitController {
       // Step 2: Directory structure
       results.push(await this.initDirectories());
 
-      // Step 3: agentic-flow integration
+      // Step 3: agentic integration
       results.push(await this.initAgenticFlow());
 
       // Step 4: Mode-specific initialization
@@ -594,7 +594,7 @@ export class InitController {
     await this.security.validateEnvironment();
 
     // Check for secure token
-    if (!process.env.CLAUDE_FLOW_TOKEN) {
+    if (!process.env.RUFLO_TOKEN) {
       const token = this.security.generateSecureToken();
       console.log('Generated secure token - add to environment');
     }
@@ -604,14 +604,14 @@ export class InitController {
 
   private async initDirectories(): Promise<InitStepResult> {
     const dirs = [
-      '.claude',
-      '.claude/agents',
-      '.claude/commands',
-      '.claude/skills',
-      '.claude/checkpoints/active',
-      '.claude-flow/coordination',
-      '.claude-flow/training',
-      '.claude-flow/metrics'
+      '.codex',
+      '.codex/agents',
+      '.codex/commands',
+      '.codex/skills',
+      '.codex/checkpoints/active',
+      '.codex/coordination',
+      '.codex/training',
+      '.codex/metrics'
     ];
 
     for (const dir of dirs) {
@@ -623,7 +623,7 @@ export class InitController {
 
   private async initAgenticFlow(): Promise<InitStepResult> {
     if (!this.config.agenticFlow?.enabled) {
-      return { step: 'agentic-flow', success: true, skipped: true };
+      return { step: 'agentic', success: true, skipped: true };
     }
 
     await Promise.all([
@@ -631,7 +631,7 @@ export class InitController {
       this.sona.initialize()
     ]);
 
-    return { step: 'agentic-flow', success: true };
+    return { step: 'agentic', success: true };
   }
 
   private async initMode(): Promise<InitStepResult> {
@@ -846,14 +846,14 @@ import { InitController } from '../init/init-controller';
 
 export function createInitCommand(): Command {
   return new Command('init')
-    .description('Initialize Claude-Flow v3 with enhanced capabilities')
+    .description('Initialize Codex-Flow v3 with enhanced capabilities')
     .option('-m, --mode <mode>', 'Initialization mode', 'standard')
     .option('--sona <profile>', 'SONA learning profile', 'balanced')
     .option('--no-learning', 'Disable self-learning')
     .option('--attention <type>', 'Attention mechanism', 'flash')
     .option('--migrate', 'Auto-migrate from v2')
     .action(async (options) => {
-      console.log('🚀 Initializing Claude-Flow v3...\n');
+      console.log('🚀 Initializing Codex-Flow v3...\n');
 
       const controller = new InitController({
         mode: options.mode,
@@ -891,7 +891,7 @@ export function createInitCommand(): Command {
 
 ```bash
 # Day 1-2: Security fixes
-npm update @anthropic-ai/claude-code@^2.0.31
+npm update @openai-ai/codex-code@^2.0.31
 npm update @modelcontextprotocol/sdk@^1.24.0
 npm install bcrypt zod
 
@@ -907,8 +907,8 @@ npm install bcrypt zod
 ### Phase 2: Speed Integration (Week 2)
 
 ```bash
-# Day 1-2: agentic-flow upgrade
-npm install agentic-flow@2.0.1-alpha.0
+# Day 1-2: agentic upgrade
+npm install agentic@2.0.1-alpha.0
 
 # Day 3-4: Flash Attention
 # - FlashCoordinator implementation
@@ -956,21 +956,21 @@ npm run test:compatibility
 
 ```bash
 # Fresh v3 installation
-npx claude-flow init --mode sparc --sona research
+npx ruflo init --mode sparc --sona research
 
 # With all features
-npx claude-flow init --mode enterprise --sona research --attention flash
+npx ruflo init --mode enterprise --sona research --attention flash
 
 # Minimal (fast startup)
-npx claude-flow init --mode standard --sona real-time
+npx ruflo init --mode standard --sona real-time
 
 # Migrate from v2
-npx claude-flow init --migrate
+npx ruflo init --migrate
 ```
 
 ```typescript
 // v3 API usage
-import { InitController, SwarmCoordinator, SONAManager } from 'claude-flow/v3';
+import { InitController, SwarmCoordinator, SONAManager } from 'codex/v3';
 
 // Initialize with learning
 const init = new InitController({

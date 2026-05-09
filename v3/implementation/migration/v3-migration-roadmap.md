@@ -1,6 +1,6 @@
-# Claude-Flow v3 Migration Roadmap
+# Codex-Flow v3 Migration Roadmap
 
-**Project:** Claude-Flow v2.x → v3.0 Migration
+**Project:** Codex-Flow v2.x → v3.0 Migration
 **Timeline:** 20 weeks (5 months)
 **Team Size:** 2-3 core developers + community contributors
 **Start Date:** 2026-01-06 (planned)
@@ -24,14 +24,14 @@
 
 ### Vision
 
-Transform Claude-Flow from a monolithic orchestration system into a modular, agentic-flow-native platform with clear domain boundaries, plugin extensibility, and superior performance.
+Transform Codex-Flow from a monolithic orchestration system into a modular, agentic-native platform with clear domain boundaries, plugin extensibility, and superior performance.
 
 ### Key Objectives
 
 1. **Simplify:** Reduce codebase by 40% (130k → 78k lines)
 2. **Modularize:** Organize by domain (DDD), not technical layer
 3. **Extend:** Plugin system for optional features
-4. **Integrate:** Native agentic-flow foundation
+4. **Integrate:** Native agentic foundation
 5. **Optimize:** 5x performance improvement on key operations
 6. **Maintain:** 100% feature parity with v2.x
 
@@ -287,7 +287,7 @@ export class Logger implements ILogger {
 ```typescript
 // src-v3/infrastructure/config/config-manager.ts
 export class ConfigManager {
-  private config: ClaudeFlowConfig;
+  private config: CodexFlowConfig;
 
   load(path?: string): Promise<void>;
   get<T>(key: string): T;
@@ -324,7 +324,7 @@ export class ConfigManager {
 **Plugin Interface (Day 1)**
 ```typescript
 // src-v3/infrastructure/plugins/plugin-interface.ts
-export interface ClaudeFlowPlugin {
+export interface CodexFlowPlugin {
   readonly name: string;
   readonly version: string;
   readonly dependencies?: string[];
@@ -356,10 +356,10 @@ export interface PluginContext {
 ```typescript
 // src-v3/infrastructure/plugins/plugin-loader.ts
 export class PluginLoader {
-  private plugins = new Map<string, ClaudeFlowPlugin>();
+  private plugins = new Map<string, CodexFlowPlugin>();
   private initialized = new Set<string>();
 
-  async loadPlugin(plugin: ClaudeFlowPlugin): Promise<void> {
+  async loadPlugin(plugin: CodexFlowPlugin): Promise<void> {
     // Validate plugin
     this.validatePlugin(plugin);
 
@@ -388,15 +388,15 @@ export class PluginLoader {
     this.initialized.delete(name);
   }
 
-  getPlugin(name: string): ClaudeFlowPlugin | undefined;
-  listPlugins(): ClaudeFlowPlugin[];
+  getPlugin(name: string): CodexFlowPlugin | undefined;
+  listPlugins(): CodexFlowPlugin[];
 }
 ```
 
 **Example Plugin (Day 4)**
 ```typescript
 // src-v3/plugins/example/example-plugin.ts
-export class ExamplePlugin implements ClaudeFlowPlugin {
+export class ExamplePlugin implements CodexFlowPlugin {
   readonly name = 'example';
   readonly version = '1.0.0';
 
@@ -472,7 +472,7 @@ describe('ExamplePlugin', () => {
 **CI/CD Setup (Day 1-2)**
 ```yaml
 # .github/workflows/v3-ci.yml
-name: Claude-Flow v3 CI
+name: Codex-Flow v3 CI
 
 on:
   push:
@@ -581,7 +581,7 @@ Step-by-step guide for migrating from v2 to v3
 
 ## Automated Migration Tool
 ```bash
-npx claude-flow migrate v2-to-v3
+npx ruflo migrate v2-to-v3
 ```
 
 ## Common Issues
@@ -723,7 +723,7 @@ export class AgentLifecycleService {
     // Create domain model
     const agent = Agent.create(template);
 
-    // Use agentic-flow to spawn actual agent
+    // Use agentic to spawn actual agent
     await this.agenticFlowClient.spawnAgent({
       id: agent.id.value,
       type: template.type,
@@ -752,7 +752,7 @@ export class AgentLifecycleService {
       throw new AgentNotFoundError(agentId);
     }
 
-    // Terminate in agentic-flow
+    // Terminate in agentic
     await this.agenticFlowClient.terminateAgent(agentId.value);
 
     // Terminate in domain
@@ -961,7 +961,7 @@ describe('Agent', () => {
 
 // Service tests
 describe('AgentLifecycleService', () => {
-  it('should spawn agent via agentic-flow');
+  it('should spawn agent via agentic');
   it('should save agent to repository');
   it('should publish domain events');
   it('should handle spawn errors');
@@ -983,7 +983,7 @@ describe('Agent Lifecycle Integration', () => {
 - [ ] CLI commands: spawn, terminate, list, health
 - [ ] MCP tools: agent/spawn, agent/terminate, agent/health
 - [ ] Comprehensive tests (>85% coverage)
-- [ ] Integration with agentic-flow
+- [ ] Integration with agentic
 
 ---
 
@@ -1019,7 +1019,7 @@ describe('Agent Lifecycle Integration', () => {
 - Implement domains
 - Write tests
 - Performance optimization
-- Integration with agentic-flow
+- Integration with agentic
 
 **DevOps/Infrastructure (0.5)**
 - CI/CD setup
@@ -1054,7 +1054,7 @@ describe('Agent Lifecycle Integration', () => {
 
 | Risk | Probability | Impact | Mitigation |
 |------|------------|--------|------------|
-| agentic-flow breaking changes | Medium | High | Pin version, maintain adapter layer |
+| agentic breaking changes | Medium | High | Pin version, maintain adapter layer |
 | Performance regression | Low | High | Continuous benchmarking |
 | Migration complexity | High | Medium | Automated tools, gradual rollout |
 | Plugin system bugs | Medium | Medium | Extensive testing, beta program |
@@ -1134,7 +1134,7 @@ describe('Agent Lifecycle Integration', () => {
 
 **Reduction Strategies:**
 1. Eliminate duplicate code (4 coordination systems → 1)
-2. Leverage agentic-flow (reduce orchestration code)
+2. Leverage agentic (reduce orchestration code)
 3. Decompose large files (index.ts 108KB → multiple small files)
 4. Remove dead code
 5. Plugin-ize optional features
@@ -1186,7 +1186,7 @@ npm run benchmark:compare -- --base=v2 --compare=v3
 
 # Backup v2 data
 echo "Backing up v2 data..."
-cp claude-flow.db claude-flow-v2-backup.db
+cp codex.db codex-v2-backup.db
 
 # Migrate configuration
 echo "Migrating configuration..."
@@ -1208,7 +1208,7 @@ echo "Migration complete! Review logs at migration.log"
 # Migrating from v2 to v3
 
 ## Overview
-This guide helps you migrate your claude-flow installation from v2 to v3.
+This guide helps you migrate your codex installation from v2 to v3.
 
 ## Prerequisites
 - Node.js 20+
@@ -1218,39 +1218,39 @@ This guide helps you migrate your claude-flow installation from v2 to v3.
 ## Step 1: Backup
 ```bash
 # Backup data
-cp claude-flow.db backup/
-cp -r .claude/ backup/
+cp codex.db backup/
+cp -r .codex/ backup/
 ```
 
 ## Step 2: Install v3
 ```bash
-npm install claude-flow@3.0.0
+npm install codex@3.0.0
 ```
 
 ## Step 3: Migrate Config
 ```bash
-npx claude-flow migrate config
+npx ruflo migrate config
 ```
 
 ## Step 4: Migrate Data
 ```bash
-npx claude-flow migrate data
+npx ruflo migrate data
 ```
 
 ## Step 5: Test
 ```bash
-npx claude-flow test-migration
+npx ruflo test-migration
 ```
 
 ## Step 6: Switch
 ```bash
-npx claude-flow activate v3
+npx ruflo activate v3
 ```
 
 ## Rollback
 If issues occur:
 ```bash
-npx claude-flow rollback v2
+npx ruflo rollback v2
 ```
 ```
 

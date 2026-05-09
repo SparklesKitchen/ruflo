@@ -51,7 +51,7 @@ This plugin **does not** invent namespaces. The convention is owned by `ruflo-ag
 
 - `pattern` (singular) — ReasoningBank fallback target. Read by `hooks_intelligence_pattern-search` / `agentdb_pattern-search`.
 - `patterns` (plural) — pretrain corpus, neural training input. Distinct namespace; pluralization is intentional.
-- `claude-memories` — Claude Code auto-memory bridge. Don't write directly; SessionStart hook handles it.
+- `codex-memories` — Codex auto-memory bridge. Don't write directly; SessionStart hook handles it.
 
 Do not pass `namespace: 'foo'` to `hooks_intelligence_pattern-*` or `agentdb_pattern-*` — those tools route by ReasoningBank, not by namespace string. Namespace strings only apply to `memory_*` and `embeddings_search`.
 
@@ -100,7 +100,7 @@ Requires `PINATA_API_JWT` configured. The `intelligence-transfer` skill walks th
 Always close the loop after a task completes:
 
 ```bash
-npx @claude-flow/cli@latest hooks post-task --task-id "TASK_ID" --success true --train-neural true
+npx @ruflo/cli@latest hooks post-task --task-id "TASK_ID" --success true --train-neural true
 ```
 
 This calls `agentdb_pattern-store` (ReasoningBank — writes to `pattern` with `memory-store-fallback` if registry is unavailable) and feeds the DISTILL phase.

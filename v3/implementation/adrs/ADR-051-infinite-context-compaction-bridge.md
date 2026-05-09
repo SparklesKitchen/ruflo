@@ -2,16 +2,16 @@
 
 **Status:** Implemented
 **Date:** 2026-02-10
-**Authors:** RuvNet, Claude Flow Team
+**Authors:** RuvNet, Ruflo Team
 **Version:** 2.0.0
 **Related:** ADR-006 (Unified Memory), ADR-009 (Hybrid Memory Backend), ADR-027 (RuVector PostgreSQL), ADR-048 (Auto Memory Integration), ADR-049 (Self-Learning Memory GNN), ADR-052 (Statusline Observability)
-**Implementation:** `.claude/helpers/context-persistence-hook.mjs` (~1600 lines), `.claude/helpers/patch-aggressive-prune.mjs` (~120 lines)
+**Implementation:** `.codex/helpers/context-persistence-hook.mjs` (~1600 lines), `.codex/helpers/patch-aggressive-prune.mjs` (~120 lines)
 
 ## Context
 
 ### The Problem: Context Window is a Hard Ceiling
 
-Claude Code operates within a finite context window. When the conversation approaches
+Codex operates within a finite context window. When the conversation approaches
 this limit, the system automatically **compacts** prior messages -- summarizing them
 into a condensed form. While compaction preserves the gist of the conversation, it
 irreversibly discards:
@@ -22,13 +22,13 @@ irreversibly discards:
 - **Multi-step workflows**: The sequence of operations that led to a result
 - **Agent coordination state**: Swarm agent outputs, task assignments, memory keys
 
-This creates a "context cliff" -- once compaction occurs, Claude loses the ability to
+This creates a "context cliff" -- once compaction occurs, Codex loses the ability to
 reference specific earlier details, leading to repeated work, lost context, and
 degraded assistance quality in long sessions.
 
 ### What We Have Today
 
-Claude Code's SDK exposes two hook events relevant to compaction:
+Codex's SDK exposes two hook events relevant to compaction:
 
 1. **PreCompact** (`PreCompactHookInput`): Fires BEFORE compaction with access to:
    - `transcript_path`: Full JSONL transcript of the conversation
@@ -40,7 +40,7 @@ Claude Code's SDK exposes two hook events relevant to compaction:
    - `source: 'compact'` (distinguishes post-compaction from fresh start)
    - Hook output supports `additionalContext` injection into the new context
 
-Current PreCompact hooks (`.claude/settings.json` lines 469-498) only:
+Current PreCompact hooks (`.codex/settings.json` lines 469-498) only:
 - Print guidance text about available agents
 - Export learned patterns to `compact-patterns.json`
 - Export intelligence state to `intelligence-state.json`
@@ -56,7 +56,7 @@ An "infinite context" system where:
 2. After compaction, the most relevant stored context is retrieved and injected back
    into the new context window via `additionalContext`
 3. Across sessions, accumulated transcript archives enable cross-session context
-   retrieval -- Claude can recall details from previous conversations
+   retrieval -- Codex can recall details from previous conversations
 
 ## Decision
 
@@ -67,8 +67,8 @@ bridge retrieves and injects the most relevant archived context.
 
 ### Design Principles
 
-1. **Hook-Native**: Uses Claude Code's official PreCompact and SessionStart hooks
-2. **SDK-Patched**: Extends Claude Code's micro-compaction (`Vd()`) to also prune
+1. **Hook-Native**: Uses Codex's official PreCompact and SessionStart hooks
+2. **SDK-Patched**: Extends Codex's micro-compaction (`Vd()`) to also prune
    old conversation text, not just tool results -- the only way to prevent compaction
 3. **Backend-Agnostic**: Works with SQLite, RuVector PostgreSQL, AgentDB, or JSON
 4. **Timeout-Safe**: All operations complete within the 5-second hook timeout using
@@ -84,7 +84,7 @@ bridge retrieves and injects the most relevant archived context.
 
 ### Full Compaction Pipeline
 
-The Claude Code SDK has two compaction mechanisms, decompiled from `cli.js`:
+The Codex SDK has two compaction mechanisms, decompiled from `cli.js`:
 
 ```
 Every query (ew function):
@@ -100,7 +100,7 @@ Every query (ew function):
 │  └─ OUR PATCH: _aggressiveTextPrune() inserted after Vd()
 │     Truncates old text blocks to 80 chars + "[earlier context pruned]"
 │     Keeps last 4 turns intact, starts at 20K tokens
-│     Configurable via: CLAUDE_TEXT_PRUNE_KEEP, _THRESHOLD, _MAX_CHARS
+│     Configurable via: CODEX_TEXT_PRUNE_KEEP, _THRESHOLD, _MAX_CHARS
 │
 ├─ CT2() — AUTO-COMPACT (only when above threshold)
 │  │  Gate 1: DISABLE_COMPACT env → skip entirely
@@ -108,13 +108,13 @@ Every query (ew function):
 │  │  Gate 3: Sy5() → skip if tokens < threshold
 │  │  Threshold: zT2() = min(maxTokens × PCT_OVERRIDE/100, maxTokens - 13000)
 │  │  Default: 93% of context window (~187K tokens)
-│  │  Override: CLAUDE_AUTOCOMPACT_PCT_OVERRIDE env var
+│  │  Override: CODEX_AUTOCOMPACT_PCT_OVERRIDE env var
 │  │
 │  │  First tries TJ1() — session-memory compact (no LLM, instant)
 │  │  Falls back to NJ1() — full LLM compaction (slow, "Compacting..." UI)
 │  └─ NJ1 calls _H0 (executePreCompactHooks) before compacting
 │
-└─ NO OTHER PRUNING MECHANISM EXISTS in Claude Code
+└─ NO OTHER PRUNING MECHANISM EXISTS in Codex
 ```
 
 ### Key SDK Functions (Decompiled)
@@ -130,7 +130,7 @@ function Hd() {
 function zT2() {
   let max = effectiveMaxTokens();          // ~200K
   let threshold = max - 13000;             // ~187K (93%)
-  let override = process.env.CLAUDE_AUTOCOMPACT_PCT_OVERRIDE;
+  let override = process.env.CODEX_AUTOCOMPACT_PCT_OVERRIDE;
   if (override) {
     let pct = parseFloat(override);
     if (pct > 0 && pct <= 100)
@@ -173,7 +173,7 @@ instead of blocking.
 
 ```
 +------------------------------------------------------------------+
-|                      Claude Code Session                          |
+|                      Codex Session                          |
 |                                                                   |
 |  Context Window: [system prompt] [messages...] [new messages]     |
 |                                                                   |
@@ -210,19 +210,19 @@ instead of blocking.
 |  |              Memory Backend (tiered)                        |   |
 |  |                                                            |   |
 |  |  Tier 1: SQLite (better-sqlite3)                           |   |
-|  |    -> .claude-flow/data/transcript-archive.db              |   |
+|  |    -> .codex/data/transcript-archive.db              |   |
 |  |    -> WAL mode, indexed queries, ACID transactions         |   |
 |  |                                                            |   |
 |  |  Tier 2: RuVector PostgreSQL (if RUVECTOR_* env set)       |   |
 |  |    -> TB-scale storage, pgvector embeddings                |   |
 |  |    -> GNN-enhanced retrieval, self-learning optimizer       |   |
 |  |                                                            |   |
-|  |  Tier 3: AgentDB + HNSW  (if @claude-flow/memory built)   |   |
+|  |  Tier 3: AgentDB + HNSW  (if @ruflo/memory built)   |   |
 |  |    -> 150x-12,500x faster semantic search                  |   |
 |  |    -> Vector-indexed retrieval                             |   |
 |  |                                                            |   |
 |  |  Tier 4: JsonFileBackend                                   |   |
-|  |    -> .claude-flow/data/transcript-archive.json            |   |
+|  |    -> .codex/data/transcript-archive.json            |   |
 |  |    -> Zero dependencies, always available                  |   |
 |  +-----------------------------------------------------------+   |
 |                                                                   |
@@ -380,7 +380,7 @@ function createHashEmbedding(text, dimensions = 768) {
 ## Context Autopilot
 
 The Context Autopilot is a real-time context window management system that prevents
-Claude Code's automatic compaction from ever firing. Instead of letting the context
+Codex's automatic compaction from ever firing. Instead of letting the context
 window fill up and trigger lossy compaction, the autopilot tracks usage and optimizes
 proactively.
 
@@ -392,7 +392,7 @@ Every User Prompt
        ▼
 ┌─────────────────────────────┐
 │  estimateContextTokens()    │  Read API usage from transcript JSONL
-│  input_tokens +             │  (actual Claude API token counts, not
+│  input_tokens +             │  (actual Codex API token counts, not
 │  cache_read_input_tokens +  │   character estimates)
 │  cache_creation_input_tokens│
 └─────────────┬───────────────┘
@@ -440,7 +440,7 @@ estimates. Each assistant message in the transcript contains:
 
 Total context = `input_tokens + cache_read_input_tokens + cache_creation_input_tokens`
 
-This matches what Claude Code reports as context usage (e.g., "Context left until
+This matches what Codex reports as context usage (e.g., "Context left until
 auto-compact: 8%" corresponds to ~92% usage). Falls back to character-based estimation
 (`chars / 3.5`) only when API usage data is unavailable.
 
@@ -455,7 +455,7 @@ auto-compact: 8%" corresponds to ~92% usage). Falls back to character-based esti
 | **Hook** | `PreCompact` | Safety-net archive + custom compact instructions |
 | **Hook** | `SessionStart` | Restores importance-ranked context after compact/clear |
 
-With aggressive text pruning + low `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE`, full
+With aggressive text pruning + low `CODEX_AUTOCOMPACT_PCT_OVERRIDE`, full
 compaction rarely fires. When it does, the archive+restore system makes it lossless.
 
 ### Statusline Integration (ADR-052)
@@ -478,7 +478,7 @@ The autopilot state is read by the statusline script to display real-time metric
 
 ### Autopilot State Persistence
 
-State is persisted to `.claude-flow/data/autopilot-state.json`:
+State is persisted to `.codex/data/autopilot-state.json`:
 
 ```json
 {
@@ -519,23 +519,23 @@ State is persisted to `.claude-flow/data/autopilot-state.json`:
 
 | Environment Variable | Default | Description |
 |---------------------|---------|-------------|
-| `CLAUDE_TEXT_PRUNE_KEEP` | `4` | Number of recent turns to keep fully intact |
-| `CLAUDE_TEXT_PRUNE_THRESHOLD` | `20000` | Start pruning text above this token count |
-| `CLAUDE_TEXT_PRUNE_MAX_CHARS` | `80` | Max chars for old text blocks (truncated beyond) |
-| `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` | `30` | Auto-compact threshold (% of context window) |
+| `CODEX_TEXT_PRUNE_KEEP` | `4` | Number of recent turns to keep fully intact |
+| `CODEX_TEXT_PRUNE_THRESHOLD` | `20000` | Start pruning text above this token count |
+| `CODEX_TEXT_PRUNE_MAX_CHARS` | `80` | Max chars for old text blocks (truncated beyond) |
+| `CODEX_AUTOCOMPACT_PCT_OVERRIDE` | `30` | Auto-compact threshold (% of context window) |
 
 ### Hook System
 
 | Environment Variable | Default | Description |
 |---------------------|---------|-------------|
-| `CLAUDE_FLOW_COMPACT_RESTORE_BUDGET` | `4000` | Max chars for restored context in SessionStart |
-| `CLAUDE_FLOW_COMPACT_INSTRUCTION_BUDGET` | `2000` | Max chars for custom compact instructions |
-| `CLAUDE_FLOW_AUTO_OPTIMIZE` | `true` | Enable importance ranking, pruning, RuVector sync |
-| `CLAUDE_FLOW_RETENTION_DAYS` | `30` | Auto-prune never-accessed entries older than N days |
-| `CLAUDE_FLOW_CONTEXT_AUTOPILOT` | `true` | Enable Context Autopilot tracking |
-| `CLAUDE_FLOW_CONTEXT_WINDOW` | `200000` | Context window size in tokens |
-| `CLAUDE_FLOW_AUTOPILOT_WARN` | `0.70` | Warning threshold (70%) |
-| `CLAUDE_FLOW_AUTOPILOT_PRUNE` | `0.85` | Critical threshold (85%) — session rotation advised |
+| `RUFLO_COMPACT_RESTORE_BUDGET` | `4000` | Max chars for restored context in SessionStart |
+| `RUFLO_COMPACT_INSTRUCTION_BUDGET` | `2000` | Max chars for custom compact instructions |
+| `RUFLO_AUTO_OPTIMIZE` | `true` | Enable importance ranking, pruning, RuVector sync |
+| `RUFLO_RETENTION_DAYS` | `30` | Auto-prune never-accessed entries older than N days |
+| `RUFLO_CONTEXT_AUTOPILOT` | `true` | Enable Context Autopilot tracking |
+| `RUFLO_CONTEXT_WINDOW` | `200000` | Context window size in tokens |
+| `RUFLO_AUTOPILOT_WARN` | `0.70` | Warning threshold (70%) |
+| `RUFLO_AUTOPILOT_PRUNE` | `0.85` | Critical threshold (85%) — session rotation advised |
 
 ### RuVector PostgreSQL (Optional)
 
@@ -551,8 +551,8 @@ State is persisted to `.claude-flow/data/autopilot-state.json`:
 ## Security Considerations
 
 1. **No credentials in transcript**: Tool inputs may contain file paths but not secrets
-   (Claude Code already redacts sensitive content before tool execution)
-2. **Local storage default**: SQLite writes to `.claude-flow/data/` which is
+   (Codex already redacts sensitive content before tool execution)
+2. **Local storage default**: SQLite writes to `.codex/data/` which is
    gitignored. No network calls unless RuVector PostgreSQL is configured.
 3. **Parameterized queries**: SQLite uses prepared statements, RuVector uses `$N`
    parameterized queries -- no SQL injection risk.
@@ -571,7 +571,7 @@ State is persisted to `.claude-flow/data/autopilot-state.json`:
 - Dedup via SHA-256 content hash + indexed lookup
 - Importance-ranked smart retrieval with access tracking
 - Auto-pruning of never-accessed entries after configurable retention period
-- Custom compact instructions guiding Claude's compaction summary
+- Custom compact instructions guiding Codex's compaction summary
 
 ### Phase 2: RuVector PostgreSQL (COMPLETE - Code Ready, Awaiting Configuration)
 - `RuVectorBackend` class fully implemented (lines 361-596 of hook script)
@@ -584,10 +584,10 @@ State is persisted to `.claude-flow/data/autopilot-state.json`:
 - Automatic fallback to SQLite if PostgreSQL connection fails
 
 ### Phase 3: AgentDB Integration (COMPLETE - Code Ready, Awaiting Build)
-- `resolveBackend()` checks for `@claude-flow/memory` dist at Tier 3
+- `resolveBackend()` checks for `@ruflo/memory` dist at Tier 3
 - If `AgentDBBackend` class exists, uses HNSW-indexed embeddings
 - Cross-session retrieval: semantic search across archived transcripts
-- Transparent upgrade when `@claude-flow/memory` package is built
+- Transparent upgrade when `@ruflo/memory` package is built
 
 ### Phase 4: JsonFileBackend (COMPLETE - Always Available)
 - `JsonFileBackend` class implemented (lines 278-355 of hook script)
@@ -597,7 +597,7 @@ State is persisted to `.claude-flow/data/autopilot-state.json`:
 
 ## Self-Learning Optimization Pipeline
 
-When `CLAUDE_FLOW_AUTO_OPTIMIZE` is not `false` (default: enabled), the system
+When `RUFLO_AUTO_OPTIMIZE` is not `false` (default: enabled), the system
 automatically optimizes storage and retrieval using 5 self-learning stages:
 
 ### Stage 1: Confidence Decay
@@ -628,7 +628,7 @@ survive regardless of age, while irrelevant entries are pruned quickly.
 
 Standard retention policy as safety net:
 - **Criteria**: `access_count = 0` AND `created_at < now - RETENTION_DAYS`
-- **Default retention**: 30 days (configurable via `CLAUDE_FLOW_RETENTION_DAYS`)
+- **Default retention**: 30 days (configurable via `RUFLO_RETENTION_DAYS`)
 - **Never prunes accessed entries**: If it was ever restored, it's kept
 
 ### Stage 4: ONNX Embedding Generation (384-dim)
@@ -754,7 +754,7 @@ All capabilities confirmed working (2026-02-10):
 ### Neutral
 
 1. **Exit code 2 not implemented**: PreCompact hooks cannot block compaction in
-   Claude Code v2.0.76 despite documentation claiming otherwise. This is an SDK
+   Codex v2.0.76 despite documentation claiming otherwise. This is an SDK
    limitation, not a bug in our system.
 2. **Hook timeout pressure**: 5s budget is generous for local I/O operations
 
@@ -763,12 +763,12 @@ All capabilities confirmed working (2026-02-10):
 1. **Smarter text pruning**: Use extractive summarization instead of simple truncation
    for old text blocks — preserve key decisions and reasoning
 2. **Cross-session search MCP tool**: Expose `transcript-archive` search as an MCP
-   tool so Claude can explicitly query past conversations
+   tool so Codex can explicitly query past conversations
 3. **MemoryGraph integration**: Add reference edges between sequential chunks for
    PageRank-aware retrieval (ADR-049)
 4. **Adaptive pruning thresholds**: Dynamically adjust `TEXT_PRUNE_KEEP` and
    `TEXT_PRUNE_THRESHOLD` based on conversation complexity and context growth rate
-5. **Upstream contribution**: Propose text pruning as a native Claude Code feature
+5. **Upstream contribution**: Propose text pruning as a native Codex feature
    to eliminate the need for SDK patching
 
 ## Implementation Details
@@ -777,9 +777,9 @@ All capabilities confirmed working (2026-02-10):
 
 | File | Lines | Purpose |
 |------|-------|---------|
-| `.claude/helpers/context-persistence-hook.mjs` | ~1600 | Core hook script (all 4 backends, autopilot, all commands) |
-| `.claude/helpers/patch-aggressive-prune.mjs` | ~120 | SDK patch: aggressive text pruning for cli.js |
-| `.claude/settings.json` | +12 | Hook wiring + pruning config env vars |
+| `.codex/helpers/context-persistence-hook.mjs` | ~1600 | Core hook script (all 4 backends, autopilot, all commands) |
+| `.codex/helpers/patch-aggressive-prune.mjs` | ~120 | SDK patch: aggressive text pruning for cli.js |
+| `.codex/settings.json` | +12 | Hook wiring + pruning config env vars |
 | `tests/context-persistence-hook.test.mjs` | ~150 | Unit tests for parsing, chunking, dedup, retrieval |
 | `v3/implementation/adrs/ADR-051-infinite-context-compaction-bridge.md` | this file | Architecture decision record |
 
@@ -787,8 +787,8 @@ All capabilities confirmed working (2026-02-10):
 
 | Class | Lines | Storage | Features |
 |-------|-------|---------|----------|
-| `SQLiteBackend` | 57-272 | `.claude-flow/data/transcript-archive.db` | WAL mode, indexed queries, prepared statements, importance-ranked queries, access tracking, stale pruning |
-| `JsonFileBackend` | 278-355 | `.claude-flow/data/transcript-archive.json` | Zero dependencies, Map-based in-memory with JSON persist |
+| `SQLiteBackend` | 57-272 | `.codex/data/transcript-archive.db` | WAL mode, indexed queries, prepared statements, importance-ranked queries, access tracking, stale pruning |
+| `JsonFileBackend` | 278-355 | `.codex/data/transcript-archive.json` | Zero dependencies, Map-based in-memory with JSON persist |
 | `RuVectorBackend` | 361-596 | PostgreSQL with pgvector | Connection pooling (max 3), JSONB metadata, 768-dim vector column, ON CONFLICT dedup, async hash check |
 
 ### Exported Functions (for testing)
@@ -809,36 +809,36 @@ All core functions are exported from the hook module:
 ```json
 // PreCompact (manual + auto matchers)
 { "type": "command", "timeout": 5000,
-  "command": "node .claude/helpers/context-persistence-hook.mjs pre-compact 2>/dev/null || true" }
+  "command": "node .codex/helpers/context-persistence-hook.mjs pre-compact 2>/dev/null || true" }
 
 // SessionStart (restores after compact OR /clear for session rotation)
 { "type": "command", "timeout": 6000,
-  "command": "node .claude/helpers/context-persistence-hook.mjs session-start 2>/dev/null || true" }
+  "command": "node .codex/helpers/context-persistence-hook.mjs session-start 2>/dev/null || true" }
 
 // UserPromptSubmit (proactive archiving + autopilot)
 { "type": "command", "timeout": 5000,
-  "command": "node .claude/helpers/context-persistence-hook.mjs user-prompt-submit 2>/dev/null || true" }
+  "command": "node .codex/helpers/context-persistence-hook.mjs user-prompt-submit 2>/dev/null || true" }
 ```
 
 **Note**: PreCompact hooks use `|| true` because exit code 2 blocking is not
-implemented in Claude Code v2.0.76 (see SDK analysis above). The hook archives
+implemented in Codex v2.0.76 (see SDK analysis above). The hook archives
 turns and outputs custom compact instructions via exit code 0.
 
 ### SDK Patch Application
 
 ```bash
 # Apply aggressive text pruning patch
-node .claude/helpers/patch-aggressive-prune.mjs
+node .codex/helpers/patch-aggressive-prune.mjs
 
 # Check if patched
-node .claude/helpers/patch-aggressive-prune.mjs --check
+node .codex/helpers/patch-aggressive-prune.mjs --check
 
 # Revert to original
-node .claude/helpers/patch-aggressive-prune.mjs --revert
+node .codex/helpers/patch-aggressive-prune.mjs --revert
 ```
 
 The patch inserts `_aggressiveTextPrune()` into the query loop in
-`node_modules/@anthropic-ai/claude-agent-sdk/cli.js`, between the native
+`node_modules/@openai-ai/codex-agent-sdk/cli.js`, between the native
 micro-compaction (`Vd()`) and the auto-compact check (`CT2()`). A backup
 is saved at `cli.js.backup` before patching. Must be re-applied after
 `npm install` or SDK updates.
@@ -852,14 +852,14 @@ is saved at `cli.js.backup` before patching. Must be re-applied after
   key decisions for compact preservation
 - **RuVector dedup**: Synchronous `hashExists()` returns false for RuVector (async DB);
   dedup is handled at the database level via `ON CONFLICT (id) DO NOTHING`
-- **Graceful failure**: Top-level try/catch ensures hook never crashes Claude Code;
+- **Graceful failure**: Top-level try/catch ensures hook never crashes Codex;
   errors are written to stderr as `[ContextPersistence] Error (non-critical): ...`
 
 ### Verification
 
 ```bash
 # Status check
-node .claude/helpers/context-persistence-hook.mjs status
+node .codex/helpers/context-persistence-hook.mjs status
 
 # Run tests
 node --test tests/context-persistence-hook.test.mjs
@@ -872,4 +872,4 @@ node --test tests/context-persistence-hook.test.mjs
 - ADR-027: RuVector PostgreSQL Integration
 - ADR-048: Auto Memory Integration
 - ADR-049: Self-Learning Memory with GNN
-- Claude Agent SDK: `@anthropic-ai/claude-agent-sdk` PreCompact hook types
+- Codex Agent SDK: `@openai-ai/codex-agent-sdk` PreCompact hook types

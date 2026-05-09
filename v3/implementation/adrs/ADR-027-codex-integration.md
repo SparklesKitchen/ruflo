@@ -6,9 +6,9 @@
 ## Branding Note
 
 This ADR introduces the **coflow** branding transition:
-- Package: `@claude-flow/codex` (npm)
+- Package: `@ruflo/codex` (npm)
 - Future umbrella: `coflow` (npm/npx coflow)
-- Current umbrella: `claude-flow` (maintained for compatibility)
+- Current umbrella: `codex` (maintained for compatibility)
 
 The Codex integration is the first step in the coflow rebranding initiative.
 
@@ -18,22 +18,22 @@ The Codex integration is the first step in the coflow rebranding initiative.
 
 The agentic coding tool landscape has evolved into two major platforms:
 
-1. **Claude Code** (Anthropic) - CLI tool using CLAUDE.md for project instructions
+1. **Codex** (OpenAI) - CLI tool using AGENTS.md for project instructions
 2. **OpenAI Codex** (OpenAI) - CLI tool using AGENTS.md for project instructions
 
 Both tools share similar concepts but with different implementations:
 
-| Concept | Claude Code | OpenAI Codex |
+| Concept | Codex | OpenAI Codex |
 |---------|-------------|--------------|
-| Project Instructions | `CLAUDE.md` | `AGENTS.md` |
-| Nested Instructions | `CLAUDE.local.md` | `AGENTS.override.md` |
-| Skills | `.claude/skills/` | `.agents/skills/` + `SKILL.md` |
-| Configuration | `.claude/settings.json` | `~/.codex/config.toml` |
+| Project Instructions | `AGENTS.md` | `AGENTS.md` |
+| Nested Instructions | `.codex/AGENTS.override.md` | `AGENTS.override.md` |
+| Skills | `.codex/skills/` | `.agents/skills/` + `SKILL.md` |
+| Configuration | `.codex/settings.json` | `~/.codex/config.toml` |
 | MCP Integration | `.mcp.json` | `config.toml [mcp_servers]` |
 | Agent Types | Task tool with subagent_type | Agents SDK integration |
 | Automation | Hooks system | Automations (scheduled tasks) |
 | Session Management | Session persistence | `codex resume`, `codex fork` |
-| Non-interactive | `claude -p` | `codex exec` |
+| Non-interactive | `codex -p` | `codex exec` |
 | Approval Modes | Permission modes | Approval policies |
 | Sandbox | Sandboxing settings | Sandbox modes (read-only, workspace-write, full-access) |
 
@@ -131,19 +131,19 @@ Exposes tools: `codex` (start session) and `codex-reply` (continue session).
 
 ## Decision
 
-We will create a **parallel Codex integration** in claude-flow that:
+We will create a **parallel Codex integration** in codex that:
 
 1. **Adds `init --codex` flag** to generate Codex-compatible configuration
-2. **Generates AGENTS.md** instead of/alongside CLAUDE.md
+2. **Generates AGENTS.md** instead of/alongside AGENTS.md
 3. **Creates `.agents/skills/`** with SKILL.md format skills
 4. **Generates `config.toml`** for Codex settings
-5. **Maps claude-flow concepts** to Codex equivalents
-6. **Supports dual-mode** projects (both Claude Code and Codex)
+5. **Maps codex concepts** to Codex equivalents
+6. **Supports dual-mode** projects (both Codex and Codex)
 
 ### Architecture
 
 ```
-claude-flow init --codex
+codex init --codex
 ├── AGENTS.md                    # Project instructions (Codex format)
 ├── .agents/
 │   ├── skills/                  # Skills directory
@@ -158,47 +158,47 @@ claude-flow init --codex
 ├── .codex/                      # Local overrides (gitignored)
 │   ├── config.toml             # User config overrides
 │   └── AGENTS.override.md      # Local instruction overrides
-└── .claude-flow/                # Runtime (shared between both)
+└── .codex/                # Runtime (shared between both)
     ├── config.yaml
     └── data/
 ```
 
 ### Mapping Table
 
-| claude-flow Concept | Claude Code Output | Codex Output |
+| codex Concept | Codex Output | Codex Output |
 |---------------------|-------------------|--------------|
-| Project instructions | `CLAUDE.md` | `AGENTS.md` |
-| Local overrides | `CLAUDE.local.md` | `AGENTS.override.md` |
-| Skills directory | `.claude/skills/` | `.agents/skills/` |
+| Project instructions | `AGENTS.md` | `AGENTS.md` |
+| Local overrides | `.codex/AGENTS.override.md` | `AGENTS.override.md` |
+| Skills directory | `.codex/skills/` | `.agents/skills/` |
 | Skill format | `skill-name.md` (YAML frontmatter) | `skill-name/SKILL.md` |
-| Settings | `.claude/settings.json` | `.agents/config.toml` |
+| Settings | `.codex/settings.json` | `.agents/config.toml` |
 | MCP config | `.mcp.json` | `config.toml [mcp_servers]` |
 | Hooks | `settings.json` hooks | Automations |
-| Agent definitions | `.claude/agents/` | Skills with agent-specific SKILL.md |
+| Agent definitions | `.codex/agents/` | Skills with agent-specific SKILL.md |
 
 ### Command-Line Interface
 
 ```bash
 # Initialize for Codex only
-claude-flow init --codex
+codex init --codex
 
 # Initialize for both platforms (dual-mode)
-claude-flow init --dual
+codex init --dual
 
 # Initialize with wizard (auto-detects or asks)
-claude-flow init wizard
+codex init wizard
 
-# Convert existing Claude Code setup to Codex
-claude-flow init --codex --from-claude
+# Convert existing Codex setup to Codex
+codex init --codex --from-codex
 
-# Convert existing Codex setup to Claude Code
-claude-flow init --from-codex
+# Convert existing Codex setup to Codex
+codex init --from-codex
 ```
 
 ### Generated AGENTS.md Structure
 
 ```markdown
-# Claude Flow V3
+# Ruflo V3
 
 ## Project Overview
 [Auto-detected project description]
@@ -220,7 +220,7 @@ Use `$skill-name` to invoke:
 - `$sparc-methodology` - SPARC development workflow
 
 ## Code Standards
-[From CLAUDE.md Code Quality Rules]
+[From AGENTS.md Code Quality Rules]
 
 ## Security
 - Never commit secrets
@@ -263,32 +263,32 @@ description: >
 
 ### 1. Initialize Swarm
 ```bash
-npx claude-flow@v3alpha swarm init --topology hierarchical
+npx ruflo@v3alpha swarm init --topology hierarchical
 ```
 
 ### 2. Spawn Agents
 Use Codex to orchestrate via MCP:
 ```bash
-npx claude-flow@v3alpha mcp start
+npx ruflo@v3alpha mcp start
 ```
 
 ### 3. Monitor Progress
 ```bash
-npx claude-flow@v3alpha swarm status
+npx ruflo@v3alpha swarm status
 ```
 
 ## Memory Integration
 Store patterns for learning:
 ```bash
-npx claude-flow@v3alpha memory store --key "[pattern]" --value "[learned]"
+npx ruflo@v3alpha memory store --key "[pattern]" --value "[learned]"
 ```
 ```
 
 ### Generated config.toml
 
 ```toml
-# Claude Flow V3 - Codex Configuration
-# Generated by: claude-flow init --codex
+# Ruflo V3 - Codex Configuration
+# Generated by: codex init --codex
 
 model = "gpt-5.3-codex"
 approval_policy = "on-request"
@@ -305,9 +305,9 @@ shell_snapshot = true
 request_rule = true
 
 # MCP Servers
-[mcp_servers.claude-flow]
+[mcp_servers.codex]
 command = "npx"
-args = ["-y", "@claude-flow/cli@latest"]
+args = ["-y", "@ruflo/cli@latest"]
 enabled = true
 tool_timeout_sec = 120
 
@@ -342,7 +342,7 @@ sandbox_mode = "read-only"
 ## Consequences
 
 ### Positive
-1. **Cross-platform support** - Users can use either Claude Code or Codex
+1. **Cross-platform support** - Users can use either Codex or Codex
 2. **Ecosystem reach** - AGENTS.md is supported by 20+ tools (Cursor, Copilot, etc.)
 3. **Standard compliance** - Follows AAIF and Open Agent Skills specifications
 4. **Migration path** - Easy conversion between platforms
@@ -350,7 +350,7 @@ sandbox_mode = "read-only"
 
 ### Negative
 1. **Maintenance burden** - Two sets of generators to maintain
-2. **Sync complexity** - Keeping CLAUDE.md and AGENTS.md in sync
+2. **Sync complexity** - Keeping AGENTS.md and AGENTS.md in sync
 3. **Feature parity** - Some features may not map 1:1
 
 ### Risks
@@ -361,34 +361,34 @@ sandbox_mode = "read-only"
 ## Implementation Plan
 
 ### Phase 1: Core Infrastructure (Week 1-2)
-1. Create `@claude-flow/codex` package in `v3/@claude-flow/codex/`
+1. Create `@ruflo/codex` package in `v3/@ruflo/codex/`
 2. Implement AGENTS.md generator
 3. Implement SKILL.md generator
 4. Implement config.toml generator
-5. Set up npm publishing for `@claude-flow/codex`
+5. Set up npm publishing for `@ruflo/codex`
 
 ### Phase 2: Init Integration (Week 3)
 1. Add `--codex` flag to init command
 2. Add `--dual` flag for both platforms
-3. Add `--from-claude` and `--from-codex` conversion
+3. Add `--from-codex` and `--from-codex` conversion
 4. Update wizard to support platform selection
-5. Wire up `@claude-flow/codex` as dependency
+5. Wire up `@ruflo/codex` as dependency
 
 ### Phase 3: Skills Library (Week 4)
-1. Convert all `.claude/skills/` to `.agents/skills/` format
+1. Convert all `.codex/skills/` to `.agents/skills/` format
 2. Create skill migration script
 3. Test skill discovery and loading
-4. Publish skills as part of `@claude-flow/codex`
+4. Publish skills as part of `@ruflo/codex`
 
 ### Phase 4: Automation Integration (Week 5)
-1. Map claude-flow hooks to Codex Automations
+1. Map codex hooks to Codex Automations
 2. Create automation templates
 3. Document automation patterns
 
 ### Phase 5: Coflow Transition (Week 6+)
 1. Create `coflow` npm package (umbrella)
 2. Update CLI entry points for `npx coflow`
-3. Maintain `claude-flow` as alias for compatibility
+3. Maintain `codex` as alias for compatibility
 4. Update documentation for dual branding
 
 ## References
@@ -411,22 +411,22 @@ sandbox_mode = "read-only"
 
 ## Appendix A: Complete Feature Mapping
 
-### AGENTS.md Sections (Claude Flow Template)
+### AGENTS.md Sections (Ruflo Template)
 
 | Section | Content Source |
 |---------|----------------|
 | Project Overview | Auto-detected from package.json, README |
 | Quick Start | Build/test commands from package.json |
-| Agent Coordination | From CLAUDE.md swarm config |
-| Code Standards | From CLAUDE.md behavioral rules |
-| Security | From @claude-flow/security patterns |
+| Agent Coordination | From AGENTS.md swarm config |
+| Code Standards | From AGENTS.md behavioral rules |
+| Security | From @ruflo/security patterns |
 | Performance | From V3 performance targets |
 | Testing | From TDD/testing patterns |
 | Memory | From AgentDB integration |
 
 ### Skill Mapping (Full List)
 
-| Claude Code Skill | Codex Skill Directory |
+| Codex Skill | Codex Skill Directory |
 |-------------------|----------------------|
 | `swarm-orchestration.md` | `.agents/skills/swarm-orchestration/` |
 | `agentdb-advanced.md` | `.agents/skills/memory-management/` |
@@ -441,7 +441,7 @@ sandbox_mode = "read-only"
 
 ### Config.toml Feature Mapping
 
-| Claude Code Feature | Codex config.toml |
+| Codex Feature | Codex config.toml |
 |--------------------|--------------------|
 | Hooks: PreToolUse | `approval_policy` |
 | Hooks: PostToolUse | Automations |
@@ -500,7 +500,7 @@ sandbox_mode = "read-only"
 
 ## Appendix C: Undocumented Features for Integration
 
-These features were discovered through binary analysis and can be leveraged for deep claude-flow integration.
+These features were discovered through binary analysis and can be leveraged for deep codex integration.
 
 ### Environment Variables
 
@@ -606,7 +606,7 @@ interface CollabAgentToolCall {
 }
 ```
 
-**Integration opportunity**: Map to claude-flow swarm coordination.
+**Integration opportunity**: Map to codex swarm coordination.
 
 ### Dynamic Tool Registration
 
@@ -617,7 +617,7 @@ Codex supports runtime tool registration via MCP:
 { method: "tools/register", params: { name, schema, handler } }
 ```
 
-**Integration opportunity**: Register claude-flow tools dynamically.
+**Integration opportunity**: Register codex tools dynamically.
 
 ### Integration Patterns Using Undocumented Features
 
@@ -667,7 +667,7 @@ if (limits.remaining > 0) {
 ### Generated config.toml with Undocumented Features
 
 ```toml
-# Claude Flow V3 - Codex Configuration (Enhanced)
+# Ruflo V3 - Codex Configuration (Enhanced)
 # Includes undocumented features for advanced integration
 
 model = "gpt-5.3-codex"
@@ -685,9 +685,9 @@ collab = true
 apps = true
 
 # MCP Servers with auth
-[mcp_servers.claude-flow]
+[mcp_servers.codex]
 command = "npx"
-args = ["-y", "@claude-flow/cli@latest"]
+args = ["-y", "@ruflo/cli@latest"]
 enabled = true
 tool_timeout_sec = 120
 # Use CODEX_CONNECTORS_TOKEN for auth

@@ -31,8 +31,8 @@ import { spawnSync } from 'node:child_process';
 // rather than incremental (records skipped). For incremental imports across
 // many runs, leave CLI_CORE unset.
 const CLI_PKG = process.env.CLI_CORE === '1'
-  ? '@claude-flow/cli-core@alpha'
-  : '@claude-flow/cli@latest';
+  ? '@ruflo/cli-core@alpha'
+  : '@ruflo/cli@latest';
 
 const ROOT = process.env.ADR_ROOT || process.cwd();
 const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', 'v2', '.next', '.turbo', 'build']);

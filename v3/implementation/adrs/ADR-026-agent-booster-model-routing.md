@@ -13,7 +13,7 @@ The current model routing system uses `tiny-dancer` for neural-based complexity 
 2. Can't detect when tasks can be handled entirely by Agent Booster (352x faster, $0 cost)
 3. Misses optimization opportunities for simple code transformations
 
-The `agentic-flow` package provides:
+The `agentic` package provides:
 - **AgentBoosterPreprocessor** - Detects code editing intents via AST pattern matching
 - **Agent Booster WASM Engine** - 352x faster code edits (352ms → 1ms)
 - **MorphApply** - AST-based code transformations
@@ -27,8 +27,8 @@ Integrate Agent Booster's AST capabilities into the model routing pipeline for *
 | Tier | Handler | Latency | Cost | Use Cases |
 |------|---------|---------|------|-----------|
 | **Tier 1: Agent Booster** | WASM Engine | <1ms | $0 | Simple transforms (var→const, add types, etc.) |
-| **Tier 2: Haiku** | Claude haiku | ~500ms | $0.0002/req | Simple tasks, formatting, small edits |
-| **Tier 3: Sonnet/Opus** | Claude sonnet/opus | ~2-5s | $0.003-0.015/req | Complex reasoning, architecture, security |
+| **Tier 2: Haiku** | Codex haiku | ~500ms | $0.0002/req | Simple tasks, formatting, small edits |
+| **Tier 3: Sonnet/Opus** | Codex sonnet/opus | ~2-5s | $0.003-0.015/req | Complex reasoning, architecture, security |
 
 ### Routing Flow
 
@@ -70,9 +70,9 @@ Task Input
 ### 1. Enhanced Model Router Interface
 
 ```typescript
-// v3/@claude-flow/cli/src/ruvector/model-router.ts
+// v3/@ruflo/cli/src/ruvector/model-router.ts
 
-import { AgentBoosterPreprocessor, EditIntent, PreprocessorResult } from 'agentic-flow';
+import { AgentBoosterPreprocessor, EditIntent, PreprocessorResult } from 'agentic';
 
 export interface EnhancedRouteResult {
   tier: 1 | 2 | 3;
@@ -111,7 +111,7 @@ export interface EnhancedModelRouterConfig {
 ### 2. Enhanced Route Function
 
 ```typescript
-// v3/@claude-flow/cli/src/ruvector/model-router.ts
+// v3/@ruflo/cli/src/ruvector/model-router.ts
 
 export class EnhancedModelRouter {
   private preprocessor: AgentBoosterPreprocessor;
@@ -253,7 +253,7 @@ export class EnhancedModelRouter {
 ### 3. Pre-Task Hook Integration
 
 ```typescript
-// v3/@claude-flow/cli/src/commands/hooks.ts (update preTaskCommand)
+// v3/@ruflo/cli/src/commands/hooks.ts (update preTaskCommand)
 
 // In pre-task action, after existing logic:
 
@@ -280,7 +280,7 @@ try {
     output.writeln(output.dim(`  Est. Latency: ${routeResult.estimatedLatencyMs}ms | Cost: $${routeResult.estimatedCost.toFixed(4)}`));
     output.writeln();
 
-    // Clear instruction for Claude
+    // Clear instruction for Codex
     output.writeln(output.dim('─'.repeat(60)));
     output.writeln(output.bold(output.success(`[TASK_MODEL_RECOMMENDATION] Use model="${routeResult.model}" for this task`)));
     output.writeln(output.dim(`Complexity: ${((routeResult.complexity || 0) * 100).toFixed(0)}% | Confidence: ${(routeResult.confidence * 100).toFixed(0)}%`));
@@ -296,7 +296,7 @@ try {
 ### 4. Agent Spawn Integration
 
 ```typescript
-// v3/@claude-flow/cli/src/mcp-tools/agent-tools.ts (update determineAgentModel)
+// v3/@ruflo/cli/src/mcp-tools/agent-tools.ts (update determineAgentModel)
 
 import { EnhancedModelRouter } from '../ruvector/enhanced-model-router.js';
 
@@ -305,14 +305,14 @@ async function determineAgentModel(
   config: Record<string, unknown>,
   task?: string
 ): Promise<{
-  model: ClaudeModel;
+  model: CodexModel;
   routedBy: 'explicit' | 'router' | 'agent-booster' | 'default';
   canSkipLLM?: boolean;
   agentBoosterIntent?: string;
 }> {
   // 1. Explicit model in config
   if (config.model && ['haiku', 'sonnet', 'opus', 'inherit'].includes(config.model as string)) {
-    return { model: config.model as ClaudeModel, routedBy: 'explicit' };
+    return { model: config.model as CodexModel, routedBy: 'explicit' };
   }
 
   // 2. Enhanced routing with Agent Booster AST
@@ -351,7 +351,7 @@ async function determineAgentModel(
 }
 ```
 
-### 5. CLAUDE.md Instructions Update
+### 5. AGENTS.md Instructions Update
 
 ```markdown
 ### 🤖 AGENT BOOSTER INTEGRATION (AUTOMATIC)
@@ -368,7 +368,7 @@ async function determineAgentModel(
 
 1. `[AGENT_BOOSTER_AVAILABLE]` → The task can be handled by Agent Booster (352x faster, $0)
    - Use the `agent_booster_edit_file` MCP tool instead of Task tool
-   - Example: `mcp__agentic-flow__agent_booster_edit_file({ target_filepath: "...", instructions: "...", code_edit: "..." })`
+   - Example: `mcp__agentic__agent_booster_edit_file({ target_filepath: "...", instructions: "...", code_edit: "..." })`
 
 2. `[TASK_MODEL_RECOMMENDATION] Use model="X"` → Use that model in Task tool
    - Example: `Task({ ..., model: "opus" })`
@@ -385,7 +385,7 @@ async function determineAgentModel(
 ## File Structure
 
 ```
-v3/@claude-flow/cli/src/
+v3/@ruflo/cli/src/
 ├── ruvector/
 │   ├── model-router.ts           # Existing tiny-dancer router
 │   ├── enhanced-model-router.ts  # NEW: Agent Booster + AST integration
@@ -404,12 +404,12 @@ v3/@claude-flow/cli/src/
 1. **352x faster** code edits when Agent Booster handles them
 2. **$0 cost** for Tier 1 operations (WASM, no API calls)
 3. **Better model selection** via AST complexity analysis
-4. **Graceful fallback** - works without agentic-flow installed
+4. **Graceful fallback** - works without agentic installed
 5. **Cost optimization** - routes simple tasks to cheaper models
 
 ### Negative
 
-1. **Additional dependency** on agentic-flow for Agent Booster
+1. **Additional dependency** on agentic for Agent Booster
 2. **More complex routing logic** to maintain
 3. **Potential for incorrect tier selection** on edge cases
 
@@ -439,9 +439,9 @@ v3/@claude-flow/cli/src/
 ## References
 
 - ADR-017: RuVector Integration Architecture
-- ADR-018: Claude Code Integration
-- Agent Booster: https://github.com/anthropics/agent-booster
-- agentic-flow: https://github.com/ruvnet/agentic-flow
+- ADR-018: Codex Integration
+- Agent Booster: https://github.com/openais/agent-booster
+- agentic: https://github.com/ruvnet/agentic
 - tiny-dancer: Neural model router
 
 ---
@@ -489,7 +489,7 @@ Complex tasks are now routed to Opus via keyword detection for:
 - **Database**: schema design, data model, normalization
 - **Performance**: low latency, high throughput, concurrent
 
-## Claude Max User Impact
+## Codex Max User Impact
 
 ### Quota Savings Analysis
 
@@ -501,7 +501,7 @@ Complex tasks are now routed to Opus via keyword detection for:
 
 ### Max Plan Quota Extension
 
-Claude Max users benefit significantly because Opus consumes ~5x more quota than Sonnet:
+Codex Max users benefit significantly because Opus consumes ~5x more quota than Sonnet:
 
 | Plan | Without ADR-026 | With ADR-026 | Extension |
 |------|-----------------|--------------|-----------|
@@ -510,7 +510,7 @@ Claude Max users benefit significantly because Opus consumes ~5x more quota than
 
 ### How It Saves Quota
 
-1. **Agent Booster (Tier 1)**: 25% of tasks use ZERO Claude quota
+1. **Agent Booster (Tier 1)**: 25% of tasks use ZERO Codex quota
 2. **Sonnet routing (Tier 2)**: 50% of tasks use 1x quota instead of 5x (Opus)
 3. **Opus reserved (Tier 3)**: Only 25% of tasks actually need Opus
 

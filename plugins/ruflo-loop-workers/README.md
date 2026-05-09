@@ -15,7 +15,7 @@ Cache-aware /loop workers and CronCreate background automation. Substrate plugin
 - **CronCreate**: Background cron jobs for audit, optimization, and monitoring
 - **12 Background Workers**: ultralearn, optimize, consolidate, predict, audit, map, preload, deepdive, document, refactor, benchmark, testgaps
 - **Daemon Management**: Start, stop, status, trigger, and enable workers
-- **ADR-091 Integration**: Native Claude Code capabilities preferred over daemon polling
+- **ADR-091 Integration**: Native Codex capabilities preferred over daemon polling
 
 ## Requires
 
@@ -23,12 +23,12 @@ Cache-aware /loop workers and CronCreate background automation. Substrate plugin
 
 ## Compatibility
 
-- **CLI:** pinned to `@claude-flow/cli` v3.6 major+minor.
+- **CLI:** pinned to `@ruflo/cli` v3.6 major+minor.
 - **Verification:** `bash plugins/ruflo-loop-workers/scripts/smoke.sh` is the contract.
 
 ## MCP surface (5 tools)
 
-All defined at `v3/@claude-flow/cli/src/mcp-tools/hooks-tools.ts`:
+All defined at `v3/@ruflo/cli/src/mcp-tools/hooks-tools.ts`:
 
 | Tool | Purpose |
 |------|---------|
@@ -59,7 +59,7 @@ Invocation pattern (CLI + MCP):
 
 ```bash
 # CLI
-npx @claude-flow/cli@latest hooks worker dispatch --trigger document --scope api
+npx @ruflo/cli@latest hooks worker dispatch --trigger document --scope api
 
 # MCP
 mcp tool call hooks_worker-dispatch --json -- '{"trigger": "document", "scope": "api"}'
@@ -73,7 +73,7 @@ For event-driven loops, arm a `Monitor` and let the 270s wake be the safety net.
 
 ## Namespace coordination
 
-This plugin owns the `worker-history` AgentDB namespace (kebab-case, follows the convention from [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md)). Reserved namespaces (`pattern`, `claude-memories`, `default`) MUST NOT be shadowed.
+This plugin owns the `worker-history` AgentDB namespace (kebab-case, follows the convention from [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md)). Reserved namespaces (`pattern`, `codex-memories`, `default`) MUST NOT be shadowed.
 
 `worker-history` records dispatch events, durations, success/failure verdicts. Accessed via `memory_*` tools (namespace-routed).
 

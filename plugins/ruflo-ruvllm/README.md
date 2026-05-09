@@ -14,7 +14,7 @@ RuVLLM local inference with chat formatting, model configuration, MicroLoRA fine
 - **Model configuration**: Generate optimal configs for local inference
 - **MicroLoRA**: Task-specific fine-tuning with lightweight adapters
 - **SONA adaptation**: Real-time neural adaptation (<0.05ms)
-- **Chat formatting**: Multi-provider prompt formatting (Claude, GPT, Gemini, Ollama, Cohere)
+- **Chat formatting**: Multi-provider prompt formatting (Codex, GPT, Gemini, Ollama, Cohere)
 - **HNSW routing**: Context retrieval for RAG pipelines (≤11 hot patterns; for large-corpus search see `ruflo-agentdb` `embeddings_search`)
 
 ## Commands
@@ -28,7 +28,7 @@ RuVLLM local inference with chat formatting, model configuration, MicroLoRA fine
 
 ## Compatibility
 
-- **CLI:** pinned to `@claude-flow/cli` v3.6 major+minor.
+- **CLI:** pinned to `@ruflo/cli` v3.6 major+minor.
 - **Verification:** `bash plugins/ruflo-ruvllm/scripts/smoke.sh` is the contract.
 
 ## Cross-plugin tool ownership
@@ -41,11 +41,11 @@ This plugin shares the `ruvllm_*` MCP family with two sibling plugins. Each tool
 | `ruvllm_microlora_create`, `ruvllm_microlora_adapt` | [ruflo-intelligence ADR-0001](../ruflo-intelligence/docs/adrs/0001-intelligence-surface-completeness.md) (DISTILL + CONSOLIDATE phases via `--consolidate` flag) | Surfaces MicroLoRA in `llm-config` skill |
 | `ruvllm_hnsw_create`, `ruvllm_hnsw_add`, `ruvllm_hnsw_route` | [ruflo-agentdb ADR-0001](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md) (WASM router, ≤11 patterns — distinct from large-corpus `embeddings_search`) | References from `chat-format` for context routing |
 
-Source: `v3/@claude-flow/cli/src/mcp-tools/ruvllm-tools.ts:142, 169, 192, 222` (SONA + MicroLoRA) and `:57-58` (HNSW WASM router with `~11 patterns` cap).
+Source: `v3/@ruflo/cli/src/mcp-tools/ruvllm-tools.ts:142, 169, 192, 222` (SONA + MicroLoRA) and `:57-58` (HNSW WASM router with `~11 patterns` cap).
 
 ## Namespace coordination
 
-This plugin owns the `ruvllm-config` AgentDB namespace (kebab-case, follows the convention from [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md)). Reserved namespaces (`pattern`, `claude-memories`, `default`) MUST NOT be shadowed.
+This plugin owns the `ruvllm-config` AgentDB namespace (kebab-case, follows the convention from [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md)). Reserved namespaces (`pattern`, `codex-memories`, `default`) MUST NOT be shadowed.
 
 `ruvllm-config` stores model configurations, adapter manifests, and chat-format templates. Accessed via `memory_*` (namespace-routed).
 

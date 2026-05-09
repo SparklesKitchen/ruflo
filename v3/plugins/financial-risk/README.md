@@ -1,7 +1,7 @@
-# @claude-flow/plugin-financial-risk
+# @ruflo/plugin-financial-risk
 
-[![npm version](https://img.shields.io/npm/v/@claude-flow/plugin-financial-risk.svg)](https://www.npmjs.com/package/@claude-flow/plugin-financial-risk)
-[![npm downloads](https://img.shields.io/npm/dm/@claude-flow/plugin-financial-risk.svg)](https://www.npmjs.com/package/@claude-flow/plugin-financial-risk)
+[![npm version](https://img.shields.io/npm/v/@ruflo/plugin-financial-risk.svg)](https://www.npmjs.com/package/@ruflo/plugin-financial-risk)
+[![npm downloads](https://img.shields.io/npm/dm/@ruflo/plugin-financial-risk.svg)](https://www.npmjs.com/package/@ruflo/plugin-financial-risk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A high-performance financial risk analysis plugin combining sparse inference for efficient market signal processing with graph neural networks for transaction network analysis. The plugin enables real-time anomaly detection, portfolio risk scoring, and automated compliance reporting while maintaining the explainability required by financial regulators (SEC, FINRA, Basel III).
@@ -19,19 +19,19 @@ A high-performance financial risk analysis plugin combining sparse inference for
 ### npm
 
 ```bash
-npm install @claude-flow/plugin-financial-risk
+npm install @ruflo/plugin-financial-risk
 ```
 
 ### CLI
 
 ```bash
-npx claude-flow plugins install --name @claude-flow/plugin-financial-risk
+npx ruflo plugins install --name @ruflo/plugin-financial-risk
 ```
 
 ## Quick Start
 
 ```typescript
-import { FinancialRiskPlugin } from '@claude-flow/plugin-financial-risk';
+import { FinancialRiskPlugin } from '@ruflo/plugin-financial-risk';
 
 // Initialize the plugin
 const finance = new FinancialRiskPlugin({
@@ -314,15 +314,15 @@ const rateLimits = {
 
 | Plugin | Description | Use Case |
 |--------|-------------|----------|
-| [@claude-flow/plugin-legal-contracts](../legal-contracts) | Contract analysis | Financial agreements, derivatives documentation |
-| [@claude-flow/plugin-healthcare-clinical](../healthcare-clinical) | Clinical decision support | Healthcare portfolio analysis |
-| [@claude-flow/plugin-perf-optimizer](../perf-optimizer) | Performance optimization | High-frequency trading latency optimization |
+| [@ruflo/plugin-legal-contracts](../legal-contracts) | Contract analysis | Financial agreements, derivatives documentation |
+| [@ruflo/plugin-healthcare-clinical](../healthcare-clinical) | Clinical decision support | Healthcare portfolio analysis |
+| [@ruflo/plugin-perf-optimizer](../perf-optimizer) | Performance optimization | High-frequency trading latency optimization |
 
 ## License
 
 MIT License
 
-Copyright (c) 2026 Claude Flow
+Copyright (c) 2026 Ruflo
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

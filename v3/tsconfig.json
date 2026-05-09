@@ -3,31 +3,31 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@claude-flow/security": ["./@claude-flow/security/src"],
-      "@claude-flow/memory": ["./@claude-flow/memory/src"],
-      "@claude-flow/integration": ["./@claude-flow/integration/src"],
-      "@claude-flow/swarm": ["./@claude-flow/swarm/src"],
-      "@claude-flow/performance": ["./@claude-flow/performance/src"],
-      "@claude-flow/cli": ["./@claude-flow/cli/src"],
-      "@claude-flow/neural": ["./@claude-flow/neural/src"],
-      "@claude-flow/testing": ["./@claude-flow/testing/src"],
-      "@claude-flow/deployment": ["./@claude-flow/deployment/src"],
-      "@claude-flow/shared": ["./@claude-flow/shared/src"],
-      "@claude-flow/hooks": ["./@claude-flow/hooks/src"]
+      "@ruflo/security": ["./@ruflo/security/src"],
+      "@ruflo/memory": ["./@ruflo/memory/src"],
+      "@ruflo/integration": ["./@ruflo/integration/src"],
+      "@ruflo/swarm": ["./@ruflo/swarm/src"],
+      "@ruflo/performance": ["./@ruflo/performance/src"],
+      "@ruflo/cli": ["./@ruflo/cli/src"],
+      "@ruflo/neural": ["./@ruflo/neural/src"],
+      "@ruflo/testing": ["./@ruflo/testing/src"],
+      "@ruflo/deployment": ["./@ruflo/deployment/src"],
+      "@ruflo/shared": ["./@ruflo/shared/src"],
+      "@ruflo/hooks": ["./@ruflo/hooks/src"]
     }
   },
   "references": [
-    { "path": "./@claude-flow/shared" },
-    { "path": "./@claude-flow/security" },
-    { "path": "./@claude-flow/memory" },
-    { "path": "./@claude-flow/integration" },
-    { "path": "./@claude-flow/swarm" },
-    { "path": "./@claude-flow/performance" },
-    { "path": "./@claude-flow/cli" },
-    { "path": "./@claude-flow/neural" },
-    { "path": "./@claude-flow/testing" },
-    { "path": "./@claude-flow/deployment" },
-    { "path": "./@claude-flow/hooks" }
+    { "path": "./@ruflo/shared" },
+    { "path": "./@ruflo/security" },
+    { "path": "./@ruflo/memory" },
+    { "path": "./@ruflo/integration" },
+    { "path": "./@ruflo/swarm" },
+    { "path": "./@ruflo/performance" },
+    { "path": "./@ruflo/cli" },
+    { "path": "./@ruflo/neural" },
+    { "path": "./@ruflo/testing" },
+    { "path": "./@ruflo/deployment" },
+    { "path": "./@ruflo/hooks" }
   ],
   "include": [],
   "exclude": ["node_modules", "dist"]

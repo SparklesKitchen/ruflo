@@ -4,13 +4,13 @@
 **Date**: 2026-05-05
 **Version**: target v3.8.0 (post v3.7.x stabilization)
 **Supersedes**: nothing
-**Related**: ADR-086 (Agent Federation), ADR-097 (Federation budget circuit breaker), commit `6f495369` (G2 Ed25519 signing in federation), `v3/@claude-flow/claims/` (existing local-only claims module), `v3/@claude-flow/plugin-agent-federation/` (existing federation runtime)
+**Related**: ADR-086 (Agent Federation), ADR-097 (Federation budget circuit breaker), commit `6f495369` (G2 Ed25519 signing in federation), `v3/@ruflo/claims/` (existing local-only claims module), `v3/@ruflo/plugin-agent-federation/` (existing federation runtime)
 
 ## Context
 
-The claims module (`v3/@claude-flow/claims/`) is a Domain-Driven-Design implementation of a work-coordination protocol — agents and humans claim issues, hand them off, mark them stealable, and contest steals through a Cilk-style work-stealing scheduler. Today it operates **strictly in-process**: every claim, every handoff, every steal happens against `InMemoryClaimEventStore` with monotonic per-aggregate integer versions, and every consumer of the claim service is assumed to be on the same node.
+The claims module (`v3/@ruflo/claims/`) is a Domain-Driven-Design implementation of a work-coordination protocol — agents and humans claim issues, hand them off, mark them stealable, and contest steals through a Cilk-style work-stealing scheduler. Today it operates **strictly in-process**: every claim, every handoff, every steal happens against `InMemoryClaimEventStore` with monotonic per-aggregate integer versions, and every consumer of the claim service is assumed to be on the same node.
 
-Federation (`v3/@claude-flow/plugin-agent-federation/`) is the cross-node trust plane: Ed25519-signed envelopes, peer registry, trust scoring, and a `RoutingService` for sending typed messages between Ruflo installations. ADR-097 added budget circuit breakers; ADR-086 established the core Ed25519 protocol.
+Federation (`v3/@ruflo/plugin-agent-federation/`) is the cross-node trust plane: Ed25519-signed envelopes, peer registry, trust scoring, and a `RoutingService` for sending typed messages between Ruflo installations. ADR-097 added budget circuit breakers; ADR-086 established the core Ed25519 protocol.
 
 These two modules have been built independently and have **never been wired together**. As a consequence:
 
@@ -26,18 +26,18 @@ This ADR is the design document for those three changes plus the contracts, roll
 
 | Component | Path | Today |
 |---|---|---|
-| Claim service | `v3/@claude-flow/claims/src/application/claim-service.ts:147–240` | Pure DI through `IClaimRepository`, `IClaimantRepository`, `IClaimEventStore` |
-| Work-stealing service | `v3/@claude-flow/claims/src/application/work-stealing-service.ts:172–305` | Repo-driven; `contestInfo` window already exists for race resolution |
-| Load balancer | `v3/@claude-flow/claims/src/application/load-balancer.ts:345–793` | Pure functions of claim-count / progress / priority — federates trivially |
-| Event store | `v3/@claude-flow/claims/src/infrastructure/event-store.ts:50–286` | Local in-memory, integer per-aggregate versions |
-| Domain types | `v3/@claude-flow/claims/src/domain/types.ts:91,513` | `Claimant.id` opaque `string`, no locality assumption |
-| Federation envelope | `v3/@claude-flow/plugin-agent-federation/src/protocol/federation-envelope.ts:91–101` | `toSignablePayload()`, `hmacSignature`, Ed25519 verify |
-| Federation routing | `v3/@claude-flow/plugin-agent-federation/src/transport/routing-service.ts:36,61` | `send()`, `scanPii()` already wired; supports `task-assignment` envelope type |
+| Claim service | `v3/@ruflo/claims/src/application/claim-service.ts:147–240` | Pure DI through `IClaimRepository`, `IClaimantRepository`, `IClaimEventStore` |
+| Work-stealing service | `v3/@ruflo/claims/src/application/work-stealing-service.ts:172–305` | Repo-driven; `contestInfo` window already exists for race resolution |
+| Load balancer | `v3/@ruflo/claims/src/application/load-balancer.ts:345–793` | Pure functions of claim-count / progress / priority — federates trivially |
+| Event store | `v3/@ruflo/claims/src/infrastructure/event-store.ts:50–286` | Local in-memory, integer per-aggregate versions |
+| Domain types | `v3/@ruflo/claims/src/domain/types.ts:91,513` | `Claimant.id` opaque `string`, no locality assumption |
+| Federation envelope | `v3/@ruflo/plugin-agent-federation/src/protocol/federation-envelope.ts:91–101` | `toSignablePayload()`, `hmacSignature`, Ed25519 verify |
+| Federation routing | `v3/@ruflo/plugin-agent-federation/src/transport/routing-service.ts:36,61` | `send()`, `scanPii()` already wired; supports `task-assignment` envelope type |
 | Federation message catalog | `federation-envelope.ts:1–16` | Enumerates `task-assignment`, `consensus-vote`, `peer-status`; no `claim-*` member yet |
 
 ## Decision
 
-Wire claims into the federation plane via three additive components, kept in the same `@claude-flow/claims` package and gated behind a feature flag for the entire v3.8 alpha cycle. Each component is independently shippable; the dependencies form a strict topological order.
+Wire claims into the federation plane via three additive components, kept in the same `@ruflo/claims` package and gated behind a feature flag for the entire v3.8 alpha cycle. Each component is independently shippable; the dependencies form a strict topological order.
 
 ### Component A — Hybrid Logical Clock (HLC) timestamps
 
@@ -50,7 +50,7 @@ Wire claims into the federation plane via three additive components, kept in the
 - stay within a small bounded skew of physical time (so they remain human-readable for debugging)
 
 ```ts
-// v3/@claude-flow/claims/src/infrastructure/hlc.ts
+// v3/@ruflo/claims/src/infrastructure/hlc.ts
 export interface HlcTimestamp {
   readonly physicalMs: number;   // wall clock at issuance
   readonly logical: number;      // tie-breaker, monotonic per (node, physicalMs)
@@ -84,7 +84,7 @@ To preserve backwards compatibility with existing in-memory deployments (single-
 **Decision.** Introduce two new infrastructure adapters that satisfy the existing repository / event-store interfaces and route writes through federation:
 
 ```
-v3/@claude-flow/claims/src/infrastructure/
+v3/@ruflo/claims/src/infrastructure/
   hlc.ts                          # Component A
   federated-claim-repository.ts   # implements IClaimRepository
   federated-event-store.ts        # implements IClaimEventStore
@@ -127,7 +127,7 @@ Existing event consumers see the additional fields as opaque metadata; they do n
 **Decision.** Add a new federation message type and route handoff events through the existing signing infrastructure:
 
 ```ts
-// v3/@claude-flow/plugin-agent-federation/src/protocol/federation-envelope.ts
+// v3/@ruflo/plugin-agent-federation/src/protocol/federation-envelope.ts
 export type FederationMessageType =
   | 'task-assignment'
   | 'task-result'
@@ -256,7 +256,7 @@ A minimal-touch alternative: just sign handoff envelopes, skip the federated rep
 
 ### A5. Build federation-aware claims as a sibling package
 
-A separate `@claude-flow/federated-claims` that depends on both `@claude-flow/claims` and `@claude-flow/plugin-agent-federation`. Rejected because:
+A separate `@ruflo/federated-claims` that depends on both `@ruflo/claims` and `@ruflo/plugin-agent-federation`. Rejected because:
 
 - The existing `IClaimRepository` and `IClaimEventStore` interfaces are already the right extension points. A sibling package would either duplicate them or re-export them, both of which add noise.
 - npm dependency graphs already track this fan-in; a sibling package buys nothing the existing package can't deliver via opt-in DI.
@@ -269,7 +269,7 @@ Three phases, each independently mergeable. Each phase ships behind the feature 
 
 | Task | File | Notes |
 |---|---|---|
-| Implement HLC | `v3/@claude-flow/claims/src/infrastructure/hlc.ts` (new) | Pure module, ~100 lines, exhaustive unit tests |
+| Implement HLC | `v3/@ruflo/claims/src/infrastructure/hlc.ts` (new) | Pure module, ~100 lines, exhaustive unit tests |
 | Replace `Date.now()` comparisons in work-stealing | `work-stealing-service.ts:540–545,357–360` | Two callsites, accept HLC via DI on construction |
 | Add HLC to all event types | `domain/events.ts` | Optional field; older events read with `hlc: zeroHlc()` |
 | Wire HLC into `ClaimService` | `application/claim-service.ts` | Constructor injection of `IHlc` interface |
@@ -304,10 +304,10 @@ Phase 3 closes on a green CI run including the new e2e test on Linux + macOS + W
 
 ### Phase 4 — Validate, optimize, publish, merge
 
-- `npm run lint && npm run typecheck && npm test` for both `@claude-flow/claims` and `@claude-flow/plugin-agent-federation`
+- `npm run lint && npm run typecheck && npm test` for both `@ruflo/claims` and `@ruflo/plugin-agent-federation`
 - Run the federation soak test for 30 minutes (3 nodes, 1000 simulated claims, 200 handoffs/min) and assert no orphaned claims, no signature failures, no PII leaks
-- Bump `@claude-flow/claims` from `3.0.0-alpha.X` → `3.1.0-alpha.0` (new minor; opt-in feature flag preserves SemVer)
-- Bump `@claude-flow/plugin-agent-federation` from `1.0.0-alpha.X` → `1.1.0-alpha.0`
+- Bump `@ruflo/claims` from `3.0.0-alpha.X` → `3.1.0-alpha.0` (new minor; opt-in feature flag preserves SemVer)
+- Bump `@ruflo/plugin-agent-federation` from `1.0.0-alpha.X` → `1.1.0-alpha.0`
 - Update `verification.md` with a Post-witness validation entry for ADR-101
 - Open PR; require green CI on all three OSes; merge after one approving review
 
@@ -344,4 +344,4 @@ These are deferred to implementation; this ADR commits to the contracts, not the
 
 **Proposed by**: Reuven (this ADR)
 **Reviewers**: federation-coordinator agent (architectural fit assessment captured in PR description)
-**Sign-off required from**: maintainers of `@claude-flow/claims` and `@claude-flow/plugin-agent-federation`
+**Sign-off required from**: maintainers of `@ruflo/claims` and `@ruflo/plugin-agent-federation`

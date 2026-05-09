@@ -1,7 +1,7 @@
 /**
- * @claude-flow/plugin-hyperbolic-reasoning
+ * @ruflo/plugin-hyperbolic-reasoning
  *
- * Hyperbolic reasoning plugin for Claude Flow V3.
+ * Hyperbolic reasoning plugin for Ruflo V3.
  *
  * Provides MCP tools for:
  * - Hierarchy embedding in Poincare ball
@@ -10,7 +10,7 @@
  * - Hierarchy comparison and alignment
  * - Entailment graph construction
  *
- * @module @claude-flow/plugin-hyperbolic-reasoning
+ * @module @ruflo/plugin-hyperbolic-reasoning
  * @version 3.0.0-alpha.1
  */
 
@@ -115,13 +115,13 @@ export { default } from './mcp-tools.js';
  * Plugin metadata
  */
 export const pluginMetadata = {
-  name: '@claude-flow/plugin-hyperbolic-reasoning',
+  name: '@ruflo/plugin-hyperbolic-reasoning',
   version: '3.0.0-alpha.1',
   description: 'Hyperbolic geometry for hierarchical reasoning',
   category: 'exotic',
   author: 'rUv',
   license: 'MIT',
-  repository: 'https://github.com/ruvnet/claude-flow',
+  repository: 'https://github.com/SparklesKitchen/ruflo',
   tools: [
     'hyperbolic_embed_hierarchy',
     'hyperbolic_taxonomic_reason',

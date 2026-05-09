@@ -2,7 +2,7 @@
 
 Autonomous /loop-driven task completion with learning and prediction.
 
-Combines Ruflo's 10 autopilot MCP tools with Claude Code's native `/loop` + `ScheduleWakeup` for persistent, cache-aware task completion loops.
+Combines Ruflo's 10 autopilot MCP tools with Codex's native `/loop` + `ScheduleWakeup` for persistent, cache-aware task completion loops.
 
 ## Install
 
@@ -44,23 +44,23 @@ Combines Ruflo's 10 autopilot MCP tools with Claude Code's native `/loop` + `Sch
 | `autopilot_history` | Browse past iterations |
 | `autopilot_predict` | Predict the optimal next action from learned patterns |
 
-All 10 are wired in `v3/@claude-flow/cli/src/mcp-tools/autopilot-tools.ts`.
+All 10 are wired in `v3/@ruflo/cli/src/mcp-tools/autopilot-tools.ts`.
 
 ## Compatibility
 
-- **CLI:** pinned to `@claude-flow/cli` v3.6 major+minor.
+- **CLI:** pinned to `@ruflo/cli` v3.6 major+minor.
 - **MCP surface:** the 10 tools above.
 - **Verification:** `bash plugins/ruflo-autopilot/scripts/smoke.sh` is the contract.
 
 ## Cache-aware /loop integration
 
-Autopilot pairs with Claude Code's native `/loop` + `ScheduleWakeup` skills. The recommended fallback heartbeat is **270 seconds** — under the 5-minute prompt-cache TTL so the next wake-up reads conversation context cached. Going past 300s pays a cache-miss; rounding to 5 minutes is the worst-of-both case.
+Autopilot pairs with Codex's native `/loop` + `ScheduleWakeup` skills. The recommended fallback heartbeat is **270 seconds** — under the 5-minute prompt-cache TTL so the next wake-up reads conversation context cached. Going past 300s pays a cache-miss; rounding to 5 minutes is the worst-of-both case.
 
 For event-driven loops, arm a `Monitor` and let the 270s wake be the safety net.
 
 ## Namespace coordination
 
-This plugin owns the `autopilot-patterns` AgentDB namespace (kebab-case, follows the convention from [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md)). Reserved namespaces (`pattern`, `claude-memories`, `default`) MUST NOT be shadowed.
+This plugin owns the `autopilot-patterns` AgentDB namespace (kebab-case, follows the convention from [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md)). Reserved namespaces (`pattern`, `codex-memories`, `default`) MUST NOT be shadowed.
 
 `autopilot_learn` writes to this namespace via `agentdb_pattern-store` semantics — see [ruflo-intelligence ADR-0001](../ruflo-intelligence/docs/adrs/0001-intelligence-surface-completeness.md) for the 4-step pipeline this feeds (RETRIEVE → JUDGE → DISTILL → CONSOLIDATE).
 

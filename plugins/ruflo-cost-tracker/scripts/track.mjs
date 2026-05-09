@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-// cost-track — auto-capture token usage from a Claude Code session jsonl
+// cost-track — auto-capture token usage from a Codex session jsonl
 // and persist a structured record to the `cost-tracking` AgentDB namespace.
 //
 // Resolution: by default reads the most-recently-modified session jsonl in
-// ~/.claude/projects/<encoded-cwd>/. Override with TRACK_CWD or TRACK_SESSION.
+// ~/.codex/projects/<encoded-cwd>/. Override with TRACK_CWD or TRACK_SESSION.
 //
 // Optional env:
 //   TRACK_CWD=<path>          override which project's sessions to scan
@@ -18,7 +18,7 @@ import { join } from 'node:path';
 import { homedir } from 'node:os';
 import { spawnSync } from 'node:child_process';
 
-const PROJECTS_DIR = join(homedir(), '.claude', 'projects');
+const PROJECTS_DIR = join(homedir(), '.codex', 'projects');
 
 // USD per 1M tokens — kept in sync with REFERENCE.md "Model pricing" table.
 const PRICING = {
@@ -46,7 +46,7 @@ function costForUsage(tier, usage) {
 }
 
 function encodeProjectPath(cwd) {
-  // Claude Code encodes absolute path by replacing `/` with `-`.
+  // Codex encodes absolute path by replacing `/` with `-`.
   return cwd.replace(/\//g, '-');
 }
 
@@ -118,10 +118,10 @@ function persistToMemory(summary) {
   // Cold-cache wall-time drops from ~25s to ~2s. JSON backend instead of
   // SQLite/HNSW; semantic search degrades to substring (fine for cost-track
   // which never invokes search — only store/list/retrieve). See
-  // v3/@claude-flow/cli-core/MIGRATION.md.
+  // v3/@ruflo/cli-core/MIGRATION.md.
   const cliPkg = process.env.CLI_CORE === '1'
-    ? '@claude-flow/cli-core@alpha'
-    : '@claude-flow/cli@latest';
+    ? '@ruflo/cli-core@alpha'
+    : '@ruflo/cli@latest';
   // spawnSync with explicit args avoids shell-escape pitfalls for the JSON value.
   const r = spawnSync('npx', [
     cliPkg, 'memory', 'store',
@@ -139,7 +139,7 @@ function main() {
   const targetCwd = process.env.TRACK_CWD || process.cwd();
   const projectDir = findProjectDir(targetCwd);
   if (!projectDir) {
-    console.error(`cost-track: no Claude Code project dir for cwd=${targetCwd}`);
+    console.error(`cost-track: no Codex project dir for cwd=${targetCwd}`);
     console.error(`looked under ${PROJECTS_DIR}/${encodeProjectPath(targetCwd)}`);
     process.exit(2);
   }

@@ -4,7 +4,7 @@
 # ADR-058: Self-Contained Ruflo RVF Appliance
 #
 # Tests ALL 35 categories (95+ checks) to verify every capability
-# of the Ruflo + Claude Flow system works correctly.
+# of the Ruflo + Ruflo system works correctly.
 #
 # Usage:
 #   sh verify-appliance.sh                    # Run all checks
@@ -171,14 +171,14 @@ if should_run "init"; then
   TEST_DIR="/tmp/ruflo-verify-$$"
   mkdir -p "$TEST_DIR" && cd "$TEST_DIR"
   check "init --yes" $RUFLO_CMD init --yes
-  check ".claude/settings.json exists" test -f .claude/settings.json
-  check ".claude/helpers/ exists" test -d .claude/helpers
-  check_contains "no TeammateIdle in hooks" "false" sh -c '! grep -q "TeammateIdle" .claude/settings.json && echo false'
-  check_contains "no TaskCompleted in hooks" "false" sh -c '! grep -q "\"TaskCompleted\"" .claude/settings.json && echo false'
-  check_contains "AGENT_TEAMS env set" "AGENT_TEAMS" cat .claude/settings.json
-  check_contains "agentTeams config present" "agentTeams" cat .claude/settings.json
-  check_contains "statusLine configured" "statusLine" cat .claude/settings.json
-  check "helpers/statusline.cjs exists" test -f .claude/helpers/statusline.cjs
+  check ".codex/settings.json exists" test -f .codex/settings.json
+  check ".codex/helpers/ exists" test -d .codex/helpers
+  check_contains "no TeammateIdle in hooks" "false" sh -c '! grep -q "TeammateIdle" .codex/settings.json && echo false'
+  check_contains "no TaskCompleted in hooks" "false" sh -c '! grep -q "\"TaskCompleted\"" .codex/settings.json && echo false'
+  check_contains "AGENT_TEAMS env set" "AGENT_TEAMS" cat .codex/settings.json
+  check_contains "agentTeams config present" "agentTeams" cat .codex/settings.json
+  check_contains "statusLine configured" "statusLine" cat .codex/settings.json
+  check "helpers/statusline.cjs exists" test -f .codex/helpers/statusline.cjs
   cd /tmp
   rm -rf "$TEST_DIR"
 fi
@@ -448,7 +448,7 @@ if should_run "vault"; then
   if [ "${SKIP_NETWORK:-0}" = "1" ]; then
     check_skip "vault: connectivity" "SKIP_NETWORK=1"
   else
-    check_warn "vault: provider test (anthropic)" $RUFLO_CMD providers test anthropic
+    check_warn "vault: provider test (openai)" $RUFLO_CMD providers test openai
     check_warn "vault: provider test (openai)" $RUFLO_CMD providers test openai
     check_warn "vault: providers list" $RUFLO_CMD providers list
   fi
@@ -461,7 +461,7 @@ if should_run "boot"; then
   check "boot: node available" command -v node
   check_contains "boot: node version ≥ 20" "v2[0-9]" node --version
   check "boot: npm available" command -v npm
-  check_warn "boot: claude cli available" command -v claude
+  check_warn "boot: codex cli available" command -v codex
 fi
 
 # ── 30. Isolation Checks ──────────────────────────────────────

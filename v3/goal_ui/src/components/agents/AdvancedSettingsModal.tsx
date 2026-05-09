@@ -48,7 +48,7 @@ interface AdvancedSettings {
   
   // Model Router Configuration
   modelRouter: {
-    primaryProvider: 'anthropic' | 'openrouter' | 'gemini' | 'local';
+    primaryProvider: 'openai' | 'openrouter' | 'gemini' | 'local';
     strategy: 'cost' | 'speed' | 'quality' | 'privacy' | 'balanced';
     maxCostPerRequest: number;
     enableFallback: boolean;
@@ -85,7 +85,7 @@ const defaultSettings: AdvancedSettings = {
     enableQualityGates: true,
   },
   modelRouter: {
-    primaryProvider: 'anthropic',
+    primaryProvider: 'openai',
     strategy: 'balanced',
     maxCostPerRequest: 1.0,
     enableFallback: true,
@@ -160,7 +160,7 @@ export function AdvancedSettingsModal() {
       quality: {
         swarm: { ...settings.swarm, maxAgents: 20, strategy: 'adaptive' },
         execution: { ...settings.execution, strategy: 'parallel', enableQualityGates: true },
-        modelRouter: { ...settings.modelRouter, primaryProvider: 'anthropic', strategy: 'quality' },
+        modelRouter: { ...settings.modelRouter, primaryProvider: 'openai', strategy: 'quality' },
       },
     };
 
@@ -581,7 +581,7 @@ export function AdvancedSettingsModal() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="anthropic">Anthropic - Highest quality</SelectItem>
+                  <SelectItem value="openai">OpenAI - Highest quality</SelectItem>
                   <SelectItem value="openrouter">OpenRouter - 99% cost savings</SelectItem>
                   <SelectItem value="gemini">Gemini - Optimized for speed</SelectItem>
                   <SelectItem value="local">Local - Privacy-focused (ONNX)</SelectItem>

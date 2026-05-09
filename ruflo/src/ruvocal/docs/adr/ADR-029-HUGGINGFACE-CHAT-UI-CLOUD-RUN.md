@@ -18,7 +18,7 @@ Implemented (2026-02-26), Updated (2026-03-04)
 
 The current chat system (`extensions-cloudrun/apps/chat-system`) is a custom React + Vite SPA backed by Gemini. While it serves internal workflow needs well (ADR-014, ADR-024, ADR-027), we need a **production-grade, multi-model chat interface** at `chat.conveyorclaims.ai` that:
 
-1. Exposes **GPT-5 family models** (gpt-5, gpt-5-mini, gpt-5-nano, gpt-5-pro, gpt-5.1, gpt-5.2) plus multi-provider models (Google Gemini, Anthropic Claude) using **existing Google Secret Manager keys**
+1. Exposes **GPT-5 family models** (gpt-5, gpt-5-mini, gpt-5-nano, gpt-5-pro, gpt-5.1, gpt-5.2) plus multi-provider models (Google Gemini, OpenAI Codex) using **existing Google Secret Manager keys**
 2. Integrates with **existing Cloud Functions** (airtable-agent, db-query-agent, simulation-agent, case-manager, workflow-search) via MCP tool calling
 3. Connects to **ruvector-postgres** (10.128.0.2) for vector search over workflow documents (384d all-MiniLM-L6-v2 embeddings, 311 chunks) — all tool/data operations go through PostgreSQL, NOT MongoDB
 4. Provides conversation persistence, authentication, and a polished UI out of the box
@@ -32,7 +32,7 @@ HuggingFace Chat UI **requires MongoDB** for its internal persistence layer (con
 |-------|----------|---------|
 | **Chat UI internals** | MongoDB (lightweight sidecar or Atlas free tier) | Conversations, user sessions, assistant configs |
 | **Business data & tools** | ruvector-postgres (10.128.0.2) | Workflow search, case data, analytics, embeddings |
-| **AI provider keys** | Google Secret Manager | `openai-api-key`, `anthropic-api-key`, `google-api-key` |
+| **AI provider keys** | Google Secret Manager | `openai-api-key`, `openai-api-key`, `google-api-key` |
 
 MongoDB handles only what Chat UI needs internally. All the **real work** — workflow search, case management, analytics, simulations — flows through the existing ruvector-postgres via MCP tools. The MongoDB instance can run as a sidecar container on the same Cloud Run service using the bundled `chat-ui-db` image, requiring **zero additional infrastructure**.
 
@@ -43,7 +43,7 @@ All AI provider API keys already exist in Google Secret Manager (ADR-004). Chat 
 | Secret ID | Provider | Models |
 |-----------|----------|--------|
 | `openai-api-key` | OpenAI | GPT-5.2, GPT-5, GPT-5-mini, GPT-5-nano, GPT-4o, o3 |
-| `anthropic-api-key` | Anthropic | Claude (when credits refilled) |
+| `openai-api-key` | OpenAI | Codex (when credits refilled) |
 | `google-api-key` | Google | Gemini 2.5 Pro/Flash (when key renewed) |
 
 ### Why HuggingFace Chat UI
@@ -116,10 +116,10 @@ Deploy HuggingFace Chat UI as a new Cloud Run service (`hf-chat-ui`) with:
           │                │          │       │               │
           │                ▼          ▼       ▼               ▼
           │       ┌──────────────┐  ┌──────┐ ┌────────┐ ┌─────────┐
-          │       │ MCP Bridge   │  │OpenAI│ │ Google │ │Anthropic│
-          │       │ (Cloud Run)  │  │ API  │ │Gemini  │ │ Claude  │
+          │       │ MCP Bridge   │  │OpenAI│ │ Google │ │OpenAI│
+          │       │ (Cloud Run)  │  │ API  │ │Gemini  │ │ Codex  │
           │       │              │  │      │ │ API    │ │ API     │
-          │       │ Routes to:   │  │gpt-5 │ │gemini  │ │claude   │
+          │       │ Routes to:   │  │gpt-5 │ │gemini  │ │codex   │
           │       │ Cloud Fns +  │  │gpt-5m│ │2.5-pro │ │sonnet-4 │
           │       │ ruvector-pg  │  │gpt-4o│ │2.5-fl  │ │         │
           │       └──────┬───────┘  │o3    │ │        │ │         │
@@ -443,7 +443,7 @@ All API keys are pulled from **Google Secret Manager** at runtime via Cloud Run 
 | Secret ID | Env Var | Provider |
 |-----------|---------|----------|
 | `openai-api-key` | `OPENAI_API_KEY` | OpenAI (GPT-5 family) |
-| `anthropic-api-key` | `ANTHROPIC_API_KEY` | Anthropic (Claude) |
+| `openai-api-key` | `OPENAI_API_KEY` | OpenAI (Codex) |
 | `google-api-key` | `GOOGLE_API_KEY` | Google (Gemini) |
 
 #### Model Lineup
@@ -588,10 +588,10 @@ MODELS=`[
     }]
   },
   {
-    "name": "claude-sonnet-4",
-    "id": "claude-sonnet-4",
-    "displayName": "Claude Sonnet 4 (Anthropic)",
-    "description": "Anthropic's balanced model. Strong instruction following and coding.",
+    "name": "codex-sonnet-4",
+    "id": "codex-sonnet-4",
+    "displayName": "Codex Sonnet 4 (OpenAI)",
+    "description": "OpenAI's balanced model. Strong instruction following and coding.",
     "supportsTools": true,
     "parameters": {
       "temperature": 0.7,
@@ -599,17 +599,17 @@ MODELS=`[
     },
     "endpoints": [{
       "type": "openai",
-      "baseURL": "https://api.anthropic.com/v1",
-      "apiKey": "${ANTHROPIC_API_KEY}",
+      "baseURL": "https://api.openai.com/v1",
+      "apiKey": "${OPENAI_API_KEY}",
       "defaultHeaders": {
-        "anthropic-version": "2023-06-01"
+        "openai-version": "2023-06-01"
       }
     }]
   }
 ]`
 ```
 
-> **Note:** Google and Anthropic keys are currently expired/out of credits (tested 2026-02-26). Models will show as unavailable until keys are renewed. OpenAI GPT-5 models are **confirmed working** with $100 balance. Chat UI gracefully handles unavailable providers — users simply see those models greyed out.
+> **Note:** Google and OpenAI keys are currently expired/out of credits (tested 2026-02-26). Models will show as unavailable until keys are renewed. OpenAI GPT-5 models are **confirmed working** with $100 balance. Chat UI gracefully handles unavailable providers — users simply see those models greyed out.
 
 ---
 
@@ -623,7 +623,7 @@ All required secrets already exist in Google Secret Manager (verified 2026-02-26
 # All 8 secrets needed for hf-chat-ui
 SECRETS=(
   openai-api-key        # GPT-5 models
-  anthropic-api-key     # Claude models
+  openai-api-key     # Codex models
   google-api-key        # Gemini models
   airtable-api-key      # Airtable MCP
   airtable-base-id      # Airtable base reference
@@ -654,7 +654,7 @@ done
 | Secret | Purpose | Status |
 |--------|---------|--------|
 | `openai-api-key` | GPT-5 model access | Active ($100 balance) |
-| `anthropic-api-key` | Claude model access | Needs credits |
+| `openai-api-key` | Codex model access | Needs credits |
 | `google-api-key` | Gemini model access | Needs renewal |
 | `airtable-api-key` | Airtable MCP direct access | Active |
 | `airtable-base-id` | Airtable base reference | Active |
@@ -789,7 +789,7 @@ steps:
       '--vpc-connector', 'conveyor-connector',
       '--allow-unauthenticated',
       '--set-env-vars', 'OPENAI_BASE_URL=https://api.openai.com/v1,MONGODB_DB_NAME=conveyor-chat,PUBLIC_APP_NAME=Conveyor AI,PUBLIC_ORIGIN=https://chat.conveyorclaims.ai,LLM_SUMMARIZATION=true,ENABLE_DATA_EXPORT=true',
-      '--set-secrets', 'OPENAI_API_KEY=openai-api-key:latest,ANTHROPIC_API_KEY=anthropic-api-key:latest,GOOGLE_API_KEY=google-api-key:latest,AIRTABLE_API_KEY=airtable-api-key:latest,GOOGLE_CLIENT_ID=google-client-id:latest,GOOGLE_CLIENT_SECRET=google-client-secret:latest',
+      '--set-secrets', 'OPENAI_API_KEY=openai-api-key:latest,OPENAI_API_KEY=openai-api-key:latest,GOOGLE_API_KEY=google-api-key:latest,AIRTABLE_API_KEY=airtable-api-key:latest,GOOGLE_CLIENT_ID=google-client-id:latest,GOOGLE_CLIENT_SECRET=google-client-secret:latest',
     ]
 
 substitutions:
@@ -877,7 +877,7 @@ gcloud run deploy hf-chat-ui \
   --vpc-connector=conveyor-connector \
   --allow-unauthenticated \
   --set-env-vars="OPENAI_BASE_URL=https://api.openai.com/v1,MONGODB_URL=mongodb://localhost:27017,MONGODB_DB_NAME=conveyor-chat,PUBLIC_APP_NAME=Conveyor AI,PUBLIC_ORIGIN=https://chat.conveyorclaims.ai,LLM_SUMMARIZATION=true,ENABLE_DATA_EXPORT=true,ALLOW_IFRAME=false,USE_LOCAL_WEBSEARCH=true" \
-  --set-secrets="OPENAI_API_KEY=openai-api-key:latest,ANTHROPIC_API_KEY=anthropic-api-key:latest,GOOGLE_API_KEY=google-api-key:latest,AIRTABLE_API_KEY=airtable-api-key:latest,GOOGLE_CLIENT_ID=google-client-id:latest,GOOGLE_CLIENT_SECRET=google-client-secret:latest" \
+  --set-secrets="OPENAI_API_KEY=openai-api-key:latest,OPENAI_API_KEY=openai-api-key:latest,GOOGLE_API_KEY=google-api-key:latest,AIRTABLE_API_KEY=airtable-api-key:latest,GOOGLE_CLIENT_ID=google-client-id:latest,GOOGLE_CLIENT_SECRET=google-client-secret:latest" \
   --project=new-project-473022
 
 # 2. Deploy MCP Bridge (connects Chat UI tools to existing Cloud Functions + ruvector-postgres)
@@ -914,7 +914,7 @@ gcloud run domain-mappings create \
 | **MongoDB** | $0 (bundled sidecar, no external service) |
 | **ruvector-postgres** | $0 (already running for existing services) |
 | **OpenAI API (GPT-5)** | Variable — depends on usage |
-| **Google/Anthropic APIs** | Variable — uses existing Secret Manager keys |
+| **Google/OpenAI APIs** | Variable — uses existing Secret Manager keys |
 | **SSL Certificate** | $0 (Google-managed) |
 | **Custom Domain** | $0 (CNAME mapping is free) |
 | **Total Infrastructure** | ~$10-40/month + AI provider usage |
@@ -999,8 +999,8 @@ gcloud run domain-mappings create \
 │  ┌───────────────────────────┐    ┌───────────────────────────────────┐              │
 │  │  Secret Manager           │    │  AI Providers (Multi-Provider)    │              │
 │  │  • openai-api-key         │    │  • OpenAI    → GPT-5 family      │              │
-│  │  • anthropic-api-key      │    │  • Google    → Gemini 2.5        │              │
-│  │  • google-api-key         │    │  • Anthropic → Claude Sonnet 4   │              │
+│  │  • openai-api-key      │    │  • Google    → Gemini 2.5        │              │
+│  │  • google-api-key         │    │  • OpenAI → Codex Sonnet 4   │              │
 │  │  • airtable-api-key       │    └───────────────────────────────────┘              │
 │  │  • ruvector-db-password   │                                                       │
 │  └───────────────────────────┘                                                       │
@@ -1013,7 +1013,7 @@ gcloud run domain-mappings create \
 
 | Service | Domain | Purpose | Tools/Models |
 |---------|--------|---------|--------------|
-| **hf-chat-ui** (NEW) | `chat.conveyorclaims.ai` | Multi-provider chat with 3 MCP tool servers | GPT-5.2, GPT-5, GPT-5-mini, GPT-4o, o3, Gemini 2.5, Claude Sonnet 4 |
+| **hf-chat-ui** (NEW) | `chat.conveyorclaims.ai` | Multi-provider chat with 3 MCP tool servers | GPT-5.2, GPT-5, GPT-5-mini, GPT-4o, o3, Gemini 2.5, Codex Sonnet 4 |
 | **mcp-bridge** (NEW) | internal | Custom MCP → Cloud Functions + ruvector-postgres | 5 tools (search, query, case, sim, airtable) |
 | **Airtable MCP** (external) | `mcp.airtable.com` | Official Airtable direct access | Schema browse, CRUD, search |
 | **Google Drive MCP** (external) | `mcp.googleapis.com` | Official Google Drive access | File search, doc read, sheets |
@@ -1193,14 +1193,14 @@ Expanded from 7 models to 17 models across 6 providers. Gemini 2.5 Pro set as de
 |----------|-------|--------|
 | Google (direct) | Gemini API | Gemini 2.5 Pro (Default), Gemini 2.5 Flash |
 | OpenAI (direct) | OpenAI API | GPT-5.2 Pro, GPT-5, GPT-5 Mini, GPT-4o, o4-mini |
-| Anthropic | OpenRouter | Claude Sonnet 4.6, Claude Opus 4.6 |
+| OpenAI | OpenRouter | Codex Sonnet 4.6, Codex Opus 4.6 |
 | Google next-gen | OpenRouter | Gemini 3 Pro Preview, Gemini 3 Flash Preview |
 | DeepSeek | OpenRouter | DeepSeek V3.2 |
 | Mistral | OpenRouter | Mistral Large, Devstral |
 | xAI | OpenRouter | Grok 4.1 Fast |
 | OpenAI latest | OpenRouter | GPT-5.3 Chat, GPT-5.3 Codex |
 
-**MCP Bridge routing logic:** Models with `/` in the name (e.g., `anthropic/claude-sonnet-4.6`) route to OpenRouter. Models starting with `gemini-` route to Google direct. All others route to OpenAI direct.
+**MCP Bridge routing logic:** Models with `/` in the name (e.g., `openai/codex-sonnet-4.6`) route to OpenRouter. Models starting with `gemini-` route to Google direct. All others route to OpenAI direct.
 
 ### Update 11: Docker-Baked Configuration
 

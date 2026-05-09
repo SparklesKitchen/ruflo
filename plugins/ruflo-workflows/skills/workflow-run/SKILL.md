@@ -2,7 +2,7 @@
 name: workflow-run
 description: Execute, pause, resume, and cancel running workflows
 argument-hint: "<workflow-id>"
-allowed-tools: mcp__claude-flow__workflow_execute mcp__claude-flow__workflow_run mcp__claude-flow__workflow_pause mcp__claude-flow__workflow_resume mcp__claude-flow__workflow_cancel mcp__claude-flow__workflow_status Bash
+allowed-tools: mcp__codex__workflow_execute mcp__codex__workflow_run mcp__codex__workflow_pause mcp__codex__workflow_resume mcp__codex__workflow_cancel mcp__codex__workflow_status Bash
 ---
 
 # Workflow Run
@@ -15,11 +15,11 @@ When you need to run a defined workflow, monitor its progress, or control its ex
 
 ## Steps
 
-1. **Execute** — call `mcp__claude-flow__workflow_execute` or `mcp__claude-flow__workflow_run` with the workflow ID
-2. **Monitor** — call `mcp__claude-flow__workflow_status` to check progress and step outcomes
-3. **Pause** — call `mcp__claude-flow__workflow_pause` to halt execution at the current step
-4. **Resume** — call `mcp__claude-flow__workflow_resume` to continue from where paused
-5. **Cancel** — call `mcp__claude-flow__workflow_cancel` to abort the workflow
+1. **Execute** — call `mcp__codex__workflow_execute` or `mcp__codex__workflow_run` with the workflow ID
+2. **Monitor** — call `mcp__codex__workflow_status` to check progress and step outcomes
+3. **Pause** — call `mcp__codex__workflow_pause` to halt execution at the current step
+4. **Resume** — call `mcp__codex__workflow_resume` to continue from where paused
+5. **Cancel** — call `mcp__codex__workflow_cancel` to abort the workflow
 
 ## Execution modes
 

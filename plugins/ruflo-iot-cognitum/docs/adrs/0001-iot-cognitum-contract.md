@@ -4,7 +4,7 @@ title: ruflo-iot-cognitum plugin contract — pinning, namespace coordination (c
 status: Proposed
 date: 2026-05-04
 authors:
-  - reviewer (Claude Code)
+  - reviewer (Codex)
 tags: [plugin, iot, cognitum, telemetry, anomaly-detection, trust, witness-chain, namespace, smoke-test]
 ---
 

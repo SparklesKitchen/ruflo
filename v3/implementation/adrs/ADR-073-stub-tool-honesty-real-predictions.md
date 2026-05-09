@@ -9,7 +9,7 @@
 
 ### 1. Remove fabricated metrics from token-optimizer
 
-The `TokenOptimizer` class (`@claude-flow/integration`) contained hardcoded savings numbers:
+The `TokenOptimizer` class (`@ruflo/integration`) contained hardcoded savings numbers:
 
 | Before | After |
 |--------|-------|
@@ -128,7 +128,7 @@ Test coverage:
 
 ## Consequences
 
-- Token optimizer reports honest numbers (will show 0 savings when agentic-flow is not installed)
+- Token optimizer reports honest numbers (will show 0 savings when agentic is not installed)
 - `neural_predict` returns real cosine similarity results when patterns stored, empty array when not
 - `neural_train` stores real embeddings, no simulated accuracy
 - Zero instances of `Math.random()` for confidence/accuracy/metrics in shipped code

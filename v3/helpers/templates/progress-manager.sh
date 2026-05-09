@@ -1,10 +1,10 @@
 #!/bin/bash
-# Claude Flow V3 Progress Manager Template (Linux/macOS)
+# Ruflo V3 Progress Manager Template (Linux/macOS)
 
 set -e
 
-METRICS_DIR="${PROJECT_ROOT:-.}/.claude-flow/metrics"
-SECURITY_DIR="${PROJECT_ROOT:-.}/.claude-flow/security"
+METRICS_DIR="${PROJECT_ROOT:-.}/.codex/metrics"
+SECURITY_DIR="${PROJECT_ROOT:-.}/.codex/security"
 
 # Colors
 GREEN='\033[0;32m'

@@ -18,7 +18,7 @@ is wiring of tools that already exist in `hooks-tools.ts`.
 | commands/ruflo-cost.md                     |  2,802 |   370 |    46 |
 | REFERENCE.md                               |  4,420 |   662 |    92 |
 | README.md                                  |  8,208 | 1,087 |   141 |
-| .claude-plugin/plugin.json                 |    684 |    61 |    25 |
+| .codex-plugin/plugin.json                 |    684 |    61 |    25 |
 | scripts/smoke.sh                           |  6,585 |   779 |   149 |
 
 All four skill prompts stay under the 5 KB target derived from ADR-098
@@ -52,7 +52,7 @@ revisited and the Bash grant dropped.
 
 ## Token-spend optimization claims (upstream, not measured here)
 
-CLAUDE.md root attributes the following figures to the Token Optimizer
+AGENTS.md root attributes the following figures to the Token Optimizer
 bridge. They are reported by `getTokenOptimizer` in-process; this plugin
 **surfaces** them via `cost-compact-context` but does **not** verify them
 against a no-RAG baseline:
@@ -96,12 +96,12 @@ of the new skills, all caught and fixed before this baseline was recorded:
 |---|----------------------------------|-------------------------------------------------------------|----------|-----|
 | 1 | Upstream literals exist          | `grep "AGENT_BOOSTER_AVAILABLE" hooks-tools.ts`             | found at line 1228 ✓ | none |
 | 2 | `getTokenOptimizer` exported     | `grep` token-optimizer.ts:308                               | found ✓ | none |
-| 3 | `dist/token-optimizer.js` built  | `ls v3/node_modules/@claude-flow/integration/dist/`         | present ✓ | none |
+| 3 | `dist/token-optimizer.js` built  | `ls v3/node_modules/@ruflo/integration/dist/`         | present ✓ | none |
 | 4 | sibling contract honored both ways | `grep "cost-tracker" ruflo-loop-workers/README.md`        | declared at lines 46, 55 ✓ | none |
-| 5 | Skill's claimed import path      | `import("@claude-flow/integration/dist/token-optimizer.js")`| FAILED — Node resolver doubled `.js.js` via the `./*` exports rule | use canonical export `@claude-flow/integration/token-optimizer` |
+| 5 | Skill's claimed import path      | `import("@ruflo/integration/dist/token-optimizer.js")`| FAILED — Node resolver doubled `.js.js` via the `./*` exports rule | use canonical export `@ruflo/integration/token-optimizer` |
 | 6 | Skill's claimed availability API | `opt.isAgentBoosterAvailable?.()`                           | undefined — method does not exist on the singleton | switched to `getStats().agenticFlowAvailable` (the actual public field) |
-| 7 | Booster signal under published CLI | `npx @claude-flow/cli@latest hooks route --task "var to const"` | router used semantic-VectorDb path; **no `[AGENT_BOOSTER_AVAILABLE]` emitted** | added "sparse signal" caveat to the skill — the partition is a lower bound on Tier 1 eligibility |
-| 8 | Bridge returns expected shape    | Node one-liner with corrected import + stats key            | `{memoriesRetrieved:0, tokensSaved:0, agenticFlowAvailable:false, cacheHitRate:"0%"}` ✓ — graceful fallback when agentic-flow not installed | none |
+| 7 | Booster signal under published CLI | `npx @ruflo/cli@latest hooks route --task "var to const"` | router used semantic-VectorDb path; **no `[AGENT_BOOSTER_AVAILABLE]` emitted** | added "sparse signal" caveat to the skill — the partition is a lower bound on Tier 1 eligibility |
+| 8 | Bridge returns expected shape    | Node one-liner with corrected import + stats key            | `{memoriesRetrieved:0, tokensSaved:0, agenticFlowAvailable:false, cacheHitRate:"0%"}` ✓ — graceful fallback when agentic not installed | none |
 
 The first four checks confirm what the ADR claimed about the upstream
 surface. Checks 5–7 caught skill-text bugs that would have surfaced only
@@ -112,7 +112,7 @@ Node block produces the shape the skill's report step describes.
 The remaining honesty:
 
 - **`agenticFlowAvailable: false`** is the truthful state of this checkout —
-  the `agentic-flow` peer dependency is not installed in
+  the `agentic` peer dependency is not installed in
   `v3/node_modules/`. The bridge's documented graceful-fallback path
   (returns `tokensSaved: 0`, no throw) is the active code path here, and
   it works.
@@ -167,25 +167,25 @@ The corpus is now 16 cases: 12 Tier 1 (where booster should succeed) + 4 adversa
 |---|---:|---:|---:|---:|---:|
 | **Agent Booster (WASM)** | **12/12** | **0/4 applied** ⇒ 100% correctly escalated | **0.50 ms** | **$0** | — |
 | Gemini 2.0 Flash | 12/12 | 3/4 | 762.13 ms | $0.000027 | **1524.3×** |
-| Claude Sonnet 4.6 | 12/12 | 3/4 | 1158.06 ms | $0.000982 | **2316.1×** |
-| Claude Opus 4.7 | 12/12 | 3/4 | 1517.94 ms | $0.006049 | **3035.9×** |
+| Codex Sonnet 4.6 | 12/12 | 3/4 | 1158.06 ms | $0.000982 | **2316.1×** |
+| Codex Opus 4.7 | 12/12 | 3/4 | 1517.94 ms | $0.006049 | **3035.9×** |
 
 **Booster escalation correctness = 100%** — every adversarial case fell below the 0.5 confidence threshold (min 0.000), so a fail-closed routing rule lands them in Tier 2/3 every time. **All three LLMs (including Opus 4.7)** misapplied the same adversarial case (`adversarial-recursive-rewrite` — they all left it as recursive rather than rewriting iteratively as instructed).
 
 ### Original 12-case results (corpus v1, kept for reference)
 
-`BENCH_LLM_BASELINE=1` (Gemini via OpenAI shim) and `BENCH_ANTHROPIC=1` (Sonnet 4.6 + Opus 4.7) drive the same corpus. API keys pulled from the GCP secrets the deployed ruvocal Cloud Run service uses (`GOOGLE_AI_API_KEY`, `ANTHROPIC_API_KEY`).
+`BENCH_LLM_BASELINE=1` (Gemini via OpenAI shim) and `BENCH_OpenAI=1` (Sonnet 4.6 + Opus 4.7) drive the same corpus. API keys pulled from the GCP secrets the deployed ruvocal Cloud Run service uses (`GOOGLE_AI_API_KEY`, `OPENAI_API_KEY`).
 
 | Endpoint | Avg latency | Win rate | Cost / edit | Speedup vs Booster |
 |---|---:|---:|---:|---:|
 | **Agent Booster (WASM, local)** | **0.58 ms** | 12/12 (100%) | **$0** | — |
 | Gemini 2.0 Flash (cheap floor) | 583.83 ms | 12/12 (100%) | $0.000020 | **1000.9×** |
-| **Claude Sonnet 4.6** | **1072.58 ms** | 12/12 (100%) | **$0.000722** | **1838.7×** |
-| **Claude Opus 4.7** | **1536.58 ms** | 12/12 (100%) | **$0.004720** | **2634.1×** |
+| **Codex Sonnet 4.6** | **1072.58 ms** | 12/12 (100%) | **$0.000722** | **1838.7×** |
+| **Codex Opus 4.7** | **1536.58 ms** | 12/12 (100%) | **$0.004720** | **2634.1×** |
 
 All four endpoints achieve 12/12. Booster matches frontier LLM accuracy on this structural corpus; the differentiator is **latency × cost**.
 
-### Per-edit token cost (Anthropic side)
+### Per-edit token cost (OpenAI side)
 
 | Model | Avg input tokens | Avg output tokens | Cost / edit |
 |---|---:|---:|---:|
@@ -197,16 +197,16 @@ All four endpoints achieve 12/12. Booster matches frontier LLM accuracy on this 
 | Replaced by Booster | Wall-time saved | Cost saved |
 |---|---:|---:|
 | Gemini 2.0 Flash floor | ~16.2 hours | $2.00 |
-| Claude Sonnet 4.6 | ~29.8 hours | $72.20 |
-| **Claude Opus 4.7** | **~42.7 hours** | **$472.00** |
+| Codex Sonnet 4.6 | ~29.8 hours | $72.20 |
+| **Codex Opus 4.7** | **~42.7 hours** | **$472.00** |
 
-Method to refresh: `( cd v3 && BENCH_LLM_BASELINE=1 BENCH_ANTHROPIC=1 node ../plugins/ruflo-cost-tracker/scripts/bench.mjs )`.
+Method to refresh: `( cd v3 && BENCH_LLM_BASELINE=1 BENCH_OpenAI=1 node ../plugins/ruflo-cost-tracker/scripts/bench.mjs )`.
 
 ### Still "claimed upstream, not yet verified"
 
 | Claim                              | Why not verified yet                                            | How to flip it                |
 |------------------------------------|------------------------------------------------------------------|--------------------------------|
-| `−32%` retrieval (TokenOptimizer)  | Requires a real workload + agentic-flow installed; bridge currently reports `agenticFlowAvailable: false` here | Install `agentic-flow` into a dedicated bench env and run a paired no-RAG-vs-RAG token-count comparison |
+| `−32%` retrieval (TokenOptimizer)  | Requires a real workload + agentic installed; bridge currently reports `agenticFlowAvailable: false` here | Install `agentic` into a dedicated bench env and run a paired no-RAG-vs-RAG token-count comparison |
 | `−15%` booster edits in token-spend | Requires aggregating booster vs. LLM token counts over a real workload (the bench above measures *per-edit* not *per-workload*) | Run the corpus repeatedly inside the cost-optimize skill's outcome capture and aggregate `tokens_avoided` |
 | `95%` cache hit rate               | Requires a real workload that exercises the cache                | Run `getCompactContext` over a representative query stream; report `getStats().cacheHitRate` |
 
@@ -254,7 +254,7 @@ high-confidence `exact_replace` path; 3 hit `fuzzy_replace`.
 ### Hypothesized "before" — same 5 edits via an LLM editing endpoint
 
 LLM baseline numbers come from the `agent-booster` package's own README
-("200–500 ms latency, ~$0.01 per edit") and from CLAUDE.md root's pricing
+("200–500 ms latency, ~$0.01 per edit") and from AGENTS.md root's pricing
 table (Sonnet $3/M input, $15/M output). The "before" column is **not
 measured live in this repo** — running an LLM baseline on every benchmark
 would defeat the cost-tracking purpose. We treat it as a published
@@ -288,7 +288,7 @@ prompt surface was trimmed:
 | cost-analyst.md             |           866 |          866 |        0 | 0.0%     |
 | **TOTAL agent-loadable**    |     **5,978** |    **5,134** |  **−844** | **−14.1%** |
 
-(Tokens via `tiktoken` `cl100k_base`, a close proxy for Anthropic's
+(Tokens via `tiktoken` `cl100k_base`, a close proxy for OpenAI's
 tokenizer — the relative deltas hold within ~5%.)
 
 At Sonnet input pricing, the per-spawn savings are $0.00136 for
@@ -311,7 +311,7 @@ Wall-time 0.08–0.09 s on all phases.
 ```bash
 cd plugins/ruflo-cost-tracker
 for f in skills/*/SKILL.md agents/*.md commands/*.md REFERENCE.md README.md \
-         .claude-plugin/plugin.json scripts/smoke.sh; do
+         .codex-plugin/plugin.json scripts/smoke.sh; do
   wc -c "$f" | awk '{printf "%6d B  ", $1}'
   wc -w "$f" | awk '{printf "%5d w  ", $1}'
   wc -l "$f" | awk '{printf "%4d L  ", $1}'

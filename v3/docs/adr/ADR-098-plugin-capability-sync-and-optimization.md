@@ -8,13 +8,13 @@
 
 ## Context
 
-The `plugins/ruflo-*` tree is the user-facing surface of Ruflo on Claude Code — 32 plugins distributed via the Ruflo marketplace, each bundling agent prompts, skills, slash commands, and (in some cases) hooks. End users install via `/plugin install ruflo-X@ruflo` and immediately get the agent / commands.
+The `plugins/ruflo-*` tree is the user-facing surface of Ruflo on Codex — 32 plugins distributed via the Ruflo marketplace, each bundling agent prompts, skills, slash commands, and (in some cases) hooks. End users install via `/plugin install ruflo-X@ruflo` and immediately get the agent / commands.
 
 Recent shipped work (ADR-094, 095, 096, 097) added or modified capabilities that the plugin tree doesn't yet surface:
 
 | Recent capability | Plugin that should know about it | Current coverage |
 |---|---|---|
-| ADR-096 encryption-at-rest (CLAUDE_FLOW_ENCRYPT_AT_REST gate, fs-secure helpers) | `ruflo-aidefence`, `ruflo-security-audit`, `ruflo-rag-memory`, `ruflo-rvf` | None of these mention it |
+| ADR-096 encryption-at-rest (RUFLO_ENCRYPT_AT_REST gate, fs-secure helpers) | `ruflo-aidefence`, `ruflo-security-audit`, `ruflo-rag-memory`, `ruflo-rvf` | None of these mention it |
 | ADR-097 federation budget circuit breaker (`maxHops`, `maxTokens`, `maxUsd`) | `ruflo-federation` ✅, `ruflo-cost-tracker` should consume `federation_spend` events | Federation has it; cost-tracker doesn't |
 | `validateEnv()` loader-hijack denylist | `ruflo-aidefence`, `ruflo-security-audit` (relevant for threat agents) | Not surfaced |
 | `validateBudget()` / `enforceBudget()` (federation) | `ruflo-cost-tracker` | Not surfaced |
@@ -80,7 +80,7 @@ For every plugin whose surface meaningfully overlaps a post-3.6.13 capability, a
 |---|---|
 | `ruflo-aidefence` | `validateEnv` loader-hijack denylist; chmod 0600 file mode; encryption-at-rest gate (defense-in-depth pairing) |
 | `ruflo-security-audit` | Same set, plus the github-tools / update/executor shell injection patterns to scan for |
-| `ruflo-rag-memory`, `ruflo-rvf` | Encryption-at-rest gate (memory.db wraps under `CLAUDE_FLOW_ENCRYPT_AT_REST=1`) |
+| `ruflo-rag-memory`, `ruflo-rvf` | Encryption-at-rest gate (memory.db wraps under `RUFLO_ENCRYPT_AT_REST=1`) |
 | `ruflo-cost-tracker` | Federation budget breaker; `federation_spend` events; per-peer rolling aggregation API (when ADR-097 P3 lands) |
 | `ruflo-agentdb`, `ruflo-knowledge-graph` | The 5 activated G7 controllers (gnn, rvf, mut, att, gvb) and their MCP tools |
 | `ruflo-federation` | Already done in v0.2.0 |
@@ -110,7 +110,7 @@ For every plugin agent without `hooks post-task --train-neural true`, append the
 ```bash
 ### Neural learning
 After completing tasks, store the outcome:
-`npx @claude-flow/cli@latest hooks post-task --task-id "$TASK_ID" --success $SUCCESS --train-neural true`
+`npx @ruflo/cli@latest hooks post-task --task-id "$TASK_ID" --success $SUCCESS --train-neural true`
 ```
 
 Targets the 7 agents flagged by audit. Adds ~3 lines per agent — ~21 lines net repository-wide. Standardizes the learning-feedback contract.
@@ -122,7 +122,7 @@ For agents whose work materially contributes to long-term quality (coder, review
 ```bash
 ### Self-optimization
 On successful completion, trigger background optimization:
-`npx @claude-flow/cli@latest hooks worker dispatch --trigger <relevant-worker> --task-id "$TASK_ID"`
+`npx @ruflo/cli@latest hooks worker dispatch --trigger <relevant-worker> --task-id "$TASK_ID"`
 ```
 
 Worker mapping per agent class:
@@ -139,7 +139,7 @@ Lower priority than Parts 1-4 because workers run async and benefit from stable 
 
 ## Scope guardrails
 
-- This ADR does **not** change runtime code in `@claude-flow/cli`. All edits are in `plugins/ruflo-*/`.
+- This ADR does **not** change runtime code in `@ruflo/cli`. All edits are in `plugins/ruflo-*/`.
 - Each part is independently shippable.
 - No new ADR cycle unless a part surfaces a runtime gap (e.g. Part 5 might need a new MCP tool for worker telemetry; if so, separate ADR).
 - Per-plugin version bumps follow semver: capability sync = minor (0.1.0 → 0.2.0); token diet alone = patch (0.1.0 → 0.1.1).
@@ -164,7 +164,7 @@ The pass is done when:
 - [ ] All 43 plugin agents include a `hooks post-task --train-neural true` invocation.
 - [ ] At least 8 work-producing agents include a `hooks worker dispatch` invocation tied to the right background worker.
 - [ ] No regression in the plugin marketplace install path (`/plugin install ruflo-X@ruflo` still resolves).
-- [ ] Spot-check: `ruflo doctor -c agentic-flow` and the broader doctor output stays green.
+- [ ] Spot-check: `ruflo doctor -c agentic` and the broader doctor output stays green.
 
 ## Trade-offs
 

@@ -1,5 +1,5 @@
 /**
- * V3 Claude-Flow Vitest Configuration
+ * V3 Codex-Flow Vitest Configuration
  *
  * London School TDD Configuration
  * - Mock-first testing approach
@@ -21,8 +21,8 @@ export default defineConfig({
     include: [
       '__tests__/**/*.test.ts',
       '__tests__/**/*.spec.ts',
-      '@claude-flow/**/__tests__/**/*.test.ts',
-      '@claude-flow/**/__tests__/**/*.spec.ts',
+      '@ruflo/**/__tests__/**/*.test.ts',
+      '@ruflo/**/__tests__/**/*.spec.ts',
       'mcp/__tests__/**/*.test.ts',
       'mcp/__tests__/**/*.spec.ts',
     ],
@@ -87,7 +87,7 @@ export default defineConfig({
 
     // Parallel execution.
     // Switched from 'threads' → 'forks' because tests that load native
-    // bindings (onnxruntime-node, ruvector, agentic-flow) sometimes
+    // bindings (onnxruntime-node, ruvector, agentic) sometimes
     // segfault during process cleanup. With 'forks' each test file
     // runs in its own subprocess; a segfault in one doesn't kill the
     // runner, and exit-time crashes happen after results are reported.

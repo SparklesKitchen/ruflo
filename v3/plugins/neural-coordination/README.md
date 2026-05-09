@@ -1,8 +1,8 @@
-# @claude-flow/plugin-neural-coordination
+# @ruflo/plugin-neural-coordination
 
-[![npm version](https://img.shields.io/npm/v/@claude-flow/plugin-neural-coordination.svg)](https://www.npmjs.com/package/@claude-flow/plugin-neural-coordination)
-[![license](https://img.shields.io/npm/l/@claude-flow/plugin-neural-coordination.svg)](https://github.com/ruvnet/claude-flow/blob/main/LICENSE)
-[![downloads](https://img.shields.io/npm/dm/@claude-flow/plugin-neural-coordination.svg)](https://www.npmjs.com/package/@claude-flow/plugin-neural-coordination)
+[![npm version](https://img.shields.io/npm/v/@ruflo/plugin-neural-coordination.svg)](https://www.npmjs.com/package/@ruflo/plugin-neural-coordination)
+[![license](https://img.shields.io/npm/l/@ruflo/plugin-neural-coordination.svg)](https://github.com/SparklesKitchen/ruflo/blob/main/LICENSE)
+[![downloads](https://img.shields.io/npm/dm/@ruflo/plugin-neural-coordination.svg)](https://www.npmjs.com/package/@ruflo/plugin-neural-coordination)
 
 A cutting-edge multi-agent coordination plugin combining the SONA self-optimizing neural architecture with graph neural networks for agent communication topology optimization. The plugin enables emergent protocol development, neural consensus mechanisms, collective memory formation, and adaptive swarm behavior while maintaining interpretability of agent interactions.
 
@@ -11,19 +11,19 @@ A cutting-edge multi-agent coordination plugin combining the SONA self-optimizin
 ### npm
 
 ```bash
-npm install @claude-flow/plugin-neural-coordination
+npm install @ruflo/plugin-neural-coordination
 ```
 
 ### CLI
 
 ```bash
-npx claude-flow plugins install --name @claude-flow/plugin-neural-coordination
+npx ruflo plugins install --name @ruflo/plugin-neural-coordination
 ```
 
 ## Quick Start
 
 ```typescript
-import { NeuralCoordinationPlugin } from '@claude-flow/plugin-neural-coordination';
+import { NeuralCoordinationPlugin } from '@ruflo/plugin-neural-coordination';
 
 // Initialize the plugin
 const plugin = new NeuralCoordinationPlugin();
@@ -256,9 +256,9 @@ interface NeuralCoordinationConfig {
 
 | Plugin | Description | Synergy |
 |--------|-------------|---------|
-| [@claude-flow/plugin-cognitive-kernel](https://www.npmjs.com/package/@claude-flow/plugin-cognitive-kernel) | Cognitive augmentation with working memory | Enhances individual agent reasoning within coordinated swarms |
-| [@claude-flow/plugin-quantum-optimizer](https://www.npmjs.com/package/@claude-flow/plugin-quantum-optimizer) | Quantum-inspired optimization | Optimizes task allocation and resource scheduling across agents |
-| [@claude-flow/plugin-hyperbolic-reasoning](https://www.npmjs.com/package/@claude-flow/plugin-hyperbolic-reasoning) | Hierarchical reasoning | Enables hierarchical agent organization and taxonomic coordination |
+| [@ruflo/plugin-cognitive-kernel](https://www.npmjs.com/package/@ruflo/plugin-cognitive-kernel) | Cognitive augmentation with working memory | Enhances individual agent reasoning within coordinated swarms |
+| [@ruflo/plugin-quantum-optimizer](https://www.npmjs.com/package/@ruflo/plugin-quantum-optimizer) | Quantum-inspired optimization | Optimizes task allocation and resource scheduling across agents |
+| [@ruflo/plugin-hyperbolic-reasoning](https://www.npmjs.com/package/@ruflo/plugin-hyperbolic-reasoning) | Hierarchical reasoning | Enables hierarchical agent organization and taxonomic coordination |
 
 ## License
 

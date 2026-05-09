@@ -229,7 +229,7 @@ ENV VITE_OPENAI_API_KEY=${OPENAI_API_KEY}
 
 - **Model flexibility**: Users can choose the best model for their task (Gemini for grounding/search, GPT-5 for reasoning).
 - **Provider resilience**: If one provider is down or rate-limited, users switch instantly.
-- **Clean abstraction**: `IAIProvider` makes adding future providers (Claude, etc.) trivial.
+- **Clean abstraction**: `IAIProvider` makes adding future providers (Codex, etc.) trivial.
 - **Copy UX**: Users can finally copy full message content without fighting text selection.
 - **No breaking changes**: Default behavior remains Gemini 2.5 Flash -- GPT-5 is opt-in.
 

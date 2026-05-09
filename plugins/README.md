@@ -1,15 +1,15 @@
 # Ruflo Plugins
 
-32 Claude Code plugins for agent-powered development workflows. Load with `--plugin-dir`.
+32 Codex plugins for agent-powered development workflows. Load with `--plugin-dir`.
 
 ## Quick Start
 
 ```bash
 # Load specific plugins
-claude --plugin-dir plugins/ruflo-core --plugin-dir plugins/ruflo-swarm
+codex --plugin-dir plugins/ruflo-core --plugin-dir plugins/ruflo-swarm
 
 # Load all plugins
-claude $(ls -d plugins/ruflo-*/ | sed 's|^|--plugin-dir |' | tr '\n' ' ')
+codex $(ls -d plugins/ruflo-*/ | sed 's|^|--plugin-dir |' | tr '\n' ' ')
 ```
 
 ## Plugin Catalog
@@ -103,17 +103,17 @@ Several plugins wrap standalone npm packages for deeper functionality:
 npm install neural-trader ruvector
 
 # Add as MCP servers (optional, for direct tool access)
-claude mcp add neural-trader -- npx neural-trader mcp start
-claude mcp add ruvector -- npx ruvector mcp start
+codex mcp add neural-trader -- npx neural-trader mcp start
+codex mcp add ruvector -- npx ruvector mcp start
 ```
 
 ## Plugin Structure
 
-Each plugin follows the Claude Code plugin specification:
+Each plugin follows the Codex plugin specification:
 
 ```
 ruflo-<name>/
-  .claude-plugin/plugin.json    # Plugin manifest
+  .codex-plugin/plugin.json    # Plugin manifest
   agents/<name>.md              # Agent definitions (frontmatter: name, description, model)
   commands/<name>.md            # CLI command mappings
   skills/<name>/SKILL.md        # Interactive skills (frontmatter: name, description, argument-hint, allowed-tools)
@@ -123,7 +123,7 @@ ruflo-<name>/
 ## Creating a Plugin
 
 ```bash
-claude --plugin-dir plugins/ruflo-plugin-creator
+codex --plugin-dir plugins/ruflo-plugin-creator
 # Then: /create-plugin my-new-plugin
 ```
 
@@ -132,7 +132,7 @@ Or manually: copy any existing plugin directory and modify.
 ## Validation
 
 ```bash
-claude plugin validate plugins/ruflo-<name>
+codex plugin validate plugins/ruflo-<name>
 ```
 
 ## License

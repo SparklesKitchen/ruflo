@@ -20,16 +20,16 @@ Issue [#1425](https://github.com/ruvnet/ruflo/issues/1425) identified systemic q
 Address all 7 items in a single release (v3.5.70):
 
 ### 1. Eliminate `any` types in v3 commands
-Replace all 19 `any` casts in `v3/@claude-flow/cli/src/commands/` with proper types. Use `unknown` + narrowing where the actual type is unclear.
+Replace all 19 `any` casts in `v3/@ruflo/cli/src/commands/` with proper types. Use `unknown` + narrowing where the actual type is unclear.
 
 ### 2. Consolidate websocket implementations
-Create `v3/@claude-flow/shared/src/ws/` shared websocket module with unified auth, reconnection logic, and heartbeat. CLI, hooks, and MCP bridge import from shared module.
+Create `v3/@ruflo/shared/src/ws/` shared websocket module with unified auth, reconnection logic, and heartbeat. CLI, hooks, and MCP bridge import from shared module.
 
 ### 3. Unify agent management state
-Create shared `AgentRegistry` in `@claude-flow/shared` that AgentManager, WorkerPool, and MCP agent tools all use. Single source of truth for agent lifecycle.
+Create shared `AgentRegistry` in `@ruflo/shared` that AgentManager, WorkerPool, and MCP agent tools all use. Single source of truth for agent lifecycle.
 
 ### 4. Wire providers to config
-`providers list` reads from `claude-flow.config.json` or environment. `providers test` makes real API health check calls (with timeout).
+`providers list` reads from `codex.config.json` or environment. `providers test` makes real API health check calls (with timeout).
 
 ### 5. Expand input validation to all command handlers
 Add `validateIdentifier`/`validatePath`/`validateText` calls to all 43 command handlers that accept user input. Focus on boundary inputs: file paths, identifiers, command arguments.

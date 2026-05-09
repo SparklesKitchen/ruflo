@@ -1,6 +1,6 @@
 # V3 Architecture Decision Records (ADRs)
 
-This directory contains all Architecture Decision Records for Claude-Flow v3.
+This directory contains all Architecture Decision Records for Codex-Flow v3.
 
 **Status:** ✅ **BETA READY** (22 ADRs Complete)
 **Version:** 3.0.0-alpha.84
@@ -12,7 +12,7 @@ This directory contains all Architecture Decision Records for Claude-Flow v3.
 
 | ADR | Title | Status | File |
 |-----|-------|--------|------|
-| ADR-001 | Adopt agentic-flow as Core Foundation | ✅ Implemented | [ADR-001-AGENT-IMPLEMENTATION.md](./ADR-001-AGENT-IMPLEMENTATION.md) |
+| ADR-001 | Adopt agentic as Core Foundation | ✅ Implemented | [ADR-001-AGENT-IMPLEMENTATION.md](./ADR-001-AGENT-IMPLEMENTATION.md) |
 | ADR-002 | Implement Domain-Driven Design Structure | ✅ Implemented | [ADR-002-DDD-STRUCTURE.md](./ADR-002-DDD-STRUCTURE.md) |
 | ADR-003 | Single Coordination Engine | ✅ Implemented | [ADR-003-CONSOLIDATION-COMPLETE.md](./ADR-003-CONSOLIDATION-COMPLETE.md) |
 | ADR-004 | Plugin-Based Architecture | ✅ Implemented | [ADR-004-PLUGIN-ARCHITECTURE.md](./ADR-004-PLUGIN-ARCHITECTURE.md) |
@@ -39,7 +39,7 @@ This directory contains all Architecture Decision Records for Claude-Flow v3.
 
 | ADR | Title | Status | File |
 |-----|-------|--------|------|
-| ADR-018 | Claude Code Integration | ✅ Implemented | [ADR-018-claude-code-integration.md](./ADR-018-claude-code-integration.md) |
+| ADR-018 | Codex Integration | ✅ Implemented | [ADR-018-codex-code-integration.md](./ADR-018-codex-code-integration.md) |
 | ADR-019 | Headless Runtime Package | ✅ Implemented | [ADR-019-headless-runtime-package.md](./ADR-019-headless-runtime-package.md) |
 | ADR-020 | Headless Worker Integration | ✅ Implemented | [ADR-020-headless-worker-integration.md](./ADR-020-headless-worker-integration.md) |
 | ADR-021 | Transfer Hook IPFS Pattern Sharing | ✅ Implemented | [ADR-021-transfer-hook-ipfs-pattern-sharing.md](./ADR-021-transfer-hook-ipfs-pattern-sharing.md) |
@@ -63,7 +63,7 @@ This directory contains all Architecture Decision Records for Claude-Flow v3.
 
 | ADR | Title | Status | File |
 |-----|-------|--------|------|
-| ADR-046 | Dual Umbrella: claude-flow + ruflo | Accepted | [ADR-046-ruflo-rebrand.md](./ADR-046-ruflo-rebrand.md) |
+| ADR-046 | Dual Umbrella: codex + ruflo | Accepted | [ADR-046-ruflo-rebrand.md](./ADR-046-ruflo-rebrand.md) |
 | ADR-047 | Fast Mode Integration | Proposed | [ADR-047-fast-mode-integration.md](./ADR-047-fast-mode-integration.md) |
 | ADR-048 | Auto Memory Integration | Accepted | [ADR-048-auto-memory-integration.md](./ADR-048-auto-memory-integration.md) |
 
@@ -94,7 +94,7 @@ This directory contains all Architecture Decision Records for Claude-Flow v3.
 | MCP Tools | ✅ 100% | 119 tools (exceeds V2) |
 | Hooks System | ✅ 100% | 20 CLI + 60 MCP hook tools |
 | Test Coverage | ✅ 85%+ | 85+ test files (ADR-008) |
-| Service Integration | ✅ Complete | agentic-flow@alpha integration |
+| Service Integration | ✅ Complete | agentic@alpha integration |
 | RuVector Integration | ✅ Complete | Q-Learning, AST, Diff, Coverage (ADR-017) |
 | Performance Benchmarks | ✅ Complete | Full benchmark suite |
 | Auto-Update System | ✅ Complete | Rate-limited startup checks (ADR-025) |
@@ -119,7 +119,7 @@ This directory contains all Architecture Decision Records for Claude-Flow v3.
 
 ### Core Decisions
 
-1. **ADR-001**: Build on agentic-flow@alpha instead of duplicating (eliminates 10,000+ lines)
+1. **ADR-001**: Build on agentic@alpha instead of duplicating (eliminates 10,000+ lines)
 2. **ADR-002**: Domain-Driven Design with bounded contexts for clean architecture
 3. **ADR-003**: Single UnifiedSwarmCoordinator as canonical coordination engine
 4. **ADR-004**: Microkernel with plugins for optional features (HiveMind, Neural, etc.)
@@ -159,12 +159,12 @@ All ADRs consider security:
 ---
 
 **Last Updated:** 2026-01-13
-**Project:** Claude-Flow V3
+**Project:** Codex-Flow V3
 **Version:** 3.0.0-alpha.84 (Beta Ready)
 
 ### Recent Updates (2026-01-13)
 
-#### Release: @claude-flow/cli@3.0.0-alpha.84 (Beta Ready)
+#### Release: @ruflo/cli@3.0.0-alpha.84 (Beta Ready)
 
 **All Audit Issues Resolved:**
 
@@ -176,37 +176,37 @@ All ADRs consider security:
 
 **Auto-Update System (ADR-025):**
 ```bash
-npx claude-flow update check      # Check for updates
-npx claude-flow update all        # Update all packages
-npx claude-flow update history    # View update history
-npx claude-flow update rollback   # Rollback last update
+npx ruflo update check      # Check for updates
+npx ruflo update all        # Update all packages
+npx ruflo update history    # View update history
+npx ruflo update rollback   # Rollback last update
 ```
 
 ---
 
 ### Previous Updates (2026-01-07)
 
-#### Release: @claude-flow/cli@3.0.0-alpha.15 (Latest)
+#### Release: @ruflo/cli@3.0.0-alpha.15 (Latest)
 
 **Doctor Command Enhancements**:
-- **Claude Code CLI Check**: Verifies `@anthropic-ai/claude-code` installation
-- **Auto-Install**: `--install` flag to auto-install missing Claude Code CLI
+- **Codex CLI Check**: Verifies `@openai-ai/codex-code` installation
+- **Auto-Install**: `--install` flag to auto-install missing Codex CLI
 - **Fixed Package Paths**: Corrected `dist/src/` paths for proper npm resolution
 
 ```bash
-# Check system health including Claude Code CLI
-npx claude-flow@v3alpha doctor
+# Check system health including Codex CLI
+npx ruflo@v3alpha doctor
 
-# Auto-install Claude Code CLI if missing
-npx claude-flow@v3alpha doctor --install
+# Auto-install Codex CLI if missing
+npx ruflo@v3alpha doctor --install
 
-# Check only Claude Code CLI
-npx claude-flow@v3alpha doctor -c claude
+# Check only Codex CLI
+npx ruflo@v3alpha doctor -c codex
 ```
 
-**Package Resolution Fix**: Fixed Windows module resolution issue where `@claude-flow/cli` exports pointed to wrong paths (`dist/index.js` → `dist/src/index.js`).
+**Package Resolution Fix**: Fixed Windows module resolution issue where `@ruflo/cli` exports pointed to wrong paths (`dist/index.js` → `dist/src/index.js`).
 
-#### Release: @claude-flow/cli@3.0.0-alpha.7
+#### Release: @ruflo/cli@3.0.0-alpha.7
 - **Hive-Mind CLI**: All MCP tools now exposed via CLI subcommands:
   - `hive-mind join <agent-id>` - Join agent to hive
   - `hive-mind leave <agent-id>` - Remove agent from hive
@@ -214,7 +214,7 @@ npx claude-flow@v3alpha doctor -c claude
   - `hive-mind broadcast -m <msg>` - Broadcast messages to workers
   - `hive-mind memory` - Access shared memory (get/set/delete/list)
 - **Bug Fix**: Fixed positional argument parsing for subcommands in CLI parser
-- **File Persistence**: All MCP tools use file-based persistence in `.claude-flow/` directories
+- **File Persistence**: All MCP tools use file-based persistence in `.codex/` directories
 - **ADR-014**: Node.js Worker Daemon - cross-platform TypeScript daemon replaces shell helpers
 - **CLI**: `daemon` command with start/stop/status/trigger/enable subcommands
 - **Session Integration**: Auto-start daemon on SessionStart, auto-stop on SessionEnd
@@ -232,10 +232,10 @@ npx claude-flow@v3alpha doctor -c claude
 
 #### Install
 ```bash
-npx @claude-flow/cli@v3alpha --help
+npx @ruflo/cli@v3alpha --help
 ```
 
-### Release: @claude-flow/cli@3.0.0-alpha.11 (2026-01-07)
+### Release: @ruflo/cli@3.0.0-alpha.11 (2026-01-07)
 
 #### New V3 Advanced CLI Commands
 All commands include subcommand help and "Created with ❤️ by ruv.io" branding.
@@ -257,22 +257,22 @@ All commands include subcommand help and "Created with ❤️ by ruv.io" brandin
 
 **Smart Error Suggestions**: Typo detection with Levenshtein distance
 ```bash
-$ claude-flow swram
+$ codex swram
 [ERROR] Unknown command: swram
   Did you mean one of these?
   - swarm
   - neural
   - start
 
-$ claude-flow memroy
+$ codex memroy
 [ERROR] Unknown command: memroy
   Did you mean "memory"?
 ```
 
 **Doctor Command**: System health diagnostics
 ```bash
-$ claude-flow doctor
-Claude Flow Doctor
+$ codex doctor
+Ruflo Doctor
 ──────────────────────────────────────────────────
 ✓ Node.js Version: v22.21.1 (>= 20 required)
 ✓ npm Version: v10.9.4
@@ -292,16 +292,16 @@ Summary: 6 passed, 5 warnings
 **Shell Completions**: Tab completion for all shells
 ```bash
 # Install bash completions
-claude-flow completions bash > ~/.bash_completion.d/claude-flow
+codex completions bash > ~/.bash_completion.d/codex
 
 # Install zsh completions
-claude-flow completions zsh > ~/.zfunc/_claude-flow
+codex completions zsh > ~/.zfunc/_codex
 
 # Install fish completions
-claude-flow completions fish > ~/.config/fish/completions/claude-flow.fish
+codex completions fish > ~/.config/fish/completions/codex.fish
 
 # Install PowerShell completions
-claude-flow completions powershell >> $PROFILE
+codex completions powershell >> $PROFILE
 ```
 
 ## CLI Roadmap
@@ -316,41 +316,41 @@ claude-flow completions powershell >> $PROFILE
 | 🟡 P1 | Resolve provider config overlap | Pending | Unify provider configs across embeddings/providers commands |
 | 🟡 P1 | Add unified `logs` command | Pending | Centralized log viewing across daemon, agents, swarms |
 | 🟢 P2 | Add `upgrade` command | Pending | Self-update CLI to latest version |
-| 🟢 P2 | Add interactive shell/REPL mode | Pending | `claude-flow shell` for interactive command execution |
+| 🟢 P2 | Add interactive shell/REPL mode | Pending | `codex shell` for interactive command execution |
 
 ### Implementation Plan
 
 **P0 - Critical (Next Release)**
 ```bash
 # Doctor command - diagnose system health
-claude-flow doctor              # Full system check
-claude-flow doctor --fix        # Auto-fix issues where possible
-claude-flow doctor --component mcp  # Check specific component
+codex doctor              # Full system check
+codex doctor --fix        # Auto-fix issues where possible
+codex doctor --component mcp  # Check specific component
 
 # Shell completions
-claude-flow completions bash > ~/.bash_completion.d/claude-flow
-claude-flow completions zsh > ~/.zfunc/_claude-flow
-claude-flow completions fish > ~/.config/fish/completions/claude-flow.fish
+codex completions bash > ~/.bash_completion.d/codex
+codex completions zsh > ~/.zfunc/_codex
+codex completions fish > ~/.config/fish/completions/codex.fish
 ```
 
 **P1 - High Priority**
 ```bash
 # Unified logs command
-claude-flow logs                # All logs
-claude-flow logs --follow       # Tail logs
-claude-flow logs --component daemon
-claude-flow logs --level error
+codex logs                # All logs
+codex logs --follow       # Tail logs
+codex logs --component daemon
+codex logs --level error
 ```
 
 **P2 - Nice to Have**
 ```bash
 # Self-update
-claude-flow upgrade             # Upgrade to latest
-claude-flow upgrade --check     # Check for updates
-claude-flow upgrade --version 3.1.0
+codex upgrade             # Upgrade to latest
+codex upgrade --check     # Check for updates
+codex upgrade --version 3.1.0
 
 # Interactive shell
-claude-flow shell               # Enter REPL
+codex shell               # Enter REPL
 > swarm init mesh
 > agent spawn coder
 > memory search "patterns"
@@ -358,11 +358,11 @@ claude-flow shell               # Enter REPL
 
 ---
 
-## agentic-flow vs claude-flow Feature Comparison
+## agentic vs codex Feature Comparison
 
 ### Feature Matrix
 
-| Feature | agentic-flow | claude-flow | Integration Value |
+| Feature | agentic | codex | Integration Value |
 |---------|--------------|-------------|-------------------|
 | **Core Agent System** | | | |
 | Specialized Agents | 66+ | 15 (hierarchical) | 🟡 |
@@ -406,41 +406,41 @@ claude-flow shell               # Enter REPL
 
 ### High-Value Integration Opportunities
 
-#### 🔴 Tier 1: Highest Impact (Unique to agentic-flow)
+#### 🔴 Tier 1: Highest Impact (Unique to agentic)
 
 **1. QUIC Transport (50-70% faster)**
 ```bash
 # Integration target:
-claude-flow transport quic --port 4433
-claude-flow swarm start --transport quic  # 50-70% faster agent comms
+codex transport quic --port 4433
+codex swarm start --transport quic  # 50-70% faster agent comms
 ```
 
 **2. Federation Hub (Ephemeral Agents)**
 ```bash
 # Integration target:
-claude-flow federation start --port 9443
-claude-flow federation spawn --tenant acme --lifetime 600
+codex federation start --port 9443
+codex federation spawn --tenant acme --lifetime 600
 ```
 *Value: Agents die but memories persist → learning across agent generations*
 
 **3. Model Optimization (85% cost savings)**
 ```bash
 # Integration target:
-claude-flow agent spawn -t coder --optimize --priority cost
-claude-flow providers optimize --task "Build API" --budget 0.01
+codex agent spawn -t coder --optimize --priority cost
+codex providers optimize --task "Build API" --budget 0.01
 ```
 
 **4. Provider Fallback (Enterprise resilience)**
 ```bash
 # Integration target:
-claude-flow providers fallback configure --primary anthropic --fallback openrouter,onnx
+codex providers fallback configure --primary openai --fallback openrouter,onnx
 ```
 
 **5. ReasoningBank (WASM Learning Memory)**
 ```bash
 # Integration target:
-claude-flow reasoningbank store "pattern" --reasoning "..."
-claude-flow reasoningbank search "authentication patterns"
+codex reasoningbank store "pattern" --reasoning "..."
+codex reasoningbank search "authentication patterns"
 ```
 *Value: 10-100x faster reasoning pattern storage vs JSON*
 
@@ -448,7 +448,7 @@ claude-flow reasoningbank search "authentication patterns"
 
 | Feature | Description | Complexity |
 |---------|-------------|------------|
-| Proxy Server | Use any model with Claude Code via local proxy | 🟡 Medium |
+| Proxy Server | Use any model with Codex via local proxy | 🟡 Medium |
 | Worker Dispatch | More granular worker control | 🟢 Low |
 | Embeddings Management | Better model management | 🟢 Low |
 
@@ -464,26 +464,26 @@ claude-flow reasoningbank search "authentication patterns"
 
 ```bash
 # After Phase 1:
-claude-flow agent spawn -t coder --optimize --priority cost
-claude-flow providers fallback configure --primary anthropic --fallback openrouter,onnx
-claude-flow embeddings download all-MiniLM-L6-v2
+codex agent spawn -t coder --optimize --priority cost
+codex providers fallback configure --primary openai --fallback openrouter,onnx
+codex embeddings download all-MiniLM-L6-v2
 ```
 
 #### Phase 2: Core Integration (2-3 weeks) → 9.5 → 9.7
 
 | Feature | Effort | Impact | Source |
 |---------|--------|--------|--------|
-| Federation Hub | 🟡 Med | 🔴 High | Port from agentic-flow |
+| Federation Hub | 🟡 Med | 🔴 High | Port from agentic |
 | Ephemeral agents | 🟡 Med | 🔴 High | Part of federation |
-| Proxy server | 🟡 Med | 🟡 Med | Port from agentic-flow |
+| Proxy server | 🟡 Med | 🟡 Med | Port from agentic |
 | Worker dispatch triggers | 🟢 Low | 🟡 Med | Enhance daemon |
 
 ```bash
 # After Phase 2:
-claude-flow federation start --port 9443
-claude-flow federation spawn --lifetime 300 --task "Quick analysis"
-claude-flow proxy start --provider openrouter
-claude-flow daemon dispatch security-audit
+codex federation start --port 9443
+codex federation spawn --lifetime 300 --task "Quick analysis"
+codex proxy start --provider openrouter
+codex daemon dispatch security-audit
 ```
 
 #### Phase 3: Advanced (4-6 weeks) → 9.7 → 9.9
@@ -496,19 +496,19 @@ claude-flow daemon dispatch security-audit
 
 ```bash
 # After Phase 3:
-claude-flow swarm start --transport quic  # 50-70% faster
-claude-flow reasoningbank store "pattern" --reasoning "..."
-claude-flow agent spawn -t security-analyst  # One of 66 types
+codex swarm start --transport quic  # 50-70% faster
+codex reasoningbank store "pattern" --reasoning "..."
+codex agent spawn -t security-analyst  # One of 66 types
 ```
 
 ### Recommended Integration Approach
 
 **Option A: Dependency Approach (Fastest)**
 ```json
-// claude-flow/package.json
+// codex/package.json
 {
   "dependencies": {
-    "agentic-flow": "^2.0.3"
+    "agentic": "^2.0.3"
   }
 }
 ```
@@ -516,17 +516,17 @@ claude-flow agent spawn -t security-analyst  # One of 66 types
 **Option B: Port Code (More Control)**
 ```bash
 # Copy specific modules:
-- agentic-flow/src/transport/quic.ts → claude-flow/src/transport/
-- agentic-flow/src/federation/ → claude-flow/src/federation/
-- agentic-flow/src/reasoningbank/ → claude-flow/src/reasoningbank/
+- agentic/src/transport/quic.ts → codex/src/transport/
+- agentic/src/federation/ → codex/src/federation/
+- agentic/src/reasoningbank/ → codex/src/reasoningbank/
 ```
 
 **Option C: Unified Package (Long-term)**
 ```bash
-@claude-flow/core      # Shared primitives
-@claude-flow/cli       # CLI (current)
-@claude-flow/agents    # From agentic-flow's 66 agents
-@claude-flow/transport # QUIC + HTTP + WebSocket
+@ruflo/core      # Shared primitives
+@ruflo/cli       # CLI (current)
+@ruflo/agents    # From agentic's 66 agents
+@ruflo/transport # QUIC + HTTP + WebSocket
 ```
 
 ---
@@ -545,21 +545,21 @@ claude-flow agent spawn -t security-analyst  # One of 66 types
 
 ### Feature Overlap Analysis
 
-**claude-flow ALREADY HAS** (via @claude-flow/embeddings):
-| Feature | claude-flow | ruvector | Status |
+**codex ALREADY HAS** (via @ruflo/embeddings):
+| Feature | codex | ruvector | Status |
 |---------|-------------|----------|--------|
-| ONNX Embeddings | ✅ agentic-flow (~3ms) | ✅ @ruvector/core | **Equivalent** |
+| ONNX Embeddings | ✅ agentic (~3ms) | ✅ @ruvector/core | **Equivalent** |
 | Local Embeddings | ✅ all-MiniLM-L6-v2 | ✅ all-MiniLM-L6-v2 | **Equivalent** |
-| HNSW Indexing | ✅ @claude-flow/memory | ✅ @ruvector/core | **Equivalent** |
+| HNSW Indexing | ✅ @ruflo/memory | ✅ @ruvector/core | **Equivalent** |
 | Persistent Cache | ✅ SQLite + LRU | ✅ Memory cache | **Equivalent** |
-| Hyperbolic Embeddings | ✅ Poincaré ball | ❌ | **claude-flow ahead** |
-| Document Chunking | ✅ 4 strategies | ❌ | **claude-flow ahead** |
-| Normalization | ✅ L2, L1, min-max, z-score | ❌ | **claude-flow ahead** |
-| Neural Substrate | ✅ Drift, memory physics | ❌ | **claude-flow ahead** |
+| Hyperbolic Embeddings | ✅ Poincaré ball | ❌ | **codex ahead** |
+| Document Chunking | ✅ 4 strategies | ❌ | **codex ahead** |
+| Normalization | ✅ L2, L1, min-max, z-score | ❌ | **codex ahead** |
+| Neural Substrate | ✅ Drift, memory physics | ❌ | **codex ahead** |
 
 ### Unique ruvector Features (Integration Candidates)
 
-#### 🔴 Tier 1: High Value (claude-flow lacks these)
+#### 🔴 Tier 1: High Value (codex lacks these)
 
 | Feature | ruvector Source | Integration Target | Value |
 |---------|-----------------|-------------------|-------|
@@ -583,13 +583,13 @@ claude-flow agent spawn -t security-analyst  # One of 66 types
 | Louvain Communities | `hooks_graph_cluster` | Module detection |
 | GNN Layers | `@ruvector/gnn` | Graph analysis |
 
-*Note: Flash Attention, SONA Learning, HNSW, and ONNX embeddings are already in claude-flow via agentic-flow.*
+*Note: Flash Attention, SONA Learning, HNSW, and ONNX embeddings are already in codex via agentic.*
 
 ### MCP Tools from ruvector (Unique Only)
 
 ```bash
 # Add ruvector MCP server (for unique features)
-claude mcp add ruvector-mcp -- npx ruvector mcp-server
+codex mcp add ruvector-mcp -- npx ruvector mcp-server
 ```
 
 **Unique Tools Worth Integrating:**
@@ -599,16 +599,16 @@ claude mcp add ruvector-mcp -- npx ruvector mcp-server
 - `hooks_coverage_route`, `hooks_coverage_suggest` — Test-aware routing ✅
 - `hooks_graph_mincut`, `hooks_graph_cluster` — Code boundaries ✅
 
-**Already in claude-flow (skip):**
-- `hooks_rag_context` — Use @claude-flow/memory instead
-- `hooks_attention_info` — Use @claude-flow/neural instead
-- Embeddings tools — Use @claude-flow/embeddings instead
+**Already in codex (skip):**
+- `hooks_rag_context` — Use @ruflo/memory instead
+- `hooks_attention_info` — Use @ruflo/neural instead
+- Embeddings tools — Use @ruflo/embeddings instead
 
 ### Integration Approach
 
 **Recommended: Option A - Add as Optional Dependency (for unique features only)**
 ```json
-// @claude-flow/cli/package.json
+// @ruflo/cli/package.json
 {
   "optionalDependencies": {
     "ruvector": "^0.1.95"
@@ -619,22 +619,22 @@ claude mcp add ruvector-mcp -- npx ruvector mcp-server
 **CLI Wrappers (unique ruvector features):**
 ```bash
 # Q-Learning agent routing (unique to ruvector)
-claude-flow route "task" --q-learning          # Uses hooks_route
+codex route "task" --q-learning          # Uses hooks_route
 
 # AST analysis (unique to ruvector)
-claude-flow analyze ast src/                   # Uses hooks_ast_analyze
+codex analyze ast src/                   # Uses hooks_ast_analyze
 
 # Diff classification (unique to ruvector)
-claude-flow analyze diff --risk                # Uses hooks_diff_analyze
+codex analyze diff --risk                # Uses hooks_diff_analyze
 
 # Coverage-aware routing (unique to ruvector)
-claude-flow route "task" --coverage-aware      # Uses hooks_coverage_route
+codex route "task" --coverage-aware      # Uses hooks_coverage_route
 ```
 
-**Already in claude-flow (DO NOT import from ruvector):**
+**Already in codex (DO NOT import from ruvector):**
 ```bash
-claude-flow embeddings generate --local        # Uses @claude-flow/embeddings (ONNX)
-claude-flow memory search --semantic "query"   # Uses @claude-flow/memory (HNSW)
+codex embeddings generate --local        # Uses @ruflo/embeddings (ONNX)
+codex memory search --semantic "query"   # Uses @ruflo/memory (HNSW)
 ```
 
 ### ruvector Integration Roadmap
@@ -654,4 +654,4 @@ claude-flow memory search --semantic "query"   # Uses @claude-flow/memory (HNSW)
 - [ ] Add Louvain community detection (`analyze --modules`)
 - [ ] Integrate GNN layers for dependency graphs
 
-*Note: SONA, Flash Attention, HNSW already in claude-flow - no need to import.*
+*Note: SONA, Flash Attention, HNSW already in codex - no need to import.*

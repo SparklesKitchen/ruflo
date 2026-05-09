@@ -28,14 +28,14 @@ npx -y ruvector@0.2.25 doctor
 ## Installation
 
 ```bash
-claude --plugin-dir plugins/ruflo-ruvector
+codex --plugin-dir plugins/ruflo-ruvector
 ```
 
 ## MCP Integration (103 Tools)
 
 Register with the pinned version:
 ```bash
-claude mcp add ruvector -- npx -y ruvector@0.2.25 mcp start
+codex mcp add ruvector -- npx -y ruvector@0.2.25 mcp start
 ```
 
 Key tool categories: hooks routing, AST analysis, diff classification, coverage routing, graph clustering, security scanning, RAG context, brain knowledge, SONA learning.
@@ -165,7 +165,7 @@ npx -y ruvector@0.2.25 rvf query project.rvf
 | AST analysis | `hooks ast-analyze|ast-complexity` | symbols, complexity, parse time |
 | Self-learning loop | `hooks remember|recall|coedit-*|error-*|trajectory-*` | persistent intelligence |
 | Native workers | `native list|run <security|analysis|learning>` | no external deps |
-| Background workers | `workers dispatch|status|presets|phases` | first run installs `agentic-flow` |
+| Background workers | `workers dispatch|status|presets|phases` | first run installs `agentic` |
 | Decompile npm/JS | `decompile <target>` | inspect upstream packages |
 | Server | `server -p 8080` | HTTP/gRPC mode |
 | Demo | `demo --basic|--gnn|--graph` | interactive tutorial |

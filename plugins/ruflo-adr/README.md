@@ -9,7 +9,7 @@ Manages Architecture Decision Records through their full lifecycle (proposed, ac
 ## Installation
 
 ```bash
-claude --plugin-dir plugins/ruflo-adr
+codex --plugin-dir plugins/ruflo-adr
 ```
 
 ## Agents
@@ -52,12 +52,12 @@ Relationships tracked as causal edges: `supersedes`, `amends`, `depends-on`, `re
 
 ## Compatibility
 
-- **CLI:** pinned to `@claude-flow/cli` v3.6 major+minor.
+- **CLI:** pinned to `@ruflo/cli` v3.6 major+minor.
 - **Verification:** `bash plugins/ruflo-adr/scripts/smoke.sh` is the contract.
 
 ## Namespace coordination
 
-This plugin owns the `adr-patterns` AgentDB namespace. It defers to [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md) for naming rules. Reserved namespaces (`pattern`, `claude-memories`, `default`) MUST NOT be shadowed.
+This plugin owns the `adr-patterns` AgentDB namespace. It defers to [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md) for naming rules. Reserved namespaces (`pattern`, `codex-memories`, `default`) MUST NOT be shadowed.
 
 `adr-patterns` follows kebab-case `<plugin-stem>-<intent>` per the convention. The plugin uses it for semantic ADR search and for cross-project pattern transfer (via `hooks_transfer` in `ruflo-intelligence`).
 

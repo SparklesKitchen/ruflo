@@ -1,11 +1,11 @@
 /**
  * MCP Tools for TeammateTool Integration
  *
- * Exposes 21 MCP tools for multi-agent orchestration via Claude Code:
+ * Exposes 21 MCP tools for multi-agent orchestration via Codex:
  * - 16 core TeammateTool integration tools
  * - 5 BMSSP optimization tools (10-15x faster with WASM)
  *
- * @module @claude-flow/teammate-plugin/mcp
+ * @module @ruflo/teammate-plugin/mcp
  * @version 1.0.0-alpha.1
  */
 
@@ -76,7 +76,7 @@ export const TEAMMATE_MCP_TOOLS: MCPTool[] = [
     name: 'teammate_spawn_team',
     description:
       'Create a new team for multi-agent collaboration using native TeammateTool. ' +
-      'Requires Claude Code >= 2.1.19.',
+      'Requires Codex >= 2.1.19.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -112,7 +112,7 @@ export const TEAMMATE_MCP_TOOLS: MCPTool[] = [
 
   {
     name: 'teammate_discover_teams',
-    description: 'Discover existing teams in ~/.claude/teams/',
+    description: 'Discover existing teams in ~/.codex/teams/',
     inputSchema: {
       type: 'object',
       properties: {},
@@ -122,7 +122,7 @@ export const TEAMMATE_MCP_TOOLS: MCPTool[] = [
   {
     name: 'teammate_spawn',
     description:
-      'Spawn a new teammate in a team. Returns AgentInput for Claude Code Task tool.',
+      'Spawn a new teammate in a team. Returns AgentInput for Codex Task tool.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -370,7 +370,7 @@ export const TEAMMATE_MCP_TOOLS: MCPTool[] = [
   // ==========================================================================
   {
     name: 'teammate_push_remote',
-    description: 'Push team to Claude.ai remote session',
+    description: 'Push team to Codex.ai remote session',
     inputSchema: {
       type: 'object',
       properties: {
@@ -594,7 +594,7 @@ export async function handleMCPTool(
           data: {
             teammate,
             agentInput,
-            instruction: 'Pass agentInput to Claude Code Task tool to spawn the teammate',
+            instruction: 'Pass agentInput to Codex Task tool to spawn the teammate',
           },
         };
       }

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Claude-Flow Benchmark Runner
+# Codex-Flow Benchmark Runner
 # Standalone benchmark test execution
 
 set -e

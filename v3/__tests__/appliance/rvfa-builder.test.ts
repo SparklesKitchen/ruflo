@@ -14,8 +14,8 @@ import {
   RvfaBuilder,
   encryptApiKeys,
   decryptApiKeys,
-} from '../../@claude-flow/cli/src/appliance/rvfa-builder.js';
-import { RvfaReader } from '../../@claude-flow/cli/src/appliance/rvfa-format.js';
+} from '../../@ruflo/cli/src/appliance/rvfa-builder.js';
+import { RvfaReader } from '../../@ruflo/cli/src/appliance/rvfa-format.js';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -131,10 +131,10 @@ describe('RvfaBuilder', () => {
 
 describe('encryptApiKeys / decryptApiKeys', () => {
   it('round-trips correctly', () => {
-    const envPath = writeEnvFile('ANTHROPIC_API_KEY=sk-ant-xxx\nOPENAI_API_KEY=sk-yyy');
+    const envPath = writeEnvFile('OPENAI_API_KEY=sk-ant-xxx\nOPENAI_API_KEY=sk-yyy');
     const encrypted = encryptApiKeys(envPath, 'my-secret');
     const decrypted = decryptApiKeys(encrypted, 'my-secret');
-    assert.equal(decrypted['ANTHROPIC_API_KEY'], 'sk-ant-xxx');
+    assert.equal(decrypted['OPENAI_API_KEY'], 'sk-ant-xxx');
     assert.equal(decrypted['OPENAI_API_KEY'], 'sk-yyy');
   });
 

@@ -6,13 +6,13 @@
 
 ## Overview
 
-Ruflo is a multi-agent AI orchestration layer for Claude Code. It turns Claude Code from a single-context coding assistant into a coordinated swarm of agents that share memory, learn from outcomes, talk across machines, and remain auditable.
+Ruflo is a multi-agent AI orchestration layer for Codex. It turns Codex from a single-context coding assistant into a coordinated swarm of agents that share memory, learn from outcomes, talk across machines, and remain auditable.
 
 The runtime is the `ruflo` npm package. End-user surface is:
 
-- **MCP server** — exposes 300+ tools to Claude Code (memory, agents, swarm coordination, hooks, GitHub integration, browser automation, etc.).
+- **MCP server** — exposes 300+ tools to Codex (memory, agents, swarm coordination, hooks, GitHub integration, browser automation, etc.).
 - **CLI** — 49 top-level commands (`ruflo agent`, `ruflo swarm`, `ruflo memory`, `ruflo hooks`, `ruflo verify`, …) for terminal/script use.
-- **Claude Code plugins** — 32 installable plugins (`ruflo-core`, `ruflo-federation`, `ruflo-cost-tracker`, …) that bundle agent + skill + slash-command definitions.
+- **Codex plugins** — 32 installable plugins (`ruflo-core`, `ruflo-federation`, `ruflo-cost-tracker`, …) that bundle agent + skill + slash-command definitions.
 - **WASM kernels** — Rust-compiled WASM for the policy engine, embeddings, and proof system; plugged into the same MCP/CLI surface.
 
 For the "why" — coordinated swarms, self-learning memory, federated comms, enterprise security — see [`README.md`](../README.md).
@@ -25,11 +25,11 @@ The intended day-to-day flow:
    ```bash
    npx ruflo init --wizard
    ```
-   This writes a `CLAUDE.md` with hooks and routing rules, registers the MCP server with Claude Code, and seeds `.claude-flow/` with config + memory.
+   This writes a `AGENTS.md` with hooks and routing rules, registers the MCP server with Codex, and seeds `.codex/` with config + memory.
 
-2. **Just use Claude Code normally**. Hooks automatically route tasks, retrieve relevant memory patterns, and coordinate background agents. You don't have to learn the 300 MCP tools — the routing layer does.
+2. **Just use Codex normally**. Hooks automatically route tasks, retrieve relevant memory patterns, and coordinate background agents. You don't have to learn the 300 MCP tools — the routing layer does.
 
-3. **Run the CLI for orchestration tasks** that don't fit naturally into Claude Code:
+3. **Run the CLI for orchestration tasks** that don't fit naturally into Codex:
    - `ruflo agent spawn -t coder --name api-worker` — long-running agent
    - `ruflo swarm init --topology hierarchical --max-agents 8` — coordinated team
    - `ruflo memory search --query "auth patterns"` — semantic search across stored knowledge
@@ -52,8 +52,8 @@ Full command reference: [`USERGUIDE.md`](USERGUIDE.md).
 
 | Suite | Count | Status |
 |---|---|---|
-| `@claude-flow/cli` vitest | 1933 / 1933 | green, 0 failures, 46 intentionally skipped |
-| `@claude-flow/plugin-agent-federation` vitest | 366 / 366 | green |
+| `@ruflo/cli` vitest | 1933 / 1933 | green, 0 failures, 46 intentionally skipped |
+| `@ruflo/plugin-agent-federation` vitest | 366 / 366 | green |
 | **Combined audit-fix surface** | 76 encryption-track + 41 federation-budget + others | green |
 
 ### Capability inventory (auto-generated via [`scripts/inventory-capabilities.mjs`](../scripts/inventory-capabilities.mjs))
@@ -76,7 +76,7 @@ Full command reference: [`USERGUIDE.md`](USERGUIDE.md).
 
 **Encryption at rest — [ADR-096](../v3/docs/adr/ADR-096-encryption-at-rest.md), all 4 phases shipped**:
 - AES-256-GCM vault module with magic-byte format (`RFE1`) for backward-compat migration.
-- Opt-in via `CLAUDE_FLOW_ENCRYPT_AT_REST=1`; off-by-default preserves the 1865-test baseline.
+- Opt-in via `RUFLO_ENCRYPT_AT_REST=1`; off-by-default preserves the 1865-test baseline.
 - High-tier stores wired: `sessions/`, `terminals/`, `.swarm/memory.db` (sql.js SQLite + ONNX embeddings).
 - 76 dedicated tests across vault primitives, integration, tamper detection, migration paths.
 
@@ -122,4 +122,4 @@ Per-capability witness signing for the full 300-tool / 49-command surface is in 
 | Architecture decisions | [`v3/docs/adr/`](../v3/docs/adr/) — ADR-093, ADR-095, ADR-096, ADR-097 are the recent ones |
 | Cryptographic proof of build correctness | [`verification.md`](../verification.md) + [`ruflo verify`](#verification) |
 | Plugin development | [`USERGUIDE.md` → Plugin section](USERGUIDE.md#-ecosystem--integrations) |
-| Open issues + roadmap | [GitHub Issues](https://github.com/ruvnet/claude-flow/issues) |
+| Open issues + roadmap | [GitHub Issues](https://github.com/SparklesKitchen/ruflo/issues) |

@@ -10,7 +10,7 @@
 #   - agent-browser installed (or available via npx)
 #   - ruvector@0.2.25 reachable (npx fetches if missing)
 #   - the new browser_session_record / _end / _replay MCP tools wired
-#     (v3/@claude-flow/cli/src/mcp-tools/browser-session-tools.ts)
+#     (v3/@ruflo/cli/src/mcp-tools/browser-session-tools.ts)
 #   - network access
 #
 # Run from a TTY:

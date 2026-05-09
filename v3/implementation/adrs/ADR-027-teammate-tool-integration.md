@@ -1,17 +1,17 @@
-# ADR-027: Native TeammateTool Integration for Claude Flow
+# ADR-027: Native TeammateTool Integration for Ruflo
 
 **Status:** Implemented ✅
 **Date:** 2026-01-25
 **Updated:** 2026-01-25
-**Author:** Claude Flow Architecture Team
+**Author:** Ruflo Architecture Team
 **Version:** 1.0.0
-**Requires:** Claude Code >= 2.1.19
+**Requires:** Codex >= 2.1.19
 
 ---
 
 ## Implementation Summary
 
-The `@claude-flow/teammate-plugin` package has been fully implemented with:
+The `@ruflo/teammate-plugin` package has been fully implemented with:
 
 | Component | Lines | Features |
 |-----------|-------|----------|
@@ -35,7 +35,7 @@ The `@claude-flow/teammate-plugin` package has been fully implemented with:
 | 8 | Error Handling | ✅ | `TeammateError`, `TeammateErrorCode` (18 types) |
 | 9 | Teleport | ✅ | `teleportTeam()`, `canTeleport()` |
 | 10 | Plan Control | ✅ | `pausePlanExecution()`, `resumePlanExecution()`, `reenterPlanMode()` |
-| 11 | Version Detection | ✅ | `getVersionInfo()`, `MINIMUM_CLAUDE_CODE_VERSION` |
+| 11 | Version Detection | ✅ | `getVersionInfo()`, `MINIMUM_CODEX_VERSION` |
 | 12 | Events | ✅ | 20+ event types in `TeammateBridgeEvents` |
 | 13 | Configuration | ✅ | `PluginConfig`, `DEFAULT_PLUGIN_CONFIG` |
 | 14 | MCP Tools | ✅ | 16 tools with `handleMCPTool()` |
@@ -44,8 +44,8 @@ The `@claude-flow/teammate-plugin` package has been fully implemented with:
 ### Package Structure
 
 ```
-v3/@claude-flow/teammate-plugin/
-├── package.json           # npm package (requires Claude Code >= 2.1.19)
+v3/@ruflo/teammate-plugin/
+├── package.json           # npm package (requires Codex >= 2.1.19)
 ├── tsconfig.json          # TypeScript configuration
 ├── README.md              # Full documentation
 ├── src/
@@ -59,7 +59,7 @@ v3/@claude-flow/teammate-plugin/
 
 ## Executive Summary
 
-This ADR defines the architecture for deep integration between Claude Flow and Claude Code's native **TeammateTool** multi-agent orchestration system. By leveraging TeammateTool's built-in capabilities for team management, inter-agent communication, and plan approval workflows, Claude Flow can eliminate redundant coordination code and provide seamless native multi-agent experiences.
+This ADR defines the architecture for deep integration between Ruflo and Codex's native **TeammateTool** multi-agent orchestration system. By leveraging TeammateTool's built-in capabilities for team management, inter-agent communication, and plan approval workflows, Ruflo can eliminate redundant coordination code and provide seamless native multi-agent experiences.
 
 ---
 
@@ -67,7 +67,7 @@ This ADR defines the architecture for deep integration between Claude Flow and C
 
 ### 1.1 Discovery
 
-Analysis of Claude Code v2.1.19 binary revealed a comprehensive multi-agent orchestration system:
+Analysis of Codex v2.1.19 binary revealed a comprehensive multi-agent orchestration system:
 
 | Component | Occurrences | Purpose |
 |-----------|-------------|---------|
@@ -116,21 +116,21 @@ interface ExitPlanModeInput {
 
 **Environment Variables:**
 ```bash
-CLAUDE_CODE_TEAM_NAME          # Team identifier
-CLAUDE_CODE_TMUX_SESSION       # tmux session name
-CLAUDE_CODE_TMUX_PREFIX        # tmux prefix key binding
-CLAUDE_CODE_TEAMMATE_COMMAND   # Spawn command override
+CODEX_TEAM_NAME          # Team identifier
+CODEX_TMUX_SESSION       # tmux session name
+CODEX_TMUX_PREFIX        # tmux prefix key binding
+CODEX_TEAMMATE_COMMAND   # Spawn command override
 ```
 
 ### 1.3 Problem Statement
 
-Claude Flow currently implements its own multi-agent orchestration via:
+Ruflo currently implements its own multi-agent orchestration via:
 - MCP-based swarm coordination
 - Custom message bus implementation
 - Hierarchical/mesh topology management
 - Byzantine consensus protocols
 
-This creates **redundancy** with Claude Code's native TeammateTool, which provides:
+This creates **redundancy** with Codex's native TeammateTool, which provides:
 - Native team spawn/join/discover mechanisms
 - Built-in mailbox-based messaging
 - Plan approval workflows
@@ -140,21 +140,21 @@ This creates **redundancy** with Claude Code's native TeammateTool, which provid
 
 ## 2. Decision
 
-**Implement a Claude Flow plugin that acts as a bridge to TeammateTool**, providing:
+**Implement a Ruflo plugin that acts as a bridge to TeammateTool**, providing:
 
 1. **Native Team Management** - Use TeammateTool for spawning instead of MCP
-2. **Mailbox Integration** - Bridge teammate_mailbox to Claude Flow's memory system
+2. **Mailbox Integration** - Bridge teammate_mailbox to Ruflo's memory system
 3. **Plan Mode Orchestration** - Leverage launchSwarm for coordinated execution
-4. **Hybrid Topology** - Combine Claude Flow's advanced topologies with native spawning
+4. **Hybrid Topology** - Combine Ruflo's advanced topologies with native spawning
 
 ### 2.1 Architecture Principles
 
 | Principle | Implementation |
 |-----------|----------------|
 | **Native First** | Use TeammateTool when available, fallback to MCP |
-| **Zero Duplication** | Delegate spawning to Claude Code entirely |
-| **Transparent Bridge** | Claude Flow APIs unchanged, backend swapped |
-| **Version Adaptive** | Detect Claude Code version, enable features accordingly |
+| **Zero Duplication** | Delegate spawning to Codex entirely |
+| **Transparent Bridge** | Ruflo APIs unchanged, backend swapped |
+| **Version Adaptive** | Detect Codex version, enable features accordingly |
 
 ---
 
@@ -163,7 +163,7 @@ This creates **redundancy** with Claude Code's native TeammateTool, which provid
 ### 3.1 Plugin Structure
 
 ```
-v3/@claude-flow/teammate-plugin/
+v3/@ruflo/teammate-plugin/
 ├── src/
 │   ├── index.ts                 # Plugin entry point
 │   ├── teammate-bridge.ts       # Core TeammateTool bridge
@@ -187,7 +187,7 @@ v3/@claude-flow/teammate-plugin/
 // types.ts
 
 /**
- * TeammateTool operations mapped from Claude Code v2.1.19
+ * TeammateTool operations mapped from Codex v2.1.19
  */
 export type TeammateOperation =
   | 'spawnTeam'
@@ -312,13 +312,13 @@ import type {
 } from './types.js';
 
 /**
- * Bridge between Claude Flow and Claude Code's TeammateTool
+ * Bridge between Ruflo and Codex's TeammateTool
  *
  * Provides unified API for multi-agent orchestration using
  * native TeammateTool capabilities when available.
  */
 export class TeammateBridge extends EventEmitter {
-  private claudeCodeVersion: string | null = null;
+  private codexCodeVersion: string | null = null;
   private teammateToolAvailable: boolean = false;
   private activeTeams: Map<string, TeamState> = new Map();
   private mailboxPollers: Map<string, NodeJS.Timeout> = new Map();
@@ -329,37 +329,37 @@ export class TeammateBridge extends EventEmitter {
 
   /**
    * Initialize the bridge
-   * Detects Claude Code version and TeammateTool availability
+   * Detects Codex version and TeammateTool availability
    */
   async initialize(): Promise<void> {
-    // Detect Claude Code version
+    // Detect Codex version
     try {
-      const version = execSync('claude --version', { encoding: 'utf-8' }).trim();
+      const version = execSync('codex --version', { encoding: 'utf-8' }).trim();
       const match = version.match(/(\d+\.\d+\.\d+)/);
-      this.claudeCodeVersion = match?.[1] ?? null;
+      this.codexCodeVersion = match?.[1] ?? null;
 
       // TeammateTool requires >= 2.1.19
-      if (this.claudeCodeVersion) {
-        const [major, minor, patch] = this.claudeCodeVersion.split('.').map(Number);
+      if (this.codexCodeVersion) {
+        const [major, minor, patch] = this.codexCodeVersion.split('.').map(Number);
         this.teammateToolAvailable =
           major > 2 ||
           (major === 2 && minor > 1) ||
           (major === 2 && minor === 1 && patch >= 19);
       }
     } catch {
-      this.claudeCodeVersion = null;
+      this.codexCodeVersion = null;
       this.teammateToolAvailable = false;
     }
 
     this.emit('initialized', {
-      claudeCodeVersion: this.claudeCodeVersion,
+      codexCodeVersion: this.codexCodeVersion,
       teammateToolAvailable: this.teammateToolAvailable,
     });
 
     if (!this.teammateToolAvailable) {
       console.warn(
         `[TeammateBridge] TeammateTool not available. ` +
-        `Requires Claude Code >= 2.1.19, found: ${this.claudeCodeVersion ?? 'not installed'}`
+        `Requires Codex >= 2.1.19, found: ${this.codexCodeVersion ?? 'not installed'}`
       );
     }
   }
@@ -372,10 +372,10 @@ export class TeammateBridge extends EventEmitter {
   }
 
   /**
-   * Get Claude Code version
+   * Get Codex version
    */
-  getClaudeCodeVersion(): string | null {
-    return this.claudeCodeVersion;
+  getCodexCodeVersion(): string | null {
+    return this.codexCodeVersion;
   }
 
   // ==================== TEAM MANAGEMENT ====================
@@ -397,10 +397,10 @@ export class TeammateBridge extends EventEmitter {
     };
 
     // Set environment for team context
-    process.env.CLAUDE_CODE_TEAM_NAME = config.name;
+    process.env.CODEX_TEAM_NAME = config.name;
 
     if (config.planModeRequired) {
-      process.env.CLAUDE_CODE_PLAN_MODE_REQUIRED = 'true';
+      process.env.CODEX_PLAN_MODE_REQUIRED = 'true';
     }
 
     this.activeTeams.set(config.name, teamState);
@@ -419,8 +419,8 @@ export class TeammateBridge extends EventEmitter {
   async discoverTeams(): Promise<string[]> {
     this.ensureAvailable();
 
-    // Teams are stored in ~/.claude/teams/
-    const teamsDir = `${process.env.HOME}/.claude/teams`;
+    // Teams are stored in ~/.codex/teams/
+    const teamsDir = `${process.env.HOME}/.codex/teams`;
 
     try {
       const { readdirSync } = await import('fs');
@@ -520,20 +520,20 @@ export class TeammateBridge extends EventEmitter {
   async spawnTeammate(config: TeammateSpawnConfig): Promise<TeammateInfo> {
     this.ensureAvailable();
 
-    // Build AgentInput for Claude Code's Task tool
+    // Build AgentInput for Codex's Task tool
     const agentInput = {
       description: `${config.role}: ${config.name}`,
       prompt: config.prompt,
       subagent_type: config.role,
       model: config.model,
       name: config.name,
-      team_name: config.teamName ?? process.env.CLAUDE_CODE_TEAM_NAME,
+      team_name: config.teamName ?? process.env.CODEX_TEAM_NAME,
       allowed_tools: config.allowedTools,
       mode: config.mode,
       run_in_background: config.runInBackground ?? true,
     };
 
-    // The actual spawn happens through Claude Code's Task tool
+    // The actual spawn happens through Codex's Task tool
     // This bridge prepares the configuration and tracks state
     const teammateId = `teammate-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
@@ -565,7 +565,7 @@ export class TeammateBridge extends EventEmitter {
   }
 
   /**
-   * Get spawn configuration for Claude Code Task tool
+   * Get spawn configuration for Codex Task tool
    * Returns the AgentInput object to pass to Task tool
    */
   buildAgentInput(config: TeammateSpawnConfig): Record<string, unknown> {
@@ -575,7 +575,7 @@ export class TeammateBridge extends EventEmitter {
       subagent_type: config.role,
       model: config.model,
       name: config.name,
-      team_name: config.teamName ?? process.env.CLAUDE_CODE_TEAM_NAME,
+      team_name: config.teamName ?? process.env.CODEX_TEAM_NAME,
       allowed_tools: config.allowedTools,
       mode: config.mode,
       run_in_background: config.runInBackground ?? true,
@@ -767,7 +767,7 @@ export class TeammateBridge extends EventEmitter {
 
   /**
    * Launch swarm to execute approved plan
-   * Uses Claude Code's native launchSwarm capability
+   * Uses Codex's native launchSwarm capability
    */
   async launchSwarm(teamName: string, planId: string, teammateCount?: number): Promise<void> {
     this.ensureAvailable();
@@ -875,8 +875,8 @@ export class TeammateBridge extends EventEmitter {
     this.activeTeams.delete(teamName);
 
     // Cleanup environment
-    if (process.env.CLAUDE_CODE_TEAM_NAME === teamName) {
-      delete process.env.CLAUDE_CODE_TEAM_NAME;
+    if (process.env.CODEX_TEAM_NAME === teamName) {
+      delete process.env.CODEX_TEAM_NAME;
     }
 
     this.emit('team:cleanup', { team: teamName });
@@ -903,14 +903,14 @@ export class TeammateBridge extends EventEmitter {
   private ensureAvailable(): void {
     if (!this.teammateToolAvailable) {
       throw new Error(
-        `TeammateTool not available. Requires Claude Code >= 2.1.19, ` +
-        `found: ${this.claudeCodeVersion ?? 'not installed'}`
+        `TeammateTool not available. Requires Codex >= 2.1.19, ` +
+        `found: ${this.codexCodeVersion ?? 'not installed'}`
       );
     }
   }
 
   private getMailboxPath(teamName: string, teammateId: string): string {
-    return `${process.env.HOME}/.claude/teams/${teamName}/mailbox/${teammateId}.json`;
+    return `${process.env.HOME}/.codex/teams/${teamName}/mailbox/${teammateId}.json`;
   }
 
   private async writeToMailbox(
@@ -920,7 +920,7 @@ export class TeammateBridge extends EventEmitter {
   ): Promise<void> {
     const { mkdirSync, readFileSync, writeFileSync, existsSync } = await import('fs');
 
-    const mailboxDir = `${process.env.HOME}/.claude/teams/${teamName}/mailbox`;
+    const mailboxDir = `${process.env.HOME}/.codex/teams/${teamName}/mailbox`;
     const mailboxPath = `${mailboxDir}/${teammateId}.json`;
 
     // Ensure directory exists
@@ -983,19 +983,19 @@ export async function createTeammateBridge(
 }
 ```
 
-### 3.4 Claude Flow Integration Layer
+### 3.4 Ruflo Integration Layer
 
 ```typescript
-// claude-flow-integration.ts
+// codex-integration.ts
 
 import { TeammateBridge, createTeammateBridge } from './teammate-bridge.js';
 import type { TeamConfig, TeammateSpawnConfig, TeamState } from './types.js';
 
 /**
- * Integration layer between Claude Flow's swarm system
- * and Claude Code's native TeammateTool
+ * Integration layer between Ruflo's swarm system
+ * and Codex's native TeammateTool
  */
-export class ClaudeFlowTeammateIntegration {
+export class CodexFlowTeammateIntegration {
   private bridge: TeammateBridge | null = null;
   private fallbackEnabled: boolean = true;
 
@@ -1011,14 +1011,14 @@ export class ClaudeFlowTeammateIntegration {
     this.bridge = await createTeammateBridge();
 
     const nativeAvailable = this.bridge.isAvailable();
-    const version = this.bridge.getClaudeCodeVersion();
+    const version = this.bridge.getCodexCodeVersion();
     const mode = nativeAvailable ? 'native' : 'fallback';
 
     return { nativeAvailable, version, mode };
   }
 
   /**
-   * Map Claude Flow topology to team configuration
+   * Map Ruflo topology to team configuration
    */
   mapTopologyToTeamConfig(
     topology: 'hierarchical' | 'mesh' | 'adaptive',
@@ -1039,7 +1039,7 @@ export class ClaudeFlowTeammateIntegration {
   }
 
   /**
-   * Map Claude Flow agent type to teammate spawn config
+   * Map Ruflo agent type to teammate spawn config
    */
   mapAgentToTeammateConfig(
     agentType: string,
@@ -1049,7 +1049,7 @@ export class ClaudeFlowTeammateIntegration {
       allowedTools?: string[];
     }
   ): TeammateSpawnConfig {
-    // Map common Claude Flow agent types to roles
+    // Map common Ruflo agent types to roles
     const roleMap: Record<string, { role: string; defaultTools: string[] }> = {
       'coder': { role: 'coder', defaultTools: ['Edit', 'Write', 'Read', 'Bash'] },
       'tester': { role: 'tester', defaultTools: ['Read', 'Bash', 'Glob'] },
@@ -1075,7 +1075,7 @@ export class ClaudeFlowTeammateIntegration {
 
   /**
    * Spawn swarm using native TeammateTool
-   * Returns AgentInput configurations for Claude Code Task tool
+   * Returns AgentInput configurations for Codex Task tool
    */
   async spawnSwarm(
     topology: 'hierarchical' | 'mesh' | 'adaptive',
@@ -1141,15 +1141,15 @@ The plugin provides **16 MCP tools** for complete TeammateTool integration:
 | `teammate_update_context` | Update team context | Extended |
 | `teammate_save_memory` | Persist teammate state | Extended |
 | `teammate_share_transcript` | Share message history | Extended |
-| `teammate_push_remote` | Sync to Claude.ai | Extended |
+| `teammate_push_remote` | Sync to Codex.ai | Extended |
 | `teammate_teleport` | Resume in new context | Extended |
 | `teammate_get_status` | Get team status | Utility |
 | `teammate_cleanup` | Clean up resources | Utility |
 
 ```typescript
-// mcp-tools.ts - Complete implementation in v3/@claude-flow/teammate-plugin/src/mcp-tools.ts
+// mcp-tools.ts - Complete implementation in v3/@ruflo/teammate-plugin/src/mcp-tools.ts
 
-import { TEAMMATE_MCP_TOOLS, handleMCPTool } from '@claude-flow/teammate-plugin';
+import { TEAMMATE_MCP_TOOLS, handleMCPTool } from '@ruflo/teammate-plugin';
 
 // List all tools
 console.log(TEAMMATE_MCP_TOOLS.map(t => t.name));
@@ -1170,10 +1170,10 @@ const result = await handleMCPTool(bridge, 'teammate_spawn_team', {
 ### 4.1 Swarm Initialization Pattern
 
 ```typescript
-// In Claude Code conversation:
+// In Codex conversation:
 
 // 1. Initialize team via MCP
-mcp__claude-flow__teammate_spawn_team({
+mcp__codex__teammate_spawn_team({
   name: "feature-dev-team",
   topology: "hierarchical",
   maxTeammates: 6,
@@ -1230,7 +1230,7 @@ Task({
    └─► teammate_launch_swarm()
 
 5. Swarm executes plan steps
-   └─► Claude Code spawns teammateCount agents
+   └─► Codex spawns teammateCount agents
 ```
 
 ---
@@ -1264,11 +1264,11 @@ const teammateConfig: TeammateSpawnConfig = {
 
 ### Phase 1: Core Bridge ✅ COMPLETE
 - [x] TeammateBridge implementation
-- [x] Version detection (`MINIMUM_CLAUDE_CODE_VERSION = '2.1.19'`)
+- [x] Version detection (`MINIMUM_CODEX_VERSION = '2.1.19'`)
 - [x] Team spawn/cleanup
 - [x] Mailbox read/write
 
-### Phase 2: Claude Flow Integration ✅ COMPLETE
+### Phase 2: Ruflo Integration ✅ COMPLETE
 - [x] Topology mapping (`flat`, `hierarchical`, `mesh`)
 - [x] Agent type mapping (8 role presets)
 - [x] MCP tool registration (16 tools)
@@ -1300,14 +1300,14 @@ const teammateConfig: TeammateSpawnConfig = {
 
 ## 7. Migration Path
 
-### From Claude Flow MCP-only to Hybrid
+### From Ruflo MCP-only to Hybrid
 
 ```typescript
 // Before: Pure MCP coordination
-mcp__claude-flow__swarm_init({ topology: 'hierarchical' })
+mcp__codex__swarm_init({ topology: 'hierarchical' })
 
 // After: Native when available, MCP fallback
-const integration = new ClaudeFlowTeammateIntegration();
+const integration = new CodexFlowTeammateIntegration();
 const { mode } = await integration.initialize();
 
 if (mode === 'native') {
@@ -1316,7 +1316,7 @@ if (mode === 'native') {
   // Pass agentInputs to Task tool
 } else {
   // Fallback to MCP
-  mcp__claude-flow__swarm_init({ topology: 'hierarchical' })
+  mcp__codex__swarm_init({ topology: 'hierarchical' })
 }
 ```
 
@@ -1338,29 +1338,29 @@ if (mode === 'native') {
 
 1. **iTerm2 backend** - Is this macOS-only? Need to verify spawn backend selection
 2. **Statsig gates** - Which feature flag controls TeammateTool? May need to enable
-3. **Remote push** - How does `pushToRemote` work for Claude.ai integration?
+3. **Remote push** - How does `pushToRemote` work for Codex.ai integration?
 4. **Transcript sharing** - Can teammates share execution transcripts?
 
 ---
 
 ## 10. References
 
-- Claude Code v2.1.19 binary analysis
+- Codex v2.1.19 binary analysis
 - `sdk-tools.d.ts` AgentInput/ExitPlanModeInput schemas
-- ADR-018: Claude Code Deep Integration Architecture
+- ADR-018: Codex Deep Integration Architecture
 - ADR-003: Unified Swarm Coordinator
 - Gist: https://gist.github.com/kieranklaassen/d2b35569be2c7f1412c64861a219d51f
 
 ---
 
 **Status:** Implemented ✅
-**Package:** `@claude-flow/teammate-plugin` (v1.0.0-alpha.1)
-**Location:** `v3/@claude-flow/teammate-plugin/`
+**Package:** `@ruflo/teammate-plugin` (v1.0.0-alpha.1)
+**Location:** `v3/@ruflo/teammate-plugin/`
 
 ## Next Steps
 
 1. **Publish to npm** - Run `npm publish --tag alpha` from package directory
-2. **Test with Claude Code 2.1.19+** - Verify native TeammateTool integration
+2. **Test with Codex 2.1.19+** - Verify native TeammateTool integration
 3. **Monitor feedback** - Track issues and feature requests
-4. **Phase 6: Memory Bridge** - Integrate with Claude Flow's HNSW memory system
-5. **Phase 7: Consensus Integration** - Bridge TeammateTool approval with Claude Flow consensus protocols
+4. **Phase 6: Memory Bridge** - Integrate with Ruflo's HNSW memory system
+5. **Phase 7: Consensus Integration** - Bridge TeammateTool approval with Ruflo consensus protocols

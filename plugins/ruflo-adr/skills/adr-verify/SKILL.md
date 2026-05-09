@@ -2,7 +2,7 @@
 name: adr-verify
 description: Read back adr-patterns + adr-edges namespaces, surface dangling refs / supersede cycles / status mismatches; exit 1 on cycles
 argument-hint: ""
-allowed-tools: Bash mcp__claude-flow__memory_list mcp__claude-flow__memory_retrieve
+allowed-tools: Bash mcp__codex__memory_list mcp__codex__memory_retrieve
 ---
 
 # ADR Verify

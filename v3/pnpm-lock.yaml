@@ -32,7 +32,7 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@20.19.27)
 
-  '@claude-flow/aidefence':
+  '@ruflo/aidefence':
     dependencies:
       agentdb:
         specifier: '>=2.0.0-alpha.1'
@@ -48,15 +48,15 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@20.19.27)
 
-  '@claude-flow/browser':
+  '@ruflo/browser':
     dependencies:
-      '@claude-flow/cli':
+      '@ruflo/cli':
         specifier: '>=3.5.0'
         version: 3.6.30(@types/node@20.19.27)(zod@3.25.76)
       agent-browser:
         specifier: ^0.6.0
         version: 0.6.0
-      agentic-flow:
+      agentic:
         specifier: ^2.0.3
         version: 2.0.3(@types/node@20.19.27)(marked@11.2.0)
       zod:
@@ -73,9 +73,9 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.1)(@types/node@20.19.27)
 
-  '@claude-flow/claims':
+  '@ruflo/claims':
     dependencies:
-      '@claude-flow/shared':
+      '@ruflo/shared':
         specifier: ^3.0.0-alpha.1
         version: link:../shared
       zod:
@@ -98,18 +98,18 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@20.19.27)
 
-  '@claude-flow/cli':
+  '@ruflo/cli':
     dependencies:
-      '@claude-flow/cli-core':
+      '@ruflo/cli-core':
         specifier: ^3.7.0-alpha.5
         version: link:../cli-core
-      '@claude-flow/mcp':
+      '@ruflo/mcp':
         specifier: ^3.0.0-alpha.8
         version: link:../mcp
-      '@claude-flow/neural':
+      '@ruflo/neural':
         specifier: ^3.0.0-alpha.8
         version: link:../neural
-      '@claude-flow/shared':
+      '@ruflo/shared':
         specifier: ^3.0.0-alpha.7
         version: link:../shared
       '@noble/ed25519':
@@ -125,25 +125,25 @@ importers:
         specifier: ^2.8.0
         version: 2.8.2
     optionalDependencies:
-      '@claude-flow/aidefence':
+      '@ruflo/aidefence':
         specifier: ^3.0.2
         version: link:../aidefence
-      '@claude-flow/codex':
+      '@ruflo/codex':
         specifier: ^3.0.0-alpha.8
         version: link:../codex
-      '@claude-flow/embeddings':
+      '@ruflo/embeddings':
         specifier: ^3.0.0-alpha.12
         version: link:../embeddings
-      '@claude-flow/guidance':
+      '@ruflo/guidance':
         specifier: ^3.0.0-alpha.1
         version: link:../guidance
-      '@claude-flow/memory':
+      '@ruflo/memory':
         specifier: ^3.0.0-alpha.14
         version: link:../memory
-      '@claude-flow/plugin-gastown-bridge':
+      '@ruflo/plugin-gastown-bridge':
         specifier: ^0.1.3
-        version: 0.1.3(@claude-flow/memory@@claude-flow+memory)
-      '@claude-flow/security':
+        version: 0.1.3(@ruflo/memory@@codex+memory)
+      '@ruflo/security':
         specifier: ^3.0.0-alpha.1
         version: link:../security
       '@ruvector/attention':
@@ -173,7 +173,7 @@ importers:
       agentdb:
         specifier: ^3.0.0-alpha.13
         version: 3.0.0-alpha.13(@types/node@20.19.27)(zod@3.25.76)
-      agentic-flow:
+      agentic:
         specifier: ^3.0.0-alpha.1
         version: 3.0.0-alpha.2
     devDependencies:
@@ -184,11 +184,11 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.1)(@types/node@20.19.27)(yaml@2.8.2)
 
-  '@claude-flow/cli-core': {}
+  '@ruflo/cli-core': {}
 
-  '@claude-flow/codex':
+  '@ruflo/codex':
     dependencies:
-      '@claude-flow/cli':
+      '@ruflo/cli':
         specifier: ^3.0.0-alpha.1
         version: 3.6.30(@types/node@20.19.27)(zod@3.25.76)
       '@iarna/toml':
@@ -229,9 +229,9 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.1)(@types/node@20.19.27)(yaml@2.8.2)
 
-  '@claude-flow/deployment':
+  '@ruflo/deployment':
     dependencies:
-      '@claude-flow/shared':
+      '@ruflo/shared':
         specifier: ^3.0.0-alpha.1
         version: link:../shared
     devDependencies:
@@ -242,15 +242,15 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@20.19.27)
 
-  '@claude-flow/embeddings':
+  '@ruflo/embeddings':
     dependencies:
-      '@claude-flow/shared':
+      '@ruflo/shared':
         specifier: ^3.0.0-alpha.1
         version: link:../shared
       '@xenova/transformers':
         specifier: ^2.17.0
         version: 2.17.2
-      agentic-flow:
+      agentic:
         specifier: ^2.0.0
         version: 2.0.3(@types/node@20.19.27)(marked@11.2.0)
       sql.js:
@@ -271,15 +271,15 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.1)(@types/node@20.19.27)
 
-  '@claude-flow/guidance':
+  '@ruflo/guidance':
     dependencies:
-      '@claude-flow/hooks':
+      '@ruflo/hooks':
         specifier: ^3.0.0-alpha.7
         version: link:../hooks
-      '@claude-flow/memory':
+      '@ruflo/memory':
         specifier: ^3.0.0-alpha.2
         version: link:../memory
-      '@claude-flow/shared':
+      '@ruflo/shared':
         specifier: ^3.0.0-alpha.1
         version: link:../shared
     devDependencies:
@@ -293,15 +293,15 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@20.19.27)
 
-  '@claude-flow/hooks':
+  '@ruflo/hooks':
     dependencies:
-      '@claude-flow/memory':
+      '@ruflo/memory':
         specifier: ^3.0.0-alpha.2
         version: link:../memory
-      '@claude-flow/neural':
+      '@ruflo/neural':
         specifier: ^3.0.0-alpha.2
         version: link:../neural
-      '@claude-flow/shared':
+      '@ruflo/shared':
         specifier: ^3.0.0-alpha.1
         version: link:../shared
       zod:
@@ -325,9 +325,9 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@20.19.27)
 
-  '@claude-flow/integration':
+  '@ruflo/integration':
     dependencies:
-      agentic-flow:
+      agentic:
         specifier: ^2.0.0-alpha
         version: 2.0.0-alpha(@types/node@20.19.27)(marked@11.2.0)(typescript@5.9.3)
     optionalDependencies:
@@ -339,7 +339,7 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.1)(@types/node@20.19.27)
 
-  '@claude-flow/mcp':
+  '@ruflo/mcp':
     dependencies:
       ajv:
         specifier: ^8.12.0
@@ -370,7 +370,7 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@20.19.27)
 
-  '@claude-flow/memory':
+  '@ruflo/memory':
     dependencies:
       agentdb:
         specifier: ^3.0.0-alpha.10
@@ -393,9 +393,9 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@20.19.27)
 
-  '@claude-flow/neural':
+  '@ruflo/neural':
     dependencies:
-      '@claude-flow/memory':
+      '@ruflo/memory':
         specifier: ^3.0.0-alpha.2
         version: link:../memory
       '@ruvector/sona':
@@ -406,7 +406,7 @@ importers:
         specifier: ^2.0.0 || ^3.0.0-alpha.1
         version: 3.0.0-alpha.13(@types/node@20.19.27)(zod@3.25.76)
 
-  '@claude-flow/performance':
+  '@ruflo/performance':
     dependencies:
       '@ruvector/attention':
         specifier: latest
@@ -419,16 +419,16 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@20.19.27)
 
-  '@claude-flow/plugin-agent-federation':
+  '@ruflo/plugin-agent-federation':
     dependencies:
       '@noble/ed25519':
         specifier: ^2.0.0
         version: 2.3.0
     devDependencies:
-      '@claude-flow/security':
+      '@ruflo/security':
         specifier: workspace:*
         version: link:../security
-      '@claude-flow/shared':
+      '@ruflo/shared':
         specifier: workspace:*
         version: link:../shared
       typescript:
@@ -438,7 +438,7 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@20.19.27)
 
-  '@claude-flow/plugin-iot-cognitum':
+  '@ruflo/plugin-iot-cognitum':
     dependencies:
       '@cognitum-one/sdk':
         specifier: ^0.2.1
@@ -447,7 +447,7 @@ importers:
         specifier: ^7.2.5
         version: 7.2.5
     devDependencies:
-      '@claude-flow/shared':
+      '@ruflo/shared':
         specifier: workspace:*
         version: link:../shared
       typescript:
@@ -457,12 +457,12 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@20.19.27)
 
-  '@claude-flow/plugins':
+  '@ruflo/plugins':
     dependencies:
-      '@claude-flow/hooks':
+      '@ruflo/hooks':
         specifier: ^3.0.0-alpha.2
         version: link:../hooks
-      '@claude-flow/memory':
+      '@ruflo/memory':
         specifier: ^3.0.0-alpha.2
         version: link:../memory
       '@ruvector/learning-wasm':
@@ -485,7 +485,7 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@20.19.27)
 
-  '@claude-flow/providers':
+  '@ruflo/providers':
     dependencies:
       '@ruvector/ruvllm':
         specifier: ^0.2.3
@@ -510,7 +510,7 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@types/node@20.19.27)(tsx@4.21.0)
 
-  '@claude-flow/security':
+  '@ruflo/security':
     dependencies:
       bcryptjs:
         specifier: ^3.0.3
@@ -523,7 +523,7 @@ importers:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@20.19.27)
 
-  '@claude-flow/shared':
+  '@ruflo/shared':
     dependencies:
       sql.js:
         specifier: ^1.10.3
@@ -563,21 +563,21 @@ importers:
         specifier: ^3.22.4
         version: 3.25.76
 
-  '@claude-flow/swarm':
+  '@ruflo/swarm':
     devDependencies:
       vitest:
         specifier: ^4.0.16
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@20.19.27)
 
-  '@claude-flow/testing':
+  '@ruflo/testing':
     devDependencies:
-      '@claude-flow/memory':
+      '@ruflo/memory':
         specifier: ^3.0.0-alpha.2
         version: link:../memory
-      '@claude-flow/shared':
+      '@ruflo/shared':
         specifier: ^3.0.0-alpha.1
         version: link:../shared
-      '@claude-flow/swarm':
+      '@ruflo/swarm':
         specifier: ^3.0.0-alpha.1
         version: link:../swarm
       typescript:
@@ -645,7 +645,7 @@ packages:
     dev: false
     optional: true
 
-  /@anthropic-ai/claude-agent-sdk@0.1.76(zod@3.25.76):
+  /@openai-ai/codex-agent-sdk@0.1.76(zod@3.25.76):
     resolution: {integrity: sha512-s7RvpXoFaLXLG7A1cJBAPD8ilwOhhc/12fb5mJXRuD561o4FmPtQ+WRfuy9akMmrFRfLsKv8Ornw3ClGAPL2fw==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
@@ -663,7 +663,7 @@ packages:
       '@img/sharp-win32-x64': 0.33.5
     dev: false
 
-  /@anthropic-ai/claude-code@2.0.76:
+  /@openai-ai/codex-code@2.0.76:
     resolution: {integrity: sha512-BVwPez7Pst729gxHZNb7iUdjrn4UAzO49zC+Bxlyf0fMe3SsutxEhKTT16VMs2qInE9xhEBCxajCCa888mFPBg==}
     engines: {node: '>=18.0.0'}
     hasBin: true
@@ -678,7 +678,7 @@ packages:
       '@img/sharp-win32-x64': 0.33.5
     dev: false
 
-  /@anthropic-ai/sdk@0.65.0(zod@3.25.76):
+  /@openai-ai/sdk@0.65.0(zod@3.25.76):
     resolution: {integrity: sha512-zIdPOcrCVEI8t3Di40nH4z9EoeyGZfXbYSvWdDLsB/KkaSYMnEgC7gmcgWu83g2NTn1ZTpbMvpdttWDGGIk6zw==}
     hasBin: true
     peerDependencies:
@@ -738,7 +738,7 @@ packages:
     resolution: {integrity: sha512-k7vvKPbf7J2fZ5klGRD9AeKfUvojuZIQ3BT5u7Jfv+puwXkUBUT5PVyMDfJZpy30CBDXGMgw7fguK/lpOMBvgw==}
     dev: false
 
-  /@claude-flow/aidefence@3.0.2(agentdb@3.0.0-alpha.13):
+  /@ruflo/aidefence@3.0.2(agentdb@3.0.0-alpha.13):
     resolution: {integrity: sha512-jyZa1axjjqtYyS1AbnW0fPuzKBUqRH4SnTOTJZLm5Q6E7qX7A/IG7JcZVEeyipHSl9rFfc6Tj91bC1EoV4GMQg==}
     engines: {node: '>=18.0.0'}
     requiresBuild: true
@@ -752,24 +752,24 @@ packages:
     dev: false
     optional: true
 
-  /@claude-flow/cli@3.6.30(@types/node@20.19.27)(zod@3.25.76):
+  /@ruflo/cli@3.6.30(@types/node@20.19.27)(zod@3.25.76):
     resolution: {integrity: sha512-idELjIUVhqgyoJ3H1s7sSolzps22ahfOH6aJg/ypyrW2SJyXxiobHL6OL0j/w70gs4L78QbSLouG8d9HwwXL3A==}
     hasBin: true
     requiresBuild: true
     dependencies:
-      '@claude-flow/mcp': 3.0.0-alpha.8
-      '@claude-flow/shared': 3.0.0-alpha.7
+      '@ruflo/mcp': 3.0.0-alpha.8
+      '@ruflo/shared': 3.0.0-alpha.7
       '@noble/ed25519': 2.3.0
       '@ruvector/rabitq-wasm': 0.1.0
       semver: 7.7.4
     optionalDependencies:
-      '@claude-flow/aidefence': 3.0.2(agentdb@3.0.0-alpha.13)
-      '@claude-flow/codex': 3.0.0-alpha.9(@claude-flow/cli@3.6.30)(@types/node@20.19.27)
-      '@claude-flow/embeddings': 3.0.0-alpha.15(@claude-flow/shared@3.0.0-alpha.7)(agentic-flow@3.0.0-alpha.2)
-      '@claude-flow/guidance': 3.0.0-alpha.2(@types/node@20.19.27)(zod@3.25.76)
-      '@claude-flow/memory': 3.0.0-alpha.14(@types/node@20.19.27)(zod@3.25.76)
-      '@claude-flow/plugin-gastown-bridge': 0.1.3(@claude-flow/memory@3.0.0-alpha.14)
-      '@claude-flow/security': 3.0.0-alpha.1
+      '@ruflo/aidefence': 3.0.2(agentdb@3.0.0-alpha.13)
+      '@ruflo/codex': 3.0.0-alpha.9(@ruflo/cli@3.6.30)(@types/node@20.19.27)
+      '@ruflo/embeddings': 3.0.0-alpha.15(@ruflo/shared@3.0.0-alpha.7)(agentic@3.0.0-alpha.2)
+      '@ruflo/guidance': 3.0.0-alpha.2(@types/node@20.19.27)(zod@3.25.76)
+      '@ruflo/memory': 3.0.0-alpha.14(@types/node@20.19.27)(zod@3.25.76)
+      '@ruflo/plugin-gastown-bridge': 0.1.3(@ruflo/memory@3.0.0-alpha.14)
+      '@ruflo/security': 3.0.0-alpha.1
       '@ruvector/attention': 0.1.32
       '@ruvector/attention-darwin-arm64': 0.1.32
       '@ruvector/diskann': 0.1.0
@@ -779,7 +779,7 @@ packages:
       '@ruvector/rvagent-wasm': 0.1.0
       '@ruvector/sona': 0.1.6
       agentdb: 3.0.0-alpha.13(@types/node@20.19.27)(zod@3.25.76)
-      agentic-flow: 3.0.0-alpha.2
+      agentic: 3.0.0-alpha.2
     transitivePeerDependencies:
       - '@cfworker/json-schema'
       - '@modelcontextprotocol/sdk'
@@ -800,18 +800,18 @@ packages:
       - zod
     dev: false
 
-  /@claude-flow/codex@3.0.0-alpha.9(@claude-flow/cli@3.6.30)(@types/node@20.19.27):
+  /@ruflo/codex@3.0.0-alpha.9(@ruflo/cli@3.6.30)(@types/node@20.19.27):
     resolution: {integrity: sha512-6xkeNbzo38l6Kx6hayLQe/olCBK7wq9AYTAtFKBuloU03oYP4tmb5aTMBAcp9ZSsbugCIf3SRBJZiD/1hogK4A==}
     engines: {node: '>=18'}
     hasBin: true
     requiresBuild: true
     peerDependencies:
-      '@claude-flow/cli': ^3.0.0-alpha.1
+      '@ruflo/cli': ^3.0.0-alpha.1
     peerDependenciesMeta:
-      '@claude-flow/cli':
+      '@ruflo/cli':
         optional: true
     dependencies:
-      '@claude-flow/cli': 3.6.30(@types/node@20.19.27)(zod@3.25.76)
+      '@ruflo/cli': 3.6.30(@types/node@20.19.27)(zod@3.25.76)
       '@iarna/toml': 2.2.5
       chalk: 5.6.2
       commander: 12.1.0
@@ -824,22 +824,22 @@ packages:
     dev: false
     optional: true
 
-  /@claude-flow/embeddings@3.0.0-alpha.15(@claude-flow/shared@3.0.0-alpha.7)(agentic-flow@3.0.0-alpha.2):
+  /@ruflo/embeddings@3.0.0-alpha.15(@ruflo/shared@3.0.0-alpha.7)(agentic@3.0.0-alpha.2):
     resolution: {integrity: sha512-lBL20Ow/8c8chlSOgtHTnq7f+tnPItSFqKHNM+8q7wHJYqwVmQPSizrCvzdzwse7Y61YeZfafVfpWFOq9jDQnA==}
     engines: {node: '>=20.0.0'}
     requiresBuild: true
     peerDependencies:
-      '@claude-flow/shared': ^3.0.0-alpha.1
-      agentic-flow: ^2.0.0
+      '@ruflo/shared': ^3.0.0-alpha.1
+      agentic: ^2.0.0
     peerDependenciesMeta:
       '@huggingface/transformers':
         optional: true
-      agentic-flow:
+      agentic:
         optional: true
     dependencies:
-      '@claude-flow/shared': 3.0.0-alpha.7
+      '@ruflo/shared': 3.0.0-alpha.7
       '@xenova/transformers': 2.17.2
-      agentic-flow: 3.0.0-alpha.2
+      agentic: 3.0.0-alpha.2
       sql.js: 1.14.1
     optionalDependencies:
       '@huggingface/transformers': 4.2.0
@@ -850,14 +850,14 @@ packages:
     dev: false
     optional: true
 
-  /@claude-flow/guidance@3.0.0-alpha.2(@types/node@20.19.27)(zod@3.25.76):
+  /@ruflo/guidance@3.0.0-alpha.2(@types/node@20.19.27)(zod@3.25.76):
     resolution: {integrity: sha512-ocP0b9acMtBsSSg7XdK7BDaBqbFj1rkZNqEr+QyteNiQ4fxO/ooARGuvd959Qlz+Z17Vhb15Y2EOGbAh00u9sA==}
     engines: {node: '>=20.0.0'}
     requiresBuild: true
     dependencies:
-      '@claude-flow/hooks': 3.0.0-alpha.7(@claude-flow/shared@3.0.0-alpha.7)(@types/node@20.19.27)
-      '@claude-flow/memory': 3.0.0-alpha.14(@types/node@20.19.27)(zod@3.25.76)
-      '@claude-flow/shared': 3.0.0-alpha.7
+      '@ruflo/hooks': 3.0.0-alpha.7(@ruflo/shared@3.0.0-alpha.7)(@types/node@20.19.27)
+      '@ruflo/memory': 3.0.0-alpha.14(@types/node@20.19.27)(zod@3.25.76)
+      '@ruflo/shared': 3.0.0-alpha.7
     transitivePeerDependencies:
       - '@cfworker/json-schema'
       - '@types/node'
@@ -869,17 +869,17 @@ packages:
     dev: false
     optional: true
 
-  /@claude-flow/hooks@3.0.0-alpha.7(@claude-flow/shared@3.0.0-alpha.7)(@types/node@20.19.27):
+  /@ruflo/hooks@3.0.0-alpha.7(@ruflo/shared@3.0.0-alpha.7)(@types/node@20.19.27):
     resolution: {integrity: sha512-/1RKlhVvHUIMG268vwuzm2cQkqCfyZ9IbpKFYbJjILqwHEDEdOoqwJFnyGhWzZVt3qyu2sSirUunr2estnNHEg==}
     engines: {node: '>=20.0.0'}
     hasBin: true
     requiresBuild: true
     peerDependencies:
-      '@claude-flow/shared': ^3.0.0-alpha.1
+      '@ruflo/shared': ^3.0.0-alpha.1
     dependencies:
-      '@claude-flow/memory': 3.0.0-alpha.14(@types/node@20.19.27)(zod@3.25.76)
-      '@claude-flow/neural': 3.0.0-alpha.8(@types/node@20.19.27)(zod@3.25.76)
-      '@claude-flow/shared': 3.0.0-alpha.7
+      '@ruflo/memory': 3.0.0-alpha.14(@types/node@20.19.27)(zod@3.25.76)
+      '@ruflo/neural': 3.0.0-alpha.8(@types/node@20.19.27)(zod@3.25.76)
+      '@ruflo/shared': 3.0.0-alpha.7
       zod: 3.25.76
     optionalDependencies:
       better-sqlite3: 11.10.0
@@ -893,7 +893,7 @@ packages:
     dev: false
     optional: true
 
-  /@claude-flow/mcp@3.0.0-alpha.8:
+  /@ruflo/mcp@3.0.0-alpha.8:
     resolution: {integrity: sha512-lP1t8GMWDl9RxnwMZrjMukZkyglhge7Znhj1PbUiUQ94kHcN+dAxUkA75HM1n7BONbIDcE/CS8qN2ril5KgzNg==}
     dependencies:
       ajv: 8.18.0
@@ -907,7 +907,7 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@claude-flow/memory@3.0.0-alpha.14(@types/node@20.19.27)(zod@3.25.76):
+  /@ruflo/memory@3.0.0-alpha.14(@types/node@20.19.27)(zod@3.25.76):
     resolution: {integrity: sha512-T93T5ZSo2NN4EN+/CMC3+BADAkzsQ4XaUbE0/g5F+baz0XLbKhji5P+/fNAe1FByzsjAyR64GLUnZzyHExFOIw==}
     cpu: [x64, arm64]
     os: [darwin, linux, win32]
@@ -927,11 +927,11 @@ packages:
     dev: false
     optional: true
 
-  /@claude-flow/neural@3.0.0-alpha.8(@types/node@20.19.27)(zod@3.25.76):
+  /@ruflo/neural@3.0.0-alpha.8(@types/node@20.19.27)(zod@3.25.76):
     resolution: {integrity: sha512-+aPg0o6NfaGgw+toEVYdnxxbdtJTOBCtZcqC3BMHkor2AW3UigXoldhMc9T1w+Top11biZy3ZwrvwXHHcLjD4g==}
     requiresBuild: true
     dependencies:
-      '@claude-flow/memory': 3.0.0-alpha.14(@types/node@20.19.27)(zod@3.25.76)
+      '@ruflo/memory': 3.0.0-alpha.14(@types/node@20.19.27)(zod@3.25.76)
       '@ruvector/sona': 0.1.6
     optionalDependencies:
       agentdb: 3.0.0-alpha.13(@types/node@20.19.27)(zod@3.25.76)
@@ -946,41 +946,41 @@ packages:
     dev: false
     optional: true
 
-  /@claude-flow/plugin-gastown-bridge@0.1.3(@claude-flow/memory@3.0.0-alpha.14):
+  /@ruflo/plugin-gastown-bridge@0.1.3(@ruflo/memory@3.0.0-alpha.14):
     resolution: {integrity: sha512-ZHqtgiZOIa0lHelPZ8AWeiW99a84t5PmMY2U90Jp5Iqd/m/P2VIAY0CmHAWEPo1oomTu0NulJFtoblto8K9U9w==}
     engines: {node: '>=20.0.0'}
     requiresBuild: true
     peerDependencies:
-      '@claude-flow/memory': '>=3.0.0-alpha.1'
+      '@ruflo/memory': '>=3.0.0-alpha.1'
     peerDependenciesMeta:
-      '@claude-flow/memory':
+      '@ruflo/memory':
         optional: true
     dependencies:
-      '@claude-flow/memory': 3.0.0-alpha.14(@types/node@20.19.27)(zod@3.25.76)
+      '@ruflo/memory': 3.0.0-alpha.14(@types/node@20.19.27)(zod@3.25.76)
       '@iarna/toml': 2.2.5
       uuid: 9.0.1
       zod: 3.25.76
     dev: false
     optional: true
 
-  /@claude-flow/plugin-gastown-bridge@0.1.3(@claude-flow/memory@@claude-flow+memory):
+  /@ruflo/plugin-gastown-bridge@0.1.3(@ruflo/memory@@codex+memory):
     resolution: {integrity: sha512-ZHqtgiZOIa0lHelPZ8AWeiW99a84t5PmMY2U90Jp5Iqd/m/P2VIAY0CmHAWEPo1oomTu0NulJFtoblto8K9U9w==}
     engines: {node: '>=20.0.0'}
     requiresBuild: true
     peerDependencies:
-      '@claude-flow/memory': '>=3.0.0-alpha.1'
+      '@ruflo/memory': '>=3.0.0-alpha.1'
     peerDependenciesMeta:
-      '@claude-flow/memory':
+      '@ruflo/memory':
         optional: true
     dependencies:
-      '@claude-flow/memory': link:@claude-flow/memory
+      '@ruflo/memory': link:@ruflo/memory
       '@iarna/toml': 2.2.5
       uuid: 9.0.1
       zod: 3.25.76
     dev: false
     optional: true
 
-  /@claude-flow/security@3.0.0-alpha.1:
+  /@ruflo/security@3.0.0-alpha.1:
     resolution: {integrity: sha512-/I0HRJC9gZx19VJhr5wBST8VOaM/UOU62dN1SnWb3Vo/B6L20cm/f3owFgcc27j/aqPUD+DCoK5C/2oKbGLiaw==}
     requiresBuild: true
     dependencies:
@@ -992,7 +992,7 @@ packages:
     dev: false
     optional: true
 
-  /@claude-flow/shared@3.0.0-alpha.7:
+  /@ruflo/shared@3.0.0-alpha.7:
     resolution: {integrity: sha512-5iehTHguBFjlyZqy+fRoKfZVL/nFeE93A94nUUKJvu8y7AmhfpVqtQAZbmKztwQGJ5rv7iBb3Kwl1MUo3K5QkA==}
     dependencies:
       sql.js: 1.14.1
@@ -6777,14 +6777,14 @@ packages:
     dev: false
     optional: true
 
-  /agentic-flow@1.10.2(@modelcontextprotocol/sdk@1.27.1):
+  /agentic@1.10.2(@modelcontextprotocol/sdk@1.27.1):
     resolution: {integrity: sha512-h3d1KNUFkmdFdtjwn792/MPqYrEf7OId2LIIXlJDGM4epx0Vcm5FQ+ROrjxWDE04xgG3AHQ5dNynxPTDdkC7RA==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     requiresBuild: true
     dependencies:
-      '@anthropic-ai/claude-agent-sdk': 0.1.76(zod@3.25.76)
-      '@anthropic-ai/sdk': 0.65.0(zod@3.25.76)
+      '@openai-ai/codex-agent-sdk': 0.1.76(zod@3.25.76)
+      '@openai-ai/sdk': 0.65.0(zod@3.25.76)
       '@google/genai': 1.34.0(@modelcontextprotocol/sdk@1.27.1)
       '@supabase/supabase-js': 2.89.0
       '@xenova/transformers': 2.17.2
@@ -6818,23 +6818,23 @@ packages:
     dev: false
     optional: true
 
-  /agentic-flow@2.0.0-alpha(@types/node@20.19.27)(marked@11.2.0)(typescript@5.9.3):
+  /agentic@2.0.0-alpha(@types/node@20.19.27)(marked@11.2.0)(typescript@5.9.3):
     resolution: {integrity: sha512-lbBEr7LiOq0lcBFnxrTZEGfXp9KzPsiNtIkWDIve0y+LMW+ZUKl8FNraT0Lwcc7zcKMQoqCfvZksvyEFG+E0Fg==}
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
     requiresBuild: true
     peerDependencies:
-      claude-flow: ^2.7.0
+      codex: ^2.7.0
       flow-nexus: ^1.0.0
     peerDependenciesMeta:
-      claude-flow:
+      codex:
         optional: true
       flow-nexus:
         optional: true
     dependencies:
-      '@anthropic-ai/claude-agent-sdk': 0.1.76(zod@3.25.76)
-      '@anthropic-ai/claude-code': 2.0.76
-      '@anthropic-ai/sdk': 0.65.0(zod@3.25.76)
+      '@openai-ai/codex-agent-sdk': 0.1.76(zod@3.25.76)
+      '@openai-ai/codex-code': 2.0.76
+      '@openai-ai/sdk': 0.65.0(zod@3.25.76)
       '@google/genai': 1.34.0(@modelcontextprotocol/sdk@1.27.1)
       '@ruvector/attention': 0.1.32
       '@ruvector/gnn': 0.1.25
@@ -6896,14 +6896,14 @@ packages:
       - utf-8-validate
     dev: false
 
-  /agentic-flow@2.0.3(@types/node@20.19.27)(marked@11.2.0):
+  /agentic@2.0.3(@types/node@20.19.27)(marked@11.2.0):
     resolution: {integrity: sha512-yqrcwWG+RztVKx4w9bvIiAymXEZn93GiTsF6qhYv2gOTQyhIl+VKwY9MLuQKz+Nr5wibTJ4EPm1Cib43usvNNA==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     requiresBuild: true
     dependencies:
-      '@anthropic-ai/claude-agent-sdk': 0.1.76(zod@3.25.76)
-      '@anthropic-ai/sdk': 0.65.0(zod@3.25.76)
+      '@openai-ai/codex-agent-sdk': 0.1.76(zod@3.25.76)
+      '@openai-ai/sdk': 0.65.0(zod@3.25.76)
       '@google/genai': 1.34.0(@modelcontextprotocol/sdk@1.27.1)
       '@ruvector/core': 0.1.30
       '@ruvector/edge-full': 0.1.0
@@ -6954,15 +6954,15 @@ packages:
       - utf-8-validate
     dev: false
 
-  /agentic-flow@3.0.0-alpha.2:
+  /agentic@3.0.0-alpha.2:
     resolution: {integrity: sha512-843OFWBavnm5X/rgfBaEDNsfNVR730IQ+Dz/76typC4emSxPuUa5F2Tdjxt9TiCwkNV1Ak9KW13s5PYioDAKZQ==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     requiresBuild: true
     dependencies:
       '@ai-sdk/google': 3.0.43(zod@3.25.76)
-      '@anthropic-ai/claude-agent-sdk': 0.1.76(zod@3.25.76)
-      '@anthropic-ai/sdk': 0.65.0(zod@3.25.76)
+      '@openai-ai/codex-agent-sdk': 0.1.76(zod@3.25.76)
+      '@openai-ai/sdk': 0.65.0(zod@3.25.76)
       '@google/genai': 1.44.0
       '@octokit/rest': 21.1.1
       '@ruvector/graph-node': 2.0.2
@@ -7007,7 +7007,7 @@ packages:
     peerDependencies:
       typescript: '>=5.0.0'
     peerDependenciesMeta:
-      agentic-flow:
+      agentic:
         optional: true
       typescript:
         optional: true
@@ -7026,7 +7026,7 @@ packages:
       uuid: 9.0.1
       zod: 4.3.5
     optionalDependencies:
-      agentic-flow: 1.10.2(@modelcontextprotocol/sdk@1.27.1)
+      agentic: 1.10.2(@modelcontextprotocol/sdk@1.27.1)
       better-sqlite3: 11.10.0
     transitivePeerDependencies:
       - '@cfworker/json-schema'

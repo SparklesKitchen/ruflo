@@ -1,7 +1,7 @@
 /**
- * @claude-flow/plugin-perf-optimizer
+ * @ruflo/plugin-perf-optimizer
  *
- * AI-powered performance optimization plugin for Claude Flow V3.
+ * AI-powered performance optimization plugin for Ruflo V3.
  *
  * Features:
  * - Bottleneck detection using trace analysis
@@ -35,16 +35,16 @@ export { PerfFpgaBridge, createPerfFpgaBridge } from './bridges/fpga-bridge.js';
 
 // Plugin metadata
 export const pluginMetadata = {
-  name: '@claude-flow/plugin-perf-optimizer',
+  name: '@ruflo/plugin-perf-optimizer',
   version: '3.0.0-alpha.1',
   description: 'AI-powered performance optimization for bottleneck detection, memory analysis, and configuration tuning',
   category: 'performance',
   tags: ['performance', 'optimization', 'tracing', 'memory', 'database', 'bundle'],
-  author: 'Claude Flow Team',
+  author: 'Ruflo Team',
   license: 'MIT',
-  repository: 'https://github.com/ruvnet/claude-flow',
+  repository: 'https://github.com/SparklesKitchen/ruflo',
   engines: {
-    'claude-flow': '>=3.0.0-alpha.1',
+    'codex': '>=3.0.0-alpha.1',
     node: '>=18.0.0',
   },
   capabilities: {
@@ -145,7 +145,7 @@ export async function initializePlugin(
 }
 
 /**
- * Plugin entry point for Claude Flow plugin loader
+ * Plugin entry point for Ruflo plugin loader
  */
 export default {
   metadata: pluginMetadata,

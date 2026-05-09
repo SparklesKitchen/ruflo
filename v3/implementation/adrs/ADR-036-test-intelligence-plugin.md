@@ -18,7 +18,7 @@ Create a **Test Intelligence Plugin** that leverages RuVector WASM packages for 
 
 ## Plugin Name
 
-`@claude-flow/plugin-test-intelligence`
+`@ruflo/plugin-test-intelligence`
 
 ## Description
 

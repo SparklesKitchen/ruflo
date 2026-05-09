@@ -46,11 +46,11 @@ services:
       MCP_GROUP_BROWSER: ${MCP_GROUP_BROWSER:-false}
       MCP_GROUP_NEURAL: ${MCP_GROUP_NEURAL:-false}
       MCP_GROUP_AGENTIC_FLOW: ${MCP_GROUP_AGENTIC_FLOW:-false}
-      MCP_GROUP_CLAUDE_CODE: ${MCP_GROUP_CLAUDE_CODE:-false}
+      MCP_GROUP_CODEX: ${MCP_GROUP_CODEX:-false}
       MCP_GROUP_GEMINI: ${MCP_GROUP_GEMINI:-false}
       MCP_GROUP_CODEX: ${MCP_GROUP_CODEX:-false}
       # API keys for optional groups
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://localhost:3001/health').then(r => process.exit(r.ok ? 0 : 1))"]
       interval: 30s

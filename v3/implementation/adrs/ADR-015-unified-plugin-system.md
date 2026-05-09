@@ -8,10 +8,10 @@
 
 ## Context
 
-Claude Flow v3 has multiple extension mechanisms scattered across different packages:
-- Plugin interfaces in `@claude-flow/shared`
-- Worker system in `@claude-flow/integration`
-- Hooks system in `@claude-flow/hooks`
+Ruflo v3 has multiple extension mechanisms scattered across different packages:
+- Plugin interfaces in `@ruflo/shared`
+- Worker system in `@ruflo/integration`
+- Hooks system in `@ruflo/hooks`
 - Provider definitions spread across multiple modules
 - Duplicate security utilities in various places
 
@@ -24,12 +24,12 @@ This fragmentation leads to:
 
 ## Decision
 
-Create a unified `@claude-flow/plugins` package that consolidates all plugin development capabilities into a single, coherent SDK.
+Create a unified `@ruflo/plugins` package that consolidates all plugin development capabilities into a single, coherent SDK.
 
 ### Package Structure
 
 ```
-@claude-flow/plugins/
+@ruflo/plugins/
 ├── src/
 │   ├── types/              # Unified type definitions
 │   │   └── index.ts        # All plugin-related types
@@ -47,7 +47,7 @@ Create a unified `@claude-flow/plugins` package that consolidates all plugin dev
 │   ├── providers/          # LLM provider integration
 │   │   └── index.ts
 │   ├── integrations/       # External integrations
-│   │   ├── agentic-flow.ts # agentic-flow@alpha bridge
+│   │   ├── agentic.ts # agentic@alpha bridge
 │   │   └── index.ts
 │   ├── security/           # Security utilities
 │   │   └── index.ts
@@ -119,7 +119,7 @@ PluginRegistry automatically collects extension points during initialization:
 
 ### Positive
 
-1. **Single Import**: Plugin authors import from `@claude-flow/plugins` only
+1. **Single Import**: Plugin authors import from `@ruflo/plugins` only
 2. **Type Safety**: Unified types with strict TypeScript validation
 3. **Security**: Centralized, audited security utilities
 4. **Testing**: Comprehensive test suite with 100+ test cases
@@ -209,24 +209,24 @@ PluginRegistry automatically collects extension points during initialization:
 
 ## Migration Guide
 
-### From @claude-flow/shared
+### From @ruflo/shared
 
 ```typescript
 // Before
-import { IPlugin, PluginMetadata } from '@claude-flow/shared';
+import { IPlugin, PluginMetadata } from '@ruflo/shared';
 
 // After
-import { IPlugin, PluginMetadata } from '@claude-flow/plugins';
+import { IPlugin, PluginMetadata } from '@ruflo/plugins';
 ```
 
-### From @claude-flow/hooks
+### From @ruflo/hooks
 
 ```typescript
 // Before
-import { HookEvent, HookHandler } from '@claude-flow/hooks';
+import { HookEvent, HookHandler } from '@ruflo/hooks';
 
 // After
-import { HookEvent, HookHandler, HookRegistry } from '@claude-flow/plugins';
+import { HookEvent, HookHandler, HookRegistry } from '@ruflo/plugins';
 ```
 
 ### From manual plugin creation
@@ -253,7 +253,7 @@ const myPlugin = new PluginBuilder('my-plugin', '1.0.0')
 The package includes a comprehensive example plugin that demonstrates all SDK capabilities:
 
 ```typescript
-import { pluginCreatorPlugin } from '@claude-flow/plugins/examples/plugin-creator';
+import { pluginCreatorPlugin } from '@ruflo/plugins/examples/plugin-creator';
 
 // Register the meta-plugin
 await getDefaultRegistry().register(pluginCreatorPlugin);
@@ -289,16 +289,16 @@ TypeErrors  0 errors
 
 ## Related ADRs
 
-- **ADR-001**: Adopt agentic-flow as core foundation
+- **ADR-001**: Adopt agentic as core foundation
 - **ADR-004**: Plugin-based architecture (microkernel pattern)
 - **ADR-005**: MCP-first API design
 - **ADR-006**: Unified memory service (AgentDB integration)
 
 ## References
 
-- [Plugin Interface Design](../../@claude-flow/plugins/src/core/plugin-interface.ts)
-- [Base Plugin Implementation](../../@claude-flow/plugins/src/core/base-plugin.ts)
-- [Security Module](../../@claude-flow/plugins/src/security/index.ts)
-- [agentic-flow@alpha Integration](../../@claude-flow/plugins/src/integrations/agentic-flow.ts)
-- [Plugin Creator Example](../../@claude-flow/plugins/examples/plugin-creator/index.ts)
-- [README.md](../../@claude-flow/plugins/README.md)
+- [Plugin Interface Design](../../@ruflo/plugins/src/core/plugin-interface.ts)
+- [Base Plugin Implementation](../../@ruflo/plugins/src/core/base-plugin.ts)
+- [Security Module](../../@ruflo/plugins/src/security/index.ts)
+- [agentic@alpha Integration](../../@ruflo/plugins/src/integrations/agentic.ts)
+- [Plugin Creator Example](../../@ruflo/plugins/examples/plugin-creator/index.ts)
+- [README.md](../../@ruflo/plugins/README.md)

@@ -1,78 +1,78 @@
-# ADR-046: Dual Umbrella Packages — claude-flow + ruflo
+# ADR-046: Dual Umbrella Packages — codex + ruflo
 
 **Status:** Accepted
 **Date:** 2026-02-07
 **Updated:** 2026-02-08
-**Authors:** RuvNet, Claude Flow Team
+**Authors:** RuvNet, Ruflo Team
 
 ## Context
 
-The umbrella package is published to npm as `claude-flow`. As the ecosystem grows and the product establishes its own identity, a second umbrella package `ruflo` is introduced alongside the original.
+The umbrella package is published to npm as `codex`. As the ecosystem grows and the product establishes its own identity, a second umbrella package `ruflo` is introduced alongside the original.
 
 ### Current State
 
 | Aspect | Current Value |
 |--------|---------------|
-| npm package | `claude-flow` |
-| CLI binary | `claude-flow` |
-| GitHub repo | ruvnet/claude-flow |
-| Internal packages | @claude-flow/* |
+| npm package | `codex` |
+| CLI binary | `codex` |
+| GitHub repo | ruvnet/codex |
+| Internal packages | @ruflo/* |
 | Weekly downloads | ~1,000+ |
 
 ### Drivers for Change
 
 1. **Brand Cohesion**: Aligns with the ruv ecosystem (ruv.io, @ruvector/*, ruv-swarm)
-2. **Trademark Safety**: Removes potential trademark concerns with "Claude" in product name
-3. **Product Identity**: Establishes independent product identity beyond Claude integration
+2. **Trademark Safety**: Removes potential trademark concerns with "Codex" in product name
+3. **Product Identity**: Establishes independent product identity beyond Codex integration
 4. **Discoverability**: "ruflo" is unique, memorable, and searchable
 5. **Future Flexibility**: Enables the platform to support multiple AI backends without name confusion
-6. **Zero Disruption**: Keeping `claude-flow` ensures no existing users are broken
+6. **Zero Disruption**: Keeping `codex` ensures no existing users are broken
 
 ## Decision
 
-Publish **two independent npm umbrella packages** — `claude-flow` (original) and `ruflo` (new) — both backed by `@claude-flow/cli`.
+Publish **two independent npm umbrella packages** — `codex` (original) and `ruflo` (new) — both backed by `@ruflo/cli`.
 
 ### Package Architecture
 
 ```
 npm registry
-├── claude-flow          ← original umbrella (bundles @claude-flow/cli)
-│   └── bin: claude-flow → v3/@claude-flow/cli/bin/cli.js
-├── ruflo              ← new umbrella (depends on @claude-flow/cli)
-│   └── bin: ruflo     → @claude-flow/cli/bin/cli.js
-└── @claude-flow/cli     ← shared CLI implementation
+├── codex          ← original umbrella (bundles @ruflo/cli)
+│   └── bin: codex → v3/@ruflo/cli/bin/cli.js
+├── ruflo              ← new umbrella (depends on @ruflo/cli)
+│   └── bin: ruflo     → @ruflo/cli/bin/cli.js
+└── @ruflo/cli     ← shared CLI implementation
 ```
 
 ### What Changes
 
 | Aspect | Before | After |
 |--------|--------|-------|
-| npm packages | `claude-flow` only | `claude-flow` + `ruflo` |
-| CLI binaries | `claude-flow` | `claude-flow` + `ruflo` |
-| Install commands | `npx claude-flow@latest` | Both `npx claude-flow@latest` and `npx ruflo@latest` |
-| README branding | "Claude-Flow" | "Ruflo" (primary), "claude-flow" (supported) |
-| Product name | Claude-Flow | Ruflo (with claude-flow alias) |
+| npm packages | `codex` only | `codex` + `ruflo` |
+| CLI binaries | `codex` | `codex` + `ruflo` |
+| Install commands | `npx ruflo@latest` | Both `npx ruflo@latest` and `npx ruflo@latest` |
+| README branding | "Codex-Flow" | "Ruflo" (primary), "codex" (supported) |
+| Product name | Codex-Flow | Ruflo (with codex alias) |
 
 ### What Stays the Same
 
 | Aspect | Value | Reason |
 |--------|-------|--------|
-| GitHub repo | ruvnet/claude-flow | SEO, existing links, history |
-| Internal packages | @claude-flow/* | Minimal disruption, existing integrations |
+| GitHub repo | ruvnet/codex | SEO, existing links, history |
+| Internal packages | @ruflo/* | Minimal disruption, existing integrations |
 | Functionality | All features | No functional changes |
 | License | MIT | No change |
 | Author | RuvNet | No change |
-| `claude-flow` npm package | Fully supported | No breaking changes for existing users |
+| `codex` npm package | Fully supported | No breaking changes for existing users |
 
 ## Consequences
 
 ### Positive
 
-1. **Zero Disruption**: Existing `claude-flow` users unaffected
+1. **Zero Disruption**: Existing `codex` users unaffected
 2. **Unified Brand**: New `ruflo` package for the ruv ecosystem
-3. **Trademark Safety**: Users can choose the non-"Claude" branded package
+3. **Trademark Safety**: Users can choose the non-"Codex" branded package
 4. **Dual Discovery**: Package discoverable under both names on npm
-5. **Future Proof**: Can add non-Claude integrations without name confusion
+5. **Future Proof**: Can add non-Codex integrations without name confusion
 
 ### Negative
 
@@ -83,30 +83,30 @@ npm registry
 ### Neutral
 
 1. **GitHub repo unchanged**: Existing links continue to work
-2. **Internal packages unchanged**: No code changes required in @claude-flow/*
+2. **Internal packages unchanged**: No code changes required in @ruflo/*
 
 ## Implementation
 
 ### Package Structure
 
 ```
-/workspaces/claude-flow/
-├── package.json            # name: "claude-flow" (original umbrella)
-│                           # bin: claude-flow → v3/@claude-flow/cli/bin/cli.js
+/workspaces/codex/
+├── package.json            # name: "codex" (original umbrella)
+│                           # bin: codex → v3/@ruflo/cli/bin/cli.js
 │                           # bundles CLI files directly
 └── ruflo/
     ├── package.json        # name: "ruflo" (new umbrella)
     │                       # bin: ruflo → ./bin/ruflo.js
-    │                       # depends on @claude-flow/cli
+    │                       # depends on @ruflo/cli
     ├── bin/
-    │   └── ruflo.js      # thin wrapper, imports @claude-flow/cli
+    │   └── ruflo.js      # thin wrapper, imports @ruflo/cli
     └── README.md           # Ruflo-branded docs
 ```
 
 ### Phase 1: Preparation (This PR)
 
 1. Create ADR-046 (this document)
-2. Keep root `package.json` as `claude-flow` (original umbrella)
+2. Keep root `package.json` as `codex` (original umbrella)
 3. Create `ruflo/` directory with new umbrella package
 4. Update main README.md with Ruflo branding
 5. Update install scripts to reference `ruflo`
@@ -114,18 +114,18 @@ npm registry
 ### Phase 2: Publishing
 
 ```bash
-# 1. Publish @claude-flow/cli (shared implementation)
-cd v3/@claude-flow/cli
+# 1. Publish @ruflo/cli (shared implementation)
+cd v3/@ruflo/cli
 npm publish --tag alpha
 
-# 2. Publish claude-flow umbrella (original)
-cd /workspaces/claude-flow
+# 2. Publish codex umbrella (original)
+cd /workspaces/codex
 npm publish --tag v3alpha
-npm dist-tag add claude-flow@<version> latest
-npm dist-tag add claude-flow@<version> alpha
+npm dist-tag add codex@<version> latest
+npm dist-tag add codex@<version> alpha
 
 # 3. Publish ruflo umbrella (new)
-cd /workspaces/claude-flow/ruflo
+cd /workspaces/codex/ruflo
 npm publish --tag alpha
 npm dist-tag add ruflo@<version> latest
 ```
@@ -143,19 +143,19 @@ When publishing updates, **all three packages** must be published:
 
 | Order | Package | Command | Tags |
 |-------|---------|---------|------|
-| 1 | `@claude-flow/cli` | `npm publish --tag alpha` | alpha, latest |
-| 2 | `claude-flow` | `npm publish --tag v3alpha` | v3alpha, alpha, latest |
+| 1 | `@ruflo/cli` | `npm publish --tag alpha` | alpha, latest |
+| 2 | `codex` | `npm publish --tag v3alpha` | v3alpha, alpha, latest |
 | 3 | `ruflo` | `npm publish --tag alpha` | alpha, latest |
 
 ## Alternatives Considered
 
-### 1. Replace claude-flow with ruflo (single package)
+### 1. Replace codex with ruflo (single package)
 
 **Pros:** Simpler, one package to maintain
 **Cons:** Breaks existing users, loses download history
 **Decision:** Rejected - zero disruption preferred
 
-### 2. Rename to ruv-flow (hyphenated)
+### 2. Rename to ruv (hyphenated)
 
 **Pros:** Matches ruv-swarm pattern
 **Cons:** Inconsistent with @ruvector (no hyphen)
@@ -167,7 +167,7 @@ When publishing updates, **all three packages** must be published:
 **Cons:** Major breaking change, complex migration, npm scope registration
 **Decision:** Rejected - disruption not worth the benefit
 
-### 4. Deprecate claude-flow
+### 4. Deprecate codex
 
 **Pros:** Forces migration to ruflo
 **Cons:** Breaks existing users, bad developer experience
@@ -182,25 +182,25 @@ When publishing updates, **all three packages** must be published:
 npx ruflo@latest init --wizard
 
 # Also works
-npx claude-flow@latest init --wizard
+npx ruflo@latest init --wizard
 ```
 
 ### For Existing Users
 
-No migration required. `claude-flow` continues to work. Optionally switch:
+No migration required. `codex` continues to work. Optionally switch:
 
 ```bash
 # Switch MCP server (optional)
-claude mcp remove claude-flow
-claude mcp add ruflo npx ruflo@latest mcp start
+codex mcp remove codex
+codex mcp add ruflo npx ruflo@latest mcp start
 ```
 
 ### For Contributors
 
-1. Root `package.json` is the `claude-flow` umbrella
+1. Root `package.json` is the `codex` umbrella
 2. `ruflo/package.json` is the `ruflo` umbrella
-3. Internal imports remain `@claude-flow/*`
-4. GitHub repo remains `ruvnet/claude-flow`
+3. Internal imports remain `@ruflo/*`
+4. GitHub repo remains `ruvnet/codex`
 
 ## Metrics for Success
 
@@ -215,7 +215,7 @@ claude mcp add ruflo npx ruflo@latest mcp start
 
 - GitHub Issue: #1101
 - npm: https://npmjs.com/package/ruflo
-- npm: https://npmjs.com/package/claude-flow
+- npm: https://npmjs.com/package/codex
 - Related: ADR-017 (RuVector Integration)
 
 ## Appendix: Branding Guidelines
@@ -224,9 +224,9 @@ claude mcp add ruflo npx ruflo@latest mcp start
 
 | Context | Use |
 |---------|-----|
-| npm packages | `ruflo` and `claude-flow` (both lowercase) |
+| npm packages | `ruflo` and `codex` (both lowercase) |
 | README title | "Ruflo" (PascalCase) |
-| CLI binaries | `ruflo` or `claude-flow` (both lowercase) |
+| CLI binaries | `ruflo` or `codex` (both lowercase) |
 | In prose | "Ruflo" (PascalCase) |
 
 ### Command Examples
@@ -238,8 +238,8 @@ npx ruflo@latest agent spawn -t coder
 npx ruflo@latest swarm init --topology hierarchical
 
 # Legacy style (still fully supported)
-npx claude-flow@latest init
-npx claude-flow@latest agent spawn -t coder
+npx ruflo@latest init
+npx ruflo@latest agent spawn -t coder
 ```
 
 ---

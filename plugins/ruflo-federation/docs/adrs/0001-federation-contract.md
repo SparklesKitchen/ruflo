@@ -4,13 +4,13 @@ title: ruflo-federation plugin contract — pinning, namespace coordination, 3-g
 status: Proposed
 date: 2026-05-04
 authors:
-  - reviewer (Claude Code)
+  - reviewer (Codex)
 tags: [plugin, federation, zero-trust, peer-discovery, consensus, budget, namespace, smoke-test]
 ---
 
 ## Context
 
-`ruflo-federation` (v0.2.0) — comms layer for cross-installation agent federation. Plugin-internal (drives `@claude-flow/plugin-agent-federation` via npx; no CLI MCP tools of its own — federation tooling is npm-package-driven). Surface:
+`ruflo-federation` (v0.2.0) — comms layer for cross-installation agent federation. Plugin-internal (drives `@ruflo/plugin-agent-federation` via npx; no CLI MCP tools of its own — federation tooling is npm-package-driven). Surface:
 
 - 1 agent (`federation-coordinator`)
 - 3 skills (`federation-init`, `federation-status`, `federation-audit`)

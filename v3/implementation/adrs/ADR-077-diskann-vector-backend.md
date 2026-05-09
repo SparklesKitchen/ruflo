@@ -53,7 +53,7 @@ DiskANN (native, Vamana graph) → HNSW (@ruvector/router) → Cosine-JS (pure J
 ## Implementation
 
 ### Files
-- `v3/@claude-flow/cli/src/ruvector/diskann-backend.ts` — unified backend with auto-selection, fallback chain, benchmark utility
+- `v3/@ruflo/cli/src/ruvector/diskann-backend.ts` — unified backend with auto-selection, fallback chain, benchmark utility
 
 ### API
 ```typescript

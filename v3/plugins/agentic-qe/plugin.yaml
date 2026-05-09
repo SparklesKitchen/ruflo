@@ -1,5 +1,5 @@
 # agentic-qe Plugin Manifest
-# Quality Engineering plugin for Claude Flow V3
+# Quality Engineering plugin for Ruflo V3
 
 name: agentic-qe
 version: 3.5.59
@@ -27,17 +27,17 @@ metadata:
     - chaos-engineering
     - accessibility
   stability: stable
-  minClaudeFlowVersion: "3.5.0"
+  minCodexFlowVersion: "3.5.0"
 
 # Dependencies
 dependencies:
   required:
-    - "@claude-flow/plugins": ">=3.0.0"
-    - "@claude-flow/memory": ">=3.0.0"
-    - "@claude-flow/security": ">=3.0.0"
-    - "@claude-flow/embeddings": ">=3.0.0"
+    - "@ruflo/plugins": ">=3.0.0"
+    - "@ruflo/memory": ">=3.0.0"
+    - "@ruflo/security": ">=3.0.0"
+    - "@ruflo/embeddings": ">=3.0.0"
   optional:
-    - "@claude-flow/browser": ">=3.0.0"  # For E2E/visual testing
+    - "@ruflo/browser": ">=3.0.0"  # For E2E/visual testing
     - "@ruvector/attention": ">=1.0.0"   # Enhanced pattern matching
     - "@ruvector/gnn": ">=1.0.0"         # Code graph analysis
     - "@ruvector/sona": ">=1.0.0"        # Self-optimizing learning
@@ -988,7 +988,7 @@ implementation:
       files: 8
       estimatedLines: 1210
       deliverables:
-        - Plugin registers with @claude-flow/plugins SDK
+        - Plugin registers with @ruflo/plugins SDK
         - Type-safe configuration validation
         - Basic lifecycle hooks (onLoad, onUnload)
 
@@ -1033,7 +1033,7 @@ implementation:
       estimatedLines: 2320
       deliverables:
         - All 58 agents (51 + 7 TDD) defined as YAML
-        - Agents spawn via Claude Code Task tool
+        - Agents spawn via Codex Task tool
         - Model routing hints in agent definitions
 
     - phase: 6

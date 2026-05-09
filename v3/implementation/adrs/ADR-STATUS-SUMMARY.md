@@ -44,8 +44,8 @@
 
 | Command | Version | MCP Server |
 |---------|---------|------------|
-| `npx @claude-flow/cli@alpha` | v3.0.0-alpha.87 | **171 tools**, 19 categories |
-| `npx claude-flow@v3alpha` | v3.0.0-alpha.34 | **171 tools**, 19 categories |
+| `npx @ruflo/cli@alpha` | v3.0.0-alpha.87 | **171 tools**, 19 categories |
+| `npx ruflo@v3alpha` | v3.0.0-alpha.34 | **171 tools**, 19 categories |
 
 **Fix Applied:** Pinned exact CLI version in wrapper package to avoid semver resolution to buggy 3.0.x versions. Deprecated versions 3.0.0, 3.0.1, 3.0.2.
 
@@ -101,10 +101,10 @@
 
 | ADR | Title | Status | Notes |
 |-----|-------|--------|-------|
-| ADR-001 | Adopt agentic-flow as Core Foundation | ✅ Complete | AgenticFlowAgent, AgentAdapter implemented |
+| ADR-001 | Adopt agentic as Core Foundation | ✅ Complete | AgenticFlowAgent, AgentAdapter implemented |
 | ADR-002 | Domain-Driven Design Structure | ✅ Complete | 15 bounded context modules |
 | ADR-003 | Single Coordination Engine | ✅ Complete | UnifiedSwarmCoordinator canonical |
-| ADR-004 | Plugin Architecture | ✅ Complete | @claude-flow/plugins |
+| ADR-004 | Plugin Architecture | ✅ Complete | @ruflo/plugins |
 | ADR-005 | MCP-First API Design | ✅ Complete | **171 MCP tools** - V2 compatibility complete |
 
 ### Memory & Data
@@ -126,7 +126,7 @@
 
 | ADR | Title | Status | Notes |
 |-----|-------|--------|-------|
-| ADR-011 | LLM Provider System | ✅ Complete | @claude-flow/providers |
+| ADR-011 | LLM Provider System | ✅ Complete | @ruflo/providers |
 | ADR-012 | MCP Security Features | ✅ Complete | Security hardening |
 | ADR-013 | Core Security Module | ✅ Complete | CVE remediation (444/444 tests) |
 
@@ -148,8 +148,8 @@
 
 | ADR | Title | Status | Notes |
 |-----|-------|--------|-------|
-| ADR-018 | Claude Code Integration | ✅ Complete | Deep Claude Code hooks and tooling |
-| ADR-019 | Headless Runtime Package | ✅ Complete | @claude-flow/headless for CI/CD |
+| ADR-018 | Codex Integration | ✅ Complete | Deep Codex hooks and tooling |
+| ADR-019 | Headless Runtime Package | ✅ Complete | @ruflo/headless for CI/CD |
 | ADR-020 | Headless Worker Integration | ✅ Complete | Background workers in headless mode |
 | ADR-021 | Transfer Hook IPFS Pattern Sharing | ✅ Complete | Decentralized pattern registry |
 | ADR-022 | AIDefence Integration | ✅ Complete | AI security scanning |
@@ -250,18 +250,18 @@ Stats handler (`hooks/intelligence/stats`) pulls from actual implementations:
 
 | Package | Version | Published |
 |---------|---------|-----------|
-| @claude-flow/cli | **3.0.0-alpha.117** | 2026-01-14 |
-| claude-flow | **3.0.0-alpha.76** | 2026-01-14 |
-| @claude-flow/memory | 3.0.0-alpha.2 | 2026-01-07 |
-| @claude-flow/mcp | 3.0.0-alpha.8 | 2026-01-07 |
-| @claude-flow/neural | 3.0.0-alpha.2 | 2026-01-06 |
-| @claude-flow/security | 3.0.0-alpha.1 | 2026-01-05 |
-| @claude-flow/swarm | 3.0.0-alpha.1 | 2026-01-04 |
-| @claude-flow/hooks | 3.0.0-alpha.2 | 2026-01-06 |
-| @claude-flow/plugins | 3.0.0-alpha.2 | 2026-01-06 |
-| @claude-flow/providers | 3.0.0-alpha.1 | 2026-01-04 |
-| @claude-flow/embeddings | 3.0.0-alpha.12 | 2026-01-05 |
-| @claude-flow/shared | 3.0.0-alpha.1 | 2026-01-03 |
+| @ruflo/cli | **3.0.0-alpha.117** | 2026-01-14 |
+| codex | **3.0.0-alpha.76** | 2026-01-14 |
+| @ruflo/memory | 3.0.0-alpha.2 | 2026-01-07 |
+| @ruflo/mcp | 3.0.0-alpha.8 | 2026-01-07 |
+| @ruflo/neural | 3.0.0-alpha.2 | 2026-01-06 |
+| @ruflo/security | 3.0.0-alpha.1 | 2026-01-05 |
+| @ruflo/swarm | 3.0.0-alpha.1 | 2026-01-04 |
+| @ruflo/hooks | 3.0.0-alpha.2 | 2026-01-06 |
+| @ruflo/plugins | 3.0.0-alpha.2 | 2026-01-06 |
+| @ruflo/providers | 3.0.0-alpha.1 | 2026-01-04 |
+| @ruflo/embeddings | 3.0.0-alpha.12 | 2026-01-05 |
+| @ruflo/shared | 3.0.0-alpha.1 | 2026-01-03 |
 
 ### npm dist-tags (as of 2026-01-14)
 
@@ -278,7 +278,7 @@ Stats handler (`hooks/intelligence/stats`) pulls from actual implementations:
 
 | Package | Version | Reason |
 |---------|---------|--------|
-| @claude-flow/cli | 3.0.0, 3.0.1, 3.0.2 | Buggy early releases - use alpha.86+ |
+| @ruflo/cli | 3.0.0, 3.0.1, 3.0.2 | Buggy early releases - use alpha.86+ |
 
 ---
 
@@ -398,18 +398,18 @@ Stats handler (`hooks/intelligence/stats`) pulls from actual implementations:
 
 | Package | Version | Published | Status |
 |---------|---------|-----------|--------|
-| @claude-flow/cli | **3.0.0-alpha.87** | 2026-01-13 | ✅ Beta Ready |
-| claude-flow | **3.0.0-alpha.34** | 2026-01-13 | ✅ Beta Ready |
-| @claude-flow/memory | 3.0.0-alpha.2 | 2026-01-07 | ✅ |
-| @claude-flow/mcp | 3.0.0-alpha.8 | 2026-01-07 | ✅ |
-| @claude-flow/neural | 3.0.0-alpha.2 | 2026-01-06 | ✅ |
-| @claude-flow/security | 3.0.0-alpha.1 | 2026-01-05 | ✅ |
-| @claude-flow/swarm | 3.0.0-alpha.1 | 2026-01-04 | ✅ |
-| @claude-flow/hooks | 3.0.0-alpha.2 | 2026-01-06 | ✅ |
-| @claude-flow/plugins | 3.0.0-alpha.2 | 2026-01-06 | ✅ |
-| @claude-flow/providers | 3.0.0-alpha.1 | 2026-01-04 | ✅ |
-| @claude-flow/embeddings | 3.0.0-alpha.12 | 2026-01-05 | ✅ |
-| @claude-flow/shared | 3.0.0-alpha.1 | 2026-01-03 | ✅ |
+| @ruflo/cli | **3.0.0-alpha.87** | 2026-01-13 | ✅ Beta Ready |
+| codex | **3.0.0-alpha.34** | 2026-01-13 | ✅ Beta Ready |
+| @ruflo/memory | 3.0.0-alpha.2 | 2026-01-07 | ✅ |
+| @ruflo/mcp | 3.0.0-alpha.8 | 2026-01-07 | ✅ |
+| @ruflo/neural | 3.0.0-alpha.2 | 2026-01-06 | ✅ |
+| @ruflo/security | 3.0.0-alpha.1 | 2026-01-05 | ✅ |
+| @ruflo/swarm | 3.0.0-alpha.1 | 2026-01-04 | ✅ |
+| @ruflo/hooks | 3.0.0-alpha.2 | 2026-01-06 | ✅ |
+| @ruflo/plugins | 3.0.0-alpha.2 | 2026-01-06 | ✅ |
+| @ruflo/providers | 3.0.0-alpha.1 | 2026-01-04 | ✅ |
+| @ruflo/embeddings | 3.0.0-alpha.12 | 2026-01-05 | ✅ |
+| @ruflo/shared | 3.0.0-alpha.1 | 2026-01-03 | ✅ |
 
 ---
 
@@ -436,9 +436,9 @@ Stats handler (`hooks/intelligence/stats`) pulls from actual implementations:
 ### Hooks Statusline Command
 
 ```bash
-npx @claude-flow/cli@latest hooks statusline           # Full colored output
-npx @claude-flow/cli@latest hooks statusline --json    # JSON format
-npx @claude-flow/cli@latest hooks statusline --compact # Single-line format
+npx @ruflo/cli@latest hooks statusline           # Full colored output
+npx @ruflo/cli@latest hooks statusline --json    # JSON format
+npx @ruflo/cli@latest hooks statusline --compact # Single-line format
 ```
 
 ---
@@ -464,7 +464,7 @@ const heapUsedMB = (endMem.heapUsed / 1024 / 1024);
 
 ```typescript
 output.writeln(output.warning('⚠ No real CVE database configured. Showing example data.'));
-output.writeln(output.dim('Run "npm audit" or "claude-flow security scan" for real vulnerability detection.'));
+output.writeln(output.dim('Run "npm audit" or "codex security scan" for real vulnerability detection.'));
 ```
 
 ### Transfer Fallback Warnings
@@ -480,14 +480,14 @@ console.warn(`⚠ [Discovery] OFFLINE MODE - Could not resolve IPNS: ${ipnsName}
 
 ### MCP Server Fix
 
-**Problem:** `npx claude-flow@alpha mcp start` failed with "Cannot read properties of undefined (reading 'split')"
+**Problem:** `npx ruflo@alpha mcp start` failed with "Cannot read properties of undefined (reading 'split')"
 
 **Root Cause:** npm resolved `^3.0.0-alpha.84` to buggy version `3.0.2` (semver: `3.0.2 > 3.0.0-alpha.84`)
 
 **Solution:**
-1. Pinned exact version in wrapper: `"@claude-flow/cli": "3.0.0-alpha.86"` (no caret)
+1. Pinned exact version in wrapper: `"@ruflo/cli": "3.0.0-alpha.86"` (no caret)
 2. Deprecated buggy versions: 3.0.0, 3.0.1, 3.0.2
-3. Published claude-flow@3.0.0-alpha.33 with fix
+3. Published codex@3.0.0-alpha.33 with fix
 
 ### Doctor Version Freshness Check (alpha.86)
 
@@ -496,15 +496,15 @@ Added `checkVersionFreshness()` to doctor command:
 - Queries npm registry for latest alpha version
 - Compares versions including prerelease numbers
 - Warns if stale npx cache detected
-- Provides fix command: `rm -rf ~/.npm/_npx/* && npx -y @claude-flow/cli@latest`
+- Provides fix command: `rm -rf ~/.npm/_npx/* && npx -y @ruflo/cli@latest`
 
 ```bash
 # Check version freshness
-npx @claude-flow/cli@alpha doctor -c version
+npx @ruflo/cli@alpha doctor -c version
 
 # Example output when outdated:
 ⚠ Version Freshness: v3.0.0-alpha.84 (latest: v3.0.0-alpha.86) [npx cache stale]
-  Fix: rm -rf ~/.npm/_npx/* && npx -y @claude-flow/cli@latest
+  Fix: rm -rf ~/.npm/_npx/* && npx -y @ruflo/cli@latest
 ```
 
 ---
@@ -522,11 +522,11 @@ npx @claude-flow/cli@alpha doctor -c version
 ### Update CLI Commands
 
 ```bash
-npx claude-flow update check      # Check for updates
-npx claude-flow update all        # Update all packages
-npx claude-flow update history    # View update history
-npx claude-flow update rollback   # Rollback last update
-npx claude-flow update clear-cache # Clear check cache
+npx ruflo update check      # Check for updates
+npx ruflo update all        # Update all packages
+npx ruflo update history    # View update history
+npx ruflo update rollback   # Rollback last update
+npx ruflo update clear-cache # Clear check cache
 ```
 
 ---
@@ -569,7 +569,7 @@ V3 now implements **171 MCP tools** with full V2 backward compatibility:
 |-----------|-------------|-----------|-------|
 | system-tools.ts | ✅ File-based | ✅ **REAL** | Real CPU, memory via os/process APIs |
 | performance-tools.ts | ✅ File-based | ✅ **REAL** | Real benchmarks with actual timing |
-| neural-tools.ts | ✅ File-based | ✅ **REAL** | Real embeddings via @claude-flow/embeddings |
+| neural-tools.ts | ✅ File-based | ✅ **REAL** | Real embeddings via @ruflo/embeddings |
 | terminal-tools.ts | ✅ File-based | ❌ State only | Records commands, doesn't execute |
 | github-tools.ts | ✅ File-based | ❌ State only | Local state, no GitHub API |
 | daa-tools.ts | ✅ File-based | ❌ State only | Local agent coordination |
@@ -592,7 +592,7 @@ V3 now implements **171 MCP tools** with full V2 backward compatibility:
 
 **neural-tools.ts** (6 tools) - ✅ **REAL EMBEDDINGS**:
 - `neural/train` - Track training progress (state)
-- `neural/predict` - **REAL**: embeddings via @claude-flow/embeddings (agentic-flow)
+- `neural/predict` - **REAL**: embeddings via @ruflo/embeddings (agentic)
 - `neural/patterns` - **REAL**: Store patterns with real embeddings, cosine similarity search
 - `neural/compress` - Compression info (illustrative)
 - `neural/status` - **REAL**: Shows embedding provider status
@@ -642,15 +642,15 @@ V3 now implements **171 MCP tools** with full V2 backward compatibility:
 ### Recommendation
 
 ✅ V2 API compatibility is complete. The 52 new tools provide:
-- File-based persistence in `.claude-flow/` directory
+- File-based persistence in `.codex/` directory
 - V2 API shape for backward compatibility
 - Local state management for workflow coordination
 
 For real operations:
-- **Terminal commands**: Use Claude Code's `Bash` tool
+- **Terminal commands**: Use Codex's `Bash` tool
 - **GitHub API**: Use `gh` CLI or GitHub MCP server
 - **Real metrics**: Use `process.memoryUsage()`, `os` module
-- **Neural training**: Use `@claude-flow/neural` module
+- **Neural training**: Use `@ruflo/neural` module
 
 ---
 

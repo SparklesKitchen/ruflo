@@ -24,7 +24,7 @@ Test gap detection, coverage analysis, and automated test generation. SPARC Refi
 
 ## Compatibility
 
-- **CLI:** pinned to `@claude-flow/cli` v3.6 major+minor.
+- **CLI:** pinned to `@ruflo/cli` v3.6 major+minor.
 - **Verification:** `bash plugins/ruflo-testgen/scripts/smoke.sh` is the contract.
 
 ## testgaps worker + coverage CLI surface
@@ -34,9 +34,9 @@ This plugin's two MCP/CLI surfaces:
 | Surface | Invocation |
 |---------|-----------|
 | **MCP**: dispatch the `testgaps` worker | `mcp tool call hooks_worker-dispatch --json -- '{"trigger":"testgaps"}'` |
-| **CLI**: `coverage-gaps` (table of gaps) | `npx @claude-flow/cli@latest hooks coverage-gaps --format table --limit 20` |
-| **CLI**: `coverage-route` (route a task by gap) | `npx @claude-flow/cli@latest hooks coverage-route --task "add auth tests"` |
-| **CLI**: `coverage-suggest` (suggest tests for a path) | `npx @claude-flow/cli@latest hooks coverage-suggest --path src/` |
+| **CLI**: `coverage-gaps` (table of gaps) | `npx @ruflo/cli@latest hooks coverage-gaps --format table --limit 20` |
+| **CLI**: `coverage-route` (route a task by gap) | `npx @ruflo/cli@latest hooks coverage-route --task "add auth tests"` |
+| **CLI**: `coverage-suggest` (suggest tests for a path) | `npx @ruflo/cli@latest hooks coverage-suggest --path src/` |
 
 `testgaps` is one of 12 background workers documented in [ruflo-loop-workers ADR-0001](../ruflo-loop-workers/docs/adrs/0001-loop-workers-contract.md).
 
@@ -51,7 +51,7 @@ Together they enforce the Refinement gate: ≥80% coverage on new code + diff ri
 
 ## Namespace coordination
 
-This plugin owns the `test-gaps` AgentDB namespace (kebab-case, follows the convention from [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md)). Reserved namespaces (`pattern`, `claude-memories`, `default`) MUST NOT be shadowed.
+This plugin owns the `test-gaps` AgentDB namespace (kebab-case, follows the convention from [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md)). Reserved namespaces (`pattern`, `codex-memories`, `default`) MUST NOT be shadowed.
 
 `test-gaps` indexes detected gaps by file + priority + last-seen timestamp. Accessed via `memory_*` (namespace-routed).
 

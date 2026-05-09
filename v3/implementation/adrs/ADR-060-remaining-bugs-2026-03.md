@@ -2,7 +2,7 @@
 
 **Status:** Accepted — Sprint 1+2 Verified
 **Date:** 2026-03-05 (updated 2026-03-05)
-**Author:** claude-flow
+**Author:** codex
 **Supersedes:** Remaining items from ADR-059
 
 ## Context
@@ -34,12 +34,12 @@ ADR-059 triaged 30 open issues and 11 were fixed in v3.5.3 (PR #1297, #1298). Th
 ## P1 — High
 
 ### 2. hook-handler.cjs ignores stdin — all hook data silently lost (#1211)
-- **Impact:** Every Claude Code hook sends structured JSON via stdin, but hook-handler.cjs never reads it. The entire learning, routing, and intelligence pipeline receives no input data.
+- **Impact:** Every Codex hook sends structured JSON via stdin, but hook-handler.cjs never reads it. The entire learning, routing, and intelligence pipeline receives no input data.
 - **Root cause:** The handler reads `process.argv` but never `process.stdin`.
 - **Fix:** Add stdin buffering: `let data = ''; process.stdin.on('data', c => data += c); process.stdin.on('end', () => { /* parse JSON, dispatch */ })`.
 - **Effort:** Small — single file fix with high leverage.
 - **Note:** This is the single highest-leverage fix remaining. Without it, all hooks are effectively no-ops.
-- **Status:** ✅ **FIXED** in PR #1300 (v3.5.4). Added `readStdin()` async function with `!process.stdin.isTTY` detection, JSON parsing, and merged `hookInput` into prompt resolution. **Updated** in v3.5.7: replaced `for await` with event-based + 500ms timeout to prevent hanging when Claude Code leaves stdin in an ambiguous state.
+- **Status:** ✅ **FIXED** in PR #1300 (v3.5.4). Added `readStdin()` async function with `!process.stdin.isTTY` detection, JSON parsing, and merged `hookInput` into prompt resolution. **Updated** in v3.5.7: replaced `for await` with event-based + 500ms timeout to prevent hanging when Codex leaves stdin in an ambiguous state.
 
 ### 3. macOS: daemon dies immediately after start (#1283)
 - **Impact:** Daemon always shows STOPPED on macOS. Background workers, learning hooks, and neural training are all non-functional.
@@ -48,7 +48,7 @@ ADR-059 triaged 30 open issues and 11 were fixed in v3.5.3 (PR #1297, #1298). Th
 - **Effort:** Medium.
 - **Status:** ✅ **FIXED** in v3.5.6. Added SIGHUP handler (`process.on('SIGHUP', () => {})`) in foreground daemon mode. PID file now written after `child.unref()` + 100ms delay to prevent race condition.
 
-### 4. auto-memory-hook.mjs fails to resolve @claude-flow/memory (#1287)
+### 4. auto-memory-hook.mjs fails to resolve @ruflo/memory (#1287)
 - **Impact:** Auto-memory import fails when installed as nested dependency (npx, monorepos). Memory persistence across sessions is broken.
 - **Root cause:** ES module import resolution doesn't traverse node_modules correctly from hook context.
 - **Fix:** Use `createRequire(import.meta.url)` for CommonJS-style resolution, or bundle the memory module inline.
@@ -89,7 +89,7 @@ ADR-059 triaged 30 open issues and 11 were fixed in v3.5.3 (PR #1297, #1298). Th
 - **Effort:** Trivial.
 - **Status:** ✅ **FIXED** in PR #1300 (v3.5.4). Added `.unref()` to 6 `setInterval` calls across `mcp-server.ts`, `output.ts`, `worker-queue.ts`, `container-worker-pool.ts`.
 
-### 10. Zero swarms always: `ruflo spawn hive-mind --claude` (#1279)
+### 10. Zero swarms always: `ruflo spawn hive-mind --codex` (#1279)
 - **Impact:** Hive-mind spawning returns zero agents. Multi-agent feature is non-functional via CLI.
 - **Fix:** Debug agent spawn path — likely missing topology init or agent pool connection.
 - **Effort:** Medium.
@@ -226,7 +226,7 @@ ADR-059 triaged 30 open issues and 11 were fixed in v3.5.3 (PR #1297, #1298). Th
 
 ### v3.5.5 (2026-03-05) — Branding Sweep
 
-All "Claude Flow V3" → "RuFlo V3" across 30+ files (CLI source, helpers, statusline).
+All "Ruflo V3" → "RuFlo V3" across 30+ files (CLI source, helpers, statusline).
 
 ### v3.5.4 (2026-03-05) — Sprint 1: Intelligence Pipeline
 

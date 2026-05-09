@@ -10,7 +10,7 @@ Companion reference for `cost-analyst`. The agent prompt deliberately stays lean
 | Sonnet | $3.00 | $15.00 | $3.75 | $0.30 |
 | Opus | $15.00 | $75.00 | $18.75 | $1.50 |
 
-Prices are public-list and may need a refresh — verify against the Anthropic pricing page when running quarterly cost reports.
+Prices are public-list and may need a refresh — verify against the OpenAI pricing page when running quarterly cost reports.
 
 ## Cost attribution formula
 
@@ -85,7 +85,7 @@ Tier classification at report-time uses two signals, in priority order:
 1. **`[AGENT_BOOSTER_AVAILABLE]` flag** stored by the `cost-booster-route` skill in the `cost-tracking` namespace — authoritative when present.
 2. **Model name fallback** — `haiku` → Tier 2; `sonnet`/`opus` → Tier 3; missing/unknown → Tier 3 (conservative).
 
-The tier breakdown is the report's most actionable line: it tells the user *what fraction of Sonnet/Opus spend was Tier 1-eligible*. Without it, the report can't surface "you spent $X on Sonnet for tasks that should have routed to Tier 1" — see [ADR-0002 §"Decision 5"](docs/adrs/0002-agentic-flow-and-agent-booster-integration.md) for the rationale.
+The tier breakdown is the report's most actionable line: it tells the user *what fraction of Sonnet/Opus spend was Tier 1-eligible*. Without it, the report can't surface "you spent $X on Sonnet for tasks that should have routed to Tier 1" — see [ADR-0002 §"Decision 5"](docs/adrs/0002-agentic-and-agent-booster-integration.md) for the rationale.
 
 ## Federation cost integration (ADR-097 pairing)
 

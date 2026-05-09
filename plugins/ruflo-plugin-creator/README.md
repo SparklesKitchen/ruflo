@@ -1,6 +1,6 @@
 # ruflo-plugin-creator
 
-Scaffold, validate, and publish new Claude Code plugins with proper structure, MCP tool wiring, AND the canonical plugin contract (ADR + smoke + Compatibility + namespace coordination).
+Scaffold, validate, and publish new Codex plugins with proper structure, MCP tool wiring, AND the canonical plugin contract (ADR + smoke + Compatibility + namespace coordination).
 
 ## Install
 
@@ -18,7 +18,7 @@ Scaffold, validate, and publish new Claude Code plugins with proper structure, M
 
 ## Commands
 
-- `/create-plugin` -- Interactively scaffold a new Claude Code plugin
+- `/create-plugin` -- Interactively scaffold a new Codex plugin
 
 ## Skills
 
@@ -27,7 +27,7 @@ Scaffold, validate, and publish new Claude Code plugins with proper structure, M
 
 ## Compatibility
 
-- **CLI:** pinned to `@claude-flow/cli` v3.6 major+minor.
+- **CLI:** pinned to `@ruflo/cli` v3.6 major+minor.
 - **Verification:** `bash plugins/ruflo-plugin-creator/scripts/smoke.sh` is the contract.
 
 ## Canonical plugin contract (what gets scaffolded)
@@ -36,7 +36,7 @@ Every plugin scaffolded by this plugin inherits the same shape every other plugi
 
 ```
 plugins/<name>/
-├── .claude-plugin/plugin.json     # version, keywords, mcp keyword
+├── .codex-plugin/plugin.json     # version, keywords, mcp keyword
 ├── skills/<skill>/SKILL.md         # name + description + allowed-tools (no wildcards)
 ├── commands/<command>.md           # name + description + dispatch logic
 ├── agents/<agent>.md               # name + description + model

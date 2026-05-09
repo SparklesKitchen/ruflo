@@ -16,9 +16,9 @@
 //   BENCH_LLM_API_KEY=...  -- override (default: from gcloud secret GOOGLE_AI_API_KEY)
 //   BENCH_LLM_PRICE_IN/OUT -- $/1M tokens override (default Gemini 2.0 Flash: 0.10 / 0.40)
 //
-//   BENCH_ANTHROPIC=1      -- run the same corpus through Anthropic claude models
-//   BENCH_ANTHROPIC_MODELS=claude-sonnet-4-6,claude-opus-4-7   -- comma-separated list
-//   BENCH_ANTHROPIC_API_KEY=... -- override (default: from gcloud secret ANTHROPIC_API_KEY)
+//   BENCH_OpenAI=1      -- run the same corpus through OpenAI codex models
+//   BENCH_OpenAI_MODELS=codex-sonnet-4-6,codex-opus-4-7   -- comma-separated list
+//   BENCH_OPENAI_API_KEY=... -- override (default: from gcloud secret OPENAI_API_KEY)
 //
 //   BENCH_OUT=<path>       -- override output JSON path
 //   BENCH_QUIET=1          -- suppress markdown summary
@@ -125,10 +125,10 @@ async function main() {
     ({ llmSummary, llmResults } = await runLlmBaseline(corpus.cases));
   }
 
-  let anthropicSummaries = null; // Map<model, summary>
-  let anthropicResults = null;   // Map<model, per-case-results>
-  if (process.env.BENCH_ANTHROPIC === '1') {
-    ({ anthropicSummaries, anthropicResults } = await runAnthropicBaseline(corpus.cases));
+  let openaiSummaries = null; // Map<model, summary>
+  let openaiResults = null;   // Map<model, per-case-results>
+  if (process.env.BENCH_OpenAI === '1') {
+    ({ openaiSummaries, openaiResults } = await runOpenAIBaseline(corpus.cases));
   }
 
   const summary = {
@@ -160,10 +160,10 @@ async function main() {
     summary.speedupVsLlm = llmSummary.avgLatencyMs / Math.max(summary.avgLatencyMs, 0.001);
     summary.costDeltaUsdPerEdit = llmSummary.avgCostUsdPerEdit; // booster side is $0
   }
-  if (anthropicSummaries) {
-    summary.anthropic = {};
-    for (const [model, s] of Object.entries(anthropicSummaries)) {
-      summary.anthropic[model] = {
+  if (openaiSummaries) {
+    summary.openai = {};
+    for (const [model, s] of Object.entries(openaiSummaries)) {
+      summary.openai[model] = {
         ...s,
         speedupVsBooster: s.avgLatencyMs / Math.max(summary.avgLatencyMs, 0.001),
         costSavedPerEditUsd: s.avgCostUsdPerEdit, // booster side is $0
@@ -180,7 +180,7 @@ async function main() {
     summary,
     results,
     ...(llmResults ? { llmResults } : {}),
-    ...(anthropicResults ? { anthropicResults } : {}),
+    ...(openaiResults ? { openaiResults } : {}),
   };
   writeFileSync(outPath, JSON.stringify(payload, null, 2));
   writeFileSync(latestPath, JSON.stringify(payload, null, 2));
@@ -216,11 +216,11 @@ async function main() {
       console.log(`| LLM baseline | ${summary.llmBaseline} |`);
     }
     console.log(``);
-    if (anthropicSummaries) {
-      console.log(`## Anthropic baseline\n`);
+    if (openaiSummaries) {
+      console.log(`## OpenAI baseline\n`);
       console.log(`| Model | Avg latency | Win rate | Avg tokens (in/out) | Avg cost/edit | Speedup vs booster | Cost saved/edit |`);
       console.log(`|---|---:|---:|---:|---:|---:|---:|`);
-      for (const [model, s] of Object.entries(anthropicSummaries)) {
+      for (const [model, s] of Object.entries(openaiSummaries)) {
         const speedup = (s.avgLatencyMs / Math.max(summary.avgLatencyMs, 0.001)).toFixed(1);
         console.log(`| \`${model}\` | ${ms(s.avgLatencyMs)} | ${pct(s.winRate)} (${s.passed}/${s.total}) | ${s.avgTokensIn.toFixed(0)} / ${s.avgTokensOut.toFixed(0)} | $${s.avgCostUsdPerEdit.toFixed(6)} | **${speedup}×** | **$${s.avgCostUsdPerEdit.toFixed(6)}** |`);
       }
@@ -318,33 +318,33 @@ async function runLlmBaseline(cases) {
   };
 }
 
-// ─── Anthropic baseline ──────────────────────────────────────────────────────
+// ─── OpenAI baseline ──────────────────────────────────────────────────────
 
-// Built-in pricing per 1M tokens (USD). Override with BENCH_ANTHROPIC_PRICING JSON env.
-const ANTHROPIC_PRICING = {
-  'claude-sonnet-4-6':  { input: 3.00,  output: 15.00 },
-  'claude-opus-4-7':    { input: 15.00, output: 75.00 },
-  'claude-haiku-4-5':   { input: 1.00,  output: 5.00 },
-  'claude-haiku-4-5-20251001': { input: 1.00, output: 5.00 },
+// Built-in pricing per 1M tokens (USD). Override with BENCH_OpenAI_PRICING JSON env.
+const OpenAI_PRICING = {
+  'codex-sonnet-4-6':  { input: 3.00,  output: 15.00 },
+  'codex-opus-4-7':    { input: 15.00, output: 75.00 },
+  'codex-haiku-4-5':   { input: 1.00,  output: 5.00 },
+  'codex-haiku-4-5-20251001': { input: 1.00, output: 5.00 },
 };
 
-async function runAnthropicBaseline(cases) {
-  let apiKey = process.env.BENCH_ANTHROPIC_API_KEY;
+async function runOpenAIBaseline(cases) {
+  let apiKey = process.env.BENCH_OPENAI_API_KEY;
   if (!apiKey) {
     try {
       const { execSync } = await import('node:child_process');
-      apiKey = execSync('gcloud secrets versions access latest --secret=ANTHROPIC_API_KEY 2>/dev/null', { encoding: 'utf-8' }).trim();
+      apiKey = execSync('gcloud secrets versions access latest --secret=OPENAI_API_KEY 2>/dev/null', { encoding: 'utf-8' }).trim();
     } catch { /* fall through */ }
   }
   if (!apiKey) {
-    return { anthropicSummaries: { _error: 'no-api-key' }, anthropicResults: {} };
+    return { openaiSummaries: { _error: 'no-api-key' }, openaiResults: {} };
   }
 
   let pricingOverride = {};
-  if (process.env.BENCH_ANTHROPIC_PRICING) {
-    try { pricingOverride = JSON.parse(process.env.BENCH_ANTHROPIC_PRICING); } catch { /* ignore */ }
+  if (process.env.BENCH_OpenAI_PRICING) {
+    try { pricingOverride = JSON.parse(process.env.BENCH_OpenAI_PRICING); } catch { /* ignore */ }
   }
-  const models = (process.env.BENCH_ANTHROPIC_MODELS || 'claude-sonnet-4-6,claude-opus-4-7')
+  const models = (process.env.BENCH_OpenAI_MODELS || 'codex-sonnet-4-6,codex-opus-4-7')
     .split(',').map((s) => s.trim()).filter(Boolean);
 
   const sys = `You apply code edits deterministically. Return ONLY the resulting code as a single fenced \`\`\`<lang> code block. No explanation, no commentary, no extra blocks.`;
@@ -354,18 +354,18 @@ async function runAnthropicBaseline(cases) {
   const summaries = {};
   const allResults = {};
   for (const model of models) {
-    const pricing = pricingOverride[model] || ANTHROPIC_PRICING[model] || { input: 3, output: 15 };
+    const pricing = pricingOverride[model] || OpenAI_PRICING[model] || { input: 3, output: 15 };
     const out = [];
     let totIn = 0, totOut = 0, totLatencyMs = 0, passed = 0;
     for (const c of cases) {
       const t0 = Date.now();
       let body = null;
       try {
-        const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        const resp = await fetch('https://api.openai.com/v1/messages', {
           method: 'POST',
           headers: {
             'x-api-key': apiKey,
-            'anthropic-version': '2023-06-01',
+            'openai-version': '2023-06-01',
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
@@ -413,7 +413,7 @@ async function runAnthropicBaseline(cases) {
     allResults[model] = out;
   }
 
-  return { anthropicSummaries: summaries, anthropicResults: allResults };
+  return { openaiSummaries: summaries, openaiResults: allResults };
 }
 
 main().catch((e) => {

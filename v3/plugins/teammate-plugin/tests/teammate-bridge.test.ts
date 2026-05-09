@@ -6,7 +6,7 @@
  * - Mock external dependencies
  * - Focus on behavior, not implementation
  *
- * @module @claude-flow/teammate-plugin/tests
+ * @module @ruflo/teammate-plugin/tests
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
@@ -17,7 +17,7 @@ import * as os from 'os';
 // Mock child_process before importing
 vi.mock('child_process', () => ({
   execSync: vi.fn((cmd: string) => {
-    if (cmd.includes('claude --version')) {
+    if (cmd.includes('codex --version')) {
       return '2.1.19';
     }
     if (cmd.includes('git rev-parse')) {
@@ -42,14 +42,14 @@ import {
 
 import {
   TeammateErrorCode,
-  MINIMUM_CLAUDE_CODE_VERSION,
+  MINIMUM_CODEX_VERSION,
 } from '../src/types.js';
 
 // ============================================================================
 // Test Helpers
 // ============================================================================
 
-const TEST_TEAMS_DIR = path.join(os.tmpdir(), 'claude-flow-test-teams');
+const TEST_TEAMS_DIR = path.join(os.tmpdir(), 'codex-test-teams');
 
 function cleanupTestDir(): void {
   if (fs.existsSync(TEST_TEAMS_DIR)) {
@@ -73,10 +73,10 @@ describe('TeammateBridge Initialization', () => {
     cleanupTestDir();
   });
 
-  it('should detect Claude Code version on initialize', async () => {
+  it('should detect Codex version on initialize', async () => {
     const versionInfo = await bridge.initialize();
 
-    expect(versionInfo.claudeCode).toBe('2.1.19');
+    expect(versionInfo.codexCode).toBe('2.1.19');
     expect(versionInfo.compatible).toBe(true);
     expect(versionInfo.plugin).toBe('1.0.0-alpha.1');
   });
@@ -85,7 +85,7 @@ describe('TeammateBridge Initialization', () => {
     await bridge.initialize();
 
     expect(bridge.isAvailable()).toBe(true);
-    expect(bridge.getClaudeCodeVersion()).toBe('2.1.19');
+    expect(bridge.getCodexCodeVersion()).toBe('2.1.19');
   });
 
   it('should return version info', async () => {
@@ -93,7 +93,7 @@ describe('TeammateBridge Initialization', () => {
 
     const info = bridge.getVersionInfo();
 
-    expect(info.claudeCode).toBe('2.1.19');
+    expect(info.codexCode).toBe('2.1.19');
     expect(info.compatible).toBe(true);
     expect(info.missingFeatures).toEqual([]);
   });
@@ -140,7 +140,7 @@ describe('Team Management', () => {
     it('should set environment variable for team context', async () => {
       await bridge.spawnTeam({ name: 'env-team' });
 
-      expect(process.env.CLAUDE_CODE_TEAM_NAME).toBe('env-team');
+      expect(process.env.CODEX_TEAM_NAME).toBe('env-team');
     });
 
     it('should emit team:spawned event', async () => {
@@ -621,11 +621,11 @@ describe('Cleanup', () => {
   });
 
   it('should clear environment variable on cleanup', async () => {
-    process.env.CLAUDE_CODE_TEAM_NAME = 'cleanup-team';
+    process.env.CODEX_TEAM_NAME = 'cleanup-team';
 
     await bridge.cleanup('cleanup-team');
 
-    expect(process.env.CLAUDE_CODE_TEAM_NAME).toBeUndefined();
+    expect(process.env.CODEX_TEAM_NAME).toBeUndefined();
   });
 
   it('should emit cleanup event', async () => {

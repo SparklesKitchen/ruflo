@@ -13,7 +13,7 @@ Security review, dependency scanning, policy gates, and CVE monitoring.
 
 - **Security Scanning**: Full-depth scan with `security scan --depth full`
 - **CVE Monitoring**: Automated CVE detection and remediation guidance
-- **Input Validation**: Zod-based validation at system boundaries via `@claude-flow/security`
+- **Input Validation**: Zod-based validation at system boundaries via `@ruflo/security`
 - **Path Security**: Traversal prevention and safe executor for command injection protection
 - **Policy Gates**: Configurable security policies for CI/CD pipelines
 - **Threat Modeling**: Automated threat analysis and risk assessment
@@ -26,7 +26,7 @@ The 3.6.25 release closed a class of shell-injection bugs. When auditing downstr
 - **Numeric MCP inputs cast as `number`** — TypeScript casts don't run at runtime. A `prNumber: "1; rm -rf /"` slips through. Mitigate via `toPositiveInt(value)` (see `src/mcp-tools/github-tools.ts`).
 - **Untrusted package specs flowing into `npm install`** — gate via `isSafePackageSpec(pkg, version)` regex check (see `src/update/executor.ts`). Defense-in-depth even with `execFileSync`.
 - **Loader-hijack env vars** (`LD_PRELOAD`, `NODE_OPTIONS`, `DYLD_*`) flowing into a child process env — gate via `validateEnv()` (see `src/mcp-tools/validate-input.ts`).
-- **Plaintext secrets at rest** in `.claude-flow/sessions/`, `.claude-flow/terminals/store.json`, `.swarm/memory.db` — paired with [ADR-096](../../v3/docs/adr/ADR-096-encryption-at-rest.md) opt-in encryption (`CLAUDE_FLOW_ENCRYPT_AT_REST=1`). Confirm gate state via `ruflo doctor -c encryption`.
+- **Plaintext secrets at rest** in `.codex/sessions/`, `.codex/terminals/store.json`, `.swarm/memory.db` — paired with [ADR-096](../../v3/docs/adr/ADR-096-encryption-at-rest.md) opt-in encryption (`RUFLO_ENCRYPT_AT_REST=1`). Confirm gate state via `ruflo doctor -c encryption`.
 - **MCP stdin DoS** — un-newlined input piped into the MCP server. The host caps the buffer at 10MB by default; downstream MCP wrappers should enforce equivalent limits.
 
 A `ruflo verify` round-trip confirms 55 witnesses (27 regression-fix + 28 per-source-file capability) match the signed manifest byte-for-byte.
@@ -37,7 +37,7 @@ A `ruflo verify` round-trip confirms 55 witnesses (27 regression-fix + 28 per-so
 
 ## Compatibility
 
-- **CLI:** pinned to `@claude-flow/cli` v3.6 major+minor.
+- **CLI:** pinned to `@ruflo/cli` v3.6 major+minor.
 - **Verification:** `bash plugins/ruflo-security-audit/scripts/smoke.sh` is the contract.
 
 ## AIDefence integration
@@ -53,7 +53,7 @@ The two layers are complementary: static analysis finds the patterns; the 3-gate
 
 ## Namespace coordination
 
-This plugin owns the `security-findings` AgentDB namespace (kebab-case, follows the convention from [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md)). Reserved namespaces (`pattern`, `claude-memories`, `default`) MUST NOT be shadowed.
+This plugin owns the `security-findings` AgentDB namespace (kebab-case, follows the convention from [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md)). Reserved namespaces (`pattern`, `codex-memories`, `default`) MUST NOT be shadowed.
 
 `security-findings` indexes scan results by file + commit + severity. Accessed via `memory_*` (namespace-routed).
 

@@ -9,7 +9,7 @@ Implements OpenTelemetry-compatible structured logging with correlation IDs, dis
 ## Installation
 
 ```bash
-claude --plugin-dir plugins/ruflo-observability
+codex --plugin-dir plugins/ruflo-observability
 ```
 
 ## Agents
@@ -64,12 +64,12 @@ JSON structured logs with `timestamp`, `level`, `message`, `correlationId`, `age
 
 ## Compatibility
 
-- **CLI:** pinned to `@claude-flow/cli` v3.6 major+minor.
+- **CLI:** pinned to `@ruflo/cli` v3.6 major+minor.
 - **Verification:** `bash plugins/ruflo-observability/scripts/smoke.sh` is the contract.
 
 ## Namespace coordination
 
-This plugin owns the `observability` AgentDB namespace (base-name exception per [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md), same precedent as `federation` and `migrations`). Reserved namespaces (`pattern`, `claude-memories`, `default`) MUST NOT be shadowed.
+This plugin owns the `observability` AgentDB namespace (base-name exception per [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md), same precedent as `federation` and `migrations`). Reserved namespaces (`pattern`, `codex-memories`, `default`) MUST NOT be shadowed.
 
 `observability` is accessed via `memory_*` tools (namespace-routed). Stores spans, metric snapshots, and log entries.
 

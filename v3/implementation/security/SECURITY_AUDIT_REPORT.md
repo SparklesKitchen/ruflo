@@ -1,9 +1,9 @@
-# Claude-Flow Security Audit Report
+# Codex-Flow Security Audit Report
 
 **Date:** 2026-01-03
 **Version:** v2.7.47
 **Auditor:** Code Reviewer Agent
-**Scope:** Comprehensive security review of Claude-Flow codebase
+**Scope:** Comprehensive security review of Codex-Flow codebase
 
 ---
 
@@ -22,7 +22,7 @@ This security audit identified **7 high-priority vulnerabilities**, **13 depende
 **Location:** `package.json`
 **Severity:** HIGH
 **CVE/Advisory:**
-- **@anthropic-ai/claude-code** (v2.0.1): GHSA-7mv8-j34q-vp7q - Sed Command Validation Bypass (CWE-78)
+- **@openai-ai/codex-code** (v2.0.1): GHSA-7mv8-j34q-vp7q - Sed Command Validation Bypass (CWE-78)
 - **@modelcontextprotocol/sdk** (v1.0.4): GHSA-w48q-cv73-mx4w - DNS Rebinding vulnerability (CWE-350, CWE-1188)
 
 **Impact:**
@@ -33,7 +33,7 @@ This security audit identified **7 high-priority vulnerabilities**, **13 depende
 **Recommendation:**
 ```bash
 # Immediate fix required
-npm update @anthropic-ai/claude-code@^2.0.31
+npm update @openai-ai/codex-code@^2.0.31
 npm update @modelcontextprotocol/sdk@^1.24.0
 npm audit fix --force
 ```
@@ -106,7 +106,7 @@ private initializeDefaultUsers(): void {
   // Create default admin user
   const adminUser: User = {
     id: 'admin_default',
-    email: 'admin@claude-flow.local',
+    email: 'admin@codex.local',
     passwordHash: createHash('sha256').update('admin123' + 'salt').digest('hex'),
     role: 'admin',
     // ...
@@ -115,7 +115,7 @@ private initializeDefaultUsers(): void {
   // Create default service user
   const serviceUser: User = {
     id: 'service_default',
-    email: 'service@claude-flow.local',
+    email: 'service@codex.local',
     passwordHash: createHash('sha256').update('service123' + 'salt').digest('hex'),
     role: 'service',
     // ...
@@ -124,8 +124,8 @@ private initializeDefaultUsers(): void {
 ```
 
 **Default Credentials:**
-- Admin: `admin@claude-flow.local` / `admin123`
-- Service: `service@claude-flow.local` / `service123`
+- Admin: `admin@codex.local` / `admin123`
+- Service: `service@codex.local` / `service123`
 
 **Impact:**
 - Trivial to gain admin access
@@ -167,7 +167,7 @@ const child = spawn('npx', ['ruv-swarm', 'hook', ...args], {
 **Attack Vector:**
 ```bash
 # Attacker-controlled input could inject commands
-claude-flow hook pre-task --description "test; whoami; echo"
+codex hook pre-task --description "test; whoami; echo"
 ```
 
 **Recommendation:**
@@ -246,8 +246,8 @@ if (query.search) {
 **Attack Vector:**
 ```bash
 # Read sensitive files
-claude-flow task workflow ../../../etc/passwd
-claude-flow task workflow ~/.ssh/id_rsa
+codex task workflow ../../../etc/passwd
+codex task workflow ~/.ssh/id_rsa
 ```
 
 **Recommendation:**
@@ -336,10 +336,10 @@ process.env.TOKEN = 'secret-token';
 **Attack Vector:**
 ```bash
 # Overwrite critical config
-claude-flow config set "authConfig.jwtSecret" "hacked"
+codex config set "authConfig.jwtSecret" "hacked"
 
 # Prototype pollution
-claude-flow config set "__proto__.isAdmin" "true"
+codex config set "__proto__.isAdmin" "true"
 ```
 
 **Recommendation:**
@@ -479,7 +479,7 @@ private async authenticateOAuth(credentials: unknown): Promise<AuthResult> {
 
 1. **Fix Critical Vulnerabilities:**
    ```bash
-   npm update @anthropic-ai/claude-code@^2.0.31
+   npm update @openai-ai/codex-code@^2.0.31
    npm update @modelcontextprotocol/sdk@^1.24.0
    npm audit fix --force
    ```
@@ -649,7 +649,7 @@ git-secrets --scan
 truffleHog --regex --entropy=False .
 
 # 4. Container scanning (if using Docker)
-trivy image claude-flow:latest
+trivy image codex:latest
 
 # 5. Dynamic testing
 npm run test:security
@@ -667,7 +667,7 @@ npm run test:security
 
 ## 9. Conclusion
 
-The Claude-Flow codebase shows **strong security foundations** in some areas (timing-safe comparisons, key redaction, permission management) but has **critical vulnerabilities** that must be addressed before production use:
+The Codex-Flow codebase shows **strong security foundations** in some areas (timing-safe comparisons, key redaction, permission management) but has **critical vulnerabilities** that must be addressed before production use:
 
 **Critical Issues:**
 1. Weak password hashing (SHA-256 instead of bcrypt)
@@ -701,8 +701,8 @@ The Claude-Flow codebase shows **strong security foundations** in some areas (ti
 ## 10. Contact & Support
 
 For security vulnerabilities, please contact:
-- **Security Team:** security@claude-flow.io
-- **GitHub Security Advisories:** https://github.com/ruvnet/claude-code-flow/security/advisories
+- **Security Team:** security@codex.io
+- **GitHub Security Advisories:** https://github.com/SparklesKitchen/ruflo-code/security/advisories
 
 **Report Format:**
 1. Description of vulnerability

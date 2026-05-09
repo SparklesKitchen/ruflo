@@ -1,8 +1,8 @@
-# Claude-Flow v3: 15-Agent Concurrent Swarm Implementation Plan
+# Codex-Flow v3: 15-Agent Concurrent Swarm Implementation Plan
 
 ## Overview
 
-This plan defines a **15-agent concurrent swarm** architecture for implementing Claude-Flow v3. The swarm uses specialized agents working in parallel across all modules, with TDD (London School), continuous GitHub issue updates, and comprehensive benchmarking.
+This plan defines a **15-agent concurrent swarm** architecture for implementing Codex-Flow v3. The swarm uses specialized agents working in parallel across all modules, with TDD (London School), continuous GitHub issue updates, and comprehensive benchmarking.
 
 ---
 
@@ -46,7 +46,7 @@ This plan defines a **15-agent concurrent swarm** architecture for implementing 
 | 7 | **Memory Specialist** | Memory system unification | memory, db, reasoningbank | Parallel |
 | 8 | **Swarm Specialist** | Swarm coordination | swarm, coordination, hive-mind | Parallel |
 | 9 | **MCP Specialist** | MCP server optimization | mcp, adapters, providers | Parallel |
-| 10 | **Integration Architect** | agentic-flow integration | services, integration, sdk | Parallel |
+| 10 | **Integration Architect** | agentic integration | services, integration, sdk | Parallel |
 | 11 | **CLI/Hooks Developer** | CLI & hooks system | cli, hooks, automation | Parallel |
 | 12 | **Neural/Learning Dev** | Neural & learning systems | neural, maestro, mle-star | Parallel |
 | 13 | **TDD Test Engineer** | London School TDD | __tests__, all modules | Parallel |
@@ -100,7 +100,7 @@ Agent #9: MCP Specialist
 ### Tier 3: Integration & Features
 ```
 Agent #10: Integration Architect
-├── services/             → agentic-flow integration
+├── services/             → agentic integration
 ├── integration/          → Full ownership
 ├── sdk/                  → Full ownership
 └── patches/              → Migration patches
@@ -187,7 +187,7 @@ Agent #15: Release Engineer
 ┌─────────────────────────────────────────────────────────────┐
 │ PARALLEL EXECUTION                                          │
 ├─────────────────────────────────────────────────────────────┤
-│ Agent #10: agentic-flow@alpha full integration             │
+│ Agent #10: agentic@alpha full integration             │
 │ Agent #11: CLI modernization + hooks                       │
 │ Agent #12: Neural/SONA integration                         │
 │ Agent #13: Integration tests (TDD)                         │

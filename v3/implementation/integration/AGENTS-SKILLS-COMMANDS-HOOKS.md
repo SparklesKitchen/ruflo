@@ -1,8 +1,8 @@
-# Claude-Flow v3: Agent, Skills, Commands & Hooks Optimization
+# Codex-Flow v3: Agent, Skills, Commands & Hooks Optimization
 
 ## Overview
 
-This document details the optimization strategy for the four core extensibility systems in Claude-Flow v3:
+This document details the optimization strategy for the four core extensibility systems in Codex-Flow v3:
 - **Agents**: 76 specialized agent definitions
 - **Skills**: 28 skill definitions with progressive disclosure
 - **Commands**: 93 slash commands
@@ -12,7 +12,7 @@ This document details the optimization strategy for the four core extensibility 
 
 ### 1.1 Current State Analysis
 
-**Location**: `.claude/agents/`
+**Location**: `.codex/agents/`
 **Count**: 76 agents across 22 directories (scattered organization)
 
 ```
@@ -118,15 +118,15 @@ agents/
 ### 1.3 Agent Template Enhancement (v3)
 
 ```markdown
-<!-- .claude/agents/core/coder.md -->
+<!-- .codex/agents/core/coder.md -->
 ---
 name: coder
 version: 3.0.0
 category: core
 description: Implementation specialist for writing clean, efficient code
 
-# v3: agentic-flow integration
-agentic-flow:
+# v3: agentic integration
+agentic:
   sona-profile: research        # +55% code quality
   attention: flash              # 2.49x-7.47x faster context
   learning: enabled             # Learn from implementations
@@ -160,7 +160,7 @@ triggers:
 
 # Coder Agent
 
-Implementation specialist leveraging agentic-flow@alpha for enhanced code generation.
+Implementation specialist leveraging agentic@alpha for enhanced code generation.
 
 ## Enhanced Capabilities (v3)
 
@@ -207,24 +207,24 @@ Task("Implement feature", "Create user authentication", "coder", {
 # migrate-agents.sh
 
 # Create new structure
-mkdir -p .claude/agents/{core,orchestration,platform/github,platform/flow-nexus,platform/devops,specialized,methodology,consensus,testing}
+mkdir -p .codex/agents/{core,orchestration,platform/github,platform/flow-nexus,platform/devops,specialized,methodology,consensus,testing}
 
 # Move core agents
-mv .claude/agents/core/*.md .claude/agents/core/ 2>/dev/null
+mv .codex/agents/core/*.md .codex/agents/core/ 2>/dev/null
 
 # Consolidate orchestration
-mv .claude/agents/swarm/*.md .claude/agents/orchestration/
-mv .claude/agents/hive-mind/*.md .claude/agents/orchestration/
+mv .codex/agents/swarm/*.md .codex/agents/orchestration/
+mv .codex/agents/hive-mind/*.md .codex/agents/orchestration/
 
 # Consolidate platform
-mv .claude/agents/github/*.md .claude/agents/platform/github/
-mv .claude/agents/flow-nexus/*.md .claude/agents/platform/flow-nexus/
-mv .claude/agents/devops/*.md .claude/agents/platform/devops/
+mv .codex/agents/github/*.md .codex/agents/platform/github/
+mv .codex/agents/flow-nexus/*.md .codex/agents/platform/flow-nexus/
+mv .codex/agents/devops/*.md .codex/agents/platform/devops/
 
 # ... continue for other categories
 
 # Remove empty directories
-find .claude/agents -type d -empty -delete
+find .codex/agents -type d -empty -delete
 
 echo "Agent migration complete"
 ```
@@ -235,7 +235,7 @@ echo "Agent migration complete"
 
 ### 2.1 Current State
 
-**Location**: `.claude/skills/`
+**Location**: `.codex/skills/`
 **Count**: 28 skills (flat structure)
 
 ```
@@ -318,15 +318,15 @@ skills/
 ### 2.3 Skill Template Enhancement (v3)
 
 ```yaml
-# .claude/skills/ai-coordination/swarm-orchestration/SKILL.md
+# .codex/skills/ai-coordination/swarm-orchestration/SKILL.md
 ---
 name: swarm-orchestration
 version: 3.0.0
 domain: ai-coordination
 description: Orchestrate multi-agent swarms for parallel task execution
 
-# v3: agentic-flow requirements
-agentic-flow:
+# v3: agentic requirements
+agentic:
   required: true
   minimum-version: "2.0.0"
   features:
@@ -352,21 +352,21 @@ tools:
   - Task
   - TodoWrite
   - Bash
-  - mcp__claude-flow__swarm_init
-  - mcp__claude-flow__agent_spawn
-  - mcp__claude-flow__task_orchestrate
+  - mcp__codex__swarm_init
+  - mcp__codex__agent_spawn
+  - mcp__codex__task_orchestrate
 ---
 
 # Swarm Orchestration Skill
 
 ## Overview
 
-Orchestrate multi-agent swarms with agentic-flow for parallel task execution, dynamic topology, and intelligent coordination.
+Orchestrate multi-agent swarms with agentic for parallel task execution, dynamic topology, and intelligent coordination.
 
 ## Quick Start
 
 ```typescript
-// Initialize swarm with agentic-flow
+// Initialize swarm with agentic
 const adapter = new AgenticFlowAdapter({
   attention: 'flash',
   sona: 'balanced'
@@ -389,7 +389,7 @@ await adapter.initializeSwarm({
 
 ### 3.1 Current State
 
-**Location**: `.claude/commands/`
+**Location**: `.codex/commands/`
 **Count**: 93 commands across 16 categories
 
 ```
@@ -493,7 +493,7 @@ commands/
 ### 3.3 Command Template Enhancement (v3)
 
 ```markdown
-<!-- .claude/commands/core/swarm-init.md -->
+<!-- .codex/commands/core/swarm-init.md -->
 ---
 name: swarm-init
 version: 3.0.0
@@ -522,7 +522,7 @@ arguments:
     description: Enable SONA learning
 
 # v3 enhancements
-agentic-flow:
+agentic:
   uses-flash-attention: true
   uses-consensus: true
 ---
@@ -568,9 +568,9 @@ Initialize a multi-agent swarm with intelligent topology selection.
 ### 4.1 Current State (Problem)
 
 Hooks are defined in **3 different locations**:
-1. `.claude/settings-enhanced.json` (lines 78-257)
-2. `.claude/settings-complete.json` (similar hooks)
-3. `.claude-plugin/hooks/hooks.json` (plugin hooks)
+1. `.codex/settings-enhanced.json` (lines 78-257)
+2. `.codex/settings-complete.json` (similar hooks)
+3. `.codex-plugin/hooks/hooks.json` (plugin hooks)
 
 This causes:
 - Inconsistent behavior
@@ -579,7 +579,7 @@ This causes:
 
 ### 4.2 v3 Solution: Single Source of Truth
 
-All hooks defined in `.claude/config.json`:
+All hooks defined in `.codex/config.json`:
 
 ```json
 {
@@ -589,7 +589,7 @@ All hooks defined in `.claude/config.json`:
       {
         "matcher": "Bash",
         "commands": [
-          "npx claude-flow hooks pre-tool --tool=$TOOL_NAME --command=\"$BASH_COMMAND\""
+          "npx ruflo hooks pre-tool --tool=$TOOL_NAME --command=\"$BASH_COMMAND\""
         ],
         "timeout": 5000,
         "failOnError": false
@@ -597,7 +597,7 @@ All hooks defined in `.claude/config.json`:
       {
         "matcher": "Write|Edit",
         "commands": [
-          "npx claude-flow hooks pre-edit --file=$FILE_PATH"
+          "npx ruflo hooks pre-edit --file=$FILE_PATH"
         ]
       }
     ],
@@ -606,13 +606,13 @@ All hooks defined in `.claude/config.json`:
       {
         "matcher": "*",
         "commands": [
-          "npx claude-flow hooks post-tool --tool=$TOOL_NAME --success=$SUCCESS"
+          "npx ruflo hooks post-tool --tool=$TOOL_NAME --success=$SUCCESS"
         ]
       },
       {
         "matcher": "Write|Edit",
         "commands": [
-          "npx claude-flow hooks post-edit --file=$FILE_PATH --memory-key=\"edits/$FILE_PATH\""
+          "npx ruflo hooks post-edit --file=$FILE_PATH --memory-key=\"edits/$FILE_PATH\""
         ]
       }
     ],
@@ -620,7 +620,7 @@ All hooks defined in `.claude/config.json`:
     "PreCompact": [
       {
         "commands": [
-          "npx claude-flow hooks pre-compact --session=$SESSION_ID"
+          "npx ruflo hooks pre-compact --session=$SESSION_ID"
         ]
       }
     ],
@@ -628,7 +628,7 @@ All hooks defined in `.claude/config.json`:
     "Stop": [
       {
         "commands": [
-          "npx claude-flow hooks session-end --export-metrics true"
+          "npx ruflo hooks session-end --export-metrics true"
         ]
       }
     ]
@@ -751,17 +751,17 @@ export const learningHooks = {
 echo "Migrating hooks to single config.json..."
 
 # 1. Backup existing files
-cp .claude/settings-enhanced.json .claude/settings-enhanced.json.backup
-cp .claude-plugin/hooks/hooks.json .claude-plugin/hooks/hooks.json.backup
+cp .codex/settings-enhanced.json .codex/settings-enhanced.json.backup
+cp .codex-plugin/hooks/hooks.json .codex-plugin/hooks/hooks.json.backup
 
 # 2. Extract hooks from settings-enhanced.json
 # (Manual step - copy hooks section to config.json)
 
-# 3. Update .claude-plugin/hooks/hooks.json to reference config.json
-cat > .claude-plugin/hooks/hooks.json << 'EOF'
+# 3. Update .codex-plugin/hooks/hooks.json to reference config.json
+cat > .codex-plugin/hooks/hooks.json << 'EOF'
 {
   "$ref": "../../config.json#/hooks",
-  "comment": "Hooks are defined in .claude/config.json for single source of truth"
+  "comment": "Hooks are defined in .codex/config.json for single source of truth"
 }
 EOF
 
@@ -778,7 +778,7 @@ echo "Hook migration complete. Review changes in config.json"
 ### 5.1 Agent + Skill Linking
 
 ```yaml
-# .claude/agents/core/coder.md
+# .codex/agents/core/coder.md
 ---
 name: coder
 skills:
@@ -791,7 +791,7 @@ skills:
 ### 5.2 Command + Hook Linking
 
 ```yaml
-# .claude/commands/core/swarm-init.md
+# .codex/commands/core/swarm-init.md
 ---
 name: swarm-init
 hooks:
@@ -803,7 +803,7 @@ hooks:
 ### 5.3 Skill + Agent Requirements
 
 ```yaml
-# .claude/skills/ai-coordination/swarm-orchestration/SKILL.md
+# .codex/skills/ai-coordination/swarm-orchestration/SKILL.md
 ---
 name: swarm-orchestration
 required-agents:
@@ -820,7 +820,7 @@ required-agents:
 ### Phase 1: Structure Migration
 - [ ] Create v3 agent directory structure
 - [ ] Move agents to new categories
-- [ ] Update agent templates with agentic-flow config
+- [ ] Update agent templates with agentic config
 - [ ] Create v3 skill directory structure
 - [ ] Move skills to domain groups
 - [ ] Create v3 command directory structure
@@ -829,12 +829,12 @@ required-agents:
 ### Phase 2: Hook Consolidation
 - [ ] Create unified hooks in config.json
 - [ ] Remove hooks from settings files
-- [ ] Update .claude-plugin reference
+- [ ] Update .codex-plugin reference
 - [ ] Implement learning hooks
 - [ ] Test hook execution
 
 ### Phase 3: Enhancement
-- [ ] Add agentic-flow config to all agents
+- [ ] Add agentic config to all agents
 - [ ] Add v3 features to skills
 - [ ] Update command templates
 - [ ] Implement cross-system linking

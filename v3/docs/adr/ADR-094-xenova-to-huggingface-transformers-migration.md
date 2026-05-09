@@ -23,8 +23,8 @@ Only two call sites import `@xenova/transformers` in the v3 monorepo:
 
 | File | Import | Usage |
 |---|---|---|
-| `v3/@claude-flow/embeddings/src/embedding-service.ts:387` | `const { pipeline } = await import('@xenova/transformers')` | Used as the ONNX backend for `feature-extraction` |
-| `v3/@claude-flow/cli/src/memory/memory-initializer.ts:1539` | `const transformers = await import('@xenova/transformers').catch(() => null)` | Optional ONNX provider for embedding generation |
+| `v3/@ruflo/embeddings/src/embedding-service.ts:387` | `const { pipeline } = await import('@xenova/transformers')` | Used as the ONNX backend for `feature-extraction` |
+| `v3/@ruflo/cli/src/memory/memory-initializer.ts:1539` | `const transformers = await import('@xenova/transformers').catch(() => null)` | Optional ONNX provider for embedding generation |
 
 Both are dynamic imports wrapped in try/catch — the migration risk is bounded.
 
@@ -46,7 +46,7 @@ Pipeline calls in both packages:
 Migrate both call sites to a **provider-agnostic loader** that prefers `@huggingface/transformers`, falls back to `@xenova/transformers` for backwards compat with consumers who haven't installed the new package, and reports honest status via `embeddings_status.ruvectorStatus` (already structured per ADR-093 F5).
 
 ```ts
-// New helper in @claude-flow/embeddings/src/transformers-loader.ts
+// New helper in @ruflo/embeddings/src/transformers-loader.ts
 export async function loadTransformersPipeline(): Promise<{
   pipeline: PipelineFn;
   source: '@huggingface/transformers' | '@xenova/transformers';
@@ -82,12 +82,12 @@ this.transformersSource = t.source;
 
 ### Dependency changes
 
-`@claude-flow/embeddings/package.json`:
+`@ruflo/embeddings/package.json`:
 - Move `@xenova/transformers` from `dependencies` to `optionalDependencies` (keeps install size small for users who don't need ONNX)
 - Add `@huggingface/transformers: "^4.2.0"` as a `peerDependency` (optional) and `optionalDependencies` (auto-install)
 - Document in README that consumers can install either; the loader will use whichever is present
 
-`@claude-flow/cli/package.json`: no direct change (transformers is a transitive of @claude-flow/embeddings).
+`@ruflo/cli/package.json`: no direct change (transformers is a transitive of @ruflo/embeddings).
 
 ### Validation plan
 
@@ -107,7 +107,7 @@ this.transformersSource = t.source;
 
 **Negative:**
 - Bigger dependency tree (HF has more bundled features). Mitigated by making `@xenova/transformers` optional rather than removing entirely (consumers can opt for the smaller package).
-- One more peer/optional dependency for `@claude-flow/embeddings` consumers to be aware of.
+- One more peer/optional dependency for `@ruflo/embeddings` consumers to be aware of.
 
 **Risk:**
 - HF's `pipeline('feature-extraction', model)` might produce subtly different outputs vs xenova for the same model (e.g. different default normalization). Validation step #1 (byte-identical output check) catches this before merge.

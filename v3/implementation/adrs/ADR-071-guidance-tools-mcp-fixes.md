@@ -10,7 +10,7 @@ Three areas needed attention in v3.5.43:
 
 1. **Capability discovery**: With 259 MCP tools, 26 CLI commands, 60+ agents, and 37 skills, the system had no way to navigate its own capabilities at runtime. Agents and the MCP client needed structured guidance to select the right tools for a task.
 
-2. **Agent/skill YAML frontmatter**: 98% of agent definitions (135 files) and many skill files used invalid YAML frontmatter fields not recognized by Claude Code (`type`, `color`, `capabilities`, `priority`, `triggers`, `version`, `metadata`, etc.). Six agent files used `.yaml` extension instead of `.md`. Two skill files used lowercase `skill.md` instead of `SKILL.md`. The `tools` field used YAML array format instead of the required comma-separated string.
+2. **Agent/skill YAML frontmatter**: 98% of agent definitions (135 files) and many skill files used invalid YAML frontmatter fields not recognized by Codex (`type`, `color`, `capabilities`, `priority`, `triggers`, `version`, `metadata`, etc.). Six agent files used `.yaml` extension instead of `.md`. Two skill files used lowercase `skill.md` instead of `SKILL.md`. The `tools` field used YAML array format instead of the required comma-separated string.
 
 3. **MCP server startup failures**: Two bugs caused `mcp start` to fail with "MCP Server already running" even when no server was running:
    - `getStatus()` reported `running: true` with the current process PID for stdio transport before the server actually started, causing `start()` to block itself.
@@ -20,13 +20,13 @@ Three areas needed attention in v3.5.43:
 
 ### 1. Guidance MCP Tools
 
-Add 5 new MCP tools to the `@claude-flow/cli` package:
+Add 5 new MCP tools to the `@ruflo/cli` package:
 
 | Tool | Purpose |
 |------|---------|
 | `guidance_capabilities` | List 16 capability areas with tools, commands, agents, skills, and when-to-use guidance |
 | `guidance_recommend` | Task-based routing — given a description, recommend capabilities and workflow template |
-| `guidance_discover` | Live filesystem scan of `.claude/agents/` and `.claude/skills/` |
+| `guidance_discover` | Live filesystem scan of `.codex/agents/` and `.codex/skills/` |
 | `guidance_workflow` | Step-by-step workflow templates for 15 task types (bugfix, feature, refactor, security, etc.) |
 | `guidance_quickref` | Quick reference cards for 6 operational domains |
 
@@ -34,7 +34,7 @@ The tools use a static capability catalog with pattern-matched task routing. `gu
 
 ### 2. Agent/Skill YAML Standardization
 
-Batch-fix all agent and skill files to comply with Claude Code's YAML frontmatter spec:
+Batch-fix all agent and skill files to comply with Codex's YAML frontmatter spec:
 
 **Valid agent fields**: `name`, `description`, `tools` (comma-separated string), `disallowedTools`, `model`, `permissionMode`, `maxTurns`, `skills`, `mcpServers`, `hooks`, `memory`, `background`, `effort`, `isolation`, `initialPrompt`
 
@@ -53,28 +53,28 @@ Changes:
 
 **Self-detection fix**: `start()` now skips the "already running" check when the reported PID matches the current process. `getStatus()` reports `running: true` with `process.pid` for stdio transport even before startup — this is correct for health checks but must not block the initial `start()` call.
 
-**PID reuse guard**: `isProcessRunning()` now verifies the process is actually `node`/`claude-flow`/`npx` by inspecting `/proc/{pid}/cmdline` (Linux) or `ps -p` (macOS). Falls back to `kill -0` on platforms where this isn't available.
+**PID reuse guard**: `isProcessRunning()` now verifies the process is actually `node`/`codex`/`npx` by inspecting `/proc/{pid}/cmdline` (Linux) or `ps -p` (macOS). Falls back to `kill -0` on platforms where this isn't available.
 
-**Legacy cleanup**: `removePidFile()` now also removes `.claude-flow/mcp-server.pid` from older versions that wrote to a different path than the current `/tmp/claude-flow-mcp.pid`.
+**Legacy cleanup**: `removePidFile()` now also removes `.codex/mcp-server.pid` from older versions that wrote to a different path than the current `/tmp/codex-mcp.pid`.
 
 ## Consequences
 
 ### Positive
 - Agents can now discover and navigate capabilities at runtime via MCP
-- All 107 agent files and 37 skill files have valid Claude Code frontmatter
+- All 107 agent files and 37 skill files have valid Codex frontmatter
 - MCP server starts reliably without false "already running" errors
 - `init` generates clean agents when scaffolding new projects
 
 ### Negative
-- `hooks` fields were removed from agent frontmatter (they contained Claude Flow shell scripts, not Claude Code hook references — functionality preserved in CLI hooks system)
+- `hooks` fields were removed from agent frontmatter (they contained Ruflo shell scripts, not Codex hook references — functionality preserved in CLI hooks system)
 - Guidance tools use a static catalog that must be updated when new capabilities are added
 
 ## Files Changed
 
-- `v3/@claude-flow/cli/src/mcp-tools/guidance-tools.ts` — new (5 tools)
-- `v3/@claude-flow/cli/src/mcp-tools/index.ts` — export guidance tools
-- `v3/@claude-flow/cli/src/mcp-client.ts` — register guidance tools
-- `v3/@claude-flow/cli/src/mcp-server.ts` — PID self-detection + reuse guard + legacy cleanup
-- `v3/@claude-flow/cli/src/init/executor.ts` — stop counting .yaml files
-- `.claude/agents/**/*.md` — 100+ files standardized
-- `.claude/skills/**/SKILL.md` — 17 files standardized
+- `v3/@ruflo/cli/src/mcp-tools/guidance-tools.ts` — new (5 tools)
+- `v3/@ruflo/cli/src/mcp-tools/index.ts` — export guidance tools
+- `v3/@ruflo/cli/src/mcp-client.ts` — register guidance tools
+- `v3/@ruflo/cli/src/mcp-server.ts` — PID self-detection + reuse guard + legacy cleanup
+- `v3/@ruflo/cli/src/init/executor.ts` — stop counting .yaml files
+- `.codex/agents/**/*.md` — 100+ files standardized
+- `.codex/skills/**/SKILL.md` — 17 files standardized

@@ -1,4 +1,4 @@
-# ADR-019: @claude-flow/headless Runtime Package
+# ADR-019: @ruflo/headless Runtime Package
 
 **Status:** Proposed
 **Date:** 2026-01-07
@@ -7,18 +7,18 @@
 
 ## Context
 
-The undocumented `CLAUDE_CODE_HEADLESS` and `CLAUDE_CODE_SANDBOX_MODE` environment variables in Claude Code enable programmatic, non-interactive execution. This creates opportunities for:
+The undocumented `CODEX_HEADLESS` and `CODEX_SANDBOX_MODE` environment variables in Codex enable programmatic, non-interactive execution. This creates opportunities for:
 
 1. **CI/CD Integration** - Automated code review, generation, and testing
 2. **Batch Processing** - Queue-based task execution without user interaction
-3. **Distributed Agents** - Remote Claude Code instances in swarm topology
-4. **API Gateway** - REST/WebSocket interface to Claude Code capabilities
-5. **Container Orchestration** - Docker/K8s-native Claude Code execution
+3. **Distributed Agents** - Remote Codex instances in swarm topology
+4. **API Gateway** - REST/WebSocket interface to Codex capabilities
+5. **Container Orchestration** - Docker/K8s-native Codex execution
 
 ## Decision
 
-Create `@claude-flow/headless` package providing:
-- Programmatic Claude Code invocation with environment control
+Create `@ruflo/headless` package providing:
+- Programmatic Codex invocation with environment control
 - Sandbox-aware execution contexts
 - Batch task queue with persistence
 - HTTP/WebSocket API server
@@ -29,7 +29,7 @@ Create `@claude-flow/headless` package providing:
 ## Package Architecture
 
 ```
-@claude-flow/headless/
+@ruflo/headless/
 ├── src/
 │   ├── index.ts                 # Main exports
 │   ├── executor/
@@ -69,8 +69,8 @@ Create `@claude-flow/headless` package providing:
 // src/executor/headless-executor.ts
 
 export interface HeadlessConfig {
-  // Claude Code path (auto-detected if not provided)
-  claudeCodePath?: string;
+  // Codex path (auto-detected if not provided)
+  codexCodePath?: string;
 
   // Sandbox configuration
   sandbox: {
@@ -91,7 +91,7 @@ export interface HeadlessConfig {
   // Model configuration
   model?: 'sonnet' | 'opus' | 'haiku';
 
-  // API key (falls back to ANTHROPIC_API_KEY)
+  // API key (falls back to OPENAI_API_KEY)
   apiKey?: string;
 }
 
@@ -265,11 +265,11 @@ export const SANDBOX_PROFILES = {
     filesystem: {
       readWrite: ['${WORKSPACE}'],
       denied: ['/etc', '/root', '~/.ssh', '~/.aws'],
-      tempDir: '/tmp/claude-ci'
+      tempDir: '/tmp/codex-ci'
     },
     network: {
       policy: 'allowlist' as const,
-      allowedHosts: ['api.anthropic.com', 'registry.npmjs.org', 'github.com'],
+      allowedHosts: ['api.openai.com', 'registry.npmjs.org', 'github.com'],
       allowedPorts: [443, 80]
     },
     process: {
@@ -306,12 +306,12 @@ export const SANDBOX_PROFILES = {
     mode: 'strict' as const,
     filesystem: {
       readOnly: ['${WORKSPACE}'],
-      readWrite: ['/tmp/claude-prod'],
+      readWrite: ['/tmp/codex-prod'],
       denied: ['**/.env*', '**/secrets/**', '**/*.pem']
     },
     network: {
       policy: 'allowlist' as const,
-      allowedHosts: ['api.anthropic.com'],
+      allowedHosts: ['api.openai.com'],
       allowedPorts: [443]
     },
     process: {
@@ -494,8 +494,8 @@ export class APIServer {
 // src/docker/container-executor.ts
 
 export interface DockerConfig {
-  // Base image with Claude Code pre-installed
-  image: string;  // e.g., 'ghcr.io/ruvnet/claude-flow-headless:latest'
+  // Base image with Codex pre-installed
+  image: string;  // e.g., 'ghcr.io/ruvnet/codex-headless:latest'
 
   // Container resources
   resources: {
@@ -571,27 +571,27 @@ export class ContainerExecutor {
 
 ```bash
 # Start headless server
-npx @claude-flow/headless serve --port 3001 --sandbox strict
+npx @ruflo/headless serve --port 3001 --sandbox strict
 
 # Execute single prompt
-npx @claude-flow/headless exec "Fix the bug in auth.ts" --cwd ./project
+npx @ruflo/headless exec "Fix the bug in auth.ts" --cwd ./project
 
 # Execute from file
-npx @claude-flow/headless exec --file tasks.txt --parallel 3
+npx @ruflo/headless exec --file tasks.txt --parallel 3
 
 # Queue management
-npx @claude-flow/headless queue add "Refactor utils" --priority high
-npx @claude-flow/headless queue list
-npx @claude-flow/headless queue cancel <id>
+npx @ruflo/headless queue add "Refactor utils" --priority high
+npx @ruflo/headless queue list
+npx @ruflo/headless queue cancel <id>
 
 # Docker mode
-npx @claude-flow/headless docker start --containers 3
-npx @claude-flow/headless docker exec "Run tests" --isolated
-npx @claude-flow/headless docker scale 5
+npx @ruflo/headless docker start --containers 3
+npx @ruflo/headless docker exec "Run tests" --isolated
+npx @ruflo/headless docker scale 5
 
 # Monitoring
-npx @claude-flow/headless status
-npx @claude-flow/headless metrics --prometheus
+npx @ruflo/headless status
+npx @ruflo/headless metrics --prometheus
 ```
 
 ---
@@ -601,8 +601,8 @@ npx @claude-flow/headless metrics --prometheus
 ### 1. CI/CD Code Review
 
 ```yaml
-# .github/workflows/claude-review.yml
-name: Claude Code Review
+# .github/workflows/codex-review.yml
+name: Codex Review
 on: [pull_request]
 
 jobs:
@@ -611,13 +611,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run Claude Review
+      - name: Run Codex Review
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          CLAUDE_CODE_HEADLESS: "true"
-          CLAUDE_CODE_SANDBOX_MODE: "strict"
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          CODEX_HEADLESS: "true"
+          CODEX_SANDBOX_MODE: "strict"
         run: |
-          npx @claude-flow/headless exec \
+          npx @ruflo/headless exec \
             "Review this PR for bugs, security issues, and code quality. \
              Provide actionable feedback." \
             --output review.md
@@ -638,7 +638,7 @@ jobs:
 ### 2. Batch Test Generation
 
 ```typescript
-import { HeadlessExecutor, TaskQueue } from '@claude-flow/headless';
+import { HeadlessExecutor, TaskQueue } from '@ruflo/headless';
 
 const executor = new HeadlessExecutor({
   sandbox: { mode: 'permissive' },
@@ -677,30 +677,30 @@ queue.on('taskCompleted', (task) => {
 ### 3. Kubernetes Job Orchestration
 
 ```yaml
-# claude-job.yaml
+# codex-job.yaml
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: claude-migration
+  name: codex-migration
 spec:
   template:
     spec:
       containers:
-      - name: claude
-        image: ghcr.io/ruvnet/claude-flow-headless:latest
+      - name: codex
+        image: ghcr.io/ruvnet/codex-headless:latest
         env:
-        - name: ANTHROPIC_API_KEY
+        - name: OPENAI_API_KEY
           valueFrom:
             secretKeyRef:
-              name: anthropic-credentials
+              name: openai-credentials
               key: api-key
-        - name: CLAUDE_CODE_HEADLESS
+        - name: CODEX_HEADLESS
           value: "true"
-        - name: CLAUDE_CODE_SANDBOX_MODE
+        - name: CODEX_SANDBOX_MODE
           value: "strict"
         command:
         - npx
-        - "@claude-flow/headless"
+        - "@ruflo/headless"
         - exec
         - "Migrate database schema from v2 to v3"
         volumeMounts:
@@ -716,10 +716,10 @@ spec:
 ### 4. Distributed Swarm Execution
 
 ```typescript
-import { ContainerExecutor } from '@claude-flow/headless';
+import { ContainerExecutor } from '@ruflo/headless';
 
 const executor = new ContainerExecutor({
-  image: 'ghcr.io/ruvnet/claude-flow-headless:latest',
+  image: 'ghcr.io/ruvnet/codex-headless:latest',
   resources: { cpus: 2, memoryMb: 4096, diskMb: 10240 },
   pool: { minContainers: 5, maxContainers: 20, idleTimeoutMs: 60000 }
 });
@@ -757,7 +757,7 @@ console.log(`Completed ${results.filter(r => r.success).length}/${tasks.length} 
 const sanitizeOutput = (output: string): string => {
   return output
     .replace(/sk-ant-[a-zA-Z0-9-_]+/g, '[REDACTED_API_KEY]')
-    .replace(/ANTHROPIC_API_KEY=[^\s]+/g, 'ANTHROPIC_API_KEY=[REDACTED]');
+    .replace(/OPENAI_API_KEY=[^\s]+/g, 'OPENAI_API_KEY=[REDACTED]');
 };
 ```
 
@@ -824,10 +824,10 @@ const HARD_LIMITS = {
 
 ```json
 {
-  "name": "@claude-flow/headless",
+  "name": "@ruflo/headless",
   "version": "3.0.0-alpha.1",
   "dependencies": {
-    "@claude-flow/shared": "^3.0.0-alpha.1",
+    "@ruflo/shared": "^3.0.0-alpha.1",
     "better-sqlite3": "^9.0.0",
     "express": "^4.18.2",
     "ws": "^8.14.2",
@@ -837,10 +837,10 @@ const HARD_LIMITS = {
     "zod": "^3.22.0"
   },
   "peerDependencies": {
-    "@anthropic-ai/claude-code": ">=2.0.0"
+    "@openai-ai/codex-code": ">=2.0.0"
   },
   "peerDependenciesMeta": {
-    "@anthropic-ai/claude-code": {
+    "@openai-ai/codex-code": {
       "optional": true
     }
   }
@@ -862,20 +862,20 @@ const HARD_LIMITS = {
 
 1. **Complexity** - Another package to maintain
 2. **Dependencies** - Docker, SQLite add requirements
-3. **Undocumented APIs** - Claude Code env vars may change
+3. **Undocumented APIs** - Codex env vars may change
 
 ### Neutral
 
 1. **Optional** - Users who don't need headless can skip it
-2. **Standalone** - Can be used without other claude-flow packages
+2. **Standalone** - Can be used without other codex packages
 
 ---
 
 ## References
 
-- ADR-018: Claude Code Deep Integration
+- ADR-018: Codex Deep Integration
 - ADR-017: RuVector Integration Architecture
-- Claude Code Environment Variables (undocumented)
+- Codex Environment Variables (undocumented)
 - Docker Best Practices for CI/CD
 
 ---

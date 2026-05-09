@@ -8,7 +8,7 @@
 
 ## Context
 
-The `@claude-flow/mcp` package implements the Model Context Protocol (MCP) 2025-11-25 specification. A security audit identified several vulnerabilities and missing features that needed to be addressed to ensure production readiness.
+The `@ruflo/mcp` package implements the Model Context Protocol (MCP) 2025-11-25 specification. A security audit identified several vulnerabilities and missing features that needed to be addressed to ensure production readiness.
 
 ### Security Vulnerabilities Identified and Fixed
 
@@ -104,7 +104,7 @@ export class SamplingManager extends EventEmitter {
 
 // Pre-built providers
 export function createMockProvider(name?: string): LLMProvider;
-export function createAnthropicProvider(apiKey: string): LLMProvider;
+export function createOpenAIProvider(apiKey: string): LLMProvider;
 ```
 
 **Server Integration** (`server.ts`):
@@ -270,7 +270,7 @@ Coverage:
 
 ### Schema Validation
 ```typescript
-import { validateSchema, formatValidationErrors } from '@claude-flow/mcp';
+import { validateSchema, formatValidationErrors } from '@ruflo/mcp';
 
 const schema = {
   type: 'object',
@@ -285,7 +285,7 @@ const result = validateSchema({ name: '' }, schema);
 
 ### Rate Limiting
 ```typescript
-import { createRateLimiter, rateLimitMiddleware } from '@claude-flow/mcp';
+import { createRateLimiter, rateLimitMiddleware } from '@ruflo/mcp';
 
 const limiter = createRateLimiter(logger, {
   requestsPerSecond: 100,
@@ -298,10 +298,10 @@ app.use(rateLimitMiddleware(limiter));
 
 ### Sampling
 ```typescript
-import { createSamplingManager, createAnthropicProvider } from '@claude-flow/mcp';
+import { createSamplingManager, createOpenAIProvider } from '@ruflo/mcp';
 
 const sampling = createSamplingManager(logger);
-sampling.registerProvider(createAnthropicProvider(process.env.ANTHROPIC_API_KEY), true);
+sampling.registerProvider(createOpenAIProvider(process.env.OPENAI_API_KEY), true);
 
 const response = await sampling.createMessage({
   messages: [{ role: 'user', content: { type: 'text', text: 'Hello' } }],
@@ -311,7 +311,7 @@ const response = await sampling.createMessage({
 
 ### OAuth 2.1
 ```typescript
-import { createOAuthManager, createGitHubOAuthConfig } from '@claude-flow/mcp';
+import { createOAuthManager, createGitHubOAuthConfig } from '@ruflo/mcp';
 
 const oauth = createOAuthManager(logger, createGitHubOAuthConfig(
   'client-id',

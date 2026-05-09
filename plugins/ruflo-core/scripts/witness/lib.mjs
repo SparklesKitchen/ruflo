@@ -28,8 +28,8 @@ function loadEd25519(probeRoots) {
   const expanded = [
     ...probeRoots,
     ...probeRoots.flatMap(r => [
-      join(r, 'v3/@claude-flow/cli'),
-      join(r, 'v3/@claude-flow/plugin-agent-federation'),
+      join(r, 'v3/@ruflo/cli'),
+      join(r, 'v3/@ruflo/plugin-agent-federation'),
     ]),
   ];
   let lastErr;

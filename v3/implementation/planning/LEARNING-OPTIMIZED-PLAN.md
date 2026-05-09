@@ -1,14 +1,14 @@
-# Claude-Flow v3: Optimized Learning System Plan
+# Codex-Flow v3: Optimized Learning System Plan
 
 ## Executive Summary
 
-This plan integrates the learning capabilities from **agentic-flow@2.0.1-alpha.50** and **agentdb@2.0.0-alpha.3.1** to create a comprehensive self-learning system optimized for speed, memory efficiency, and continuous improvement.
+This plan integrates the learning capabilities from **agentic@2.0.1-alpha.50** and **agentdb@2.0.0-alpha.3.1** to create a comprehensive self-learning system optimized for speed, memory efficiency, and continuous improvement.
 
 ### Key Components
 
 | Package | Learning Features | Performance |
 |---------|------------------|-------------|
-| **agentic-flow** | Intelligence Bridge, SONA, Trajectory Tracking | 50-200x faster |
+| **agentic** | Intelligence Bridge, SONA, Trajectory Tracking | 50-200x faster |
 | **agentdb** | 9 RL Algorithms, Reflexion Memory, Causal Discovery | FlashAttention-enabled |
 
 ---
@@ -17,7 +17,7 @@ This plan integrates the learning capabilities from **agentic-flow@2.0.1-alpha.5
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                     Claude-Flow v3 Learning System                       │
+│                     Codex-Flow v3 Learning System                       │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                          │
 │  ┌─────────────────────────────────────────────────────────────────────┐│
@@ -57,11 +57,11 @@ This plan integrates the learning capabilities from **agentic-flow@2.0.1-alpha.5
 
 ---
 
-## 2. Hooks Integration (agentic-flow + agentdb)
+## 2. Hooks Integration (agentic + agentdb)
 
 ### 2.1 Combined Hook Tools (28 Total)
 
-**From agentic-flow (19 hooks)**:
+**From agentic (19 hooks)**:
 
 | Hook Tool | Category | Purpose |
 |-----------|----------|---------|
@@ -104,7 +104,7 @@ This plan integrates the learning capabilities from **agentic-flow@2.0.1-alpha.5
 ```typescript
 // src/v3/hooks/learning-integration.ts
 import {
-  // agentic-flow hooks
+  // agentic hooks
   beginTaskTrajectory,
   recordTrajectoryStep,
   endTaskTrajectory,
@@ -112,7 +112,7 @@ import {
   findSimilarPatterns,
   forceLearningCycle,
   computeAttentionSimilarity
-} from 'agentic-flow/mcp/fastmcp/tools/hooks';
+} from 'agentic/mcp/fastmcp/tools/hooks';
 
 import {
   // agentdb hooks via MCP
@@ -134,7 +134,7 @@ export class IntegratedLearningHooks {
   // Pre-task: Query both systems for context
   async preTask(task: Task): Promise<LearningContext> {
     const [
-      patterns,           // agentic-flow patterns
+      patterns,           // agentic patterns
       skills,             // agentdb skills
       causalEffects,      // agentdb causal predictions
       similarEpisodes     // agentdb reflexion memory
@@ -157,7 +157,7 @@ export class IntegratedLearningHooks {
   // During-task: Dual trajectory tracking
   async trackStep(step: TaskStep): Promise<void> {
     await Promise.all([
-      // agentic-flow trajectory
+      // agentic trajectory
       recordTrajectoryStep({
         stepId: step.id,
         action: step.action,
@@ -202,7 +202,7 @@ export class IntegratedLearningHooks {
     // Create/update skill if high quality
     if (result.success && result.quality > 0.8) {
       await Promise.all([
-        // agentic-flow pattern
+        // agentic pattern
         storePattern({
           pattern: task.description,
           solution: result.output,
@@ -234,7 +234,7 @@ export class IntegratedLearningHooks {
 
 ### 3.1 Core Learning MCP Tools
 
-**agentic-flow MCP Tools (Learning)**:
+**agentic MCP Tools (Learning)**:
 
 ```typescript
 // Intelligence Bridge (9 tools)
@@ -315,7 +315,7 @@ export class LearningMCPCoordinator {
   private agentdbMcp: AgentDBMCPClient;
 
   async smartRoute(task: Task): Promise<RoutingDecision> {
-    // Use agentic-flow for intelligent routing
+    // Use agentic for intelligent routing
     const routeResult = await this.agenticFlowMcp.call('intelligence_route', {
       task: task.description,
       context: task.context
@@ -342,7 +342,7 @@ export class LearningMCPCoordinator {
   ): Promise<void> {
     // Parallel learning updates
     await Promise.all([
-      // agentic-flow pattern storage
+      // agentic pattern storage
       this.agenticFlowMcp.call('intelligence_pattern_store', {
         pattern: task.description,
         solution: result.output,
@@ -522,7 +522,7 @@ export const nightlyLearnerConfig = {
 ```typescript
 // src/v3/learning/nightly-pipeline.ts
 import { NightlyLearner } from 'agentdb';
-import { forceLearningCycle } from 'agentic-flow/mcp/fastmcp/tools/hooks';
+import { forceLearningCycle } from 'agentic/mcp/fastmcp/tools/hooks';
 
 export class NightlyLearningPipeline {
   private learner: NightlyLearner;
@@ -545,7 +545,7 @@ export class NightlyLearningPipeline {
     // Phase 5: Consolidate episodes with FlashAttention
     const consolidation = await this.learner.consolidateEpisodes();
 
-    // Phase 6: Force agentic-flow learning cycle
+    // Phase 6: Force agentic learning cycle
     await forceLearningCycle();
 
     // Phase 7: Transfer learning between similar tasks
@@ -639,7 +639,7 @@ export const memoryOptimizations = {
 
 ### Phase 1: Core Integration (Week 1)
 - [ ] Install `agentdb@2.0.0-alpha.3.1`
-- [ ] Update `agentic-flow@2.0.1-alpha.0`
+- [ ] Update `agentic@2.0.1-alpha.0`
 - [ ] Create `IntegratedLearningHooks` class
 - [ ] Connect MCP tools from both packages
 
@@ -682,17 +682,17 @@ export const memoryOptimizations = {
 
 ```bash
 # Tier 1: Basic Learning (Minimal)
-npx claude-flow install learning:basic
+npx ruflo install learning:basic
 # Includes: Pattern storage, skill lookup, basic RL (Q-Learning, SARSA)
 # Size: ~1MB | Platforms: All
 
 # Tier 2: Standard Learning (Recommended)
-npx claude-flow install learning
+npx ruflo install learning
 # Includes: Tier 1 + 5 more RL algorithms, reflexion memory, trajectory tracking
 # Size: ~2MB | Platforms: All
 
 # Tier 3: Advanced Learning (Full)
-npx claude-flow install learning:advanced
+npx ruflo install learning:advanced
 # Includes: Tier 2 + causal graphs, nightly learner, FlashAttention
 # Size: ~4MB | Platforms: All (NAPI for FlashAttention speedup)
 ```
@@ -722,22 +722,22 @@ npx claude-flow install learning:advanced
 
 ```bash
 # Linux: Maximum performance
-npx claude-flow install learning:advanced --native
+npx ruflo install learning:advanced --native
 # Uses NAPI for FlashAttention (4x faster, 75% less memory)
 
 # macOS: Universal binary
-npx claude-flow install learning:advanced
+npx ruflo install learning:advanced
 # Auto-detects ARM vs Intel, uses native when possible
 
 # Windows: WASM-optimized
-npx claude-flow install learning:advanced --wasm
+npx ruflo install learning:advanced --wasm
 # Full features via WebAssembly, no build tools required
 ```
 
 ### 9.4 Lazy Loading Configuration
 
 ```typescript
-// .claude-flow/config.json
+// .codex/config.json
 {
   "learning": {
     "tier": "standard",              // basic | standard | advanced
@@ -778,33 +778,33 @@ npx claude-flow install learning:advanced --wasm
 
 ```bash
 # Install core + basic learning
-npm install claude-flow@3
-npx claude-flow install learning:basic
+npm install codex@3
+npx ruflo install learning:basic
 
 # Start using immediately
-npx claude-flow learning start --algorithm q-learning
+npx ruflo learning start --algorithm q-learning
 ```
 
 ### 10.2 Recommended Learning Setup
 
 ```bash
 # Install with persistent memory
-npm install claude-flow@3
-npx claude-flow install memory learning
+npm install codex@3
+npx ruflo install memory learning
 
 # Initialize with sensible defaults
-npx claude-flow init --learning
+npx ruflo init --learning
 ```
 
 ### 10.3 Production Learning Setup
 
 ```bash
 # Full installation with native bindings
-npm install claude-flow@3
-npx claude-flow install --all --native
+npm install codex@3
+npx ruflo install --all --native
 
 # Configure for production
-cat > .claude-flow/config.json << 'EOF'
+cat > .codex/config.json << 'EOF'
 {
   "learning": {
     "tier": "advanced",
@@ -825,11 +825,11 @@ EOF
 
 ```bash
 # Minimal for CI (no native deps)
-npm install claude-flow@3
-npx claude-flow install learning:basic --wasm
+npm install codex@3
+npx ruflo install learning:basic --wasm
 
 # Run tests with learning
-npx claude-flow test --with-learning
+npx ruflo test --with-learning
 ```
 
 ---
@@ -840,26 +840,26 @@ npx claude-flow test --with-learning
 
 ```bash
 # Upgrade from basic to standard
-npx claude-flow install learning --upgrade
+npx ruflo install learning --upgrade
 
 # Upgrade from standard to advanced
-npx claude-flow install learning:advanced --upgrade
+npx ruflo install learning:advanced --upgrade
 
 # Downgrade (preserves data)
-npx claude-flow install learning:basic --downgrade
+npx ruflo install learning:basic --downgrade
 ```
 
 ### 11.2 Data Migration
 
 ```bash
 # Export learning data before major upgrade
-npx claude-flow learning export --output learning-backup.json
+npx ruflo learning export --output learning-backup.json
 
 # Import after upgrade
-npx claude-flow learning import --input learning-backup.json
+npx ruflo learning import --input learning-backup.json
 
 # Verify data integrity
-npx claude-flow learning verify
+npx ruflo learning verify
 ```
 
 ---
@@ -879,20 +879,20 @@ npx claude-flow learning verify
 
 ```bash
 # Check learning system status
-npx claude-flow learning status
+npx ruflo learning status
 
 # View component load times
-npx claude-flow learning diagnostics
+npx ruflo learning diagnostics
 
 # Test RL algorithms
-npx claude-flow learning test --algorithm ppo
+npx ruflo learning test --algorithm ppo
 
 # Verify installation
-npx claude-flow verify --component learning
+npx ruflo verify --component learning
 ```
 
 ---
 
 *Optimized Learning Plan - v3.0*
-*Packages: agentic-flow@2.0.1-alpha.50, agentdb@2.0.0-alpha.3.1*
+*Packages: agentic@2.0.1-alpha.50, agentdb@2.0.0-alpha.3.1*
 *Generated: 2026-01-03*

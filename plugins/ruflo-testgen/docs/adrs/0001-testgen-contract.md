@@ -4,7 +4,7 @@ title: ruflo-testgen plugin contract — pinning, namespace coordination, testga
 status: Proposed
 date: 2026-05-04
 authors:
-  - reviewer (Claude Code)
+  - reviewer (Codex)
 tags: [plugin, testgen, tdd, coverage, namespace, smoke-test]
 ---
 

@@ -4,13 +4,13 @@ title: ruflo-daa plugin contract — pinning, namespace coordination, intelligen
 status: Proposed
 date: 2026-05-04
 authors:
-  - reviewer (Claude Code)
+  - reviewer (Codex)
 tags: [plugin, daa, cognitive, adaptive, knowledge-sharing, namespace, smoke-test]
 ---
 
 ## Context
 
-`ruflo-daa` (v0.1.0) wraps 8 `daa_*` MCP tools at `v3/@claude-flow/cli/src/mcp-tools/daa-tools.ts:90, 161, 223, 271, 322, 388, 444, 512`:
+`ruflo-daa` (v0.1.0) wraps 8 `daa_*` MCP tools at `v3/@ruflo/cli/src/mcp-tools/daa-tools.ts:90, 161, 223, 271, 322, 388, 444, 512`:
 
 | Tool | Purpose |
 |------|---------|
@@ -50,4 +50,4 @@ bash plugins/ruflo-daa/scripts/smoke.sh
 - `plugins/ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md` — namespace convention
 - `plugins/ruflo-intelligence/docs/adrs/0001-intelligence-surface-completeness.md` — 4-step pipeline DAA feeds
 - `plugins/ruflo-ruvector/docs/adrs/0001-pin-ruvector-0.2.25.md`
-- `v3/@claude-flow/cli/src/mcp-tools/daa-tools.ts` — 8 daa_* tools
+- `v3/@ruflo/cli/src/mcp-tools/daa-tools.ts` — 8 daa_* tools

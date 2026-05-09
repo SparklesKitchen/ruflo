@@ -19,8 +19,8 @@ import { dirname } from 'node:path';
 // ADR-100 / #1748 Issue 3 — CLI_CORE=1 routes to lite cli-core (~2s cold-cache).
 // Export is list+retrieve only; no search. JSON backend is fine.
 const CLI_PKG = process.env.CLI_CORE === '1'
-  ? '@claude-flow/cli-core@alpha'
-  : '@claude-flow/cli@latest';
+  ? '@ruflo/cli-core@alpha'
+  : '@ruflo/cli@latest';
 
 const NS = process.env.EXPORT_NAMESPACE || 'cost-tracking';
 

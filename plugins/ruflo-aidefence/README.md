@@ -22,7 +22,7 @@ This plugin pairs with three runtime hardening features that ship in the host (A
 
 - **Loader-hijack denylist** — `validateEnv()` rejects `LD_PRELOAD`, `LD_LIBRARY_PATH`, `LD_AUDIT`, `DYLD_INSERT_LIBRARIES`, `DYLD_LIBRARY_PATH`, `DYLD_FALLBACK_LIBRARY_PATH`, `DYLD_FORCE_FLAT_NAMESPACE`, `NODE_OPTIONS`, `NODE_PATH` at the `terminal_create` MCP boundary. Adding any of these to a child process is functionally RCE; threat scoring should treat a denylist-enforcing host as substantially less exposed.
 - **File mode 0600 / dir mode 0700** on session, terminal, and memory stores via `fs-secure.writeFileRestricted` — cross-user-on-host reads blocked at the OS layer.
-- **Encryption at rest** (opt-in via `CLAUDE_FLOW_ENCRYPT_AT_REST=1`) — AES-256-GCM with magic-byte (`RFE1`) backward-compat sniff. Reports involving memory.db / sessions / terminal-history exfiltration should account for the gate state (`ruflo doctor -c encryption`).
+- **Encryption at rest** (opt-in via `RUFLO_ENCRYPT_AT_REST=1`) — AES-256-GCM with magic-byte (`RFE1`) backward-compat sniff. Reports involving memory.db / sessions / terminal-history exfiltration should account for the gate state (`ruflo doctor -c encryption`).
 
 ## Commands
 
@@ -35,7 +35,7 @@ This plugin pairs with three runtime hardening features that ship in the host (A
 
 ## Compatibility
 
-- **CLI:** pinned to `@claude-flow/cli` v3.6 major+minor.
+- **CLI:** pinned to `@ruflo/cli` v3.6 major+minor.
 - **MCP surface:** 6 `aidefence_*` tools (`scan`, `analyze`, `stats`, `learn`, `is_safe`, `has_pii`) plus `transfer_detect-pii` for categorized findings.
 - **Verification:** `bash plugins/ruflo-aidefence/scripts/smoke.sh` is the contract.
 
@@ -53,7 +53,7 @@ This is the pattern `ruflo-browser` ADR-0001 §4 codified and `ruflo-aidefence` 
 
 ## Namespace coordination
 
-This plugin owns the `security-patterns` AgentDB namespace (kebab-case, follows the convention from [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md)). Reserved namespaces (`pattern`, `claude-memories`, `default`) MUST NOT be shadowed.
+This plugin owns the `security-patterns` AgentDB namespace (kebab-case, follows the convention from [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md)). Reserved namespaces (`pattern`, `codex-memories`, `default`) MUST NOT be shadowed.
 
 ## Verification
 

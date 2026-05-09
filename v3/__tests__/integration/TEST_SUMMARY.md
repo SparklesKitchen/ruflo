@@ -2,7 +2,7 @@
 
 ## Overview
 
-Comprehensive integration test suite for claude-flow V3 with **75 tests** across **5 test files** covering all major architectural components and their interactions.
+Comprehensive integration test suite for codex V3 with **75 tests** across **5 test files** covering all major architectural components and their interactions.
 
 ## Files Created
 
@@ -84,7 +84,7 @@ Comprehensive integration test suite for claude-flow V3 with **75 tests** across
 ### By Architecture Decision Record (ADR)
 | ADR | Description | Test Coverage |
 |-----|-------------|---------------|
-| ADR-001 | Agentic-flow core foundation | ✅ Workflow integration |
+| ADR-001 | Agentic core foundation | ✅ Workflow integration |
 | ADR-002 | Domain-Driven Design | ✅ All tests (bounded contexts) |
 | ADR-003 | Single coordination engine | ✅ Swarm integration |
 | ADR-004 | Plugin architecture | ✅ Plugin integration |
@@ -156,7 +156,7 @@ npm run test:coverage:integration
 npx vitest run -t "should execute end-to-end agent workflow"
 
 # Verbose output
-DEBUG=claude-flow:* npm run test:integration
+DEBUG=codex:* npm run test:integration
 
 # HTML coverage report
 npm run test:coverage:integration
@@ -336,7 +336,7 @@ npm run test:coverage:integration
 - **Full Documentation**: `/v3/__tests__/integration/README.md`
 - **Quick Start**: `/v3/__tests__/integration/QUICK_START.md`
 - **Architecture**: `/v3/docs/architecture/`
-- **Guidelines**: `/CLAUDE.md`
+- **Guidelines**: `/AGENTS.md`
 
 ## Success Metrics
 

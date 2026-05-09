@@ -4,7 +4,7 @@ title: ruflo-neural-trader plugin contract — pinning, namespace coordination (
 status: Proposed
 date: 2026-05-04
 authors:
-  - reviewer (Claude Code)
+  - reviewer (Codex)
 tags: [plugin, neural-trader, trading, backtesting, risk, namespace, smoke-test]
 ---
 

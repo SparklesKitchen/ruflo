@@ -80,7 +80,7 @@ neural-trader's anomaly engine computes per-dimension Z-scores on OHLCV series:
 
 neural-trader exposes 112+ MCP tools. Add as MCP server for direct tool access:
 ```bash
-claude mcp add neural-trader -- npx neural-trader mcp start
+codex mcp add neural-trader -- npx neural-trader mcp start
 ```
 
 Key MCP tool categories: market data, strategy management, backtesting, risk, portfolio, accounting.
@@ -89,16 +89,16 @@ Key MCP tool categories: market data, strategy management, backtesting, risk, po
 
 Store strategy results in AgentDB for cross-session learning:
 ```bash
-npx @claude-flow/cli@latest memory store --namespace trading-strategies --key "strategy-NAME" --value "CONFIG_JSON"
-npx @claude-flow/cli@latest memory search --query "momentum strategies Sharpe > 1.5" --namespace trading-strategies
+npx @ruflo/cli@latest memory store --namespace trading-strategies --key "strategy-NAME" --value "CONFIG_JSON"
+npx @ruflo/cli@latest memory search --query "momentum strategies Sharpe > 1.5" --namespace trading-strategies
 ```
 
 ### SONA Neural Integration
 
 Feed backtest trajectories to SONA for continuous optimization:
 ```bash
-npx @claude-flow/cli@latest neural train --pattern-type trading-strategy --epochs 20
-npx @claude-flow/cli@latest neural predict --input "current market: high volatility, upward drift"
+npx @ruflo/cli@latest neural train --pattern-type trading-strategy --epochs 20
+npx @ruflo/cli@latest neural predict --input "current market: high volatility, upward drift"
 ```
 
 ### Related Plugins
@@ -112,5 +112,5 @@ npx @claude-flow/cli@latest neural predict --input "current market: high volatil
 
 After completing tasks, store successful patterns:
 ```bash
-npx @claude-flow/cli@latest hooks post-task --task-id "TASK_ID" --success true --train-neural true
+npx @ruflo/cli@latest hooks post-task --task-id "TASK_ID" --success true --train-neural true
 ```

@@ -2,7 +2,7 @@
 
 **Status:** Implemented
 **Date:** 2026-02-10
-**Authors:** RuvNet, Claude Flow Team
+**Authors:** RuvNet, Ruflo Team
 **Version:** 1.0.0
 **Related:** ADR-051 (Infinite Context), ADR-048 (Auto Memory Integration), ADR-006 (Unified Memory), ADR-026 (3-Tier Model Routing)
 
@@ -10,7 +10,7 @@
 
 ### The Problem: Invisible System State
 
-Claude Code operates with multiple concurrent subsystems — swarm agents, memory
+Codex operates with multiple concurrent subsystems — swarm agents, memory
 backends, neural learning, security scanning, context management — but provides no
 unified visibility into their state. Developers working in long sessions need to know:
 
@@ -23,9 +23,9 @@ unified visibility into their state. Developers working in long sessions need to
 Without real-time feedback, developers make blind decisions about when to start new
 sessions, whether agents are drifting, and if the system is operating optimally.
 
-### What Claude Code Provides
+### What Codex Provides
 
-Claude Code supports a `statusLine` configuration in `.claude/settings.json`:
+Codex supports a `statusLine` configuration in `.codex/settings.json`:
 
 ```json
 {
@@ -39,27 +39,27 @@ Claude Code supports a `statusLine` configuration in `.claude/settings.json`:
 ```
 
 The command receives JSON on stdin with workspace metadata, model info, and optional
-context window data. Its stdout is displayed as a persistent status bar in the Claude
+context window data. Its stdout is displayed as a persistent status bar in the Codex
 Code terminal UI.
 
 ### What We Built
 
 A multi-tier statusline system with 4 implementations, a TypeScript generator for
-`npx claude-flow init`, and real-time data feeds from 8+ subsystems.
+`npx ruflo init`, and real-time data feeds from 8+ subsystems.
 
 ## Decision
 
 Implement a layered statusline architecture:
 
-1. **Active statusline** (`.claude/statusline.sh`) — Bash script for the current
+1. **Active statusline** (`.codex/statusline.sh`) — Bash script for the current
    project, read from `settings.json` `statusLine.command`
-2. **Generated statusline** (`.claude/helpers/statusline.cjs`) — CommonJS script
-   created by `npx claude-flow init`, comprehensive with 12+ metric panels
-3. **Lightweight statusline** (`.claude/statusline.mjs`) — ES module for agentic-flow
+2. **Generated statusline** (`.codex/helpers/statusline.cjs`) — CommonJS script
+   created by `npx ruflo init`, comprehensive with 12+ metric panels
+3. **Lightweight statusline** (`.codex/statusline.mjs`) — ES module for agentic
    integration, compact pipe-separated format
-4. **Command statusline** (`.claude/statusline-command.sh`) — JSON-input focused,
+4. **Command statusline** (`.codex/statusline-command.sh`) — JSON-input focused,
    shows swarm topology and task metrics
-5. **Generator** (`v3/@claude-flow/cli/src/init/statusline-generator.ts`) — TypeScript
+5. **Generator** (`v3/@ruflo/cli/src/init/statusline-generator.ts`) — TypeScript
    that produces the `.cjs` script during project initialization
 
 ## Architecture
@@ -68,7 +68,7 @@ Implement a layered statusline architecture:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        Claude Code Terminal                          │
+│                        Codex Terminal                          │
 │                                                                     │
 │  ┌─────────────────────────────────────────────────────────────┐   │
 │  │ statusLine.command executes every refreshMs (5000ms)         │   │
@@ -79,7 +79,7 @@ Implement a layered statusline architecture:
 │                          │                                          │
 │                          ▼                                          │
 │  ┌──────────────────────────────────────────────────────────────┐  │
-│  │              .claude/statusline.sh (active)                   │  │
+│  │              .codex/statusline.sh (active)                   │  │
 │  │                                                               │  │
 │  │  Reads 8 data sources:                                       │  │
 │  │                                                               │  │
@@ -107,7 +107,7 @@ Implement a layered statusline architecture:
 │  │  └─────────────────┘  └──────────────────────┘              │  │
 │  │                                                               │  │
 │  │  Output (4 lines + separators):                              │  │
-│  │  ▊ Claude Flow V3  ● user  │  ⎇ branch  │  Model            │  │
+│  │  ▊ Ruflo V3  ● user  │  ⎇ branch  │  Model            │  │
 │  │  ─────────────────────────────────────────                   │  │
 │  │  🏗️  DDD Domains  [●●●●●]  5/5    ⚡ 1.0x → 2.49x-7.47x   │  │
 │  │  🤖 Swarm ◉ [3/15] 👥 0   🟢 CVE 3/3  💾 2782MB            │  │
@@ -123,28 +123,28 @@ Implement a layered statusline architecture:
 
 | Source File | Subsystem | Metrics | Updated By |
 |-------------|-----------|---------|------------|
-| `.claude-flow/data/autopilot-state.json` | Context Autopilot (ADR-051) | Token %, token count, prune cycles, growth trend | `context-persistence-hook.mjs` on every `UserPromptSubmit` |
-| `.claude-flow/metrics/v3-progress.json` | DDD Architecture | Domain count, DDD progress %, active agents | `init` command, manual updates |
-| `.claude-flow/security/audit-status.json` | Security | CVE count, audit status (CLEAN/PENDING) | `security scan` command |
-| `.claude-flow/metrics/performance.json` | Performance | Flash Attention speedup | `performance benchmark` command |
-| `.claude-flow/metrics/learning.json` | Intelligence | Score (0-100), routing accuracy, SONA status | `hooks post-task`, neural training |
-| `.claude-flow/learning/patterns.db` | Pattern DB (SQLite) | Short/long-term pattern counts, avg quality | `hooks intelligence`, neural training |
-| `.claude-flow/data/transcript-archive.db` | Context Archive (SQLite) | Entry count, session count | `context-persistence-hook.mjs` |
-| `.claude-flow/metrics/swarm-activity.json` | Swarm Monitor | Active agent count, swarm state | Swarm monitor daemon |
+| `.codex/data/autopilot-state.json` | Context Autopilot (ADR-051) | Token %, token count, prune cycles, growth trend | `context-persistence-hook.mjs` on every `UserPromptSubmit` |
+| `.codex/metrics/v3-progress.json` | DDD Architecture | Domain count, DDD progress %, active agents | `init` command, manual updates |
+| `.codex/security/audit-status.json` | Security | CVE count, audit status (CLEAN/PENDING) | `security scan` command |
+| `.codex/metrics/performance.json` | Performance | Flash Attention speedup | `performance benchmark` command |
+| `.codex/metrics/learning.json` | Intelligence | Score (0-100), routing accuracy, SONA status | `hooks post-task`, neural training |
+| `.codex/learning/patterns.db` | Pattern DB (SQLite) | Short/long-term pattern counts, avg quality | `hooks intelligence`, neural training |
+| `.codex/data/transcript-archive.db` | Context Archive (SQLite) | Entry count, session count | `context-persistence-hook.mjs` |
+| `.codex/metrics/swarm-activity.json` | Swarm Monitor | Active agent count, swarm state | Swarm monitor daemon |
 | `ps aux` (process table) | System | Node/MCP memory, active processes | Real-time OS query |
 | `git` (VCS) | Repository | Branch name, status | Real-time git query |
 | `gh api` (GitHub) | GitHub | Username | Cached API call |
 
 ### Statusline Implementations
 
-#### 1. Active Statusline — `.claude/statusline.sh` (432 lines)
+#### 1. Active Statusline — `.codex/statusline.sh` (432 lines)
 
 The currently wired script in `settings.json`. Bash-based for maximum compatibility.
 
 **Display Layout:**
 
 ```
-Line 0: ▊ Claude Flow V3 ● user  │  ⎇ branch  │  Model
+Line 0: ▊ Ruflo V3 ● user  │  ⎇ branch  │  Model
 Line -: ─────────────────────────────────────────
 Line 1: 🏗️  DDD Domains  [●●●●●]  5/5    ⚡ speedup → target
 Line 2: 🤖 Swarm ◉ [N/15] 👥 sub  🟢 CVE X/3  💾 MEM  🛡️ CTX%  🧠 INT%
@@ -208,9 +208,9 @@ Base:     learning.json → intelligence.score (0-100)
 = Final:  capped at 100
 ```
 
-#### 2. Generated Statusline — `.claude/helpers/statusline.cjs` (1,193 lines)
+#### 2. Generated Statusline — `.codex/helpers/statusline.cjs` (1,193 lines)
 
-Created by `npx claude-flow init`. CommonJS for ES module project compatibility.
+Created by `npx ruflo init`. CommonJS for ES module project compatibility.
 
 **12 Metric Panels:**
 
@@ -234,12 +234,12 @@ Created by `npx claude-flow init`. CommonJS for ES module project compatibility.
 - `--json`: Pretty-printed JSON of all metrics
 - `--compact`: Minified JSON
 
-#### 3. Lightweight Statusline — `.claude/statusline.mjs` (110 lines)
+#### 3. Lightweight Statusline — `.codex/statusline.mjs` (110 lines)
 
-ES module for agentic-flow integration. Compact pipe-separated format with 5-second
+ES module for agentic integration. Compact pipe-separated format with 5-second
 cache TTL for swarm status.
 
-#### 4. Command Statusline — `.claude/statusline-command.sh` (177 lines)
+#### 4. Command Statusline — `.codex/statusline-command.sh` (177 lines)
 
 JSON-input focused. Shows swarm topology configuration, CPU/memory (with color-coded
 thresholds), session duration, task success rate with streak tracking, and hooks
@@ -247,9 +247,9 @@ activity status.
 
 ### Init System Integration
 
-#### Generator — `v3/@claude-flow/cli/src/init/statusline-generator.ts` (1,317 lines)
+#### Generator — `v3/@ruflo/cli/src/init/statusline-generator.ts` (1,317 lines)
 
-Produces the `.cjs` script during `npx claude-flow init`:
+Produces the `.cjs` script during `npx ruflo init`:
 
 ```typescript
 function generateStatuslineScript(options: InitOptions): string {
@@ -262,29 +262,29 @@ function generateStatuslineHook(options: InitOptions): string {
 }
 ```
 
-#### Settings Generator — `v3/@claude-flow/cli/src/init/settings-generator.ts`
+#### Settings Generator — `v3/@ruflo/cli/src/init/settings-generator.ts`
 
-Wires the statusline into `.claude/settings.json`:
+Wires the statusline into `.codex/settings.json`:
 
 ```typescript
 function generateStatusLineConfig(options: InitOptions): object {
   return {
     type: 'command',
-    command: 'node .claude/helpers/statusline.cjs',
+    command: 'node .codex/helpers/statusline.cjs',
     refreshMs: config.refreshInterval,  // Default: 5000
     enabled: config.enabled,
   };
 }
 ```
 
-#### Executor — `v3/@claude-flow/cli/src/init/executor.ts`
+#### Executor — `v3/@ruflo/cli/src/init/executor.ts`
 
 During init:
 1. Copies advanced statusline files (`.sh`, `.mjs`) from package source if available
 2. Falls back to generating `.cjs` + hook via `statusline-generator.ts`
 3. On upgrade: force-updates statusline while preserving metrics
 
-#### Types — `v3/@claude-flow/cli/src/init/types.ts`
+#### Types — `v3/@ruflo/cli/src/init/types.ts`
 
 ```typescript
 interface StatuslineConfig {
@@ -311,14 +311,14 @@ interface StatuslineConfig {
 
 | File | Lines | Language | Role |
 |------|-------|----------|------|
-| `.claude/statusline.sh` | 432 | Bash | Active statusline (settings.json) |
-| `.claude/helpers/statusline.cjs` | 1,193 | CommonJS | Generated comprehensive statusline |
-| `.claude/statusline.mjs` | 110 | ES Module | Lightweight agentic-flow statusline |
-| `.claude/statusline-command.sh` | 177 | Bash | JSON-input command statusline |
-| `v3/@claude-flow/cli/src/init/statusline-generator.ts` | 1,317 | TypeScript | Generator for `.cjs` during init |
-| `v3/@claude-flow/cli/src/init/settings-generator.ts` | ~20 | TypeScript | Wires statusLine into settings.json |
-| `v3/@claude-flow/cli/src/init/executor.ts` | ~60 | TypeScript | Copy/generate during init |
-| `v3/@claude-flow/cli/src/init/types.ts` | ~20 | TypeScript | `StatuslineConfig` interface |
+| `.codex/statusline.sh` | 432 | Bash | Active statusline (settings.json) |
+| `.codex/helpers/statusline.cjs` | 1,193 | CommonJS | Generated comprehensive statusline |
+| `.codex/statusline.mjs` | 110 | ES Module | Lightweight agentic statusline |
+| `.codex/statusline-command.sh` | 177 | Bash | JSON-input command statusline |
+| `v3/@ruflo/cli/src/init/statusline-generator.ts` | 1,317 | TypeScript | Generator for `.cjs` during init |
+| `v3/@ruflo/cli/src/init/settings-generator.ts` | ~20 | TypeScript | Wires statusLine into settings.json |
+| `v3/@ruflo/cli/src/init/executor.ts` | ~60 | TypeScript | Copy/generate during init |
+| `v3/@ruflo/cli/src/init/types.ts` | ~20 | TypeScript | `StatuslineConfig` interface |
 
 ## Performance
 
@@ -351,7 +351,7 @@ interface StatuslineConfig {
 3. **Intelligence tracking**: The `🧠 86%` score motivates pattern storage and shows
    the system is learning from session interactions
 4. **Multi-implementation flexibility**: Bash for current use, CJS for init portability,
-   MJS for agentic-flow, each optimized for its context
+   MJS for agentic, each optimized for its context
 5. **Zero-dependency active script**: statusline.sh uses only bash builtins, jq, and
    sqlite3 — no npm install required
 
@@ -368,7 +368,7 @@ interface StatuslineConfig {
 ### Neutral
 
 1. **5-second refresh**: Default `refreshMs: 5000` balances freshness with CPU cost
-2. **ANSI colors**: Terminal-dependent rendering. Claude Code's terminal handles ANSI
+2. **ANSI colors**: Terminal-dependent rendering. Codex's terminal handles ANSI
    well; raw SSH sessions may vary
 3. **JSON data coupling**: Statusline depends on specific JSON key paths in metric
    files. Changes to metric formats require statusline updates
@@ -387,7 +387,7 @@ interface StatuslineConfig {
 
 ## References
 
-- Claude Code `statusLine` config: `@anthropic-ai/claude-agent-sdk` settings schema
+- Codex `statusLine` config: `@openai-ai/codex-agent-sdk` settings schema
 - ADR-051: Infinite Context via Compaction-to-Memory Bridge (autopilot-state.json)
 - ADR-048: Auto Memory Integration (learning patterns)
 - ADR-006: Unified Memory Service (AgentDB)

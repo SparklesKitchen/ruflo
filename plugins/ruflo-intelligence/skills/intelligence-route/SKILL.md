@@ -2,7 +2,7 @@
 name: intelligence-route
 description: Route tasks via the 3-tier model selector and learned patterns; emits a routing rationale via hooks_explain
 argument-hint: "<task-description> [--why]"
-allowed-tools: mcp__claude-flow__hooks_route mcp__claude-flow__hooks_explain mcp__claude-flow__hooks_model-route mcp__claude-flow__hooks_model-stats mcp__claude-flow__hooks_model-outcome mcp__claude-flow__hooks_intelligence_pattern-search mcp__claude-flow__hooks_intelligence_attention mcp__claude-flow__hooks_intelligence_stats mcp__claude-flow__neural_predict mcp__claude-flow__hooks_pre-task Bash
+allowed-tools: mcp__codex__hooks_route mcp__codex__hooks_explain mcp__codex__hooks_model-route mcp__codex__hooks_model-stats mcp__codex__hooks_model-outcome mcp__codex__hooks_intelligence_pattern-search mcp__codex__hooks_intelligence_attention mcp__codex__hooks_intelligence_stats mcp__codex__neural_predict mcp__codex__hooks_pre-task Bash
 ---
 
 # Intelligence Routing
@@ -15,13 +15,13 @@ Before starting any non-trivial task. Replaces manual agent selection with data-
 
 ## Steps
 
-1. **Get an agent recommendation** — `mcp__claude-flow__hooks_route` with the task description. Returns `{ recommended, confidence, reasoning }`.
-2. **Get a model tier recommendation** — `mcp__claude-flow__hooks_model-route` for Haiku/Sonnet/Opus selection.
-3. **Search for similar past patterns** — `mcp__claude-flow__hooks_intelligence_pattern-search` to find prior successes.
-4. **Predict outcome** — `mcp__claude-flow__neural_predict` with the task description for a confidence-scored prediction.
+1. **Get an agent recommendation** — `mcp__codex__hooks_route` with the task description. Returns `{ recommended, confidence, reasoning }`.
+2. **Get a model tier recommendation** — `mcp__codex__hooks_model-route` for Haiku/Sonnet/Opus selection.
+3. **Search for similar past patterns** — `mcp__codex__hooks_intelligence_pattern-search` to find prior successes.
+4. **Predict outcome** — `mcp__codex__neural_predict` with the task description for a confidence-scored prediction.
 5. **Spawn the recommended agent** at the recommended model tier.
-6. **(If `--why` was passed)** — call `mcp__claude-flow__hooks_explain` to surface the routing rationale to the user.
-7. **After task completes** — call `mcp__claude-flow__hooks_model-outcome` with `success: true|false` to train the router.
+6. **(If `--why` was passed)** — call `mcp__codex__hooks_explain` to surface the routing rationale to the user.
+7. **After task completes** — call `mcp__codex__hooks_model-outcome` with `success: true|false` to train the router.
 
 ## 3-Tier Model Routing
 
@@ -50,7 +50,7 @@ The router learns from these calls. Skipping them = no learning.
 ## CLI alternative
 
 ```bash
-npx @claude-flow/cli@latest hooks route --task "description"
-npx @claude-flow/cli@latest hooks pre-task --description "description"
-npx @claude-flow/cli@latest hooks explain --topic "routing decision"
+npx @ruflo/cli@latest hooks route --task "description"
+npx @ruflo/cli@latest hooks pre-task --description "description"
+npx @ruflo/cli@latest hooks explain --topic "routing decision"
 ```

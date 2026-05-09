@@ -38,7 +38,7 @@
             "OPENAI_API_KEY",
             "GOOGLE_API_KEY",
             "OPENROUTER_API_KEY",
-            "ANTHROPIC_API_KEY",
+            "OPENAI_API_KEY",
             "SEARCH_API_URL",
             "RESEARCH_API_URL",
             "MCP_GROUP_INTELLIGENCE",
@@ -49,7 +49,7 @@
             "MCP_GROUP_BROWSER",
             "MCP_GROUP_NEURAL",
             "MCP_GROUP_AGENTIC_FLOW",
-            "MCP_GROUP_CLAUDE_CODE",
+            "MCP_GROUP_CODEX",
             "MCP_GROUP_GEMINI",
             "MCP_GROUP_CODEX"
           ]
@@ -147,19 +147,19 @@
           "source": "ruflo",
           "prefixes": ["neural_", "daa_"]
         },
-        "agentic-flow": {
+        "agentic": {
           "enabled_by_default": false,
           "display_name": "Agentic Flow",
-          "endpoint": "/mcp/agentic-flow",
-          "description": "agentic-flow alpha integration",
-          "source": "agentic-flow"
+          "endpoint": "/mcp/agentic",
+          "description": "agentic alpha integration",
+          "source": "agentic"
         },
-        "claude-code": {
+        "codex-code": {
           "enabled_by_default": false,
-          "display_name": "Claude Code",
-          "endpoint": "/mcp/claude-code",
-          "description": "Claude Code CLI tools",
-          "source": "claude-code"
+          "display_name": "Codex",
+          "endpoint": "/mcp/codex-code",
+          "description": "Codex CLI tools",
+          "source": "codex-code"
         },
         "gemini": {
           "enabled_by_default": false,
@@ -209,7 +209,7 @@
         "OPENAI_API_KEY",
         "GOOGLE_API_KEY",
         "OPENROUTER_API_KEY",
-        "ANTHROPIC_API_KEY",
+        "OPENAI_API_KEY",
         "OPENID_CLIENT_SECRET"
       ]
     }
@@ -247,7 +247,7 @@
     "ruvector_integration": true,
     "ruflo_integration": true,
     "agentic_flow_integration": true,
-    "external_mcp_backends": ["ruvector", "ruflo", "agentic-flow", "claude-code", "gemini", "codex"],
+    "external_mcp_backends": ["ruvector", "ruflo", "agentic", "codex-code", "gemini", "codex"],
     "test_harness": true
   }
 }

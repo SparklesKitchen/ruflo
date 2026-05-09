@@ -3,13 +3,13 @@
  * Regression guard for ruvnet/ruflo#1859 + #1862.
  *
  * Drives each PostToolUse hook command from `hooks/hooks.json` with synthetic
- * Claude-Code-style stdin against a locally built CLI, asserting:
+ * Codex-Code-style stdin against a locally built CLI, asserting:
  *
  *   - Exit code 0 (no parser errors like "Invalid value for --format")
  *   - Output records the *intended* value (the file path / command), not a
  *     stray boolean like "true" — the symptom that #1859 reported
  *
- * The script substitutes `npx claude-flow@alpha` → the local CLI binary, so
+ * The script substitutes `npx ruflo@alpha` → the local CLI binary, so
  * we exercise the same flag wiring users hit in production but pinned to
  * the build under test.
  *
@@ -31,13 +31,13 @@ const HOOKS_JSON = join(__dirname, '..', 'hooks', 'hooks.json');
 // passes the full thing so this script doesn't need to guess shebangs:
 //   - local node script:   "node /abs/path/to/bin/cli.js"
 //   - shell wrapper:       "/abs/path/to/wrapper.sh"
-//   - npx fallthrough:     "npx --yes @claude-flow/cli@latest"
+//   - npx fallthrough:     "npx --yes @ruflo/cli@latest"
 const cliInvoke = process.argv[2];
 if (!cliInvoke) {
   console.error('Usage: node test-hooks.mjs "<cli-invocation-string>"');
   console.error('Examples:');
-  console.error('  node test-hooks.mjs "node $PWD/v3/@claude-flow/cli/bin/cli.js"');
-  console.error('  node test-hooks.mjs "npx --yes @claude-flow/cli@latest"');
+  console.error('  node test-hooks.mjs "node $PWD/v3/@ruflo/cli/bin/cli.js"');
+  console.error('  node test-hooks.mjs "npx --yes @ruflo/cli@latest"');
   process.exit(2);
 }
 
@@ -47,7 +47,7 @@ const post = hooks.hooks?.PostToolUse ?? [];
 const findHook = (matcher) => {
   const hit = post.find(h => h.matcher === matcher);
   if (!hit) throw new Error(`No PostToolUse hook with matcher=${matcher}`);
-  return hit.hooks[0].command.replace(/npx claude-flow@alpha/g, cliInvoke);
+  return hit.hooks[0].command.replace(/npx ruflo@alpha/g, cliInvoke);
 };
 
 const cmdBash = findHook('Bash');

@@ -29,9 +29,9 @@ const newFixes = existsSync(FIXES_CONFIG)
 const releases = {};
 for (const [key, pkgPath] of [
   ['ruflo', 'ruflo/package.json'],
-  ['claude-flow', 'package.json'],
-  ['@claude-flow/cli', 'v3/@claude-flow/cli/package.json'],
-  ['@claude-flow/memory', 'v3/@claude-flow/memory/package.json'],
+  ['codex', 'package.json'],
+  ['@ruflo/cli', 'v3/@ruflo/cli/package.json'],
+  ['@ruflo/memory', 'v3/@ruflo/memory/package.json'],
 ]) {
   const fullPath = join(REPO_ROOT, pkgPath);
   if (existsSync(fullPath)) releases[key] = JSON.parse(readFileSync(fullPath, 'utf8')).version;

@@ -1,7 +1,7 @@
 {
-  "name": "@claude-flow/teammate-plugin",
+  "name": "@ruflo/teammate-plugin",
   "version": "1.0.0-alpha.1",
-  "description": "Native TeammateTool integration plugin for Claude Flow - bridges Claude Code v2.1.19+ multi-agent capabilities",
+  "description": "Native TeammateTool integration plugin for Ruflo - bridges Codex v2.1.19+ multi-agent capabilities",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -41,9 +41,9 @@
     "prepublishOnly": "npm run clean && npm run build && npm run test"
   },
   "keywords": [
-    "claude",
-    "claude-code",
-    "claude-flow",
+    "codex",
+    "codex-code",
+    "codex",
     "teammate",
     "multi-agent",
     "swarm",
@@ -54,21 +54,21 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ruvnet/claude-flow.git",
+    "url": "https://github.com/SparklesKitchen/ruflo.git",
     "directory": "v3/plugins/teammate-plugin"
   },
   "bugs": {
-    "url": "https://github.com/ruvnet/claude-flow/issues"
+    "url": "https://github.com/SparklesKitchen/ruflo/issues"
   },
-  "homepage": "https://github.com/ruvnet/claude-flow#readme",
+  "homepage": "https://github.com/SparklesKitchen/ruflo#readme",
   "engines": {
     "node": ">=18.0.0"
   },
   "peerDependencies": {
-    "@anthropic-ai/claude-code": ">=2.1.19"
+    "@openai-ai/codex-code": ">=2.1.19"
   },
   "peerDependenciesMeta": {
-    "@anthropic-ai/claude-code": {
+    "@openai-ai/codex-code": {
       "optional": true
     }
   },
@@ -85,7 +85,7 @@
     "@typescript-eslint/eslint-plugin": "^6.13.0",
     "@typescript-eslint/parser": "^6.13.0"
   },
-  "claude-code": {
+  "codex-code": {
     "minimumVersion": "2.1.19",
     "requiredFeatures": [
       "TeammateTool",

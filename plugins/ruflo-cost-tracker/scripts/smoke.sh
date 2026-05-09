@@ -9,13 +9,13 @@ ok()   { printf "PASS\n"; PASS=$((PASS+1)); }
 bad()  { printf "FAIL: %s\n" "$1"; FAIL=$((FAIL+1)); }
 
 step "1. plugin.json declares 0.16.1 with new keywords"
-v=$(grep -E '"version"' "$ROOT/.claude-plugin/plugin.json" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+v=$(grep -E '"version"' "$ROOT/.codex-plugin/plugin.json" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
 if [[ "$v" != "0.16.1" ]]; then
   bad "expected 0.16.1, got '$v'"
 else
   miss=""
-  for k in namespace-routing mcp agentic-flow agent-booster tier1-routing model-routing benchmarking verified telemetry budget; do
-    grep -q "\"$k\"" "$ROOT/.claude-plugin/plugin.json" || miss="$miss $k"
+  for k in namespace-routing mcp agentic agent-booster tier1-routing model-routing benchmarking verified telemetry budget; do
+    grep -q "\"$k\"" "$ROOT/.codex-plugin/plugin.json" || miss="$miss $k"
   done
   [[ -z "$miss" ]] && ok || bad "missing keywords:$miss"
 fi
@@ -49,8 +49,8 @@ else
   bad "missing dual-path documentation"
 fi
 
-step "5. README pins @claude-flow/cli to v3.6"
-grep -qE "@claude-flow/cli.*v3\.6|v3\.6.*claude-flow/cli" "$ROOT/README.md" \
+step "5. README pins @ruflo/cli to v3.6"
+grep -qE "@ruflo/cli.*v3\.6|v3\.6.*codex/cli" "$ROOT/README.md" \
   && ok || bad "v3.6 pin missing"
 
 step "6. README defers to ruflo-agentdb namespace convention"
@@ -100,9 +100,9 @@ grep -q '^allowed-tools:[[:space:]]*\*' "$F" && miss="$miss wildcard"
 step "12. cost-compact-context skill references getTokenOptimizer + tags upstream figures"
 F="$ROOT/skills/cost-compact-context/SKILL.md"
 miss=""
-grep -qE "getTokenOptimizer|@claude-flow/integration" "$F" || miss="$miss bridge-ref"
+grep -qE "getTokenOptimizer|@ruflo/integration" "$F" || miss="$miss bridge-ref"
 grep -q "claimed upstream, not yet verified" "$F" || miss="$miss upstream-disclaimer"
-grep -qE "agentic-flow.*not (installed|available)|fallback|bridge[- ](unavailable|reported)" "$F" || miss="$miss fallback-doc"
+grep -qE "agentic.*not (installed|available)|fallback|bridge[- ](unavailable|reported)" "$F" || miss="$miss fallback-doc"
 [[ -z "$miss" ]] && ok || bad "$miss"
 
 step "13. cost-optimize references hooks_model-outcome (step + allowed-tools)"
@@ -142,8 +142,8 @@ grep -q "Tier classification" "$F2" || miss="$miss classification-rules"
 
 # ─── Doc-invariant single-line greps (ADR-0002 §"Verification") ──────────────
 
-step "17. doc-invariant: agentic-flow in README"
-grep -q "agentic-flow" "$ROOT/README.md" && ok || bad "missing"
+step "17. doc-invariant: agentic in README"
+grep -q "agentic" "$ROOT/README.md" && ok || bad "missing"
 
 step "18. doc-invariant: AGENT_BOOSTER_AVAILABLE in cost-booster-route"
 grep -q "AGENT_BOOSTER_AVAILABLE" "$ROOT/skills/cost-booster-route/SKILL.md" && ok || bad "missing"
@@ -212,15 +212,15 @@ F="$ROOT/skills/cost-benchmark/SKILL.md"
 miss=""
 [[ -f "$F" ]] || miss="$miss missing-file"
 grep -q "bench.mjs" "$F" || miss="$miss bench-ref"
-grep -q "BENCH_ANTHROPIC" "$F" || miss="$miss anthropic-flag"
+grep -q "BENCH_OpenAI" "$F" || miss="$miss openai-flag"
 grep -qE "winRate|win rate" "$F" || miss="$miss win-rate-mention"
 grep -q '^allowed-tools:[[:space:]]*\*' "$F" && miss="$miss wildcard"
 [[ -z "$miss" ]] && ok || bad "$miss"
 
 step "26. ruflo-cost.md documents 'cost benchmark' subcommand"
 F="$ROOT/commands/ruflo-cost.md"
-grep -q "cost benchmark" "$F" && grep -q -- "--anthropic" "$F" \
-  && ok || bad "missing subcommand or anthropic flag"
+grep -q "cost benchmark" "$F" && grep -q -- "--openai" "$F" \
+  && ok || bad "missing subcommand or openai flag"
 
 step "27. cost-report reads benchmark runs/latest.json"
 F="$ROOT/skills/cost-report/SKILL.md"
@@ -231,7 +231,7 @@ step "28. cost-track skill exists, references session jsonl + memory_store"
 F="$ROOT/skills/cost-track/SKILL.md"
 miss=""
 [[ -f "$F" ]] || miss="$miss missing-file"
-grep -qE '\.claude/projects|session.*jsonl|jsonl' "$F" || miss="$miss session-ref"
+grep -qE '\.codex/projects|session.*jsonl|jsonl' "$F" || miss="$miss session-ref"
 grep -qE 'memory_store|memory store' "$F" || miss="$miss memory-store"
 grep -q 'cost-tracking' "$F" || miss="$miss namespace"
 grep -q '^allowed-tools:[[:space:]]*\*' "$F" && miss="$miss wildcard"
@@ -388,7 +388,7 @@ miss=""
 grep -q "smoke\.sh" "$WF" || miss="$miss smoke-not-invoked"
 grep -q "bench\.mjs" "$WF" || miss="$miss bench-not-invoked"
 grep -q "winRate" "$WF" || miss="$miss no-regression-gate"
-grep -q "BENCH_ANTHROPIC\|BENCH_LLM_BASELINE" "$WF" && miss="$miss llm-cost-in-CI"
+grep -q "BENCH_OpenAI\|BENCH_LLM_BASELINE" "$WF" && miss="$miss llm-cost-in-CI"
 [[ -z "$miss" ]] && ok || bad "$miss"
 
 # ─── Consistency invariants (prevent README/agent drift) ─────────────────────
@@ -419,7 +419,7 @@ done
 [[ -z "$miss" ]] && ok || bad "syntax errors:$miss"
 
 step "44. plugin.json parses + version sentinel matches step 1"
-node -e "JSON.parse(require('fs').readFileSync('$ROOT/.claude-plugin/plugin.json'))" 2>/dev/null \
+node -e "JSON.parse(require('fs').readFileSync('$ROOT/.codex-plugin/plugin.json'))" 2>/dev/null \
   && ok || bad "plugin.json invalid JSON"
 
 printf "\n%s passed, %s failed\n" "$PASS" "$FAIL"

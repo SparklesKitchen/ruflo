@@ -59,12 +59,12 @@ Phase 1 enforces at the **send** side. Phase 2 (peer state machine: ACTIVE / SUS
 ## Requires
 
 - `ruflo-core` plugin (provides MCP server)
-- `@claude-flow/security` (cryptographic primitives)
+- `@ruflo/security` (cryptographic primitives)
 
 ## Compatibility
 
-- **CLI:** pinned to `@claude-flow/cli` v3.6 major+minor.
-- **Federation runtime:** `@claude-flow/plugin-agent-federation` (resolved via `npx -y -p`).
+- **CLI:** pinned to `@ruflo/cli` v3.6 major+minor.
+- **Federation runtime:** `@ruflo/plugin-agent-federation` (resolved via `npx -y -p`).
 - **Verification:** `bash plugins/ruflo-federation/scripts/smoke.sh` is the contract.
 
 ## Alignment with the canonical 3-gate pattern
@@ -81,7 +81,7 @@ Federation extends the canonical gates with adaptive confidence calibration and 
 
 ## Namespace coordination
 
-This plugin owns the `federation` AgentDB namespace. This is the documented exception to the kebab-case `<plugin-stem>-<intent>` rule: when a plugin's name *is* the intent, the namespace can match the plugin stem. See [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md). Reserved namespaces (`pattern`, `claude-memories`, `default`) MUST NOT be shadowed.
+This plugin owns the `federation` AgentDB namespace. This is the documented exception to the kebab-case `<plugin-stem>-<intent>` rule: when a plugin's name *is* the intent, the namespace can match the plugin stem. See [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md). Reserved namespaces (`pattern`, `codex-memories`, `default`) MUST NOT be shadowed.
 
 `federation` is accessed via `memory_*` tools (namespace-routed). Used for: peer registry, trust score history, audit log indices, message envelope receipts.
 

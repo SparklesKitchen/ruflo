@@ -1,4 +1,4 @@
-# ADR-025: Auto-Update System for @claude-flow Packages
+# ADR-025: Auto-Update System for @codex Packages
 
 ## Status
 **Implemented** - 2026-01-13
@@ -14,16 +14,16 @@
 | CLI Commands | `src/commands/update.ts` | ~340 |
 | Startup Integration | `src/index.ts` | ~20 |
 
-**Published:** @claude-flow/cli@3.0.0-alpha.83
+**Published:** @ruflo/cli@3.0.0-alpha.83
 
 ## Context
 
-The Claude Flow V3 ecosystem consists of multiple packages:
-- `@claude-flow/cli` - Main CLI tool
-- `@claude-flow/embeddings` - Vector embeddings
-- `@claude-flow/security` - Security utilities
-- `@claude-flow/integration` - agentic-flow integration
-- `@claude-flow/testing` - Test utilities
+The Ruflo V3 ecosystem consists of multiple packages:
+- `@ruflo/cli` - Main CLI tool
+- `@ruflo/embeddings` - Vector embeddings
+- `@ruflo/security` - Security utilities
+- `@ruflo/integration` - agentic integration
+- `@ruflo/testing` - Test utilities
 
 When one package is updated, dependent packages may need updates for compatibility. Currently, users must manually check for updates, leading to:
 - Version mismatches causing runtime errors
@@ -55,10 +55,10 @@ Implement an **auto-update system** that:
 
 | Priority | Packages | Auto-Update |
 |----------|----------|-------------|
-| Critical | `@claude-flow/security` | Always (patches) |
-| High | `@claude-flow/cli` | Minor + Patch |
-| Normal | `@claude-flow/embeddings`, `@claude-flow/integration` | Patch only |
-| Low | `@claude-flow/testing` | Notify only |
+| Critical | `@ruflo/security` | Always (patches) |
+| High | `@ruflo/cli` | Minor + Patch |
+| Normal | `@ruflo/embeddings`, `@ruflo/integration` | Patch only |
+| Low | `@ruflo/testing` | Notify only |
 
 ## Implementation
 
@@ -129,7 +129,7 @@ interface RateLimitState {
   packageVersions: Record<string, string>;
 }
 
-// Stored in: ~/.claude-flow/update-state.json
+// Stored in: ~/.codex/update-state.json
 ```
 
 #### 3. PackageValidator (`src/update/validator.ts`)
@@ -148,10 +148,10 @@ interface ValidationResult {
 ```
 1. CLI Start
    │
-   ├─► Check rate limit cache (~/.claude-flow/update-state.json)
+   ├─► Check rate limit cache (~/.codex/update-state.json)
    │   └─► If checked within 24h AND no --force-update → Skip
    │
-   ├─► Query npm registry for @claude-flow/* packages
+   ├─► Query npm registry for @ruflo/* packages
    │   └─► Compare versions using semver
    │
    ├─► For each package with available update:
@@ -160,45 +160,45 @@ interface ValidationResult {
    │   └─► Determine if auto-update applies
    │
    ├─► Execute auto-updates (if any)
-   │   ├─► npm install @claude-flow/package@version
+   │   ├─► npm install @ruflo/package@version
    │   ├─► Verify installation success
    │   └─► Log to update history
    │
    └─► Display notification for non-auto updates
-       └─► "Run `npx claude-flow update` to update X packages"
+       └─► "Run `npx ruflo update` to update X packages"
 ```
 
 ### CLI Commands
 
 ```bash
 # Check for updates (manual)
-npx claude-flow update check
+npx ruflo update check
 
 # Update all packages
-npx claude-flow update all
+npx ruflo update all
 
 # Update specific package
-npx claude-flow update @claude-flow/embeddings
+npx ruflo update @ruflo/embeddings
 
 # View update history
-npx claude-flow update history
+npx ruflo update history
 
 # Rollback last update
-npx claude-flow update rollback
+npx ruflo update rollback
 
 # Configure auto-update
-npx claude-flow config set update.autoUpdateMinor true
-npx claude-flow config set update.checkIntervalHours 12
+npx ruflo config set update.autoUpdateMinor true
+npx ruflo config set update.checkIntervalHours 12
 ```
 
 ### Environment Variables
 
 ```bash
 # Disable auto-update entirely
-CLAUDE_FLOW_AUTO_UPDATE=false
+RUFLO_AUTO_UPDATE=false
 
 # Force update check
-CLAUDE_FLOW_FORCE_UPDATE=true
+RUFLO_FORCE_UPDATE=true
 
 # CI/CD mode (no interactive prompts, no auto-update)
 CI=true
@@ -207,7 +207,7 @@ CI=true
 ### Configuration File
 
 ```json
-// claude-flow.config.json
+// codex.config.json
 {
   "update": {
     "enabled": true,
@@ -218,11 +218,11 @@ CI=true
       "major": false
     },
     "priority": {
-      "@claude-flow/security": "critical",
-      "@claude-flow/cli": "high",
-      "@claude-flow/embeddings": "normal",
-      "@claude-flow/integration": "normal",
-      "@claude-flow/testing": "low"
+      "@ruflo/security": "critical",
+      "@ruflo/cli": "high",
+      "@ruflo/embeddings": "normal",
+      "@ruflo/integration": "normal",
+      "@ruflo/testing": "low"
     },
     "exclude": []
   }

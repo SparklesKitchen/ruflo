@@ -2,19 +2,19 @@
 
 ## Overview
 
-This document describes the implementation of **ADR-001: Adopt agentic-flow as Core Foundation** for agent lifecycle management in Claude Flow v3.
+This document describes the implementation of **ADR-001: Adopt agentic as Core Foundation** for agent lifecycle management in Ruflo v3.
 
 ## Implementation Summary
 
-Created two new core classes that bridge Claude Flow's DDD agent architecture with agentic-flow's optimized agent implementations:
+Created two new core classes that bridge Ruflo's DDD agent architecture with agentic's optimized agent implementations:
 
-### 1. AgenticFlowAgent (`agentic-flow-agent.ts`)
+### 1. AgenticFlowAgent (`agentic-agent.ts`)
 
-**Purpose**: Base class for all Claude Flow v3 agents with automatic delegation to agentic-flow
+**Purpose**: Base class for all Ruflo v3 agents with automatic delegation to agentic
 
 **Key Features**:
 - Implements `IAgent` interface for DDD compliance
-- Delegates core operations to agentic-flow when available
+- Delegates core operations to agentic when available
 - Falls back to local implementations for backward compatibility
 - Full agent lifecycle management (initialize, execute, shutdown)
 - Health monitoring and metrics tracking
@@ -33,7 +33,7 @@ Created two new core classes that bridge Claude Flow's DDD agent architecture wi
 
 ### 2. AgentAdapter (`agent-adapter.ts`)
 
-**Purpose**: Bidirectional adapter between Claude Flow and agentic-flow agent formats
+**Purpose**: Bidirectional adapter between Ruflo and agentic agent formats
 
 **Key Features**:
 - Converts between agent representations
@@ -43,8 +43,8 @@ Created two new core classes that bridge Claude Flow's DDD agent architecture wi
 - Provides factory methods for agent creation
 
 **Capabilities**:
-- `fromAgenticFlow()`: Convert external agents to Claude Flow format
-- `toAgenticFlow()`: Export agents in agentic-flow format
+- `fromAgenticFlow()`: Convert external agents to Ruflo format
+- `toAgenticFlow()`: Export agents in agentic format
 - `createWithDelegation()`: Create agents with automatic delegation
 - Agent pool management (add, get, remove)
 - Delegation status tracking
@@ -60,12 +60,12 @@ Created two new core classes that bridge Claude Flow's DDD agent architecture wi
 ### Delegation Pattern
 
 ```typescript
-// Set agentic-flow reference for delegation
+// Set agentic reference for delegation
 agent.setAgenticFlowReference(agenticFlowAgent);
 
 // Operations automatically delegate when available
 const result = await agent.executeTask(task);
-// ↑ Delegates to agentic-flow.execute() if available
+// ↑ Delegates to agentic.execute() if available
 // ↓ Falls back to local implementation if not
 ```
 
@@ -121,7 +121,7 @@ All types are self-contained in the integration module to avoid cross-module com
 
 Comprehensive test suites included:
 
-### AgenticFlowAgent Tests (`agentic-flow-agent.test.ts`)
+### AgenticFlowAgent Tests (`agentic-agent.test.ts`)
 - Initialization and lifecycle
 - Task execution
 - Health monitoring
@@ -145,7 +145,7 @@ Comprehensive test suites included:
 ### Exports from Integration Module
 
 ```typescript
-// From @claude-flow/integration
+// From @ruflo/integration
 import {
   // Agent classes
   AgenticFlowAgent,
@@ -162,30 +162,30 @@ import {
   TaskResult,
   Message,
   AgentHealth,
-} from '@claude-flow/integration';
+} from '@ruflo/integration';
 ```
 
 ### Following Existing Patterns
 
 The implementation follows the same patterns as:
-- **SONAAdapter**: Delegates SONA learning to agentic-flow
-- **AttentionCoordinator**: Delegates Flash Attention to agentic-flow
+- **SONAAdapter**: Delegates SONA learning to agentic
+- **AttentionCoordinator**: Delegates Flash Attention to agentic
 - **SDKBridge**: Handles version compatibility
 
 All adapters use:
 - Event emitters for communication
 - `setAgenticFlowReference()` for delegation
 - `isDelegationEnabled()` for status checks
-- Graceful fallbacks when agentic-flow unavailable
+- Graceful fallbacks when agentic unavailable
 
 ## Files Created
 
 ```
-v3/@claude-flow/integration/src/
-├── agentic-flow-agent.ts          # 799 lines - Base agent class
+v3/@ruflo/integration/src/
+├── agentic-agent.ts          # 799 lines - Base agent class
 ├── agent-adapter.ts                # 625 lines - Adapter class
 ├── __tests__/
-│   ├── agentic-flow-agent.test.ts # Agent tests
+│   ├── agentic-agent.test.ts # Agent tests
 │   └── agent-adapter.test.ts      # Adapter tests
 └── index.ts                        # Updated exports
 ```
@@ -194,16 +194,16 @@ v3/@claude-flow/integration/src/
 
 ## ADR-001 Compliance
 
-✅ **Use agentic-flow's Agent base class for all agents**
-- Delegates to agentic-flow when available
+✅ **Use agentic's Agent base class for all agents**
+- Delegates to agentic when available
 - Falls back to local implementation when not
 
 ✅ **Eliminate duplicate code**
 - No duplicate agent lifecycle logic
-- All operations delegate to agentic-flow
+- All operations delegate to agentic
 
 ✅ **Maintain backward compatibility**
-- Works with or without agentic-flow installed
+- Works with or without agentic installed
 - Graceful fallbacks for all operations
 
 ✅ **Follow DDD architecture**
@@ -261,7 +261,7 @@ const agent = await adapter.createWithDelegation({
   priority: 5,
 });
 
-// Task execution automatically delegates to agentic-flow
+// Task execution automatically delegates to agentic
 const result = await agent.executeTask(task);
 ```
 
@@ -278,8 +278,8 @@ console.log(health.metrics.tasksCompleted); // Task count
 ## Benefits
 
 1. **Code Reduction**: Eliminates 10,000+ lines of duplicate agent code per ADR-001
-2. **Performance**: Leverages agentic-flow's optimized implementations
-3. **Flexibility**: Works with or without agentic-flow installed
+2. **Performance**: Leverages agentic's optimized implementations
+3. **Flexibility**: Works with or without agentic installed
 4. **Type Safety**: Full TypeScript support with comprehensive types
 5. **DDD Compliance**: Follows v3 domain-driven architecture
 6. **Testing**: Comprehensive test coverage for confidence
@@ -298,11 +298,11 @@ console.log(health.metrics.tasksCompleted); // Task count
 
 ## References
 
-- **ADR-001**: Adopt agentic-flow as Core Foundation
-- **SONAAdapter**: `/v3/@claude-flow/integration/src/sona-adapter.ts`
-- **AttentionCoordinator**: `/v3/@claude-flow/integration/src/attention-coordinator.ts`
-- **AgenticFlowBridge**: `/v3/@claude-flow/integration/src/agentic-flow-bridge.ts`
-- **Shared Interfaces**: `/v3/@claude-flow/shared/src/core/interfaces/agent.interface.ts`
+- **ADR-001**: Adopt agentic as Core Foundation
+- **SONAAdapter**: `/v3/@ruflo/integration/src/sona-adapter.ts`
+- **AttentionCoordinator**: `/v3/@ruflo/integration/src/attention-coordinator.ts`
+- **AgenticFlowBridge**: `/v3/@ruflo/integration/src/agentic-bridge.ts`
+- **Shared Interfaces**: `/v3/@ruflo/shared/src/core/interfaces/agent.interface.ts`
 
 ---
 

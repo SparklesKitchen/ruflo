@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document defines the **performance benchmarking and optimization strategy** for Claude-Flow v3. Agent #14 (Performance Engineer) leads this effort, with support from all other agents.
+This document defines the **performance benchmarking and optimization strategy** for Codex-Flow v3. Agent #14 (Performance Engineer) leads this effort, with support from all other agents.
 
 ---
 
@@ -59,7 +59,7 @@ benchmarks/
 │   └── rl-training-step.bench.ts
 │
 ├── integration/
-│   ├── agentic-flow-bridge.bench.ts
+│   ├── agentic-bridge.bench.ts
 │   ├── mcp-tool-execution.bench.ts
 │   └── hook-execution.bench.ts
 │
@@ -174,7 +174,7 @@ describe('CLI Startup Benchmarks', () => {
       'CLI Cold Start',
       async () => {
         await new Promise<void>((resolve, reject) => {
-          const proc = spawn('npx', ['claude-flow', '--version'], {
+          const proc = spawn('npx', ['codex', '--version'], {
             env: { ...process.env, NODE_ENV: 'production' }
           });
           proc.on('close', (code) => code === 0 ? resolve() : reject());
@@ -410,7 +410,7 @@ describe('Memory Write Benchmarks', () => {
 ```typescript
 // benchmarks/attention/flash-attention.bench.ts
 import { benchmark } from '../framework/benchmark';
-import { AttentionCoordinator } from 'agentic-flow/core';
+import { AttentionCoordinator } from 'agentic/core';
 
 describe('Flash Attention Benchmarks', () => {
   let coordinator: AttentionCoordinator;
@@ -601,9 +601,9 @@ describe('Swarm Coordination Benchmarks', () => {
 
 ```typescript
 // Before: Eager loading (slow startup)
-import { SONA } from 'agentic-flow/sona';
-import { AgentDB } from 'agentic-flow/agentdb';
-import { Attention } from 'agentic-flow/attention';
+import { SONA } from 'agentic/sona';
+import { AgentDB } from 'agentic/agentdb';
+import { Attention } from 'agentic/attention';
 
 // After: Lazy loading (fast startup)
 let sona: SONA | undefined;
@@ -612,7 +612,7 @@ let attention: Attention | undefined;
 
 export async function getSONA(): Promise<SONA> {
   if (!sona) {
-    const { SONA } = await import('agentic-flow/sona');
+    const { SONA } = await import('agentic/sona');
     sona = new SONA();
     await sona.initialize();
   }

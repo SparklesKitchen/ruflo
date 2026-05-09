@@ -15,7 +15,7 @@ All vector operations go through the `ruvector` CLI, pinned to **0.2.25**. Insta
 npm ls ruvector 2>/dev/null | grep '0.2.25' || npm install ruvector@0.2.25
 
 # MCP server (register once with pinned version)
-claude mcp add ruvector -- npx -y ruvector@0.2.25 mcp start
+codex mcp add ruvector -- npx -y ruvector@0.2.25 mcp start
 
 # Hooks system (self-learning) — note: positional args, NOT --task / --file
 npx -y ruvector@0.2.25 hooks init --pretrain --build-agents quality
@@ -47,10 +47,10 @@ npx -y ruvector@0.2.25 info
 
 ruvector@0.2.25 exposes 103 MCP tools. Register the MCP server with the pinned version:
 ```bash
-claude mcp add ruvector -- npx -y ruvector@0.2.25 mcp start
+codex mcp add ruvector -- npx -y ruvector@0.2.25 mcp start
 ```
 
-Verify after registration: `claude mcp list | grep ruvector`.
+Verify after registration: `codex mcp list | grep ruvector`.
 
 Key tool categories:
 - `hooks_route`, `hooks_route_enhanced` — smart agent routing
@@ -175,8 +175,8 @@ The experimental neural substrate (`embed neural --help`) may expose richer proj
 
 Store vector configurations and search patterns in AgentDB:
 ```bash
-npx @claude-flow/cli@latest memory store --namespace vector-patterns --key "hnsw-config-DOMAIN" --value "M=16,efC=200,efS=50"
-npx @claude-flow/cli@latest memory search --query "HNSW configuration" --namespace vector-patterns
+npx @ruflo/cli@latest memory store --namespace vector-patterns --key "hnsw-config-DOMAIN" --value "M=16,efC=200,efS=50"
+npx @ruflo/cli@latest memory search --query "HNSW configuration" --namespace vector-patterns
 ```
 
 ### Related Plugins
@@ -190,5 +190,5 @@ npx @claude-flow/cli@latest memory search --query "HNSW configuration" --namespa
 
 After completing tasks, store successful patterns:
 ```bash
-npx @claude-flow/cli@latest hooks post-task --task-id "TASK_ID" --success true --train-neural true
+npx @ruflo/cli@latest hooks post-task --task-id "TASK_ID" --success true --train-neural true
 ```

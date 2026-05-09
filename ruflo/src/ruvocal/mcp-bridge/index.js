@@ -83,19 +83,19 @@ const TOOL_GROUPS = {
     prefixes: ["neural_", "daa_"],
   },
 
-  // --- Agentic Flow (agentic-flow@alpha) ---
-  "agentic-flow": {
+  // --- Agentic Flow (agentic@alpha) ---
+  "agentic": {
     enabled: process.env.MCP_GROUP_AGENTIC_FLOW === "true",
-    description: "Execute 66+ specialized agents, batch code editing, AgentDB patterns (agentic-flow)",
-    source: "agentic-flow",
+    description: "Execute 66+ specialized agents, batch code editing, AgentDB patterns (agentic)",
+    source: "agentic",
     prefixes: ["agentic_flow_", "agent_booster_", "agentdb_"],
   },
 
-  // --- Claude Code ---
-  "claude-code": {
-    enabled: process.env.MCP_GROUP_CLAUDE_CODE === "true",
-    description: "Anthropic Claude Code — file editing, bash execution, code analysis (requires ANTHROPIC_API_KEY)",
-    source: "claude",
+  // --- Codex ---
+  "codex-code": {
+    enabled: process.env.MCP_GROUP_CODEX === "true",
+    description: "OpenAI Codex — file editing, bash execution, code analysis (requires OPENAI_API_KEY)",
+    source: "codex",
   },
 
   // --- Gemini MCP ---
@@ -214,7 +214,7 @@ class StdioMcpClient {
       this.pending.set(id, { resolve, reject });
       this.process.stdin.write(msg);
       // initialize is the cold-start gate for backends like ruflo/ruvector
-      // which boot a full claude-flow / ruvector kernel — on Cloud Run with
+      // which boot a full codex / ruvector kernel — on Cloud Run with
       // npx fetching artifacts it can take 45-60s. Other RPC methods are
       // post-init and stay snappy.
       const timeoutMs = method === "initialize" ? 120000 : 30000;
@@ -258,8 +258,8 @@ class StdioMcpClient {
 const BACKEND_DEFS = [
   { name: "ruvector",       command: "npx", args: ["-y", "ruvector", "mcp", "start"],   groups: ["intelligence"] },
   { name: "ruflo",          command: "npx", args: ["-y", "ruflo", "mcp", "start"],      groups: ["agents", "memory", "devtools", "security", "browser", "neural"] },
-  { name: "agentic-flow",   command: "npx", args: ["-y", "agentic-flow@alpha", "mcp", "start"], groups: ["agentic-flow"] },
-  { name: "claude",         command: "claude", args: ["mcp", "serve"],                  groups: ["claude-code"] },
+  { name: "agentic",   command: "npx", args: ["-y", "agentic@alpha", "mcp", "start"], groups: ["agentic"] },
+  { name: "codex",         command: "codex", args: ["mcp", "serve"],                  groups: ["codex-code"] },
   { name: "gemini-mcp",     command: "npx", args: ["-y", "gemini-mcp-server"],          groups: ["gemini"] },
   { name: "codex",          command: "npx", args: ["-y", "@openai/codex", "mcp", "serve"], groups: ["codex"] },
 ];
@@ -363,7 +363,7 @@ const BUILTIN_TOOLS = [
       properties: {
         topic: {
           type: "string",
-          enum: ["overview", "groups", "intelligence", "agents", "memory", "devtools", "security", "browser", "neural", "agentic-flow", "claude-code", "gemini", "codex", "tool"],
+          enum: ["overview", "groups", "intelligence", "agents", "memory", "devtools", "security", "browser", "neural", "agentic", "codex-code", "gemini", "codex", "tool"],
           description: "What to get guidance on. Use 'overview' for capabilities summary, 'groups' to see all tool groups and their status, or a specific group name for detailed usage instructions.",
           default: "overview",
         },
@@ -555,28 +555,28 @@ Neural network operations and Decentralized Autonomous Agents.
 - Autonomous agent workflows
 - Knowledge transfer between agents`,
 
-    "agentic-flow": `# Agentic Flow Group (agentic-flow@alpha)
+    "agentic": `# Agentic Flow Group (agentic@alpha)
 
 Execute 66+ specialized agents with boosted code editing and AgentDB.
 
 ## Key Tools
-- **agentic-flow__agentic_flow_agent** — Execute any of 66+ specialized agents
-- **agentic-flow__agentic_flow_list_agents** — List available agent types
-- **agentic-flow__agent_booster_edit_file** — 352x faster code editing
-- **agentic-flow__agent_booster_batch_edit** — Multi-file refactoring
-- **agentic-flow__agentdb_pattern_store** — Store reasoning patterns
-- **agentic-flow__agentdb_pattern_search** — Search similar patterns
+- **agentic__agentic_flow_agent** — Execute any of 66+ specialized agents
+- **agentic__agentic_flow_list_agents** — List available agent types
+- **agentic__agent_booster_edit_file** — 352x faster code editing
+- **agentic__agent_booster_batch_edit** — Multi-file refactoring
+- **agentic__agentdb_pattern_store** — Store reasoning patterns
+- **agentic__agentdb_pattern_search** — Search similar patterns
 
 ## When to Use
 - Complex code generation with specialized agents
 - Batch code refactoring across files
 - Agent selection when you need the right specialist`,
 
-    "claude-code": `# Claude Code Group
+    "codex-code": `# Codex Group
 
-Anthropic Claude Code MCP server — full coding agent capabilities.
+OpenAI Codex MCP server — full coding agent capabilities.
 
-Requires: ANTHROPIC_API_KEY environment variable.
+Requires: OPENAI_API_KEY environment variable.
 
 ## Capabilities
 - File reading and editing
@@ -996,8 +996,8 @@ const GROUP_DISPLAY_NAMES = {
   security: "Security & Safety",
   browser: "Browser Automation",
   neural: "Neural & DAA",
-  "agentic-flow": "Agentic Flow",
-  "claude-code": "Claude Code",
+  "agentic": "Agentic Flow",
+  "codex-code": "Codex",
   gemini: "Gemini",
   codex: "Codex",
 };

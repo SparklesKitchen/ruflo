@@ -1,7 +1,7 @@
 ---
 name: cost-benchmark
 description: Run the corpus benchmark — booster locally, optional Gemini/Sonnet/Opus baselines — and persist a verifiable measured-vs-claimed table
-argument-hint: "[--llm] [--anthropic]"
+argument-hint: "[--llm] [--openai]"
 allowed-tools: Bash
 ---
 
@@ -14,7 +14,7 @@ Runs `scripts/bench.mjs` against the structural+adversarial corpus and writes pe
 - Before publishing a release — verify booster win rate didn't regress.
 - After expanding `bench/booster-corpus.json` — confirm new cases route correctly.
 - When auditing a "claimed upstream" tag — flip it to "verified" once the bench supports it.
-- On a cost question ("is Sonnet 4.6 cheaper than Opus 4.7 for these tasks?") — re-run with `BENCH_ANTHROPIC=1`.
+- On a cost question ("is Sonnet 4.6 cheaper than Opus 4.7 for these tasks?") — re-run with `BENCH_OpenAI=1`.
 
 ## Steps
 
@@ -23,7 +23,7 @@ Runs `scripts/bench.mjs` against the structural+adversarial corpus and writes pe
    ```bash
    ( cd v3 && node ../plugins/ruflo-cost-tracker/scripts/bench.mjs )                  # booster only — free, ~85 ms
    ( cd v3 && BENCH_LLM_BASELINE=1 node ../plugins/ruflo-cost-tracker/scripts/bench.mjs ) # + Gemini 2.0 Flash (cheap)
-   ( cd v3 && BENCH_LLM_BASELINE=1 BENCH_ANTHROPIC=1 \
+   ( cd v3 && BENCH_LLM_BASELINE=1 BENCH_OpenAI=1 \
         node ../plugins/ruflo-cost-tracker/scripts/bench.mjs )                          # + Sonnet 4.6 + Opus 4.7
    ```
 
@@ -47,12 +47,12 @@ Runs `scripts/bench.mjs` against the structural+adversarial corpus and writes pe
 | `BENCH_LLM_BASELINE` | unset | `=1` runs the OpenAI-compat baseline |
 | `BENCH_LLM_MODEL` | `models/gemini-2.0-flash` | Override the OpenAI-compat model |
 | `BENCH_LLM_BASE_URL` | Gemini OpenAI shim | Override endpoint |
-| `BENCH_ANTHROPIC` | unset | `=1` runs Anthropic baseline (Sonnet 4.6 + Opus 4.7) |
-| `BENCH_ANTHROPIC_MODELS` | `claude-sonnet-4-6,claude-opus-4-7` | Comma-separated Claude IDs |
+| `BENCH_OpenAI` | unset | `=1` runs OpenAI baseline (Sonnet 4.6 + Opus 4.7) |
+| `BENCH_OpenAI_MODELS` | `codex-sonnet-4-6,codex-opus-4-7` | Comma-separated Codex IDs |
 | `BENCH_OUT` | timestamped file | Override output path |
 | `BENCH_QUIET=1` | unset | Suppress markdown summary |
 
-API keys auto-pulled from `gcloud secrets` (`GOOGLE_AI_API_KEY`, `ANTHROPIC_API_KEY`); override with `BENCH_LLM_API_KEY` / `BENCH_ANTHROPIC_API_KEY`.
+API keys auto-pulled from `gcloud secrets` (`GOOGLE_AI_API_KEY`, `OPENAI_API_KEY`); override with `BENCH_LLM_API_KEY` / `BENCH_OPENAI_API_KEY`.
 
 ## Cross-references
 

@@ -4,13 +4,13 @@
 
 ## Date: 2026-04-29
 
-## Authors: Claude Flow Team
+## Authors: Ruflo Team
 
 ## Context
 
-Claude Flow v3.5 orchestrates AI agents across development, security, and infrastructure domains -- but lacks a first-class integration with physical device fleets. The Cognitum platform provides AI-powered hardware (the Seed appliance) with on-device vector stores, Ed25519 cryptographic identity, OTA firmware updates, mesh networking, and MCP protocol integration. The `@cognitum-one/sdk` (v0.2.1) exposes 12 typed seed endpoints, mesh routing with failover, mDNS discovery, and a cloud control plane -- all capabilities that map naturally onto Ruflo's agent/swarm model.
+Ruflo v3.5 orchestrates AI agents across development, security, and infrastructure domains -- but lacks a first-class integration with physical device fleets. The Cognitum platform provides AI-powered hardware (the Seed appliance) with on-device vector stores, Ed25519 cryptographic identity, OTA firmware updates, mesh networking, and MCP protocol integration. The `@cognitum-one/sdk` (v0.2.1) exposes 12 typed seed endpoints, mesh routing with failover, mDNS discovery, and a cloud control plane -- all capabilities that map naturally onto Ruflo's agent/swarm model.
 
-Today, managing IoT device fleets requires switching between platform-specific dashboards, SSH sessions, and custom scripts. There is no way to say "deploy firmware v2.3 to all devices in the warehouse zone with <85% confidence telemetry anomaly score" and have an AI agent swarm coordinate that safely. This ADR defines `@claude-flow/plugin-iot-cognitum` -- the bridge between Ruflo's agent orchestration and Cognitum's device fleet.
+Today, managing IoT device fleets requires switching between platform-specific dashboards, SSH sessions, and custom scripts. There is no way to say "deploy firmware v2.3 to all devices in the warehouse zone with <85% confidence telemetry anomaly score" and have an AI agent swarm coordinate that safely. This ADR defines `@ruflo/plugin-iot-cognitum` -- the bridge between Ruflo's agent orchestration and Cognitum's device fleet.
 
 ### Strategic Framing
 
@@ -20,7 +20,7 @@ Every IoT platform scales devices. Nobody is defining how **AI agents reason abo
 
 The Cognitum Seed's on-device vector store (`store.query()`, `store.ingest()`) becomes an extension of AgentDB's HNSW-indexed memory. The Seed's mesh networking (`mesh.status()`, `mesh.peers()`, `mesh.swarmStatus()`) maps directly to Ruflo's swarm topology. The Seed's Ed25519 identity and pairing protocol map to Ruflo's trust model. The Seed's witness chain (`witness.chain()`) provides cryptographic auditability that extends Ruflo's audit service.
 
-If Claude Flow ships this, every Cognitum Seed becomes a Ruflo agent. Every device fleet becomes a Ruflo swarm. The physical world joins the agent mesh.
+If Ruflo ships this, every Cognitum Seed becomes a Ruflo agent. Every device fleet becomes a Ruflo swarm. The physical world joins the agent mesh.
 
 ### Architecture Evaluation
 
@@ -34,9 +34,9 @@ If Claude Flow ships this, every Cognitum Seed becomes a Ruflo agent. Every devi
 
 ### Business Impact
 
-**Fleet-as-swarm** -- A logistics company manages 500 warehouse sensors as a Ruflo swarm. Anomaly detection triggers automatic recalibration via agent coordination. No custom dashboard needed -- Claude Code is the interface.
+**Fleet-as-swarm** -- A logistics company manages 500 warehouse sensors as a Ruflo swarm. Anomaly detection triggers automatic recalibration via agent coordination. No custom dashboard needed -- Codex is the interface.
 
-**Edge-cloud federation** -- Edge Seed devices federate with cloud Ruflo installations using the `@claude-flow/plugin-agent-federation` trust model. Telemetry stays on-premise; only anomaly signatures cross the boundary (PII-gated via the federation plugin).
+**Edge-cloud federation** -- Edge Seed devices federate with cloud Ruflo installations using the `@ruflo/plugin-agent-federation` trust model. Telemetry stays on-premise; only anomaly signatures cross the boundary (PII-gated via the federation plugin).
 
 **Firmware-as-deployment** -- OTA firmware updates use the same deployment pipeline as software releases: staged rollout, canary checks, automatic rollback. The `deployment` CLI commands extend naturally.
 
@@ -48,7 +48,7 @@ Every Cognitum Seed is modelled as a Ruflo agent with hardware capabilities. The
 
 ## Decision
 
-Build `@claude-flow/plugin-iot-cognitum` as a first-class Claude Flow plugin that bridges Cognitum Seed device fleets into the Ruflo agent/swarm model with device trust scoring, telemetry-driven anomaly detection, fleet-aware OTA orchestration, and edge-cloud federation.
+Build `@ruflo/plugin-iot-cognitum` as a first-class Ruflo plugin that bridges Cognitum Seed device fleets into the Ruflo agent/swarm model with device trust scoring, telemetry-driven anomaly detection, fleet-aware OTA orchestration, and edge-cloud federation.
 
 ---
 
@@ -159,7 +159,7 @@ Cognitum Seed Device                      Ruflo Plugin                        Ag
 
 | Decision | Rationale |
 |----------|-----------|
-| **Plugin, not core** | IoT is a specialized domain; ships as `@claude-flow/plugin-iot-cognitum`. |
+| **Plugin, not core** | IoT is a specialized domain; ships as `@ruflo/plugin-iot-cognitum`. |
 | **Device = Agent** | Treating devices as agents enables swarm topology, trust scoring, and capability gating without new abstractions. |
 | **SeedClient per device** | The SDK's `PeerSet` handles mesh routing; one `SeedClient` can manage N seeds via mesh. The plugin creates one client per logical fleet. |
 | **mDNS + Explicit discovery** | Inherits the SDK's `DiscoveryProvider` interface. `MdnsDiscovery` for LAN, `ExplicitDiscovery` for WAN, `TailscaleDiscovery` for overlay networks. |
@@ -1328,13 +1328,13 @@ The federation plugin's trust model (0-4) operates at the installation level; th
 ### 13.1 File Layout
 
 ```
-v3/@claude-flow/plugin-iot-cognitum/
+v3/@ruflo/plugin-iot-cognitum/
   package.json
   tsconfig.json
   vitest.config.ts
   src/
     index.ts                           # Plugin entry point
-    plugin.ts                          # IoTCognitumPlugin class (ClaudeFlowPlugin)
+    plugin.ts                          # IoTCognitumPlugin class (CodexFlowPlugin)
     mcp-tools.ts                       # MCP tool definitions (18 tools)
     cli-commands.ts                    # CLI command definitions (30+ commands)
 
@@ -1392,9 +1392,9 @@ v3/@claude-flow/plugin-iot-cognitum/
       anomaly-detection-engine.test.ts
       witness-verification-service.test.ts
     integration/
-      device-registration-flow.test.ts
-      firmware-deployment-flow.test.ts
-      telemetry-anomaly-flow.test.ts
+      device-registration.test.ts
+      firmware-deployment.test.ts
+      telemetry-anomaly.test.ts
       fleet-topology-sync.test.ts
     acceptance/
       iot-compliance-iec62443.test.ts
@@ -1404,12 +1404,12 @@ v3/@claude-flow/plugin-iot-cognitum/
 ### 13.2 Plugin Registration
 
 ```typescript
-export class IoTCognitumPlugin implements ClaudeFlowPlugin {
-  readonly name = '@claude-flow/plugin-iot-cognitum';
+export class IoTCognitumPlugin implements CodexFlowPlugin {
+  readonly name = '@ruflo/plugin-iot-cognitum';
   readonly version = '1.0.0-alpha.1';
   readonly description = 'Cognitum Seed IoT device fleet management with agent-device duality';
-  readonly author = 'Claude Flow Team';
-  readonly dependencies = ['@claude-flow/security', '@claude-flow/memory'];
+  readonly author = 'Ruflo Team';
+  readonly dependencies = ['@ruflo/security', '@ruflo/memory'];
 
   readonly permissions: PluginPermissions = {
     network: true,       // SeedClient HTTP/TLS connections
@@ -1426,7 +1426,7 @@ export class IoTCognitumPlugin implements ClaudeFlowPlugin {
     // 3. Initialize CloudControlPlane (if API key provided)
     // 4. Create domain services
     // 5. Create IoTCoordinator
-    // 6. Register IoT claim types with @claude-flow/claims
+    // 6. Register IoT claim types with @ruflo/claims
     // 7. Register hooks and background workers
     // 8. Register CLI commands and MCP tools
     // 9. Start health probe worker
@@ -1450,9 +1450,9 @@ export class IoTCognitumPlugin implements ClaudeFlowPlugin {
 
 ```json
 {
-  "name": "@claude-flow/plugin-iot-cognitum",
+  "name": "@ruflo/plugin-iot-cognitum",
   "version": "1.0.0-alpha.1",
-  "description": "Cognitum Seed IoT device fleet management for Claude Flow",
+  "description": "Cognitum Seed IoT device fleet management for Ruflo",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -1469,9 +1469,9 @@ export class IoTCognitumPlugin implements ClaudeFlowPlugin {
   },
   "dependencies": {
     "@cognitum-one/sdk": "^0.2.1",
-    "@claude-flow/shared": "workspace:*",
-    "@claude-flow/security": "workspace:*",
-    "@claude-flow/memory": "workspace:*"
+    "@ruflo/shared": "workspace:*",
+    "@ruflo/security": "workspace:*",
+    "@ruflo/memory": "workspace:*"
   },
   "peerDependencies": {
     "multicast-dns": "^7.2.5"
@@ -1491,7 +1491,7 @@ export class IoTCognitumPlugin implements ClaudeFlowPlugin {
   },
   "license": "MIT",
   "keywords": [
-    "claude-flow",
+    "codex",
     "cognitum",
     "iot",
     "seed",
@@ -1512,7 +1512,7 @@ export class IoTCognitumPlugin implements ClaudeFlowPlugin {
 **Goal:** Plugin skeleton, single device registration, status monitoring, trust scoring.
 
 **Deliverables:**
-- Plugin structure with `ClaudeFlowPlugin` implementation
+- Plugin structure with `CodexFlowPlugin` implementation
 - `SeedClientFactory` wrapping `@cognitum-one/sdk` v0.2.1
 - `DeviceLifecycleService`: register, pair, unpair, status, heartbeat
 - `DeviceTrustEvaluator` with 6-component scoring formula
@@ -1532,9 +1532,9 @@ export class IoTCognitumPlugin implements ClaudeFlowPlugin {
 
 **Integration Points:**
 - `@cognitum-one/sdk`: `SeedClient`, `SeedClientOptions`, `StatusResource`, `PairResource`, `IdentityResource`
-- `@claude-flow/shared`: `ClaudeFlowPlugin`, `PluginContext`
-- `@claude-flow/memory`: AgentDB for device state
-- `@claude-flow/security`: `TokenGenerator` for generating client names
+- `@ruflo/shared`: `CodexFlowPlugin`, `PluginContext`
+- `@ruflo/memory`: AgentDB for device state
+- `@ruflo/security`: `TokenGenerator` for generating client names
 
 ### Phase 2: Telemetry & Anomaly Detection (Weeks 4-6) -- "Seeing Patterns"
 
@@ -1561,8 +1561,8 @@ export class IoTCognitumPlugin implements ClaudeFlowPlugin {
 
 **Integration Points:**
 - `@cognitum-one/sdk`: `StoreResource` (query, ingest, status)
-- `@claude-flow/memory`: AgentDB HNSW indexing for telemetry vectors
-- `@claude-flow/hooks`: Neural pattern hooks for SONA learning
+- `@ruflo/memory`: AgentDB HNSW indexing for telemetry vectors
+- `@ruflo/hooks`: Neural pattern hooks for SONA learning
 
 ### Phase 3: Fleet Management & Firmware (Weeks 7-10) -- "Managing Fleets"
 
@@ -1590,8 +1590,8 @@ export class IoTCognitumPlugin implements ClaudeFlowPlugin {
 
 **Integration Points:**
 - `@cognitum-one/sdk`: `OtaResource`, `MeshResource`, `WitnessResource`, `CustodyResource`
-- `@claude-flow/swarm`: Swarm topology mapping
-- `@claude-flow/guidance/authority`: AuthorityGate for fleet-wide deploys
+- `@ruflo/swarm`: Swarm topology mapping
+- `@ruflo/guidance/authority`: AuthorityGate for fleet-wide deploys
 
 ### Phase 4: Compliance & Federation (Weeks 11-14) -- "Enterprise Ready"
 
@@ -1616,8 +1616,8 @@ export class IoTCognitumPlugin implements ClaudeFlowPlugin {
 - Cloud control plane registers devices and checks firmware updates
 
 **Integration Points:**
-- `@claude-flow/plugin-agent-federation`: Trust model, PII pipeline
-- `@claude-flow/aidefence`: Telemetry PII scanning
+- `@ruflo/plugin-agent-federation`: Trust model, PII pipeline
+- `@ruflo/aidefence`: Telemetry PII scanning
 - `@cognitum-one/sdk`: `Cognitum` (cloud client), `MdnsDiscovery`, `TailscaleDiscovery`
 
 ### Phase 5: Production Hardening (Weeks 15-18) -- "Ship It"
@@ -1630,15 +1630,15 @@ export class IoTCognitumPlugin implements ClaudeFlowPlugin {
 - Circuit breaker for unhealthy devices (integrates with SDK's PeerSet health)
 - Load test: 100 devices, 1000 telemetry readings/minute
 - IPFS registry entry for plugin distribution
-- npm publish as `@claude-flow/plugin-iot-cognitum`
-- Skills: Claude Code skills for common IoT workflows
+- npm publish as `@ruflo/plugin-iot-cognitum`
+- Skills: Codex skills for common IoT workflows
 
 **Success Criteria:**
 - Telemetry ingest p99 <50ms at 1000 readings/min across 100 devices
 - HNSW search p99 <10ms for telemetry similarity
 - Zero data loss in 24-hour soak test with device churn
 - All tests green (unit, integration, acceptance, load)
-- Plugin installable via `npx @claude-flow/cli plugins install @claude-flow/plugin-iot-cognitum`
+- Plugin installable via `npx @ruflo/cli plugins install @ruflo/plugin-iot-cognitum`
 
 ---
 
@@ -1715,7 +1715,7 @@ Pass criteria: All verify statements pass.
 
 1. **Device-agent duality** -- No agent framework treats physical devices as first-class swarm peers with the same trust model, capability gating, and coordination patterns as software agents.
 
-2. **Vector store federation** -- The Cognitum Seed's on-device HNSW store extends AgentDB's memory. A query that starts in Claude Code can search across both software agent memory and physical device sensor data in a single HNSW traversal.
+2. **Vector store federation** -- The Cognitum Seed's on-device HNSW store extends AgentDB's memory. A query that starts in Codex can search across both software agent memory and physical device sensor data in a single HNSW traversal.
 
 3. **Firmware-as-deployment** -- OTA firmware updates follow the same staged rollout, canary verification, and anomaly-gated progression as software deployments. The infrastructure is unified.
 
@@ -1731,7 +1731,7 @@ Pass criteria: All verify statements pass.
 
 | Component | Existing File / Package | Integration |
 |-----------|------------------------|-------------|
-| Plugin interface | `shared/src/plugin-interface.ts` | Implements `ClaudeFlowPlugin` |
+| Plugin interface | `shared/src/plugin-interface.ts` | Implements `CodexFlowPlugin` |
 | Plugin loader | `shared/src/plugin-loader.ts` | Loaded via `PluginLoader.loadPlugin()` |
 | Cognitum SDK | `@cognitum-one/sdk` v0.2.1 | `SeedClient`, `Cognitum`, discovery providers |
 | Security module | `security/src/index.ts` | `TokenGenerator` for client name generation |
@@ -1750,7 +1750,7 @@ Pass criteria: All verify statements pass.
 ## 19. Consequences
 
 **Positive:**
-- Claude Flow becomes the first agent framework with native IoT device fleet management.
+- Ruflo becomes the first agent framework with native IoT device fleet management.
 - Every Cognitum Seed becomes a Ruflo agent, unifying the physical and software agent mesh.
 - SONA learns from device behavior, enabling predictive maintenance without custom ML pipelines.
 - Compliance (IEC 62443, NIST IoT) is structural, not a checklist bolted on after the fact.

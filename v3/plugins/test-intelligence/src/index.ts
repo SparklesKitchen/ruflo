@@ -1,7 +1,7 @@
 /**
- * @claude-flow/plugin-test-intelligence
+ * @ruflo/plugin-test-intelligence
  *
- * AI-powered test intelligence plugin for Claude Flow V3.
+ * AI-powered test intelligence plugin for Ruflo V3.
  *
  * Features:
  * - Predictive test selection using reinforcement learning
@@ -35,16 +35,16 @@ export { TestSonaBridge, createTestSonaBridge } from './bridges/sona-bridge.js';
 
 // Plugin metadata
 export const pluginMetadata = {
-  name: '@claude-flow/plugin-test-intelligence',
+  name: '@ruflo/plugin-test-intelligence',
   version: '3.0.0-alpha.1',
   description: 'AI-powered test intelligence for predictive selection, flaky detection, and coverage optimization',
   category: 'testing',
   tags: ['testing', 'ci-optimization', 'machine-learning', 'coverage', 'mutation-testing'],
-  author: 'Claude Flow Team',
+  author: 'Ruflo Team',
   license: 'MIT',
-  repository: 'https://github.com/ruvnet/claude-flow',
+  repository: 'https://github.com/SparklesKitchen/ruflo',
   engines: {
-    'claude-flow': '>=3.0.0-alpha.1',
+    'codex': '>=3.0.0-alpha.1',
     node: '>=18.0.0',
   },
   capabilities: {
@@ -127,7 +127,7 @@ export async function initializePlugin(
 }
 
 /**
- * Plugin entry point for Claude Flow plugin loader
+ * Plugin entry point for Ruflo plugin loader
  */
 export default {
   metadata: pluginMetadata,

@@ -10,13 +10,13 @@ bad()  { printf "FAIL: %s\n" "$1"; FAIL=$((FAIL+1)); }
 
 # 1. plugin.json bump + new keywords
 step "1. plugin.json declares 0.3.0 with new keywords"
-v=$(grep -E '"version"' "$ROOT/.claude-plugin/plugin.json" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+v=$(grep -E '"version"' "$ROOT/.codex-plugin/plugin.json" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
 if [[ "$v" != "0.3.0" ]]; then
   bad "expected 0.3.0, got '$v'"
 else
   miss=""
   for k in lifecycle compliance causal-graph mcp; do
-    grep -q "\"$k\"" "$ROOT/.claude-plugin/plugin.json" || miss="$miss $k"
+    grep -q "\"$k\"" "$ROOT/.codex-plugin/plugin.json" || miss="$miss $k"
   done
   [[ -z "$miss" ]] && ok || bad "missing keywords:$miss"
 fi
@@ -55,9 +55,9 @@ grep -q "adr-patterns" "$ROOT/skills/adr-create/SKILL.md" || miss="$miss adr-cre
 grep -q "adr-patterns" "$ROOT/skills/adr-index/SKILL.md" || miss="$miss adr-index"
 [[ -z "$miss" ]] && ok || bad "missing in:$miss"
 
-# 6. README pins to @claude-flow/cli v3.6
-step "6. README pins @claude-flow/cli to v3.6"
-grep -qE "@claude-flow/cli.*v3\.6|v3\.6.*claude-flow/cli" "$ROOT/README.md" \
+# 6. README pins to @ruflo/cli v3.6
+step "6. README pins @ruflo/cli to v3.6"
+grep -qE "@ruflo/cli.*v3\.6|v3\.6.*codex/cli" "$ROOT/README.md" \
   && ok || bad "Compatibility pin to v3.6 missing"
 
 # 7. README has namespace coordination section

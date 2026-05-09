@@ -1,4 +1,4 @@
-# Claude-Flow V3 Plugin System
+# Codex-Flow V3 Plugin System
 
 > Domain-Driven Design Plugin-Based Architecture (ADR-004)
 
@@ -14,9 +14,9 @@ The V3 Plugin System implements a **microkernel architecture** enabling modular 
 ## Quick Start
 
 ```typescript
-import { ClaudeFlowPlugin, PluginContext } from '@claude-flow/shared';
+import { CodexFlowPlugin, PluginContext } from '@ruflo/shared';
 
-class MyPlugin implements ClaudeFlowPlugin {
+class MyPlugin implements CodexFlowPlugin {
   readonly name = 'my-plugin';
   readonly version = '1.0.0';
 
@@ -57,12 +57,12 @@ class MyPlugin implements ClaudeFlowPlugin {
 
 ## Core Components
 
-### 1. ClaudeFlowPlugin Interface
+### 1. CodexFlowPlugin Interface
 
 All plugins must implement this interface:
 
 ```typescript
-interface ClaudeFlowPlugin {
+interface CodexFlowPlugin {
   // Required
   readonly name: string;
   readonly version: string;
@@ -156,7 +156,7 @@ registerAgentTypes(): AgentTypeDefinition[] {
     name: 'Custom Agent',
     description: 'Specialized agent for custom tasks',
     defaultConfig: {
-      model: 'claude-3-opus',
+      model: 'codex-3-opus',
       maxTokens: 4096,
     },
     requiredCapabilities: ['custom-capability'],
@@ -272,7 +272,7 @@ uninitialized → initializing → initialized → shutting-down → shutdown
 Plugins can declare dependencies on other plugins:
 
 ```typescript
-class DependentPlugin implements ClaudeFlowPlugin {
+class DependentPlugin implements CodexFlowPlugin {
   readonly name = 'dependent-plugin';
   readonly version = '1.0.0';
   readonly dependencies = ['base-plugin', 'auth-plugin'];
@@ -291,7 +291,7 @@ The PluginLoader:
 
 ## Official Plugins
 
-Located in `@claude-flow/shared/src/plugins/official/`:
+Located in `@ruflo/shared/src/plugins/official/`:
 
 ### Maestro Plugin
 
@@ -310,7 +310,7 @@ Collective intelligence coordination:
 ## Error Handling
 
 ```typescript
-import { PluginError, PluginErrorCode } from '@claude-flow/shared';
+import { PluginError, PluginErrorCode } from '@ruflo/shared';
 
 // Error codes
 type PluginErrorCode =

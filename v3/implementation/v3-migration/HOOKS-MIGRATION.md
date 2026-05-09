@@ -4,7 +4,7 @@
 
 ## Overview
 
-V2 has an extensive hooks system with 42+ hook types across CLI, shell scripts, and agentic-flow integrations. V3 consolidates this into a ReasoningBank-based system with 13 core hooks, but many V2 hooks need migration.
+V2 has an extensive hooks system with 42+ hook types across CLI, shell scripts, and agentic integrations. V3 consolidates this into a ReasoningBank-based system with 13 core hooks, but many V2 hooks need migration.
 
 ## Architecture Comparison
 
@@ -20,7 +20,7 @@ v2/
     ├── hooks/
     │   ├── hook-matchers.ts       # Pattern matching
     │   └── redaction-hook.ts      # Secret redaction
-    ├── services/agentic-flow-hooks/
+    ├── services/agentic-hooks/
     │   ├── hook-manager.ts        # Hook orchestration
     │   ├── llm-hooks.ts          # LLM operations
     │   ├── memory-hooks.ts       # Memory operations
@@ -33,10 +33,10 @@ v2/
 ### V3 Hooks Architecture
 ```
 v3/
-├── @claude-flow/shared/src/hooks/
+├── @ruflo/shared/src/hooks/
 │   ├── registry.ts               # Hook registration
 │   └── executor.ts               # Hook execution
-├── @claude-flow/cli/src/commands/
+├── @ruflo/cli/src/commands/
 │   └── hooks.ts                  # CLI commands
 └── mcp/tools/hooks-tools.ts      # MCP tools (9 hooks)
 ```
@@ -53,8 +53,8 @@ v3/
 | post-command | `bin/hooks.js` | `hooks-tools.ts` | Outcome learning |
 | route | New in V3 | `hooks-tools.ts` | Pattern-based routing |
 | explain | New in V3 | `hooks-tools.ts` | Decision transparency |
-| pretrain | CLAUDE.md | `hooks-tools.ts` | Repository bootstrap |
-| metrics | CLAUDE.md | `hooks-tools.ts` | Learning dashboard |
+| pretrain | AGENTS.md | `hooks-tools.ts` | Repository bootstrap |
+| metrics | AGENTS.md | `hooks-tools.ts` | Learning dashboard |
 | list | New in V3 | `hooks-tools.ts` | Hook listing |
 
 ### CLI Hooks - Missing ❌
@@ -227,7 +227,7 @@ export class GitCommitHook {
     }
 
     // Add co-author
-    modified += '\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>';
+    modified += '\n\n🤖 Generated with [Codex](https://codex.com/codex-code)\n\nCo-Authored-By: Codex <noreply@openai.com>';
 
     return { modified };
   }
@@ -250,7 +250,7 @@ export class GitCommitHook {
 
 #### LLM Hooks (5 missing)
 ```typescript
-// V2: src/services/agentic-flow-hooks/llm-hooks.ts
+// V2: src/services/agentic-hooks/llm-hooks.ts
 // Need to implement:
 export interface LLMHooks {
   preLLMCall(request: LLMRequest): Promise<LLMRequest>;
@@ -263,7 +263,7 @@ export interface LLMHooks {
 
 #### Memory Hooks (5 missing)
 ```typescript
-// V2: src/services/agentic-flow-hooks/memory-hooks.ts
+// V2: src/services/agentic-hooks/memory-hooks.ts
 // Need to implement:
 export interface MemoryHooks {
   preMemoryStore(entry: MemoryEntry): Promise<MemoryEntry>;
@@ -276,7 +276,7 @@ export interface MemoryHooks {
 
 #### Neural Hooks (3 missing)
 ```typescript
-// V2: src/services/agentic-flow-hooks/neural-hooks.ts
+// V2: src/services/agentic-hooks/neural-hooks.ts
 // Need to implement:
 export interface NeuralHooks {
   preNeuralTrain(data: TrainingData): Promise<TrainingData>;
@@ -287,7 +287,7 @@ export interface NeuralHooks {
 
 #### Performance Hooks (4 missing)
 ```typescript
-// V2: src/services/agentic-flow-hooks/performance-hooks.ts
+// V2: src/services/agentic-hooks/performance-hooks.ts
 // Need to implement:
 export interface PerformanceHooks {
   performanceMetric(metric: Metric): Promise<void>;
@@ -299,7 +299,7 @@ export interface PerformanceHooks {
 
 #### Workflow Hooks (5 missing)
 ```typescript
-// V2: src/services/agentic-flow-hooks/workflow-hooks.ts
+// V2: src/services/agentic-hooks/workflow-hooks.ts
 // Need to implement:
 export interface WorkflowHooks {
   workflowStart(workflow: Workflow): Promise<void>;
@@ -328,7 +328,7 @@ export interface VerificationHooks {
 
 ### V2 Hook Manager
 ```typescript
-// V2: src/services/agentic-flow-hooks/hook-manager.ts
+// V2: src/services/agentic-hooks/hook-manager.ts
 class AgenticHookManager {
   private hooks: Map<HookType, HookRegistration[]>;
 
@@ -340,7 +340,7 @@ class AgenticHookManager {
 
 ### V3 Hook Registry
 ```typescript
-// V3: @claude-flow/shared/src/hooks/registry.ts
+// V3: @ruflo/shared/src/hooks/registry.ts
 class HookRegistry {
   register(hook: HookDefinition): void;
   getHook(name: string): HookDefinition | undefined;
@@ -353,7 +353,7 @@ class HookRegistry {
 ### Migration Path
 ```typescript
 // Migration: Adapt V2 hook manager to V3 registry
-import { HookRegistry } from '@claude-flow/shared/hooks';
+import { HookRegistry } from '@ruflo/shared/hooks';
 
 const registry = new HookRegistry();
 
@@ -379,28 +379,28 @@ registry.register({
 ### V2 Hooks CLI
 ```bash
 # V2 Commands
-npx claude-flow hooks pre-task --description "Task" --task-id ID
-npx claude-flow hooks post-task --task-id ID
-npx claude-flow hooks pre-edit --file path
-npx claude-flow hooks post-edit --file path --success true
-npx claude-flow hooks pre-command --command "npm test"
-npx claude-flow hooks post-command --command "npm test" --success true
-npx claude-flow hooks session-end
-npx claude-flow hooks session-restore --session-id latest
-npx claude-flow hooks notify --message "Done" --level success
+npx ruflo hooks pre-task --description "Task" --task-id ID
+npx ruflo hooks post-task --task-id ID
+npx ruflo hooks pre-edit --file path
+npx ruflo hooks post-edit --file path --success true
+npx ruflo hooks pre-command --command "npm test"
+npx ruflo hooks post-command --command "npm test" --success true
+npx ruflo hooks session-end
+npx ruflo hooks session-restore --session-id latest
+npx ruflo hooks notify --message "Done" --level success
 ```
 
 ### V3 Hooks CLI
 ```bash
 # V3 Commands (implemented)
-npx claude-flow hooks pre-edit <filePath>
-npx claude-flow hooks post-edit <filePath> --success true
-npx claude-flow hooks pre-command "<command>"
-npx claude-flow hooks post-command "<command>" --success true
-npx claude-flow hooks route "<task description>"
-npx claude-flow hooks explain "<task description>"
-npx claude-flow hooks pretrain
-npx claude-flow hooks metrics
+npx ruflo hooks pre-edit <filePath>
+npx ruflo hooks post-edit <filePath> --success true
+npx ruflo hooks pre-command "<command>"
+npx ruflo hooks post-command "<command>" --success true
+npx ruflo hooks route "<task description>"
+npx ruflo hooks explain "<task description>"
+npx ruflo hooks pretrain
+npx ruflo hooks metrics
 
 # Missing V3 commands:
 # - hooks pre-task

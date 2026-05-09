@@ -1,6 +1,6 @@
-# Claude-Flow v3 - Architecture Decision Records
+# Codex-Flow v3 - Architecture Decision Records
 
-**Project:** Claude-Flow v3 Reimagining
+**Project:** Codex-Flow v3 Reimagining
 **Date Range:** 2026-01-03 onwards
 **Status:** Proposed
 **Decision Authority:** Architecture Team
@@ -11,7 +11,7 @@
 
 | ADR | Title | Status | Date |
 |-----|-------|--------|------|
-| ADR-001 | Adopt agentic-flow as Core Foundation | In Progress | 2026-01-03 |
+| ADR-001 | Adopt agentic as Core Foundation | In Progress | 2026-01-03 |
 | ADR-002 | Implement Domain-Driven Design Structure | **Implemented** ✅ | 2026-01-03 |
 | ADR-003 | Single Coordination Engine | **Implemented** ✅ | 2026-01-03 |
 | ADR-004 | Plugin-Based Architecture | **Implemented** ✅ | 2026-01-03 |
@@ -28,7 +28,7 @@
 
 ---
 
-## ADR-001: Adopt agentic-flow as Core Foundation
+## ADR-001: Adopt agentic as Core Foundation
 
 **Status:** Proposed
 **Date:** 2026-01-03
@@ -37,21 +37,21 @@
 
 ### Context
 
-Claude-Flow v2.x implements its own agent orchestration, coordination, and execution systems. This duplicates significant functionality available in agentic-flow, our primary dependency. The current architecture treats agentic-flow as an optional add-on rather than the foundation.
+Codex-Flow v2.x implements its own agent orchestration, coordination, and execution systems. This duplicates significant functionality available in agentic, our primary dependency. The current architecture treats agentic as an optional add-on rather than the foundation.
 
 **Current State:**
 - Custom SwarmCoordinator (800+ lines)
 - Custom AgentManager (1,736 lines)
 - Custom session management
 - Custom task execution
-- agentic-flow used only via hooks system
+- agentic used only via hooks system
 - Duplicate implementations increase maintenance burden
 
 **Analysis:**
 ```
 Functionality Overlap:
 ┌─────────────────────────────────────┐
-│  claude-flow   │   agentic-flow     │
+│  codex   │   agentic     │
 ├─────────────────────────────────────┤
 │ SwarmCoordinator │ Swarm System    │ 80% overlap
 │ AgentManager     │ Agent Lifecycle │ 70% overlap
@@ -62,23 +62,23 @@ Functionality Overlap:
 
 ### Decision
 
-**We will adopt agentic-flow as the core foundation for v3, building claude-flow as a specialized extension rather than a parallel implementation.**
+**We will adopt agentic as the core foundation for v3, building codex as a specialized extension rather than a parallel implementation.**
 
 Specifically:
-1. Use agentic-flow's Agent base class for all agents
-2. Use agentic-flow's Swarm system for coordination
-3. Use agentic-flow's task graph execution engine
-4. Extend agentic-flow via plugins and hooks
-5. Contribute improvements back to agentic-flow
+1. Use agentic's Agent base class for all agents
+2. Use agentic's Swarm system for coordination
+3. Use agentic's task graph execution engine
+4. Extend agentic via plugins and hooks
+5. Contribute improvements back to agentic
 6. Maintain abstraction layer for future flexibility
 
 ### Rationale
 
 **Pros:**
 - Eliminate 10,000+ lines of duplicate code
-- Leverage battle-tested agentic-flow patterns
+- Leverage battle-tested agentic patterns
 - Faster development (build on existing)
-- Better integration with agentic-flow ecosystem
+- Better integration with agentic ecosystem
 - Smaller maintenance surface area
 - Community alignment
 
@@ -93,9 +93,9 @@ Specifically:
 
 1. **Status Quo (Keep Custom Implementation)**
    - Rejected: High maintenance burden, duplicate effort
-   - Would require 2-3 FTE just to maintain parity with agentic-flow
+   - Would require 2-3 FTE just to maintain parity with agentic
 
-2. **Fork agentic-flow**
+2. **Fork agentic**
    - Rejected: Fragments ecosystem, loses upstream improvements
    - Creates long-term technical debt
 
@@ -107,31 +107,31 @@ Specifically:
 
 **Phase 1: Foundation (Week 1-2)**
 ```typescript
-// Create agentic-flow adapter layer
-import { Agent as AgenticFlowAgent } from 'agentic-flow';
+// Create agentic adapter layer
+import { Agent as AgenticFlowAgent } from 'agentic';
 
-export class ClaudeFlowAgent extends AgenticFlowAgent {
-  // Add claude-flow specific capabilities
-  async handleClaudeFlowTask(task: ClaudeTask): Promise<TaskResult> {
-    // Claude-specific logic
+export class CodexFlowAgent extends AgenticFlowAgent {
+  // Add codex specific capabilities
+  async handleCodexFlowTask(task: CodexTask): Promise<TaskResult> {
+    // Codex-specific logic
   }
 }
 ```
 
 **Phase 2: Migration (Week 3-8)**
-- Migrate SwarmCoordinator to agentic-flow Swarm
-- Migrate AgentManager to agentic-flow Agent system
-- Migrate task execution to agentic-flow task graph
+- Migrate SwarmCoordinator to agentic Swarm
+- Migrate AgentManager to agentic Agent system
+- Migrate task execution to agentic task graph
 - Keep backward compatibility layer
 
 **Phase 3: Optimization (Week 9-12)**
 - Remove compatibility layer
 - Optimize integration points
-- Contribute improvements to agentic-flow
+- Contribute improvements to agentic
 
 ### Success Metrics
 
-- [ ] <5,000 lines of orchestration code in claude-flow (vs 15,000+ currently)
+- [ ] <5,000 lines of orchestration code in codex (vs 15,000+ currently)
 - [ ] 100% feature parity with v2
 - [ ] <10% performance regression (ideally improvement)
 - [ ] All tests passing
@@ -141,22 +141,22 @@ export class ClaudeFlowAgent extends AgenticFlowAgent {
 
 | Risk | Likelihood | Impact | Mitigation |
 |------|------------|--------|------------|
-| agentic-flow breaking changes | Medium | High | Pin version, maintain adapter |
+| agentic breaking changes | Medium | High | Pin version, maintain adapter |
 | Performance regression | Low | Medium | Benchmark continuously |
 | Feature limitations | Medium | Medium | Contribute upstream |
 | Migration complexity | High | Medium | Phased approach, compatibility layer |
 
 ### Related Decisions
 
-- ADR-004: Plugin architecture enables clean extension of agentic-flow
-- ADR-003: Single coordination engine built on agentic-flow
-- ADR-006: Memory service can leverage agentic-flow memory
+- ADR-004: Plugin architecture enables clean extension of agentic
+- ADR-003: Single coordination engine built on agentic
+- ADR-006: Memory service can leverage agentic memory
 
 ### References
 
-- agentic-flow documentation: https://github.com/agentic-flow
-- Current dependency: package.json line 123: "agentic-flow": "^1.9.4"
-- Integration points: src/services/agentic-flow-hooks/
+- agentic documentation: https://github.com/agentic
+- Current dependency: package.json line 123: "agentic": "^1.9.4"
+- Integration points: src/services/agentic-hooks/
 
 ---
 
@@ -365,7 +365,7 @@ interface ITopologyStrategy {
 }
 
 // Specialized behaviors as plugins
-class HiveMindPlugin implements ClaudeFlowPlugin {
+class HiveMindPlugin implements CodexFlowPlugin {
   enhance(engine: CoordinationEngine): void {
     engine.addConsensusProtocol(new ByzantineConsensus());
     engine.addStrategy('queen-led', new QueenLedStrategy());
@@ -466,7 +466,7 @@ v2 bundles all features (Hive Mind, Maestro, Neural, Verification) into core, ma
 ### Plugin Interface
 
 ```typescript
-interface ClaudeFlowPlugin {
+interface CodexFlowPlugin {
   name: string;
   version: string;
   dependencies?: string[];
@@ -483,7 +483,7 @@ interface ClaudeFlowPlugin {
 }
 
 // Plugin loading
-const core = new ClaudeFlowCore();
+const core = new CodexFlowCore();
 await core.loadPlugin(new HiveMindPlugin());
 await core.initialize();
 ```
@@ -519,7 +519,7 @@ await core.initialize();
 
 ### Context
 
-v2 CLI commands contain business logic, making it hard to use claude-flow programmatically or via other interfaces.
+v2 CLI commands contain business logic, making it hard to use codex programmatically or via other interfaces.
 
 ### Decision
 
@@ -775,7 +775,7 @@ Need to choose default memory backend for v3.
   memory: {
     backend: 'hybrid',
     sqlite: {
-      path: './claude-flow.db'
+      path: './codex.db'
     },
     agentdb: {
       dimensions: 1536, // OpenAI embeddings

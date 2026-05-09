@@ -1,8 +1,8 @@
-# Claude-Flow V3 Complete CLI Reference
+# Codex-Flow V3 Complete CLI Reference
 
 ## Overview
 
-Complete command reference for the claude-flow V3 CLI including hooks, workflow execution, hive-mind coordination, process management, and all subcommands with SONA/MoE/HNSW integration.
+Complete command reference for the codex V3 CLI including hooks, workflow execution, hive-mind coordination, process management, and all subcommands with SONA/MoE/HNSW integration.
 
 ## Table of Contents
 
@@ -24,11 +24,11 @@ The V3 hooks CLI provides command-line access to the hooks system for shell scri
 ## Installation
 
 ```bash
-# Hooks are available through the main claude-flow CLI
-npm install -g @claude-flow/cli
+# Hooks are available through the main codex CLI
+npm install -g @ruflo/cli
 
 # Or via npx
-npx claude-flow hooks --help
+npx ruflo hooks --help
 ```
 
 ## Commands
@@ -40,7 +40,7 @@ npx claude-flow hooks --help
 Get context and suggestions before editing a file.
 
 ```bash
-npx claude-flow hooks pre-edit <filePath> [options]
+npx ruflo hooks pre-edit <filePath> [options]
 
 Options:
   --operation, -o    Edit operation type (create|modify|delete) [default: modify]
@@ -49,9 +49,9 @@ Options:
   --format           Output format (json|text) [default: text]
 
 Examples:
-  npx claude-flow hooks pre-edit src/auth.ts
-  npx claude-flow hooks pre-edit src/new-file.ts --operation create
-  npx claude-flow hooks pre-edit src/legacy.ts --no-suggestions --format json
+  npx ruflo hooks pre-edit src/auth.ts
+  npx ruflo hooks pre-edit src/new-file.ts --operation create
+  npx ruflo hooks pre-edit src/legacy.ts --no-suggestions --format json
 ```
 
 #### post-edit
@@ -59,7 +59,7 @@ Examples:
 Record edit outcome for learning.
 
 ```bash
-npx claude-flow hooks post-edit <filePath> [options]
+npx ruflo hooks post-edit <filePath> [options]
 
 Options:
   --success, -s      Whether edit was successful [required]
@@ -69,11 +69,11 @@ Options:
   --memory-key       Memory storage key (V2 compatibility)
 
 Examples:
-  npx claude-flow hooks post-edit src/auth.ts --success true
-  npx claude-flow hooks post-edit src/auth.ts --success false --outcome "Type error on line 42"
+  npx ruflo hooks post-edit src/auth.ts --success true
+  npx ruflo hooks post-edit src/auth.ts --success false --outcome "Type error on line 42"
 
   # V2 compatibility
-  npx claude-flow hooks post-edit --file src/auth.ts --success true --memory-key "swarm/coder/edit1"
+  npx ruflo hooks post-edit --file src/auth.ts --success true --memory-key "swarm/coder/edit1"
 ```
 
 ---
@@ -85,7 +85,7 @@ Examples:
 Assess risk before executing a command.
 
 ```bash
-npx claude-flow hooks pre-command "<command>" [options]
+npx ruflo hooks pre-command "<command>" [options]
 
 Options:
   --working-dir, -d  Working directory for command
@@ -94,9 +94,9 @@ Options:
   --format           Output format (json|text) [default: text]
 
 Examples:
-  npx claude-flow hooks pre-command "npm test"
-  npx claude-flow hooks pre-command "rm -rf ./dist" --working-dir /project
-  npx claude-flow hooks pre-command "docker compose up" --format json
+  npx ruflo hooks pre-command "npm test"
+  npx ruflo hooks pre-command "rm -rf ./dist" --working-dir /project
+  npx ruflo hooks pre-command "docker compose up" --format json
 ```
 
 #### post-command
@@ -104,7 +104,7 @@ Examples:
 Record command execution outcome.
 
 ```bash
-npx claude-flow hooks post-command "<command>" [options]
+npx ruflo hooks post-command "<command>" [options]
 
 Options:
   --success, -s      Whether command was successful [required]
@@ -114,8 +114,8 @@ Options:
   --time             Execution time in milliseconds
 
 Examples:
-  npx claude-flow hooks post-command "npm test" --success true --time 5230
-  npx claude-flow hooks post-command "npm build" --success false --exit-code 1 --error "Module not found"
+  npx ruflo hooks post-command "npm test" --success true --time 5230
+  npx ruflo hooks post-command "npm build" --success false --exit-code 1 --error "Module not found"
 ```
 
 ---
@@ -127,7 +127,7 @@ Examples:
 Record task start for coordination.
 
 ```bash
-npx claude-flow hooks pre-task [options]
+npx ruflo hooks pre-task [options]
 
 Options:
   --description, -d  Task description [required]
@@ -135,8 +135,8 @@ Options:
   --agent            Assigned agent type
 
 Examples:
-  npx claude-flow hooks pre-task --description "Implement OAuth2 flow"
-  npx claude-flow hooks pre-task -d "Fix login bug" --agent debugger --task-id task-123
+  npx ruflo hooks pre-task --description "Implement OAuth2 flow"
+  npx ruflo hooks pre-task -d "Fix login bug" --agent debugger --task-id task-123
 ```
 
 #### post-task
@@ -144,7 +144,7 @@ Examples:
 Record task completion.
 
 ```bash
-npx claude-flow hooks post-task [options]
+npx ruflo hooks post-task [options]
 
 Options:
   --task-id          Task identifier [required]
@@ -153,8 +153,8 @@ Options:
   --metrics          Include task metrics
 
 Examples:
-  npx claude-flow hooks post-task --task-id task-123 --success true
-  npx claude-flow hooks post-task --task-id task-123 --success false --result "Blocked by dependency"
+  npx ruflo hooks post-task --task-id task-123 --success true
+  npx ruflo hooks post-task --task-id task-123 --success false --result "Blocked by dependency"
 ```
 
 ---
@@ -166,7 +166,7 @@ Examples:
 Restore previous session context.
 
 ```bash
-npx claude-flow hooks session-restore [options]
+npx ruflo hooks session-restore [options]
 
 Options:
   --session-id       Session identifier to restore [required]
@@ -174,8 +174,8 @@ Options:
   --include-agents   Restore agent states [default: true]
 
 Examples:
-  npx claude-flow hooks session-restore --session-id swarm-abc123
-  npx claude-flow hooks session-restore --session-id previous --include-memory false
+  npx ruflo hooks session-restore --session-id swarm-abc123
+  npx ruflo hooks session-restore --session-id previous --include-memory false
 ```
 
 #### session-end
@@ -183,7 +183,7 @@ Examples:
 End session and persist state.
 
 ```bash
-npx claude-flow hooks session-end [options]
+npx ruflo hooks session-end [options]
 
 Options:
   --export-metrics   Export session metrics [default: true]
@@ -191,8 +191,8 @@ Options:
   --summary          Generate session summary
 
 Examples:
-  npx claude-flow hooks session-end
-  npx claude-flow hooks session-end --export-metrics true --summary
+  npx ruflo hooks session-end
+  npx ruflo hooks session-end --export-metrics true --summary
 ```
 
 ---
@@ -204,7 +204,7 @@ Examples:
 Route a task to the optimal agent.
 
 ```bash
-npx claude-flow hooks route "<task>" [options]
+npx ruflo hooks route "<task>" [options]
 
 Options:
   --context, -c      Additional context
@@ -213,9 +213,9 @@ Options:
   --format           Output format (json|text) [default: text]
 
 Examples:
-  npx claude-flow hooks route "Implement user authentication"
-  npx claude-flow hooks route "Fix CSS bug" --prefer "coder,reviewer"
-  npx claude-flow hooks route "Research API options" --context "REST vs GraphQL" --format json
+  npx ruflo hooks route "Implement user authentication"
+  npx ruflo hooks route "Fix CSS bug" --prefer "coder,reviewer"
+  npx ruflo hooks route "Research API options" --context "REST vs GraphQL" --format json
 ```
 
 #### explain
@@ -223,7 +223,7 @@ Examples:
 Explain routing decision with transparency.
 
 ```bash
-npx claude-flow hooks explain "<task>" [options]
+npx ruflo hooks explain "<task>" [options]
 
 Options:
   --context, -c      Additional context
@@ -231,8 +231,8 @@ Options:
   --format           Output format (json|text) [default: text]
 
 Examples:
-  npx claude-flow hooks explain "Implement OAuth2 authentication"
-  npx claude-flow hooks explain "Security audit" --verbose
+  npx ruflo hooks explain "Implement OAuth2 authentication"
+  npx ruflo hooks explain "Security audit" --verbose
 ```
 
 ---
@@ -244,7 +244,7 @@ Examples:
 Bootstrap intelligence from repository analysis.
 
 ```bash
-npx claude-flow hooks pretrain [options]
+npx ruflo hooks pretrain [options]
 
 Options:
   --path, -p         Repository path [default: current directory]
@@ -254,9 +254,9 @@ Options:
   --force            Force retraining even if data exists
 
 Examples:
-  npx claude-flow hooks pretrain
-  npx claude-flow hooks pretrain --path /project --max-patterns 5000
-  npx claude-flow hooks pretrain --force --no-include-git
+  npx ruflo hooks pretrain
+  npx ruflo hooks pretrain --path /project --max-patterns 5000
+  npx ruflo hooks pretrain --force --no-include-git
 ```
 
 #### build-agents
@@ -264,7 +264,7 @@ Examples:
 Generate optimized agent configurations from pretrain data.
 
 ```bash
-npx claude-flow hooks build-agents [options]
+npx ruflo hooks build-agents [options]
 
 Options:
   --focus            Focus area (all|security|performance|testing) [default: all]
@@ -272,9 +272,9 @@ Options:
   --v3-mode          Use V3 agent definitions
 
 Examples:
-  npx claude-flow hooks build-agents --focus security
-  npx claude-flow hooks build-agents --output agents.json
-  npx claude-flow hooks build-agents --v3-mode --focus performance
+  npx ruflo hooks build-agents --focus security
+  npx ruflo hooks build-agents --output agents.json
+  npx ruflo hooks build-agents --v3-mode --focus performance
 ```
 
 #### transfer
@@ -282,7 +282,7 @@ Examples:
 Transfer learned patterns from another project.
 
 ```bash
-npx claude-flow hooks transfer <sourceProject> [options]
+npx ruflo hooks transfer <sourceProject> [options]
 
 Options:
   --filter           Pattern filter (glob pattern)
@@ -290,9 +290,9 @@ Options:
   --dry-run          Show what would be transferred
 
 Examples:
-  npx claude-flow hooks transfer /other-project
-  npx claude-flow hooks transfer ../shared-project --filter "security/*"
-  npx claude-flow hooks transfer /template --dry-run
+  npx ruflo hooks transfer /other-project
+  npx ruflo hooks transfer ../shared-project --filter "security/*"
+  npx ruflo hooks transfer /template --dry-run
 ```
 
 ---
@@ -304,7 +304,7 @@ Examples:
 View learning metrics dashboard.
 
 ```bash
-npx claude-flow hooks metrics [options]
+npx ruflo hooks metrics [options]
 
 Options:
   --category, -c     Category (all|routing|edits|commands|patterns) [default: all]
@@ -314,10 +314,10 @@ Options:
   --v3-dashboard     Use V3 metrics dashboard
 
 Examples:
-  npx claude-flow hooks metrics
-  npx claude-flow hooks metrics --category routing --time-range week
-  npx claude-flow hooks metrics --detailed --format json
-  npx claude-flow hooks metrics --v3-dashboard
+  npx ruflo hooks metrics
+  npx ruflo hooks metrics --category routing --time-range week
+  npx ruflo hooks metrics --detailed --format json
+  npx ruflo hooks metrics --v3-dashboard
 ```
 
 #### list
@@ -325,7 +325,7 @@ Examples:
 List registered hooks.
 
 ```bash
-npx claude-flow hooks list [options]
+npx ruflo hooks list [options]
 
 Options:
   --category, -c     Filter by category
@@ -334,9 +334,9 @@ Options:
   --format           Output format (json|text|table) [default: table]
 
 Examples:
-  npx claude-flow hooks list
-  npx claude-flow hooks list --category routing
-  npx claude-flow hooks list --include-disabled --format json
+  npx ruflo hooks list
+  npx ruflo hooks list --category routing
+  npx ruflo hooks list --include-disabled --format json
 ```
 
 ---
@@ -348,7 +348,7 @@ Examples:
 Send notification message (V2 compatibility).
 
 ```bash
-npx claude-flow hooks notify [options]
+npx ruflo hooks notify [options]
 
 Options:
   --message, -m      Notification message [required]
@@ -356,8 +356,8 @@ Options:
   --channel          Notification channel
 
 Examples:
-  npx claude-flow hooks notify --message "Task completed successfully"
-  npx claude-flow hooks notify -m "Build failed" --level error
+  npx ruflo hooks notify --message "Task completed successfully"
+  npx ruflo hooks notify -m "Build failed" --level error
 ```
 
 ---
@@ -366,16 +366,16 @@ Examples:
 
 ```bash
 # Hook execution timeout (milliseconds)
-CLAUDE_FLOW_HOOK_TIMEOUT=5000
+RUFLO_HOOK_TIMEOUT=5000
 
 # Enable/disable ReasoningBank integration
-CLAUDE_FLOW_REASONINGBANK_ENABLED=true
+RUFLO_REASONINGBANK_ENABLED=true
 
 # Learning namespace
-CLAUDE_FLOW_HOOKS_NAMESPACE=hooks-learning
+RUFLO_HOOKS_NAMESPACE=hooks-learning
 
 # Logging level
-CLAUDE_FLOW_HOOKS_LOG_LEVEL=info
+RUFLO_HOOKS_LOG_LEVEL=info
 ```
 
 ## V2 Compatibility
@@ -384,12 +384,12 @@ All V2 hook commands are supported for backward compatibility:
 
 ```bash
 # V2 syntax (still works)
-npx claude-flow hooks pre-task --description "[task]"
-npx claude-flow hooks session-restore --session-id "swarm-[id]"
-npx claude-flow hooks post-edit --file "[file]" --memory-key "swarm/[agent]/[step]"
-npx claude-flow hooks notify --message "[what was done]"
-npx claude-flow hooks post-task --task-id "[task]"
-npx claude-flow hooks session-end --export-metrics true
+npx ruflo hooks pre-task --description "[task]"
+npx ruflo hooks session-restore --session-id "swarm-[id]"
+npx ruflo hooks post-edit --file "[file]" --memory-key "swarm/[agent]/[step]"
+npx ruflo hooks notify --message "[what was done]"
+npx ruflo hooks post-task --task-id "[task]"
+npx ruflo hooks session-end --export-metrics true
 ```
 
 ## Exit Codes
@@ -408,7 +408,7 @@ npx claude-flow hooks session-end --export-metrics true
 ### Text Format (Default)
 
 ```
-$ npx claude-flow hooks route "Implement authentication"
+$ npx ruflo hooks route "Implement authentication"
 
 Task Routing Result
 ==================
@@ -428,7 +428,7 @@ Alternative Agents:
 ### JSON Format
 
 ```bash
-$ npx claude-flow hooks route "Implement authentication" --format json
+$ npx ruflo hooks route "Implement authentication" --format json
 ```
 
 ```json
@@ -447,7 +447,7 @@ $ npx claude-flow hooks route "Implement authentication" --format json
 ### Table Format
 
 ```
-$ npx claude-flow hooks metrics --format table
+$ npx ruflo hooks metrics --format table
 
 Hooks Learning Metrics
 ======================
@@ -467,7 +467,7 @@ Total       1547        89%           279
 The `hooks intelligence` command provides RuVector intelligence with SONA, MoE, and HNSW integration.
 
 ```bash
-npx claude-flow hooks intelligence [options]
+npx ruflo hooks intelligence [options]
 ```
 
 **Options:**
@@ -542,7 +542,7 @@ Workflow templates and execution management.
 Execute a workflow by name or file.
 
 ```bash
-npx claude-flow workflow run <name|file> [options]
+npx ruflo workflow run <name|file> [options]
 ```
 
 **Options:**
@@ -556,14 +556,14 @@ npx claude-flow workflow run <name|file> [options]
 
 **Example:**
 ```bash
-npx claude-flow workflow run development --input '{"feature": "auth"}' --parallel 6
+npx ruflo workflow run development --input '{"feature": "auth"}' --parallel 6
 ```
 
 ### `workflow validate`
 Validate a workflow definition.
 
 ```bash
-npx claude-flow workflow validate <file> [options]
+npx ruflo workflow validate <file> [options]
 ```
 
 **Options:**
@@ -576,7 +576,7 @@ npx claude-flow workflow validate <file> [options]
 List available workflows.
 
 ```bash
-npx claude-flow workflow list [options]
+npx ruflo workflow list [options]
 ```
 
 **Options:**
@@ -589,7 +589,7 @@ npx claude-flow workflow list [options]
 Show status of running workflows.
 
 ```bash
-npx claude-flow workflow status [options]
+npx ruflo workflow status [options]
 ```
 
 **Options:**
@@ -602,7 +602,7 @@ npx claude-flow workflow status [options]
 Stop a running workflow.
 
 ```bash
-npx claude-flow workflow stop [options]
+npx ruflo workflow stop [options]
 ```
 
 **Options:**
@@ -617,13 +617,13 @@ Manage workflow templates.
 
 ```bash
 # List templates
-npx claude-flow workflow template list
+npx ruflo workflow template list
 
 # Show template details
-npx claude-flow workflow template show <name>
+npx ruflo workflow template show <name>
 
 # Create new template
-npx claude-flow workflow template create --name <name> --output <file>
+npx ruflo workflow template create --name <name> --output <file>
 ```
 
 **Built-in Templates:**
@@ -647,7 +647,7 @@ Queen-led consensus-based multi-agent coordination.
 Initialize a new hive-mind swarm.
 
 ```bash
-npx claude-flow hive-mind init [options]
+npx ruflo hive-mind init [options]
 ```
 
 **Options:**
@@ -674,14 +674,14 @@ npx claude-flow hive-mind init [options]
 
 **Example:**
 ```bash
-npx claude-flow hive-mind init --topology hierarchical-mesh --consensus byzantine --workers 15
+npx ruflo hive-mind init --topology hierarchical-mesh --consensus byzantine --workers 15
 ```
 
 ### `hive-mind spawn`
 Spawn new worker agents.
 
 ```bash
-npx claude-flow hive-mind spawn [options]
+npx ruflo hive-mind spawn [options]
 ```
 
 **Options:**
@@ -698,7 +698,7 @@ npx claude-flow hive-mind spawn [options]
 Show hive status and metrics.
 
 ```bash
-npx claude-flow hive-mind status [options]
+npx ruflo hive-mind status [options]
 ```
 
 **Options:**
@@ -711,7 +711,7 @@ npx claude-flow hive-mind status [options]
 Submit tasks to the hive.
 
 ```bash
-npx claude-flow hive-mind task [options]
+npx ruflo hive-mind task [options]
 ```
 
 **Options:**
@@ -727,7 +727,7 @@ npx claude-flow hive-mind task [options]
 Optimize hive collective memory.
 
 ```bash
-npx claude-flow hive-mind optimize-memory [options]
+npx ruflo hive-mind optimize-memory [options]
 ```
 
 **Options:**
@@ -740,7 +740,7 @@ npx claude-flow hive-mind optimize-memory [options]
 Gracefully shutdown the hive.
 
 ```bash
-npx claude-flow hive-mind shutdown [options]
+npx ruflo hive-mind shutdown [options]
 ```
 
 **Options:**
@@ -758,7 +758,7 @@ npx claude-flow hive-mind shutdown [options]
 Spawn a new agent.
 
 ```bash
-npx claude-flow agent spawn [options]
+npx ruflo agent spawn [options]
 ```
 
 **Options:**
@@ -775,14 +775,14 @@ npx claude-flow agent spawn [options]
 List active agents.
 
 ```bash
-npx claude-flow agent list [options]
+npx ruflo agent list [options]
 ```
 
 ### `agent pool`
 Manage agent pool.
 
 ```bash
-npx claude-flow agent pool [options]
+npx ruflo agent pool [options]
 ```
 
 **Options:**
@@ -819,7 +819,7 @@ Agent Distribution:
 Monitor agent health.
 
 ```bash
-npx claude-flow agent health [options]
+npx ruflo agent health [options]
 ```
 
 **Options:**
@@ -833,7 +833,7 @@ npx claude-flow agent health [options]
 View agent activity logs.
 
 ```bash
-npx claude-flow agent logs [options]
+npx ruflo agent logs [options]
 ```
 
 **Options:**
@@ -853,21 +853,21 @@ npx claude-flow agent logs [options]
 Store data in memory.
 
 ```bash
-npx claude-flow memory store --key <key> --value <value> [options]
+npx ruflo memory store --key <key> --value <value> [options]
 ```
 
 ### `memory retrieve`
 Retrieve data from memory.
 
 ```bash
-npx claude-flow memory retrieve --key <key> [options]
+npx ruflo memory retrieve --key <key> [options]
 ```
 
 ### `memory search`
 Semantic vector search.
 
 ```bash
-npx claude-flow memory search --query "<query>" [options]
+npx ruflo memory search --query "<query>" [options]
 ```
 
 **Options:**
@@ -881,14 +881,14 @@ npx claude-flow memory search --query "<query>" [options]
 Show memory statistics.
 
 ```bash
-npx claude-flow memory stats [options]
+npx ruflo memory stats [options]
 ```
 
 ### `memory cleanup`
 Clean up stale/expired entries.
 
 ```bash
-npx claude-flow memory cleanup [options]
+npx ruflo memory cleanup [options]
 ```
 
 **Options:**
@@ -903,7 +903,7 @@ npx claude-flow memory cleanup [options]
 Compress and optimize storage.
 
 ```bash
-npx claude-flow memory compress [options]
+npx ruflo memory compress [options]
 ```
 
 **Options:**
@@ -938,10 +938,10 @@ Backup and restore memory.
 
 ```bash
 # Export memory
-npx claude-flow memory export --output <file> [options]
+npx ruflo memory export --output <file> [options]
 
 # Import memory
-npx claude-flow memory import --input <file> [options]
+npx ruflo memory import --input <file> [options]
 ```
 
 ---
@@ -952,7 +952,7 @@ npx claude-flow memory import --input <file> [options]
 Manage background daemon.
 
 ```bash
-npx claude-flow process daemon --action <action> [options]
+npx ruflo process daemon --action <action> [options]
 ```
 
 **Actions:** `start`, `stop`, `restart`, `status`
@@ -961,15 +961,15 @@ npx claude-flow process daemon --action <action> [options]
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `--port` | number | `3847` | Daemon HTTP API port |
-| `--pid-file` | string | `.claude-flow/daemon.pid` | PID file location |
-| `--log-file` | string | `.claude-flow/daemon.log` | Log file location |
+| `--pid-file` | string | `.codex/daemon.pid` | PID file location |
+| `--log-file` | string | `.codex/daemon.log` | Log file location |
 | `--detach` | boolean | `true` | Run detached |
 
 ### `process monitor`
 Real-time process monitoring.
 
 ```bash
-npx claude-flow process monitor [options]
+npx ruflo process monitor [options]
 ```
 
 **Options:**
@@ -984,7 +984,7 @@ npx claude-flow process monitor [options]
 **Dashboard Example:**
 ```
 ╔══════════════════════════════════════════════════════════════╗
-║            🖥️  CLAUDE-FLOW PROCESS MONITOR                    ║
+║            🖥️  RUFLO PROCESS MONITOR                    ║
 ╠══════════════════════════════════════════════════════════════╣
 ║  SYSTEM                                                      ║
 ║  CPU:    [████████░░░░░░░░░░░░] 38.5%                        ║
@@ -1006,7 +1006,7 @@ npx claude-flow process monitor [options]
 Manage background workers.
 
 ```bash
-npx claude-flow process workers --action <action> [options]
+npx ruflo process workers --action <action> [options]
 ```
 
 **Actions:** `list`, `spawn`, `kill`, `scale`
@@ -1022,7 +1022,7 @@ npx claude-flow process workers --action <action> [options]
 Send signals to processes.
 
 ```bash
-npx claude-flow process signals --target <target> --signal <signal> [options]
+npx ruflo process signals --target <target> --signal <signal> [options]
 ```
 
 **Signals:** `graceful-shutdown`, `force-kill`, `pause`, `resume`, `reload-config`
@@ -1031,7 +1031,7 @@ npx claude-flow process signals --target <target> --signal <signal> [options]
 View process logs.
 
 ```bash
-npx claude-flow process logs [options]
+npx ruflo process logs [options]
 ```
 
 **Options:**
@@ -1051,7 +1051,7 @@ npx claude-flow process logs [options]
 Initialize a swarm.
 
 ```bash
-npx claude-flow swarm init [options]
+npx ruflo swarm init [options]
 ```
 
 **Options:**
@@ -1064,21 +1064,21 @@ npx claude-flow swarm init [options]
 Spawn agents into swarm.
 
 ```bash
-npx claude-flow swarm spawn [options]
+npx ruflo swarm spawn [options]
 ```
 
 ### `swarm status`
 Show swarm status.
 
 ```bash
-npx claude-flow swarm status [options]
+npx ruflo swarm status [options]
 ```
 
 ### `swarm task`
 Submit task to swarm.
 
 ```bash
-npx claude-flow swarm task --description "<task>" [options]
+npx ruflo swarm task --description "<task>" [options]
 ```
 
 ---
@@ -1087,13 +1087,13 @@ npx claude-flow swarm task --description "<task>" [options]
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `CLAUDE_FLOW_CONFIG` | Config file path | `.claude-flow/config.json` |
-| `CLAUDE_FLOW_LOG_LEVEL` | Log level | `info` |
-| `CLAUDE_FLOW_MEMORY_BACKEND` | Memory backend | `agentdb` |
-| `CLAUDE_FLOW_EMBEDDING_PROVIDER` | Embedding provider | `transformers` |
-| `CLAUDE_FLOW_HOOK_TIMEOUT` | Hook timeout (ms) | `5000` |
-| `CLAUDE_FLOW_REASONINGBANK_ENABLED` | ReasoningBank integration | `true` |
-| `ANTHROPIC_API_KEY` | Anthropic API key | - |
+| `RUFLO_CONFIG` | Config file path | `.codex/config.json` |
+| `RUFLO_LOG_LEVEL` | Log level | `info` |
+| `RUFLO_MEMORY_BACKEND` | Memory backend | `agentdb` |
+| `RUFLO_EMBEDDING_PROVIDER` | Embedding provider | `transformers` |
+| `RUFLO_HOOK_TIMEOUT` | Hook timeout (ms) | `5000` |
+| `RUFLO_REASONINGBANK_ENABLED` | ReasoningBank integration | `true` |
+| `OPENAI_API_KEY` | OpenAI API key | - |
 | `OPENAI_API_KEY` | OpenAI API key | - |
 
 ---
@@ -1112,6 +1112,6 @@ npx claude-flow swarm task --description "<task>" [options]
 
 ## See Also
 
-- [CLAUDE.md](/CLAUDE.md) - Project configuration
+- [AGENTS.md](/AGENTS.md) - Project configuration
 - [Architecture Decision Records](/v3/implementation/architecture/) - V3 ADRs
-- [agentic-flow@alpha](https://github.com/ruvnet/agentic-flow) - Core framework
+- [agentic@alpha](https://github.com/ruvnet/agentic) - Core framework

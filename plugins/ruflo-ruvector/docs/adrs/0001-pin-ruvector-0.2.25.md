@@ -4,13 +4,13 @@ title: Pin ruflo-ruvector plugin to ruvector@0.2.25 with optional add-on package
 status: Accepted
 date: 2026-05-04
 authors:
-  - reviewer (Claude Code)
+  - reviewer (Codex)
 tags: [plugin, ruvector, versioning, mcp, dependencies]
 ---
 
 ## Context
 
-The `ruflo-ruvector` plugin wraps the `ruvector` npm package as a Claude Code plugin. The plugin's documentation (README, agent file, skills, command spec) drifted from the actual CLI surface in two ways:
+The `ruflo-ruvector` plugin wraps the `ruvector` npm package as a Codex plugin. The plugin's documentation (README, agent file, skills, command spec) drifted from the actual CLI surface in two ways:
 
 1. **Aspirational features.** Older docs referenced `FlashAttention-3`, `Graph RAG`, `Hybrid Search`, `DiskANN`, `ColBERT`, `Matryoshka`, `MLA`, `TurboQuant`, `Brain AGI`, and `Midstream` as if they were invokable CLI subcommands. The native Rust bindings expose primitives for most of these, but **no CLI subcommand wires them up** — only `attention list` enumerates the mechanisms.
 2. **Unspecified version.** The plugin invoked `npx ruvector ...` without a version pin, so a user with `ruvector@0.1.x` resolved would silently get a different surface (no `brain`, no `route`, no `sona`) than a user on `ruvector@0.2.x`.
@@ -56,7 +56,7 @@ Rationale: these are heavy dependencies (ONNX runtime alone is large). Forcing t
 ### 3. Register MCP server with the same pin
 
 ```bash
-claude mcp add ruvector -- npx -y ruvector@0.2.25 mcp start
+codex mcp add ruvector -- npx -y ruvector@0.2.25 mcp start
 ```
 
 Rationale: the MCP transport layer changes between minor versions of ruvector. Pinning the MCP command keeps the 103 exposed tools stable for downstream agents.
@@ -86,7 +86,7 @@ A future ADR may relax this if upstream introduces a stable equivalent and we up
 
 ### 6. Plugin version policy
 
-The plugin's own `version` field in `.claude-plugin/plugin.json` is bumped (patch) on every change to the CLI contract — regardless of whether the change is additive (new subcommand exposed) or a fix. This makes plugin version differences observable to downstream consumers.
+The plugin's own `version` field in `.codex-plugin/plugin.json` is bumped (patch) on every change to the CLI contract — regardless of whether the change is additive (new subcommand exposed) or a fix. This makes plugin version differences observable to downstream consumers.
 
 ## Consequences
 

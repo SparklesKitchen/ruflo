@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document defines the **London School TDD** (Mock-first, Outside-in) approach for Claude-Flow v3 implementation. All 15 agents follow this methodology, with Agent #13 (TDD Test Engineer) as the primary coordinator.
+This document defines the **London School TDD** (Mock-first, Outside-in) approach for Codex-Flow v3 implementation. All 15 agents follow this methodology, with Agent #13 (TDD Test Engineer) as the primary coordinator.
 
 ---
 
@@ -453,7 +453,7 @@ describe('UnifiedSwarmCoordinator', () => {
 ### Integration Tests
 
 ```typescript
-// __tests__/integration/security-flow.test.ts
+// __tests__/integration/security.test.ts
 describe('Security Integration', () => {
   let app: Application;
 
@@ -571,7 +571,7 @@ __tests__/
 │   │   └── tool-registry.test.ts
 │   │
 │   ├── integration-layer/
-│   │   ├── agentic-flow-bridge.test.ts
+│   │   ├── agentic-bridge.test.ts
 │   │   ├── sona-adapter.test.ts
 │   │   └── attention-coordinator.test.ts
 │   │
@@ -586,11 +586,11 @@ __tests__/
 │       └── reasoning-bank.test.ts
 │
 ├── integration/
-│   ├── security-flow.test.ts
+│   ├── security.test.ts
 │   ├── swarm-coordination.test.ts
 │   ├── memory-persistence.test.ts
 │   ├── mcp-communication.test.ts
-│   └── agentic-flow-integration.test.ts
+│   └── agentic-integration.test.ts
 │
 ├── e2e/
 │   ├── cli-commands.test.ts
@@ -619,7 +619,7 @@ __tests__/
 │   ├── agent-pool.mock.ts
 │   ├── memory-backend.mock.ts
 │   ├── consensus-engine.mock.ts
-│   └── agentic-flow.mock.ts
+│   └── agentic.mock.ts
 │
 └── helpers/
     ├── create-mock.ts

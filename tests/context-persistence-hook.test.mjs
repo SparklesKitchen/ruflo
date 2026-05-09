@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Import the module under test
-const mod = await import('../.claude/helpers/context-persistence-hook.mjs');
+const mod = await import('../.codex/helpers/context-persistence-hook.mjs');
 const {
   SQLiteBackend,
   RuVectorBackend,
@@ -678,7 +678,7 @@ describe('getRuVectorConfig', () => {
     const saved = { ...process.env };
     process.env.RUVECTOR_HOST = 'pg.example.com';
     process.env.RUVECTOR_PORT = '5433';
-    process.env.RUVECTOR_DATABASE = 'claude_flow';
+    process.env.RUVECTOR_DATABASE = 'codex_flow';
     process.env.RUVECTOR_USER = 'admin';
     process.env.RUVECTOR_PASSWORD = 'secret123';
     process.env.RUVECTOR_SSL = 'true';
@@ -687,7 +687,7 @@ describe('getRuVectorConfig', () => {
     assert.ok(config);
     assert.equal(config.host, 'pg.example.com');
     assert.equal(config.port, 5433);
-    assert.equal(config.database, 'claude_flow');
+    assert.equal(config.database, 'codex_flow');
     assert.equal(config.user, 'admin');
     assert.equal(config.password, 'secret123');
     assert.equal(config.ssl, true);

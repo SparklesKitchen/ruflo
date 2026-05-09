@@ -18,7 +18,7 @@ Create an **Advanced Code Intelligence Plugin** that leverages RuVector WASM pac
 
 ## Plugin Name
 
-`@claude-flow/plugin-code-intelligence`
+`@ruflo/plugin-code-intelligence`
 
 ## Description
 
@@ -382,7 +382,7 @@ function maskSecrets(codeSnippet: string): string {
 - **VS Code Extension**: Real-time analysis and suggestions
 - **JetBrains Plugin**: IntelliJ, WebStorm, PyCharm support
 - **CLI**: CI/CD pipeline integration
-- **MCP**: Direct Claude Code integration
+- **MCP**: Direct Codex integration
 
 ## Implementation Notes
 

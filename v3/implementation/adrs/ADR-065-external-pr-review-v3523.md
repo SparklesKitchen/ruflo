@@ -50,7 +50,7 @@ Each PR is evaluated on 4 axes:
 - **Files**: hooks-tools.ts
 - **Additions**: 161 / **Deletions**: 6
 - **Issue**: #1310 — router never improves from task outcomes
-- **Fix**: File-based persistence to `.claude-flow/routing-outcomes.json`, 500-entry FIFO cap
+- **Fix**: File-based persistence to `.codex/routing-outcomes.json`, 500-entry FIFO cap
 - **Verdict**: ACCEPT WITH CHANGES
 - **Security**: No input validation on `agent`/`task` before JSON persistence. Add length + character whitelist: `agent.length > 100 || !/^[a-zA-Z0-9_-]+$/.test(agent)`.
 - **Required changes**: (1) Hoist `getMergedTaskPatterns()` out of `.map()` callback — currently N file reads per route call. (2) Add agent name validation. (3) Replace regex dir extraction with `dirname()`. (4) Consider in-memory cache for `loadRoutingOutcomes()`.
@@ -58,7 +58,7 @@ Each PR is evaluated on 4 axes:
 
 ### Tier 2: Build & Interop Fixes
 
-#### PR #1346 — fix(cli): prevent TS2307 for optional @claude-flow/codex import
+#### PR #1346 — fix(cli): prevent TS2307 for optional @ruflo/codex import
 - **Author**: @TimChesko
 - **Files**: init.ts
 - **Additions**: 3 / **Deletions**: 1

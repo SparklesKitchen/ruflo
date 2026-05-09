@@ -29,7 +29,7 @@ const ROOT = (() => {
 
 // ── MCP tools ─────────────────────────────────────────────────────────────────
 
-const MCP_TOOLS_DIR = join(ROOT, 'v3/@claude-flow/cli/src/mcp-tools');
+const MCP_TOOLS_DIR = join(ROOT, 'v3/@ruflo/cli/src/mcp-tools');
 
 function extractMcpTools() {
   const tools = [];
@@ -79,7 +79,7 @@ function extractMcpTools() {
 
 // ── CLI commands ──────────────────────────────────────────────────────────────
 
-const CLI_COMMANDS_DIR = join(ROOT, 'v3/@claude-flow/cli/src/commands');
+const CLI_COMMANDS_DIR = join(ROOT, 'v3/@ruflo/cli/src/commands');
 
 function extractCliCommands() {
   const commands = [];
@@ -117,7 +117,7 @@ function extractPlugins() {
     .filter(d => statSync(join(PLUGINS_DIR, d)).isDirectory());
 
   for (const dir of dirs) {
-    const manifestPath = join(PLUGINS_DIR, dir, '.claude-plugin', 'plugin.json');
+    const manifestPath = join(PLUGINS_DIR, dir, '.codex-plugin', 'plugin.json');
     if (!existsSync(manifestPath)) continue;
     try {
       const m = JSON.parse(readFileSync(manifestPath, 'utf-8'));
@@ -195,7 +195,7 @@ function renderMarkdown({ mcp, cli, plugins, agents }) {
 
   lines.push(`### CLI commands (${cli.length})`);
   lines.push('');
-  lines.push(`Top-level command surface. Subcommands are documented per-command in the source file and in \`.claude-flow/CAPABILITIES.md\` after \`ruflo init\`.`);
+  lines.push(`Top-level command surface. Subcommands are documented per-command in the source file and in \`.codex/CAPABILITIES.md\` after \`ruflo init\`.`);
   lines.push('');
   lines.push(table(
     ['Command', 'Description', 'Source'],

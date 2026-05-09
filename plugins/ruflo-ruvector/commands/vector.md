@@ -78,7 +78,7 @@ Usage: /vector <subcommand> [options]
 46. **hooks coedit-record / coedit-suggest** — record + retrieve files edited together.
 47. **hooks error-record / error-suggest** — learn error→fix pairs and retrieve.
 48. **hooks trajectory-begin / trajectory-step / trajectory-end** — record an execution trajectory.
-49. **hooks pre-edit / post-edit / pre-command / post-command / session-start / session-end** — Claude Code hook lifecycle.
+49. **hooks pre-edit / post-edit / pre-command / post-command / session-start / session-end** — Codex hook lifecycle.
 
 > **Known bugs in 0.2.25 hooks:** `force-learn` raises `intel.tick is not a function`; `graph-mincut` raises `Cannot read properties of undefined`; `git-churn` fails outside a git repo. Avoid these or run inside a git repo with seeded intelligence state.
 
@@ -88,7 +88,7 @@ Usage: /vector <subcommand> [options]
 51. **native run `<type>`** — `npx -y ruvector@0.2.25 native run security` (or analysis|learning)
 52. **native benchmark** — `npx -y ruvector@0.2.25 native benchmark`
 53. **native compare** — `npx -y ruvector@0.2.25 native compare`
-54. **workers triggers / presets / phases / dispatch / status / stats / cleanup / cancel / run / create / init-config** — all available via `npx -y ruvector@0.2.25 workers <subcmd>`. First invocation auto-installs `agentic-flow` (slow).
+54. **workers triggers / presets / phases / dispatch / status / stats / cleanup / cancel / run / create / init-config** — all available via `npx -y ruvector@0.2.25 workers <subcmd>`. First invocation auto-installs `agentic` (slow).
 
 ## Collective knowledge (brain) — needs `@ruvector/pi-brain`
 
@@ -146,8 +146,8 @@ For first-run users hitting `ONNX WASM files not bundled`, `Brain commands requi
 
 ## MCP server (103 tools)
 
-- Register once: `claude mcp add ruvector -- npx -y ruvector@0.2.25 mcp start`
-- Verify: `claude mcp list | grep ruvector`
+- Register once: `codex mcp add ruvector -- npx -y ruvector@0.2.25 mcp start`
+- Verify: `codex mcp list | grep ruvector`
 - Then call MCP tools directly (e.g. `hooks_route`, `hooks_ast_analyze`, `hooks_rag_context`, `brain_search`, `attention_list`).
 
 ## Not in 0.2.25 (do not invoke)

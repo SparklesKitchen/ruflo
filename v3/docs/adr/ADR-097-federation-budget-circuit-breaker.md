@@ -8,7 +8,7 @@
 
 ## Context
 
-Agent Federation (ADR-086) lets agents on one Ruflo node delegate tasks to peer nodes across trust boundaries. The implementation in `@claude-flow/plugin-agent-federation` already covers identity (Ed25519 keypairs), trust scoring, and `federation_send` for cross-node delegation. What it does **not** cover today:
+Agent Federation (ADR-086) lets agents on one Ruflo node delegate tasks to peer nodes across trust boundaries. The implementation in `@ruflo/plugin-agent-federation` already covers identity (Ed25519 keypairs), trust scoring, and `federation_send` for cross-node delegation. What it does **not** cover today:
 
 - **Recursive delegation loops**. Node A → Node B → Node A → … If a peer wraps a received task and delegates it back, there is no hop counter to break the cycle. A pathological multi-node ring can run until process memory or the network gives out.
 - **Cost cascades**. A 200-token task delegated to a peer can spawn a sub-swarm of five worker agents on the remote, each potentially calling expensive frontier models. The originator never sees the bill until the cost-tracker reconciles after the fact.
@@ -21,8 +21,8 @@ The original issue (#1723, #1724 dup) frames this as a stability + enterprise-re
 
 | Component | Path | Today |
 |---|---|---|
-| Federation MCP tool | `v3/@claude-flow/plugin-agent-federation/src/mcp-tools.ts` (`federation_send`) | Sends a task to a peer; no cost / hop awareness |
-| Federation node entity | `v3/@claude-flow/plugin-agent-federation/src/domain/entities/federation-node.ts` | `trustScore`, `trustLevel`, `lastSeen`; no `state: SUSPENDED` |
+| Federation MCP tool | `v3/@ruflo/plugin-agent-federation/src/mcp-tools.ts` (`federation_send`) | Sends a task to a peer; no cost / hop awareness |
+| Federation node entity | `v3/@ruflo/plugin-agent-federation/src/domain/entities/federation-node.ts` | `trustScore`, `trustLevel`, `lastSeen`; no `state: SUSPENDED` |
 | Cost tracker plugin | `plugins/ruflo-cost-tracker/` | Tracks local model spend per agent / per session |
 | Behavioral trust | ADR-086 §"Trust scoring" | Adjusts on protocol misbehavior; no cost-based decay yet |
 

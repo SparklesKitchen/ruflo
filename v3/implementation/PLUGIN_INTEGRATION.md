@@ -1,30 +1,30 @@
-# Claude Flow Plugin Integration
+# Ruflo Plugin Integration
 
 ## Overview
 
-This document describes how claude-flow integrates with the official Claude Code plugin system.
+This document describes how codex integrates with the official Codex plugin system.
 
 ## Plugin Structure
 
 ```
 plugin/
-├── .claude-plugin/
+├── .codex-plugin/
 │   └── plugin.json          # Official plugin manifest
 ├── .mcp.json                 # MCP server bundle
 ├── hooks/
 │   └── hooks.json            # Hook configurations
-├── skills -> ../.claude/skills     # 60+ skills
-├── commands -> ../.claude/commands # 100+ commands
-└── agents -> ../v2/.claude/agents  # 80+ agents
+├── skills -> ../.codex/skills     # 60+ skills
+├── commands -> ../.codex/commands # 100+ commands
+└── agents -> ../v2/.codex/agents  # 80+ agents
 ```
 
-## Official Claude Code Integration Points
+## Official Codex Integration Points
 
 ### 1. Plugin Manifest (`plugin.json`)
 
 ```json
 {
-  "name": "claude-flow",
+  "name": "ruflo",
   "version": "3.0.0",
   "capabilities": {
     "skills": true,
@@ -38,7 +38,7 @@ plugin/
 
 ### 2. Hook Event Mapping
 
-| V3 Internal Event | Official Claude Code Event | Tool Matcher |
+| V3 Internal Event | Official Codex Event | Tool Matcher |
 |-------------------|---------------------------|--------------|
 | `PreEdit` | `PreToolUse` | `^(Write\|Edit\|MultiEdit)$` |
 | `PostEdit` | `PostToolUse` | `^(Write\|Edit\|MultiEdit)$` |
@@ -56,7 +56,7 @@ plugin/
 
 The plugin bundles three MCP servers:
 
-1. **claude-flow** (required): Core swarm coordination
+1. **codex** (required): Core swarm coordination
 2. **ruv-swarm** (optional): Enhanced topology patterns
 3. **flow-nexus** (optional): Cloud orchestration
 
@@ -73,12 +73,12 @@ allowed-tools: Read, Write, Bash
 
 # Skill Name
 
-[Instructions for Claude]
+[Instructions for Codex]
 ```
 
 ## V3 Hooks Bridge
 
-The `@claude-flow/hooks` package includes an official hooks bridge:
+The `@ruflo/hooks` package includes an official hooks bridge:
 
 ```typescript
 import {
@@ -86,9 +86,9 @@ import {
   processOfficialHookInput,
   outputOfficialHookResult,
   executeWithBridge,
-} from '@claude-flow/hooks';
+} from '@ruflo/hooks';
 
-// Process input from Claude Code
+// Process input from Codex
 const input = await processOfficialHookInput();
 
 // Convert to V3 context
@@ -108,31 +108,31 @@ outputOfficialHookResult(output);
 
 ```bash
 # Add plugin marketplace
-/plugin marketplace add claude-flow https://github.com/ruvnet/claude-flow
+/plugin marketplace add codex https://github.com/SparklesKitchen/ruflo
 
 # Install plugin
-/plugin install claude-flow
+/plugin install codex
 ```
 
 ### Manual Installation
 
 ```bash
 # Clone and link
-git clone https://github.com/ruvnet/claude-flow
-claude --plugin-dir ./claude-flow/plugin
+git clone https://github.com/SparklesKitchen/ruflo
+codex --plugin-dir ./codex/plugin
 ```
 
 ### Via npx Init
 
 ```bash
-npx claude-flow@alpha init --hooks
+npx ruflo@alpha init --hooks
 ```
 
 ## Configuration
 
 ### Enable All Hooks
 
-Add to `.claude/settings.json`:
+Add to `.codex/settings.json`:
 
 ```json
 {
@@ -156,7 +156,7 @@ Enable only specific hooks by choosing matchers:
     "PreToolUse": [
       {
         "matcher": "^(Write|Edit)$",
-        "hooks": [{ "type": "command", "command": "npx claude-flow@alpha hooks pre-edit" }]
+        "hooks": [{ "type": "command", "command": "npx ruflo@alpha hooks pre-edit" }]
       }
     ]
   }
@@ -167,12 +167,12 @@ Enable only specific hooks by choosing matchers:
 
 After installation, MCP tools are available:
 
-- `mcp__claude-flow__swarm_init`
-- `mcp__claude-flow__agent_spawn`
-- `mcp__claude-flow__task_orchestrate`
-- `mcp__claude-flow__memory_usage`
-- `mcp__claude-flow__hooks_route`
-- `mcp__claude-flow__hooks_metrics`
+- `mcp__codex__swarm_init`
+- `mcp__codex__agent_spawn`
+- `mcp__codex__task_orchestrate`
+- `mcp__codex__memory_usage`
+- `mcp__codex__hooks_route`
+- `mcp__codex__hooks_metrics`
 
 ## Marketplace Publishing
 
@@ -180,10 +180,10 @@ After installation, MCP tools are available:
 
 ```json
 {
-  "name": "claude-flow-marketplace",
+  "name": "codex-marketplace",
   "plugins": [
     {
-      "name": "claude-flow",
+      "name": "ruflo",
       "description": "Multi-agent swarm coordination",
       "version": "3.0.0",
       "path": "plugin"
@@ -196,13 +196,13 @@ After installation, MCP tools are available:
 
 1. Push to repository
 2. Add marketplace: `/plugin marketplace add name https://github.com/user/repo`
-3. Users install: `/plugin install claude-flow@name`
+3. Users install: `/plugin install codex@name`
 
 ## Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                     Claude Code                              │
+│                     Codex                              │
 ├─────────────────────────────────────────────────────────────┤
 │  Official Hooks API                                          │
 │  ┌─────────────┬─────────────┬─────────────┬──────────────┐ │
@@ -212,7 +212,7 @@ After installation, MCP tools are available:
 │         ▼             ▼             ▼             ▼          │
 │  ┌──────────────────────────────────────────────────────────┐│
 │  │              Official Hooks Bridge                        ││
-│  │  (v3/@claude-flow/hooks/src/bridge/official-hooks-bridge)││
+│  │  (v3/@ruflo/hooks/src/bridge/official-hooks-bridge)││
 │  └──────────────────────────────────────────────────────────┘│
 │         │             │             │             │          │
 │         ▼             ▼             ▼             ▼          │
@@ -222,7 +222,7 @@ After installation, MCP tools are available:
 │  └─────────────┴─────────────┴─────────────┴──────────────┘ │
 │                     V3 Hooks System                          │
 ├─────────────────────────────────────────────────────────────┤
-│                    @claude-flow/hooks                        │
+│                    @ruflo/hooks                        │
 │  ┌───────────┬───────────┬───────────┬───────────────────┐  │
 │  │ Registry  │ Executor  │ Daemons   │ MCP Tools         │  │
 │  └───────────┴───────────┴───────────┴───────────────────┘  │
@@ -237,4 +237,4 @@ After installation, MCP tools are available:
 2. **Full Feature Access**: 60+ skills, 100+ commands, 80+ agents
 3. **MCP Bundling**: All servers configured in one file
 4. **Marketplace Ready**: Standard plugin format for distribution
-5. **Backward Compatible**: Works with existing `.claude/` configurations
+5. **Backward Compatible**: Works with existing `.codex/` configurations

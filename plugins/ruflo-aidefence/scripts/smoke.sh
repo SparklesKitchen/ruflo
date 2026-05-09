@@ -9,13 +9,13 @@ ok()   { printf "PASS\n"; PASS=$((PASS+1)); }
 bad()  { printf "FAIL: %s\n" "$1"; FAIL=$((FAIL+1)); }
 
 step "1. plugin.json declares 0.2.0 with new keywords"
-v=$(grep -E '"version"' "$ROOT/.claude-plugin/plugin.json" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+v=$(grep -E '"version"' "$ROOT/.codex-plugin/plugin.json" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
 if [[ "$v" != "0.2.0" ]]; then
   bad "expected 0.2.0, got '$v'"
 else
   miss=""
   for k in prompt-injection defense-in-depth mcp; do
-    grep -q "\"$k\"" "$ROOT/.claude-plugin/plugin.json" || miss="$miss $k"
+    grep -q "\"$k\"" "$ROOT/.codex-plugin/plugin.json" || miss="$miss $k"
   done
   [[ -z "$miss" ]] && ok || bad "missing keywords:$miss"
 fi
@@ -31,8 +31,8 @@ step "3. transfer_detect-pii referenced (used by pii-detect skill)"
 grep -q "transfer_detect-pii" "$ROOT/skills/pii-detect/SKILL.md" \
   && ok || bad "pii-detect skill missing transfer_detect-pii"
 
-step "4. README pins @claude-flow/cli to v3.6"
-grep -qE "@claude-flow/cli.*v3\.6|v3\.6.*claude-flow/cli" "$ROOT/README.md" \
+step "4. README pins @ruflo/cli to v3.6"
+grep -qE "@ruflo/cli.*v3\.6|v3\.6.*codex/cli" "$ROOT/README.md" \
   && ok || bad "Compatibility pin to v3.6 missing"
 
 step "5. README defers to ruflo-agentdb namespace convention"

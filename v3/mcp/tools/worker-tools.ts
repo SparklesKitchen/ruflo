@@ -1,7 +1,7 @@
 /**
  * V3 MCP Worker Tools
  *
- * MCP tools for background worker management (agentic-flow@alpha compatible):
+ * MCP tools for background worker management (agentic@alpha compatible):
  * - worker/dispatch - Spawn background worker
  * - worker/status - Get worker status
  * - worker/cancel - Cancel running worker
@@ -12,7 +12,7 @@
  * - worker/context - Get context for injection
  *
  * Implements ADR-005: MCP-First API Design
- * Implements ADR-001: agentic-flow@alpha compatibility
+ * Implements ADR-001: agentic@alpha compatibility
  */
 
 import { z } from 'zod';
@@ -23,7 +23,7 @@ import {
   WorkerInstance,
   TriggerDetectionResult,
   getWorkerDispatchService,
-} from '../../@claude-flow/swarm/src/workers/worker-dispatch.js';
+} from '../../@ruflo/swarm/src/workers/worker-dispatch.js';
 
 // ============================================================================
 // Input Schemas

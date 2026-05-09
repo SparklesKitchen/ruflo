@@ -1,96 +1,96 @@
-# @claude-flow/teammate-plugin
+# @ruflo/teammate-plugin
 
-Native **TeammateTool** integration plugin for Claude Flow. Bridges Claude Code v2.1.19+ multi-agent orchestration capabilities with Claude Flow's swarm system.
+Native **TeammateTool** integration plugin for Ruflo. Bridges Codex v2.1.19+ multi-agent orchestration capabilities with Ruflo's swarm system.
 
-[![npm version](https://badge.fury.io/js/%40claude-flow%2Fteammate-plugin.svg)](https://badge.fury.io/js/%40claude-flow%2Fteammate-plugin)
+[![npm version](https://badge.fury.io/js/%40codex%2Fteammate-plugin.svg)](https://badge.fury.io/js/%40codex%2Fteammate-plugin)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Requirements
 
 | Requirement | Minimum Version | Recommended |
 |-------------|-----------------|-------------|
-| **Claude Code** | **>= 2.1.19** | Latest |
+| **Codex** | **>= 2.1.19** | Latest |
 | Node.js | >= 18.0.0 | >= 20.0.0 |
 | npm | >= 9.0.0 | >= 10.0.0 |
 
-> **IMPORTANT:** This plugin requires Claude Code version **2.1.19 or higher**. The TeammateTool functionality was introduced in this version and is not available in earlier releases.
+> **IMPORTANT:** This plugin requires Codex version **2.1.19 or higher**. The TeammateTool functionality was introduced in this version and is not available in earlier releases.
 
 ### Version Check
 
 ```bash
-# Check your Claude Code version
-claude --version
+# Check your Codex version
+codex --version
 
 # Should output: 2.1.19 or higher
 ```
 
-If your version is below 2.1.19, update Claude Code:
+If your version is below 2.1.19, update Codex:
 
 ```bash
-claude update
+codex update
 ```
 
 ## Installation
 
-### Via Claude Code CLI (Recommended)
+### Via Codex CLI (Recommended)
 
-Install directly using Claude Code's plugin system:
+Install directly using Codex's plugin system:
 
 ```bash
 # Install from npm registry
-claude plugins install @claude-flow/teammate-plugin
+codex plugins install @ruflo/teammate-plugin
 
-# Or install from Claude Flow plugin registry (IPFS-backed)
-claude plugins install teammate-plugin --registry claude-flow
+# Or install from Ruflo plugin registry (IPFS-backed)
+codex plugins install teammate-plugin --registry codex
 ```
 
 ### Via npm
 
 ```bash
-npm install @claude-flow/teammate-plugin
+npm install @ruflo/teammate-plugin
 ```
 
 Or with pnpm:
 
 ```bash
-pnpm add @claude-flow/teammate-plugin
+pnpm add @ruflo/teammate-plugin
 ```
 
-### Via Claude Flow CLI
+### Via Ruflo CLI
 
 ```bash
-# Install via claude-flow plugin manager
-npx @claude-flow/cli@latest plugins install --name @claude-flow/teammate-plugin
+# Install via codex plugin manager
+npx @ruflo/cli@latest plugins install --name @ruflo/teammate-plugin
 
-# Or add to your claude-flow.config.json
-npx @claude-flow/cli@latest config set plugins.teammate-plugin.enabled true
+# Or add to your codex.config.json
+npx @ruflo/cli@latest config set plugins.teammate-plugin.enabled true
 ```
 
 ### Verify Installation
 
 ```bash
 # Check plugin is loaded
-claude plugins list
+codex plugins list
 
-# Or via claude-flow
-npx @claude-flow/cli@latest plugins list
+# Or via codex
+npx @ruflo/cli@latest plugins list
 ```
 
 ## Quick Start
 
 ```typescript
-import { createTeammateBridge } from '@claude-flow/teammate-plugin';
+import { createTeammateBridge } from '@ruflo/teammate-plugin';
 
 // Initialize the bridge
 const bridge = await createTeammateBridge();
 
 // Check compatibility
 const version = bridge.getVersionInfo();
-console.log(`Claude Code: ${version.claudeCode}`);
+console.log(`Codex: ${version.codexCode}`);
 console.log(`Compatible: ${version.compatible}`);
 
 if (!version.compatible) {
-  console.error('Please upgrade Claude Code to >= 2.1.19');
+  console.error('Please upgrade Codex to >= 2.1.19');
   process.exit(1);
 }
 
@@ -102,7 +102,7 @@ const team = await bridge.spawnTeam({
   planModeRequired: true,
 });
 
-// Spawn teammates (returns AgentInput for Claude Code Task tool)
+// Spawn teammates (returns AgentInput for Codex Task tool)
 const coder = await bridge.spawnTeammate({
   name: 'coder-1',
   role: 'coder',
@@ -112,7 +112,7 @@ const coder = await bridge.spawnTeammate({
   allowedTools: ['Edit', 'Write', 'Read', 'Bash'],
 });
 
-// The agentInput can be passed to Claude Code's Task tool
+// The agentInput can be passed to Codex's Task tool
 const agentInput = bridge.buildAgentInput({
   name: 'tester-1',
   role: 'tester',
@@ -146,7 +146,7 @@ console.log('Pass this to Task tool:', agentInput);
 | Team Context | Shared variables, permissions, environment |
 | Permission Updates | Dynamic permission changes mid-execution |
 | Session Memory | Persist teammate context across sessions |
-| Remote Sync | Push team to Claude.ai (experimental) |
+| Remote Sync | Push team to Codex.ai (experimental) |
 | Transcript Sharing | Share message history between teammates |
 | Teleport | Resume teams across terminal instances |
 | Plan Control | Pause, resume, modify plans mid-execution |
@@ -160,7 +160,7 @@ The main class for interacting with TeammateTool.
 #### Initialization
 
 ```typescript
-import { createTeammateBridge, TeammateBridge } from '@claude-flow/teammate-plugin';
+import { createTeammateBridge, TeammateBridge } from '@ruflo/teammate-plugin';
 
 // Factory function (recommended)
 const bridge = await createTeammateBridge({
@@ -221,7 +221,7 @@ const agentInput = bridge.buildAgentInput({
   prompt: 'Review code changes',
   teamName: 'my-team',
 });
-// Pass agentInput to Claude Code's Task tool
+// Pass agentInput to Codex's Task tool
 ```
 
 #### Messaging
@@ -342,10 +342,10 @@ if (canTeleport) {
 
 ### MCP Tools
 
-The plugin provides 16 MCP tools for use with Claude Code's MCP server:
+The plugin provides 16 MCP tools for use with Codex's MCP server:
 
 ```typescript
-import { TEAMMATE_MCP_TOOLS, handleMCPTool } from '@claude-flow/teammate-plugin';
+import { TEAMMATE_MCP_TOOLS, handleMCPTool } from '@ruflo/teammate-plugin';
 
 // List all tools
 console.log(TEAMMATE_MCP_TOOLS.map(t => t.name));
@@ -404,7 +404,7 @@ bridge.on('teleport:completed', ({ team, result }) => {
 ## Error Handling
 
 ```typescript
-import { TeammateError, TeammateErrorCode } from '@claude-flow/teammate-plugin';
+import { TeammateError, TeammateErrorCode } from '@ruflo/teammate-plugin';
 
 try {
   await bridge.launchSwarm('my-team', 'plan-id');
@@ -418,7 +418,7 @@ try {
         console.log(`Team not found: ${error.teamName}`);
         break;
       case TeammateErrorCode.VERSION_INCOMPATIBLE:
-        console.log('Claude Code version too old');
+        console.log('Codex version too old');
         break;
     }
   }
@@ -428,7 +428,7 @@ try {
 ## Configuration
 
 ```typescript
-import { createTeammateBridge, DEFAULT_PLUGIN_CONFIG } from '@claude-flow/teammate-plugin';
+import { createTeammateBridge, DEFAULT_PLUGIN_CONFIG } from '@ruflo/teammate-plugin';
 
 const bridge = await createTeammateBridge({
   autoInitialize: true,
@@ -476,19 +476,19 @@ const bridge = await createTeammateBridge({
 });
 ```
 
-## Integration with Claude Flow
+## Integration with Ruflo
 
 ```typescript
-import { createTeammateBridge } from '@claude-flow/teammate-plugin';
-import { UnifiedSwarmCoordinator } from '@claude-flow/swarm';
+import { createTeammateBridge } from '@ruflo/teammate-plugin';
+import { UnifiedSwarmCoordinator } from '@ruflo/swarm';
 
 // Create bridge
 const bridge = await createTeammateBridge();
 
-// Map Claude Flow topology to team config
+// Map Ruflo topology to team config
 const teamConfig = {
   name: 'cf-team',
-  topology: 'hierarchical',  // Maps to Claude Flow's hierarchical
+  topology: 'hierarchical',  // Maps to Ruflo's hierarchical
   maxTeammates: 8,
   planModeRequired: true,
 };
@@ -496,7 +496,7 @@ const teamConfig = {
 // Create team
 const team = await bridge.spawnTeam(teamConfig);
 
-// Map Claude Flow agent types to teammate configs
+// Map Ruflo agent types to teammate configs
 const agentMapping = {
   'coder': { role: 'coder', tools: ['Edit', 'Write', 'Read', 'Bash'] },
   'tester': { role: 'tester', tools: ['Read', 'Bash', 'Glob'] },
@@ -504,7 +504,7 @@ const agentMapping = {
   'architect': { role: 'architect', tools: ['Read', 'Glob', 'Grep'] },
 };
 
-// Spawn teammates with Claude Flow agent types
+// Spawn teammates with Ruflo agent types
 for (const [type, config] of Object.entries(agentMapping)) {
   await bridge.spawnTeammate({
     name: `${type}-1`,
@@ -518,10 +518,10 @@ for (const [type, config] of Object.entries(agentMapping)) {
 
 ## File Structure
 
-Teams are stored in `~/.claude/teams/`:
+Teams are stored in `~/.codex/teams/`:
 
 ```
-~/.claude/teams/
+~/.codex/teams/
 ├── my-team/
 │   ├── config.json        # Team configuration
 │   ├── state.json         # Team state (teammates, plans)
@@ -538,14 +538,14 @@ Teams are stored in `~/.claude/teams/`:
 
 ## Environment Variables
 
-The plugin uses these Claude Code environment variables:
+The plugin uses these Codex environment variables:
 
 ```bash
-CLAUDE_CODE_TEAM_NAME          # Current team context
-CLAUDE_CODE_PLAN_MODE_REQUIRED # Require plan approval
-CLAUDE_CODE_TMUX_SESSION       # tmux session name
-CLAUDE_CODE_TMUX_PREFIX        # tmux prefix key
-CLAUDE_CODE_TEAMMATE_COMMAND   # Custom spawn command
+CODEX_TEAM_NAME          # Current team context
+CODEX_PLAN_MODE_REQUIRED # Require plan approval
+CODEX_TMUX_SESSION       # tmux session name
+CODEX_TMUX_PREFIX        # tmux prefix key
+CODEX_TEAMMATE_COMMAND   # Custom spawn command
 ```
 
 ## Troubleshooting
@@ -555,9 +555,9 @@ CLAUDE_CODE_TEAMMATE_COMMAND   # Custom spawn command
 ```typescript
 const version = bridge.getVersionInfo();
 if (!version.compatible) {
-  console.log(`Claude Code version: ${version.claudeCode}`);
+  console.log(`Codex version: ${version.codexCode}`);
   console.log(`Required: >= 2.1.19`);
-  console.log('Run: claude update');
+  console.log('Run: codex update');
 }
 ```
 
@@ -602,7 +602,7 @@ npm run test:coverage
 ### Verify Plugin Functionality
 
 ```typescript
-import { createTeammateBridge, TEAMMATE_MCP_TOOLS } from '@claude-flow/teammate-plugin';
+import { createTeammateBridge, TEAMMATE_MCP_TOOLS } from '@ruflo/teammate-plugin';
 
 async function verifyPlugin() {
   console.log('=== Plugin Verification ===\n');
@@ -616,7 +616,7 @@ async function verifyPlugin() {
 
   // 3. Check version compatibility
   const version = bridge.getVersionInfo();
-  console.log(`✓ Claude Code version: ${version.claudeCode || 'not detected'}`);
+  console.log(`✓ Codex version: ${version.codexCode || 'not detected'}`);
   console.log(`✓ Plugin version: ${version.plugin}`);
   console.log(`✓ Compatible: ${version.compatible}`);
 
@@ -640,33 +640,33 @@ verifyPlugin().catch(console.error);
 
 ```bash
 # Check plugin is registered
-npx @claude-flow/cli@latest plugins list | grep teammate
+npx @ruflo/cli@latest plugins list | grep teammate
 
 # Check plugin info
-npx @claude-flow/cli@latest plugins info teammate-plugin
+npx @ruflo/cli@latest plugins info teammate-plugin
 
 # Test MCP tools
-npx @claude-flow/cli@latest mcp tools | grep teammate
+npx @ruflo/cli@latest mcp tools | grep teammate
 ```
 
 ## Plugin Registry (IPFS)
 
-This plugin is published to the Claude Flow Plugin Registry on IPFS for decentralized distribution.
+This plugin is published to the Ruflo Plugin Registry on IPFS for decentralized distribution.
 
 ### Registry Entry
 
 ```json
 {
   "name": "teammate-plugin",
-  "package": "@claude-flow/teammate-plugin",
+  "package": "@ruflo/teammate-plugin",
   "version": "1.0.0-alpha.1",
-  "description": "Native TeammateTool integration for Claude Code v2.1.19+",
-  "author": "Claude Flow Team",
+  "description": "Native TeammateTool integration for Codex v2.1.19+",
+  "author": "Ruflo Team",
   "license": "MIT",
-  "repository": "https://github.com/ruvnet/claude-flow",
-  "keywords": ["claude-code", "teammate", "multi-agent", "swarm"],
+  "repository": "https://github.com/SparklesKitchen/ruflo",
+  "keywords": ["codex-code", "teammate", "multi-agent", "swarm"],
   "requirements": {
-    "claudeCode": ">=2.1.19",
+    "codexCode": ">=2.1.19",
     "node": ">=18.0.0"
   },
   "mcpTools": 21,
@@ -686,20 +686,20 @@ This plugin is published to the Claude Flow Plugin Registry on IPFS for decentra
 
 ```bash
 # Install from IPFS-backed registry
-npx @claude-flow/cli@latest plugins install teammate-plugin --registry ipfs
+npx @ruflo/cli@latest plugins install teammate-plugin --registry ipfs
 
 # Or specify registry CID directly
-npx @claude-flow/cli@latest plugins install teammate-plugin --cid <registry-cid>
+npx @ruflo/cli@latest plugins install teammate-plugin --cid <registry-cid>
 ```
 
 ### Verify Registry Integrity
 
 ```bash
 # Check plugin hash matches registry
-npx @claude-flow/cli@latest plugins verify teammate-plugin
+npx @ruflo/cli@latest plugins verify teammate-plugin
 
 # View registry metadata
-npx @claude-flow/cli@latest plugins registry info
+npx @ruflo/cli@latest plugins registry info
 ```
 
 ## License
@@ -708,6 +708,6 @@ MIT
 
 ## Related
 
-- [Claude Flow](https://github.com/ruvnet/claude-flow) - Multi-agent orchestration framework
-- [Claude Code](https://github.com/anthropics/claude-code) - Anthropic's CLI for Claude
+- [Ruflo](https://github.com/SparklesKitchen/ruflo) - Multi-agent orchestration framework
+- [Codex](https://github.com/openais/codex-code) - OpenAI's CLI for Codex
 - [ADR-027](../implementation/adrs/ADR-027-teammate-tool-integration.md) - Architecture decision record

@@ -1,39 +1,39 @@
-# ADR-048: Claude Code Auto Memory Integration
+# ADR-048: Codex Auto Memory Integration
 
 **Status:** Implemented
 **Date:** 2026-02-08
-**Authors:** RuvNet, Claude Flow Team
+**Authors:** RuvNet, Ruflo Team
 **Supersedes:** None
-**Related:** ADR-006 (Unified Memory), ADR-018 (Claude Code Integration)
+**Related:** ADR-006 (Unified Memory), ADR-018 (Codex Integration)
 
 ## Context
 
-Claude Code has introduced **Auto Memory** — a persistent directory where Claude automatically records learnings, patterns, and insights as it works. Unlike CLAUDE.md files (human-written instructions), auto memory contains notes Claude writes for itself based on session discoveries.
+Codex has introduced **Auto Memory** — a persistent directory where Codex automatically records learnings, patterns, and insights as it works. Unlike AGENTS.md files (human-written instructions), auto memory contains notes Codex writes for itself based on session discoveries.
 
 ### What Is Auto Memory?
 
-Auto memory is a per-project persistent directory at `~/.claude/projects/<project>/memory/` containing:
+Auto memory is a per-project persistent directory at `~/.codex/projects/<project>/memory/` containing:
 
 ```
-~/.claude/projects/<project>/memory/
+~/.codex/projects/<project>/memory/
 ├── MEMORY.md          # Concise index (first 200 lines loaded into system prompt)
 ├── debugging.md       # Detailed notes on debugging patterns
 ├── api-conventions.md # API design decisions
-└── ...                # Any topic files Claude creates
+└── ...                # Any topic files Codex creates
 ```
 
 Key characteristics:
 
 | Aspect | Details |
 |--------|---------|
-| Location | `~/.claude/projects/<project>/memory/` |
+| Location | `~/.codex/projects/<project>/memory/` |
 | Entrypoint | `MEMORY.md` — first 200 lines loaded at session start |
 | Topic files | On-demand files for detailed notes (not auto-loaded) |
 | Scope | Per-project (derived from git repo root) |
 | Persistence | Survives across sessions |
-| Activation | `CLAUDE_CODE_DISABLE_AUTO_MEMORY=0` to force on |
+| Activation | `CODEX_DISABLE_AUTO_MEMORY=0` to force on |
 
-### What Claude Remembers
+### What Codex Remembers
 
 - **Project patterns**: build commands, test conventions, code style
 - **Debugging insights**: solutions to tricky problems, common error causes
@@ -42,7 +42,7 @@ Key characteristics:
 
 ### Problem Statement
 
-Claude-flow v3 has its own rich memory system (`@claude-flow/memory`) backed by AgentDB with HNSW vector indexing. These two memory systems are currently disconnected:
+Codex v3 has its own rich memory system (`@ruflo/memory`) backed by AgentDB with HNSW vector indexing. These two memory systems are currently disconnected:
 
 1. **Auto memory** — markdown files, loaded into system prompt, human-readable
 2. **AgentDB memory** — structured entries, vector-indexed, 150x-12,500x faster search
@@ -51,19 +51,19 @@ Without integration, insights discovered during swarm orchestration are lost bet
 
 ## Decision
 
-Implement a **bidirectional bridge** between Claude Code auto memory and claude-flow's unified memory system, treating auto memory as a persistent projection of the most relevant AgentDB entries.
+Implement a **bidirectional bridge** between Codex auto memory and codex's unified memory system, treating auto memory as a persistent projection of the most relevant AgentDB entries.
 
 ### Architecture
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│                  Claude Code Session                 │
+│                  Codex Session                 │
 │                                                      │
 │  System Prompt ← MEMORY.md (first 200 lines)        │
 │                                                      │
 │  ┌──────────────────┐     ┌──────────────────────┐  │
 │  │  Auto Memory Dir │◄───►│  AutoMemoryBridge    │  │
-│  │  ~/.claude/...   │     │  (@claude-flow/memory)│  │
+│  │  ~/.codex/...   │     │  (@ruflo/memory)│  │
 │  │                  │     │                       │  │
 │  │  MEMORY.md       │     │  ┌─────────────────┐ │  │
 │  │  debugging.md    │     │  │  AgentDB + HNSW │ │  │
@@ -84,14 +84,14 @@ Implement a **bidirectional bridge** between Claude Code auto memory and claude-
 
 #### 1. Auto Memory Bridge Service
 
-New service in `@claude-flow/memory` that syncs between AgentDB and auto memory files:
+New service in `@ruflo/memory` that syncs between AgentDB and auto memory files:
 
 ```typescript
 interface AutoMemoryBridgeConfig {
   /** Auto memory directory path */
   memoryDir: string;
 
-  /** Max lines for MEMORY.md (Claude Code reads first 200) */
+  /** Max lines for MEMORY.md (Codex reads first 200) */
   maxIndexLines: number; // default: 180 (leave headroom)
 
   /** Topic file mapping: AgentDB namespace → markdown file */
@@ -135,7 +135,7 @@ function resolveAutoMemoryDir(workingDir: string): string {
 
   return path.join(
     os.homedir(),
-    '.claude',
+    '.codex',
     'projects',
     projectKey,
     'memory'
@@ -173,7 +173,7 @@ interface MemoryInsight {
 Generated MEMORY.md structure:
 
 ```markdown
-# Claude Flow V3 Project Memory
+# Ruflo V3 Project Memory
 
 ## Project Patterns
 - Use `pnpm` for package management (not npm)
@@ -182,7 +182,7 @@ Generated MEMORY.md structure:
 - See `patterns.md` for detailed conventions
 
 ## Architecture
-- DDD with bounded contexts in `v3/@claude-flow/`
+- DDD with bounded contexts in `v3/@ruflo/`
 - Key packages: cli, memory, security, hooks, guidance
 - See `architecture.md` for module relationships
 
@@ -204,7 +204,7 @@ Generated MEMORY.md structure:
 
 #### 4. Hooks Integration
 
-Auto memory syncs are triggered by claude-flow hooks:
+Auto memory syncs are triggered by codex hooks:
 
 | Hook | Auto Memory Action |
 |------|--------------------|
@@ -373,20 +373,20 @@ async function persistSwarmLearnings(
 
 #### 8. CLI Commands
 
-New subcommands under `npx claude-flow@v3alpha memory`:
+New subcommands under `npx ruflo@v3alpha memory`:
 
 ```bash
 # Sync AgentDB → auto memory files
-npx claude-flow@v3alpha memory sync-auto
+npx ruflo@v3alpha memory sync-auto
 
 # Import auto memory → AgentDB
-npx claude-flow@v3alpha memory import-auto
+npx ruflo@v3alpha memory import-auto
 
 # Show auto memory status
-npx claude-flow@v3alpha memory auto-status
+npx ruflo@v3alpha memory auto-status
 
 # Curate MEMORY.md (prune to 200 lines)
-npx claude-flow@v3alpha memory curate
+npx ruflo@v3alpha memory curate
 ```
 
 #### 9. MCP Tool Extensions
@@ -427,7 +427,7 @@ New MCP tools for auto memory operations:
 
 ## Configuration
 
-Add to `claude-flow.config.json`:
+Add to `codex.config.json`:
 
 ```json
 {
@@ -451,12 +451,12 @@ Add to `claude-flow.config.json`:
 }
 ```
 
-Add to `.claude/settings.json`:
+Add to `.codex/settings.json`:
 
 ```json
 {
   "env": {
-    "CLAUDE_CODE_DISABLE_AUTO_MEMORY": "0"
+    "CODEX_DISABLE_AUTO_MEMORY": "0"
   }
 }
 ```
@@ -500,7 +500,7 @@ Add to `.claude/settings.json`:
 - [x] `pruneTopicFile()` for topic file line management
 - [x] `formatInsightLine()` for markdown formatting
 - [x] 73 unit tests passing (305ms runtime)
-- [x] Exported from `@claude-flow/memory` index
+- [x] Exported from `@ruflo/memory` index
 
 ### Phase 1b: Optimizations -- COMPLETED
 - [x] Static `createDefaultEntry` import (was dynamic per-call)
@@ -518,7 +518,7 @@ Add to `.claude/settings.json`:
 - [x] Pre-computed line count in `pruneSectionsToFit()` (decrement vs recount)
 - [x] 73 unit tests passing (305ms runtime)
 
-### Phase 1c: Claude Code Binary Analysis -- COMPLETED
+### Phase 1c: Codex Binary Analysis -- COMPLETED
 - [x] Discovered three-scope agent memory system (project/local/user)
 - [x] Documented agent `.md` frontmatter `memory` field
 - [x] Identified session memory system (separate from auto memory)
@@ -549,19 +549,19 @@ Add to `.claude/settings.json`:
 - [ ] Dashboard/status command for auto memory health
 - [ ] Performance benchmarks for sync operations
 
-## Appendix A: Undocumented Claude Code Memory Capabilities
+## Appendix A: Undocumented Codex Memory Capabilities
 
-The following capabilities were discovered through binary analysis of Claude Code v2.1.37 (`/home/codespace/.local/share/claude/versions/2.1.37`). These are implementation details that may change between versions but are important for deep integration.
+The following capabilities were discovered through binary analysis of Codex v2.1.37 (`/home/codespace/.local/share/codex/versions/2.1.37`). These are implementation details that may change between versions but are important for deep integration.
 
 ### A.1 Three-Scope Agent Memory System
 
-Claude Code supports three distinct memory scopes for agents, beyond the project-level auto memory:
+Codex supports three distinct memory scopes for agents, beyond the project-level auto memory:
 
 | Scope | Path | Shared via VCS | Use Case |
 |-------|------|----------------|----------|
-| `project` | `.claude/agent-memory/<agent-name>/` | Yes (committed) | Team-shared agent knowledge |
-| `local` | `.claude/agent-memory-local/<agent-name>/` | No (gitignored) | Machine-specific agent state |
-| `user` | `~/.claude/agent-memory/<agent-name>/` | No (global) | Cross-project agent knowledge |
+| `project` | `.codex/agent-memory/<agent-name>/` | Yes (committed) | Team-shared agent knowledge |
+| `local` | `.codex/agent-memory-local/<agent-name>/` | No (gitignored) | Machine-specific agent state |
+| `user` | `~/.codex/agent-memory/<agent-name>/` | No (global) | Cross-project agent knowledge |
 
 Each scope has its own `MEMORY.md` entrypoint. Scope is selected via agent definition frontmatter:
 
@@ -572,13 +572,13 @@ memory: "project"  # or "local" or "user"
 # Agent instructions here
 ```
 
-When `memory` is set in an agent's `.md` definition file, Claude Code automatically adds Read/Write/Edit tools to the agent's toolset for its memory directory. The scope-specific path is resolved by internal function `B7A(agentName, scope)`.
+When `memory` is set in an agent's `.md` definition file, Codex automatically adds Read/Write/Edit tools to the agent's toolset for its memory directory. The scope-specific path is resolved by internal function `B7A(agentName, scope)`.
 
 **Integration opportunity for AutoMemoryBridge:** Support agent-scoped memory directories in addition to the project-level auto memory directory. This would allow per-agent persistent learning across sessions.
 
 ### A.2 Session Memory System
 
-Separate from auto memory, Claude Code has a **session memory** system for within-session context tracking:
+Separate from auto memory, Codex has a **session memory** system for within-session context tracking:
 
 | Feature Flag | Purpose |
 |-------------|---------|
@@ -591,11 +591,11 @@ Session memory is loaded as a **static** system prompt block (`Id("session_memor
 - **Auto memory**: MEMORY.md is re-read from disk on every model turn — edits are immediately visible
 - **Session memory**: Loaded once and cached — tracks within-session context, compacted for efficiency
 
-Environment variable `CLAUDE_CODE_SM_COMPACT` controls session memory compaction behavior.
+Environment variable `CODEX_SM_COMPACT` controls session memory compaction behavior.
 
 ### A.3 Memory Telemetry Events
 
-Claude Code emits telemetry events for memory directory operations:
+Codex emits telemetry events for memory directory operations:
 
 | Event | Trigger |
 |-------|---------|
@@ -613,18 +613,18 @@ These events can be used for monitoring bridge sync health and detecting when au
 | Mechanism | Value | Effect |
 |-----------|-------|--------|
 | Feature flag `tengu_oboe` | enabled/disabled | Server-side toggle for auto memory |
-| Env var `CLAUDE_CODE_DISABLE_AUTO_MEMORY` | `1` / `0` | Client-side override |
+| Env var `CODEX_DISABLE_AUTO_MEMORY` | `1` / `0` | Client-side override |
 | Function `PG()` | boolean | Runtime check combining both |
 
 The 200-line limit for MEMORY.md is defined as constant `iRH=200` in the compiled source.
 
 ### A.5 Nested Memory Attachment Triggers
 
-Claude Code maintains a `nestedMemoryAttachmentTriggers` Set that tracks file read operations which trigger memory context attachment. When a file within a memory directory is read, additional memory context may be automatically attached to the conversation.
+Codex maintains a `nestedMemoryAttachmentTriggers` Set that tracks file read operations which trigger memory context attachment. When a file within a memory directory is read, additional memory context may be automatically attached to the conversation.
 
 ### A.6 Dynamic vs Static System Prompt Blocks
 
-Claude Code uses two loading mechanisms for memory in the system prompt:
+Codex uses two loading mechanisms for memory in the system prompt:
 
 ```
 Auto memory:    Dd("auto_memory", ...)  → Dynamic block, re-read from disk each turn
@@ -635,30 +635,30 @@ This is significant for the bridge: any writes to MEMORY.md or topic files are v
 
 ### A.7 MEMORY.md Case Migration
 
-Claude Code includes an automatic migration function `IP9()` that renames `memory.md` to `MEMORY.md` (lowercase to uppercase). This migration runs on agent memory load, ensuring consistent casing across all memory directories.
+Codex includes an automatic migration function `IP9()` that renames `memory.md` to `MEMORY.md` (lowercase to uppercase). This migration runs on agent memory load, ensuring consistent casing across all memory directories.
 
-The bridge should always create files as `MEMORY.md` (uppercase) to match Claude Code's expected convention.
+The bridge should always create files as `MEMORY.md` (uppercase) to match Codex's expected convention.
 
 ### A.8 Memory-Related Environment Variables
 
 | Variable | Purpose |
 |----------|---------|
-| `CLAUDE_CODE_DISABLE_AUTO_MEMORY` | Disable auto memory entirely |
-| `CLAUDE_CODE_SM_COMPACT` | Session memory compaction |
-| `CLAUDE_CODE_AGENT_NAME` | Agent name for memory scoping |
-| `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` | Enable agent teams (affects shared task lists) |
-| `CLAUDE_CODE_ENABLE_TASKS` | Enable task list feature |
-| `CLAUDE_CODE_TEAM_NAME` | Team name for coordination |
-| `CLAUDE_CODE_TASK_LIST_ID` | Task list identifier |
-| `CLAUDE_CODE_DISABLE_FILE_CHECKPOINTING` | Disable file history snapshots |
-| `CLAUDE_CODE_ENABLE_SDK_FILE_CHECKPOINTING` | Enable SDK-level file checkpointing |
+| `CODEX_DISABLE_AUTO_MEMORY` | Disable auto memory entirely |
+| `CODEX_SM_COMPACT` | Session memory compaction |
+| `CODEX_AGENT_NAME` | Agent name for memory scoping |
+| `CODEX_EXPERIMENTAL_AGENT_TEAMS` | Enable agent teams (affects shared task lists) |
+| `CODEX_ENABLE_TASKS` | Enable task list feature |
+| `CODEX_TEAM_NAME` | Team name for coordination |
+| `CODEX_TASK_LIST_ID` | Task list identifier |
+| `CODEX_DISABLE_FILE_CHECKPOINTING` | Disable file history snapshots |
+| `CODEX_ENABLE_SDK_FILE_CHECKPOINTING` | Enable SDK-level file checkpointing |
 
 ### A.9 File Checkpointing System
 
-Claude Code has a file history/checkpointing system that creates snapshots of files before modifications. Related environment variables:
+Codex has a file history/checkpointing system that creates snapshots of files before modifications. Related environment variables:
 
-- `CLAUDE_CODE_DISABLE_FILE_CHECKPOINTING` — Disable the feature
-- `CLAUDE_CODE_ENABLE_SDK_FILE_CHECKPOINTING` — Enable for SDK consumers
+- `CODEX_DISABLE_FILE_CHECKPOINTING` — Disable the feature
+- `CODEX_ENABLE_SDK_FILE_CHECKPOINTING` — Enable for SDK consumers
 
 This system provides rewind/backup capabilities and emits telemetry events for tracking file changes. The AutoMemoryBridge could leverage this to recover from failed sync operations.
 
@@ -670,13 +670,13 @@ Based on these discoveries, the following enhancements should be considered for 
 2. **Session memory coordination**: Avoid duplicating information between auto memory and session memory
 3. **Telemetry-driven sync**: Use `tengu_memdir_*` events to trigger incremental syncs instead of full-directory scans
 4. **Dynamic block awareness**: Leverage the fact that MEMORY.md edits are visible on the next turn for real-time knowledge injection
-5. **Case migration compatibility**: Always use uppercase `MEMORY.md` to match Claude Code's migration behavior
+5. **Case migration compatibility**: Always use uppercase `MEMORY.md` to match Codex's migration behavior
 6. **File checkpointing integration**: Use checkpoints for atomic sync operations with rollback capability
 
 ## References
 
-- [Claude Code Auto Memory Documentation](https://code.claude.com/docs/en/memory)
+- [Codex Auto Memory Documentation](https://code.codex.com/docs/en/memory)
 - ADR-006: Unified Memory Service
-- ADR-018: Claude Code Deep Integration Architecture
+- ADR-018: Codex Deep Integration Architecture
 - ADR-017: RuVector Integration
-- Claude Code v2.1.37 binary analysis (2026-02-08)
+- Codex v2.1.37 binary analysis (2026-02-08)

@@ -4,13 +4,13 @@ title: ruflo-plugin-creator plugin contract — pinning, scaffold-the-canonical-
 status: Proposed
 date: 2026-05-04
 authors:
-  - reviewer (Claude Code)
+  - reviewer (Codex)
 tags: [plugin, plugin-creator, scaffolding, namespace, smoke-test]
 ---
 
 ## Context
 
-`ruflo-plugin-creator` (v0.1.0) — meta-plugin that scaffolds new Claude Code plugins. 1 agent + 2 skills + 1 command.
+`ruflo-plugin-creator` (v0.1.0) — meta-plugin that scaffolds new Codex plugins. 1 agent + 2 skills + 1 command.
 
 This plugin is uniquely positioned: every new plugin scaffolded by it inherits whatever contract the scaffolder produces. ADR-0001 must therefore do two things:
 
@@ -52,7 +52,7 @@ The `create-plugin` skill is updated to scaffold:
 3. `create-plugin` skill scaffolds ADR, smoke, README contract sections.
 4. `create-plugin` skill includes the MCP-tool drift warnings.
 5. `create-plugin` skill no longer claims "19 AgentDB controllers" (regression check).
-6. README pins to `@claude-flow/cli` v3.6.
+6. README pins to `@ruflo/cli` v3.6.
 7. README has Architecture Decisions section.
 8. ADR-0001 exists with status `Proposed`.
 9. `validate-plugin` skill present.

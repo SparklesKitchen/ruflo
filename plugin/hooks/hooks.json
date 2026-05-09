@@ -1,7 +1,7 @@
 {
-  "$schema": "https://code.claude.com/schemas/hooks.json",
-  "description": "Claude Flow hooks configuration — uses stdin-jq-xargs pattern to prevent shell-injection when tool inputs contain quotes / redirects / special chars (#1747).",
-  "_security_note": "All commands read the hook payload from stdin (Claude Code passes a JSON object), extract fields with jq, and pass them to npx as a single argv element via xargs -0. This bypasses shell re-parsing entirely. DO NOT inline $TOOL_INPUT_* / $PROMPT / $TOOL_NAME directly in a quoted command string — interpolation is not shell-safe (creates empty files at CWD when input contains '>' redirects).",
+  "$schema": "https://code.codex.com/schemas/hooks.json",
+  "description": "Ruflo hooks configuration — uses stdin-jq-xargs pattern to prevent shell-injection when tool inputs contain quotes / redirects / special chars (#1747).",
+  "_security_note": "All commands read the hook payload from stdin (Codex passes a JSON object), extract fields with jq, and pass them to npx as a single argv element via xargs -0. This bypasses shell re-parsing entirely. DO NOT inline $TOOL_INPUT_* / $PROMPT / $TOOL_NAME directly in a quoted command string — interpolation is not shell-safe (creates empty files at CWD when input contains '>' redirects).",
   "hooks": {
     "PreToolUse": [
       {
@@ -10,7 +10,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cat | jq -r '.tool_input.file_path // .tool_input.path // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx claude-flow@alpha hooks pre-edit --file '{}'",
+            "command": "cat | jq -r '.tool_input.file_path // .tool_input.path // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx ruflo@alpha hooks pre-edit --file '{}'",
             "timeout": 5000,
             "continueOnError": true
           }
@@ -22,7 +22,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cat | jq -r '.tool_input.command // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx claude-flow@alpha hooks pre-command --command '{}'",
+            "command": "cat | jq -r '.tool_input.command // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx ruflo@alpha hooks pre-command --command '{}'",
             "timeout": 3000,
             "continueOnError": true
           }
@@ -34,7 +34,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cat | jq -r '.tool_input.description // empty | .[:200]' | tr '\\n' '\\0' | xargs -0 -I {} npx claude-flow@alpha hooks pre-task --description '{}'",
+            "command": "cat | jq -r '.tool_input.description // empty | .[:200]' | tr '\\n' '\\0' | xargs -0 -I {} npx ruflo@alpha hooks pre-task --description '{}'",
             "timeout": 5000,
             "continueOnError": true
           }
@@ -46,19 +46,19 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cat | jq -r '.tool_input.pattern // .tool_input.query // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx claude-flow@alpha hooks pre-search --query '{}'",
+            "command": "cat | jq -r '.tool_input.pattern // .tool_input.query // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx ruflo@alpha hooks pre-search --query '{}'",
             "timeout": 2000,
             "continueOnError": true
           }
         ]
       },
       {
-        "matcher": "^mcp__claude-flow__.*$",
+        "matcher": "^mcp__codex__.*$",
         "description": "Pre-MCP hook for swarm coordination",
         "hooks": [
           {
             "type": "command",
-            "command": "cat | jq -r '.tool_name // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx claude-flow@alpha hooks mcp-pre --tool '{}'",
+            "command": "cat | jq -r '.tool_name // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx ruflo@alpha hooks mcp-pre --tool '{}'",
             "timeout": 3000,
             "continueOnError": true
           }
@@ -72,7 +72,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cat | jq -r '.tool_input.file_path // .tool_input.path // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx claude-flow@alpha hooks post-edit --file '{}' --train-patterns",
+            "command": "cat | jq -r '.tool_input.file_path // .tool_input.path // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx ruflo@alpha hooks post-edit --file '{}' --train-patterns",
             "timeout": 5000,
             "continueOnError": true
           }
@@ -84,7 +84,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cat | jq -r '.tool_input.command // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx claude-flow@alpha hooks post-command --command '{}' --track-metrics true --store-results true",
+            "command": "cat | jq -r '.tool_input.command // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx ruflo@alpha hooks post-command --command '{}' --track-metrics true --store-results true",
             "timeout": 3000,
             "continueOnError": true
           }
@@ -96,7 +96,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cat | jq -r '.tool_response.agent_id // .tool_response.task_id // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx claude-flow@alpha hooks post-task --task-id '{}' --analyze-performance",
+            "command": "cat | jq -r '.tool_response.agent_id // .tool_response.task_id // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx ruflo@alpha hooks post-task --task-id '{}' --analyze-performance",
             "timeout": 5000,
             "continueOnError": true
           }
@@ -108,19 +108,19 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cat | jq -r '.tool_input.pattern // .tool_input.query // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx claude-flow@alpha hooks post-search --query '{}' --cache-results",
+            "command": "cat | jq -r '.tool_input.pattern // .tool_input.query // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx ruflo@alpha hooks post-search --query '{}' --cache-results",
             "timeout": 2000,
             "continueOnError": true
           }
         ]
       },
       {
-        "matcher": "^mcp__claude-flow__.*$",
+        "matcher": "^mcp__codex__.*$",
         "description": "Post-MCP hook for coordination state",
         "hooks": [
           {
             "type": "command",
-            "command": "cat | jq -r '.tool_name // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx claude-flow@alpha hooks mcp-post --tool '{}'",
+            "command": "cat | jq -r '.tool_name // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx ruflo@alpha hooks mcp-post --tool '{}'",
             "timeout": 3000,
             "continueOnError": true
           }
@@ -133,7 +133,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cat | jq -r '.prompt // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx claude-flow@alpha hooks route --task '{}' --include-explanation",
+            "command": "cat | jq -r '.prompt // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx ruflo@alpha hooks route --task '{}' --include-explanation",
             "timeout": 5000,
             "continueOnError": true
           }
@@ -146,7 +146,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cat | jq -r '.session_id // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx claude-flow@alpha hooks session-start --session-id '{}' --load-context",
+            "command": "cat | jq -r '.session_id // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx ruflo@alpha hooks session-start --session-id '{}' --load-context",
             "timeout": 10000,
             "continueOnError": true
           }
@@ -181,7 +181,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cat | jq -r '.message // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx claude-flow@alpha hooks notify --message '{}' --swarm-status",
+            "command": "cat | jq -r '.message // empty' | tr '\\n' '\\0' | xargs -0 -I {} npx ruflo@alpha hooks notify --message '{}' --swarm-status",
             "timeout": 3000,
             "continueOnError": true
           }
@@ -190,12 +190,12 @@
     ],
     "PermissionRequest": [
       {
-        "matcher": "^mcp__claude-flow__.*$",
-        "description": "Auto-allow claude-flow MCP tools",
+        "matcher": "^mcp__codex__.*$",
+        "description": "Auto-allow codex MCP tools",
         "hooks": [
           {
             "type": "command",
-            "command": "echo '{\"decision\": \"allow\", \"reason\": \"claude-flow MCP tool auto-approved\"}'",
+            "command": "echo '{\"decision\": \"allow\", \"reason\": \"codex MCP tool auto-approved\"}'",
             "timeout": 1000
           }
         ]
@@ -203,7 +203,7 @@
     ]
   },
   "v3HookMapping": {
-    "_comment": "Maps V3 internal hook events to official Claude Code hooks",
+    "_comment": "Maps V3 internal hook events to official Codex hooks",
     "PreToolUse": "PreToolUse",
     "PostToolUse": "PostToolUse",
     "PreEdit": "PreToolUse (matcher: Edit|Write)",

@@ -9,7 +9,7 @@ Transforms business domains into well-structured bounded contexts with aggregate
 ## Installation
 
 ```bash
-claude --plugin-dir plugins/ruflo-ddd
+codex --plugin-dir plugins/ruflo-ddd
 ```
 
 ## Agents
@@ -63,12 +63,12 @@ Detected via import analysis: upstream/downstream, ACL, shared kernel, published
 
 ## Compatibility
 
-- **CLI:** pinned to `@claude-flow/cli` v3.6 major+minor.
+- **CLI:** pinned to `@ruflo/cli` v3.6 major+minor.
 - **Verification:** `bash plugins/ruflo-ddd/scripts/smoke.sh` is the contract.
 
 ## Namespace coordination
 
-This plugin owns the `ddd-patterns` AgentDB namespace (kebab-case, follows the convention from [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md)). Reserved namespaces (`pattern`, `claude-memories`, `default`) MUST NOT be shadowed.
+This plugin owns the `ddd-patterns` AgentDB namespace (kebab-case, follows the convention from [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md)). Reserved namespaces (`pattern`, `codex-memories`, `default`) MUST NOT be shadowed.
 
 `ddd-patterns` stores reusable bounded-context shapes, aggregate templates, and event vocabularies for cross-project reuse. Accessed via `memory_*` tools (namespace-routed).
 

@@ -27,12 +27,12 @@ Workflow automation with templates, orchestration, and full state-machine lifecy
 
 ## Compatibility
 
-- **CLI:** pinned to `@claude-flow/cli` v3.6 major+minor.
+- **CLI:** pinned to `@ruflo/cli` v3.6 major+minor.
 - **Verification:** `bash plugins/ruflo-workflows/scripts/smoke.sh` is the contract.
 
 ## MCP surface (10 tools)
 
-All defined at `v3/@claude-flow/cli/src/mcp-tools/workflow-tools.ts`:
+All defined at `v3/@ruflo/cli/src/mcp-tools/workflow-tools.ts`:
 
 | Tool | Purpose |
 |------|---------|
@@ -70,7 +70,7 @@ created ──run──→ running ──pause──→ paused ──resume─�
 
 ## Namespace coordination
 
-This plugin owns the `workflows-state` AgentDB namespace (kebab-case, follows the convention from [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md)). Reserved namespaces (`pattern`, `claude-memories`, `default`) MUST NOT be shadowed.
+This plugin owns the `workflows-state` AgentDB namespace (kebab-case, follows the convention from [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md)). Reserved namespaces (`pattern`, `codex-memories`, `default`) MUST NOT be shadowed.
 
 `workflows-state` indexes workflow definitions, current state, run history, and template metadata. Accessed via `memory_*` (namespace-routed).
 

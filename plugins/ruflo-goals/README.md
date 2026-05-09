@@ -47,7 +47,7 @@ Long-horizon goal planning, deep research orchestration, and adaptive replanning
 
 ## Compatibility
 
-- **CLI:** pinned to `@claude-flow/cli` v3.6 major+minor.
+- **CLI:** pinned to `@ruflo/cli` v3.6 major+minor.
 - **Verification:** `bash plugins/ruflo-goals/scripts/smoke.sh` is the contract.
 
 ## Namespace coordination
@@ -65,7 +65,7 @@ This plugin uses six AgentDB namespaces. They predate the namespace convention f
 
 **New writes from this plugin SHOULD use the canonical kebab-case form.** Reads check both. A future ADR will propose the rename + migration once existing-data-portability is designed.
 
-Reserved namespaces (`pattern`, `claude-memories`, `default`) MUST NOT be shadowed.
+Reserved namespaces (`pattern`, `codex-memories`, `default`) MUST NOT be shadowed.
 
 ## Dossier-investigator (ADR-099)
 

@@ -6,7 +6,7 @@
 
 ## Executive summary
 
-**`ruflo-goals` v0.2.0** is a Claude Code plugin providing GOAP-based planning, multi-source research, long-horizon tracking, and (new in 0.2.0) recursive parallel investigation. It ships **4 agents** + **5 skills** + **1 slash command** in 654 lines across 12 files. The plugin is structured as siblings — `goal-planner` (planning), `deep-researcher` (questions), `horizon-tracker` (long objectives), and `dossier-investigator` (seeds) — with a documented selection guide. ADR-099 (this dossier's instigator) added the dossier-investigator capability inspired by maigret's recursive-parallel pattern, reusing only ruflo-native tools (no external dependencies).
+**`ruflo-goals` v0.2.0** is a Codex plugin providing GOAP-based planning, multi-source research, long-horizon tracking, and (new in 0.2.0) recursive parallel investigation. It ships **4 agents** + **5 skills** + **1 slash command** in 654 lines across 12 files. The plugin is structured as siblings — `goal-planner` (planning), `deep-researcher` (questions), `horizon-tracker` (long objectives), and `dossier-investigator` (seeds) — with a documented selection guide. ADR-099 (this dossier's instigator) added the dossier-investigator capability inspired by maigret's recursive-parallel pattern, reusing only ruflo-native tools (no external dependencies).
 
 ## Entity table
 
@@ -69,7 +69,7 @@ graph TD
 ```
 plugins/ruflo-goals/
 ├── README.md                                  46 lines
-├── .claude-plugin/plugin.json                 23 lines
+├── .codex-plugin/plugin.json                 23 lines
 ├── commands/goals.md                          12 lines
 ├── agents/
 │   ├── goal-planner.md                        82 lines

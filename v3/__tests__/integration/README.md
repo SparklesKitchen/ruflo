@@ -1,6 +1,6 @@
 # V3 Integration Test Suite
 
-Comprehensive cross-module integration tests for claude-flow V3 architecture.
+Comprehensive cross-module integration tests for codex V3 architecture.
 
 ## Test Files Overview
 
@@ -178,7 +178,7 @@ npm run test:watch -- v3/__tests__/integration
 
 | ADR | Description | Test Coverage |
 |-----|-------------|---------------|
-| ADR-001 | Agentic-flow core foundation | Workflow integration |
+| ADR-001 | Agentic core foundation | Workflow integration |
 | ADR-002 | Domain-Driven Design | All test files (bounded contexts) |
 | ADR-003 | Single coordination engine | Swarm integration |
 | ADR-004 | Plugin architecture | Plugin integration |
@@ -207,7 +207,7 @@ These integration tests are designed to run in CI/CD pipelines:
 
 ### Enable verbose logging
 ```bash
-DEBUG=claude-flow:* npm run test:integration
+DEBUG=codex:* npm run test:integration
 ```
 
 ### Run single test
@@ -251,4 +251,4 @@ Integration tests include:
 - `/v3/docs/architecture/` - Architecture decision records
 - `/v3/docs/testing/` - Testing strategy
 - `/v3/README.md` - V3 overview
-- `/CLAUDE.md` - Development guidelines
+- `/AGENTS.md` - Development guidelines

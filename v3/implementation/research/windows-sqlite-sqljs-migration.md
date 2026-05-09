@@ -1,14 +1,14 @@
 # Windows Installation Support via sql.js Migration Research
 
 **Research Date**: 2026-01-03
-**Project**: Claude-Flow v3
+**Project**: Codex-Flow v3
 **Objective**: Enable cross-platform Windows support by replacing/augmenting better-sqlite3 with sql.js
 
 ---
 
 ## Executive Summary
 
-Claude-Flow currently uses `better-sqlite3` as its primary database engine, which causes installation failures on Windows due to native module compilation requirements. This research analyzes migrating to or integrating `sql.js` as a cross-platform fallback to enable seamless Windows support.
+Codex-Flow currently uses `better-sqlite3` as its primary database engine, which causes installation failures on Windows due to native module compilation requirements. This research analyzes migrating to or integrating `sql.js` as a cross-platform fallback to enable seamless Windows support.
 
 **Key Findings**:
 - 17 files currently use better-sqlite3 directly
@@ -25,12 +25,12 @@ Claude-Flow currently uses `better-sqlite3` as its primary database engine, whic
 
 **Primary Database Locations**:
 ```
-/home/user/claude-flow/src/api/database-service.ts          (Line 559: dynamic import)
-/home/user/claude-flow/src/core/DatabaseManager.ts          (Line 197: require)
-/home/user/claude-flow/src/core/persistence.ts              (Line 5: import)
-/home/user/claude-flow/src/memory/backends/sqlite.ts        (Wrapper-based)
-/home/user/claude-flow/src/memory/sqlite-store.js           (Wrapper-based)
-/home/user/claude-flow/src/memory/sqlite-wrapper.js         (Abstraction layer ⭐)
+/home/user/codex/src/api/database-service.ts          (Line 559: dynamic import)
+/home/user/codex/src/core/DatabaseManager.ts          (Line 197: require)
+/home/user/codex/src/core/persistence.ts              (Line 5: import)
+/home/user/codex/src/memory/backends/sqlite.ts        (Wrapper-based)
+/home/user/codex/src/memory/sqlite-store.js           (Wrapper-based)
+/home/user/codex/src/memory/sqlite-wrapper.js         (Abstraction layer ⭐)
 ```
 
 **Additional Usages** (17 total files):
@@ -39,20 +39,20 @@ Claude-Flow currently uses `better-sqlite3` as its primary database engine, whic
 - Patches: timezone fixes for hive-mind
 
 **External Dependencies**:
-- `agentic-flow` (v1.9.4): Uses better-sqlite3 internally
+- `agentic` (v1.9.4): Uses better-sqlite3 internally
 - `agentdb` (v1.6.1): Uses better-sqlite3 internally
 - Both in `optionalDependencies`
 
 ### 1.2 Existing Fallback Infrastructure ✅
 
-Claude-Flow already implements graceful fallback mechanisms:
+Codex-Flow already implements graceful fallback mechanisms:
 
 **Fallback Chain**:
 1. **Primary**: better-sqlite3 (native SQLite)
 2. **Secondary**: JSON file storage (`JSONProvider`)
 3. **Tertiary**: In-memory storage (`InMemoryStore`)
 
-**Key Abstraction Layer**: `/home/user/claude-flow/src/memory/sqlite-wrapper.js`
+**Key Abstraction Layer**: `/home/user/codex/src/memory/sqlite-wrapper.js`
 - Platform detection (Windows, WSL, macOS ARM64)
 - Auto-rebuild on NODE_MODULE_VERSION mismatch
 - Graceful error handling with user-friendly messages
@@ -119,7 +119,7 @@ private initializeSQLiteWithRecovery(): IDatabaseProvider {
 | Database load | Instant | 50-200ms | Initial overhead |
 | Memory usage | Minimal | Full DB in RAM | Depends on DB size |
 
-**Performance Context for Claude-Flow**:
+**Performance Context for Codex-Flow**:
 - Metadata storage (swarms, agents, tasks): Typically <100MB
 - Query frequency: Low-moderate (coordination, not real-time)
 - **Verdict**: Performance tradeoff acceptable for Windows compatibility
@@ -133,7 +133,7 @@ sql-wasm.wasm      ~850KB (SQLite engine)
 Total              ~1.2MB
 ```
 
-**Claude-Flow Context**:
+**Codex-Flow Context**:
 - Current package size: ~50MB (with dependencies)
 - Adding sql.js: +1.2MB (~2.4% increase)
 - **Verdict**: Bundle size impact negligible
@@ -238,7 +238,7 @@ function getRecommendedProvider() {
 ### 3.2 Implementation Plan
 
 **Phase 1: sql.js Provider Implementation**
-1. Create `/home/user/claude-flow/src/memory/backends/sqljs.ts`
+1. Create `/home/user/codex/src/memory/backends/sqljs.ts`
 2. Implement `IDatabaseProvider` interface
 3. Add WASM file bundling configuration
 4. Implement file persistence wrapper
@@ -302,7 +302,7 @@ const db = await createDatabaseProvider(path, {
 
 ### 4.2 Configuration Options
 
-**User-Facing Configuration** (`claude-flow.config.js`):
+**User-Facing Configuration** (`codex.config.js`):
 ```javascript
 module.exports = {
   database: {
@@ -346,20 +346,20 @@ async function convertDatabase(fromProvider, toProvider) {
 
 ## 5. External Dependencies Impact
 
-### 5.1 agentic-flow Package
+### 5.1 agentic Package
 
 **Current Status**:
 - Uses better-sqlite3 internally (`dist/reasoningbank/db/queries.js`)
-- Current workaround: Postinstall patch script (`fix-agentic-flow-sqlite.sh`)
+- Current workaround: Postinstall patch script (`fix-agentic-sqlite.sh`)
 - Patch replaces broken import with proper better-sqlite3 import
 
 **Impact of sql.js**:
-- agentic-flow remains on better-sqlite3 (optional dependency)
-- If better-sqlite3 unavailable, agentic-flow features disabled
-- Alternative: Fork agentic-flow to use sql.js (high effort)
+- agentic remains on better-sqlite3 (optional dependency)
+- If better-sqlite3 unavailable, agentic features disabled
+- Alternative: Fork agentic to use sql.js (high effort)
 
 **Recommended Action**:
-- Keep agentic-flow as-is (optional dependency)
+- Keep agentic as-is (optional dependency)
 - Document feature availability matrix:
   ```
   better-sqlite3: Full features (ReasoningBank, AgentDB)
@@ -489,7 +489,7 @@ stmt.free(); // Release memory
 
 **Current Experience** (Windows):
 ```bash
-$ npm install claude-flow@alpha
+$ npm install codex@alpha
 ⚠️  Warning: On Windows, use pnpm to avoid native dependency issues
 ⚠️  better-sqlite3 compilation failed
 ✅ Falling back to JSON storage
@@ -497,7 +497,7 @@ $ npm install claude-flow@alpha
 
 **New Experience** (Windows):
 ```bash
-$ npm install claude-flow@alpha
+$ npm install codex@alpha
 ✅ Installed successfully
 ℹ️  Using sql.js database provider (cross-platform mode)
 ℹ️  For best performance, install build tools for native SQLite
@@ -609,7 +609,7 @@ Implement sql.js as a fallback provider alongside better-sqlite3:
 2. **High**: Provider selection logic
 3. **Medium**: Configuration options
 4. **Medium**: Performance optimization
-5. **Low**: AgentDB/agentic-flow migration (defer)
+5. **Low**: AgentDB/agentic migration (defer)
 
 ### Alternative Approaches Considered
 
@@ -631,7 +631,7 @@ Implement sql.js as a fallback provider alongside better-sqlite3:
 ### 11.1 SqlJsBackend Implementation (Pseudocode)
 
 ```typescript
-// /home/user/claude-flow/src/memory/backends/sqljs.ts
+// /home/user/codex/src/memory/backends/sqljs.ts
 
 import initSqlJs, { Database as SqlJsDatabase } from 'sql.js';
 import { promises as fs } from 'fs';
@@ -715,7 +715,7 @@ export class SqlJsBackend implements IMemoryBackend {
 ### 11.2 Updated sqlite-wrapper.js (Pseudocode)
 
 ```javascript
-// /home/user/claude-flow/src/memory/sqlite-wrapper.js
+// /home/user/codex/src/memory/sqlite-wrapper.js
 
 let BetterSqlite3 = null;
 let SqlJs = null;
@@ -797,7 +797,7 @@ function createSqlJsWrapper(SQL, dbPath) {
 
 ## 12. Conclusion
 
-Integrating sql.js as a fallback provider for Claude-Flow is **highly recommended** for Windows compatibility:
+Integrating sql.js as a fallback provider for Codex-Flow is **highly recommended** for Windows compatibility:
 
 **Benefits**:
 - ✅ Eliminates Windows installation failures
@@ -833,5 +833,5 @@ Integrating sql.js as a fallback provider for Claude-Flow is **highly recommende
 ---
 
 **Research completed**: 2026-01-03
-**Researcher**: Claude Code Agent (Research Specialist)
+**Researcher**: Codex Agent (Research Specialist)
 **Status**: Ready for implementation

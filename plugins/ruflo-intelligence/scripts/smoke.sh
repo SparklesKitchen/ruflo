@@ -28,13 +28,13 @@ grep -qE "IPFS.+pattern|pattern.+IPFS|Pinata" "$ROOT/README.md" \
 
 # 1. plugin.json bump + new keywords
 step "1. plugin.json declares 0.3.0 with new keywords"
-v=$(grep -E '"version"[[:space:]]*:' "$ROOT/.claude-plugin/plugin.json" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+v=$(grep -E '"version"[[:space:]]*:' "$ROOT/.codex-plugin/plugin.json" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
 if [[ "$v" != "0.3.0" ]]; then
   bad "expected 0.3.0, got '$v'"
 else
   miss=""
   for k in microlora ewc attention moe pattern-transfer model-routing; do
-    grep -q "\"$k\"" "$ROOT/.claude-plugin/plugin.json" || miss="$miss $k"
+    grep -q "\"$k\"" "$ROOT/.codex-plugin/plugin.json" || miss="$miss $k"
   done
   [[ -z "$miss" ]] && ok || bad "missing keywords:$miss"
 fi
@@ -141,8 +141,8 @@ else
 fi
 
 # 13. Compatibility section pins to v3.6
-step "13. Compatibility section pins @claude-flow/cli to v3.6"
-if grep -qE "@claude-flow/cli.*v3\.6|v3\.6.*claude-flow/cli" "$ROOT/README.md"; then
+step "13. Compatibility section pins @ruflo/cli to v3.6"
+if grep -qE "@ruflo/cli.*v3\.6|v3\.6.*codex/cli" "$ROOT/README.md"; then
   ok
 else
   bad "Compatibility pin to v3.6 missing"

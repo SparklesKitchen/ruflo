@@ -4,7 +4,7 @@ title: ruflo-ddd plugin contract — pinning, namespace coordination, ADR cross-
 status: Proposed
 date: 2026-05-04
 authors:
-  - reviewer (Claude Code)
+  - reviewer (Codex)
 tags: [plugin, ddd, bounded-context, aggregate, namespace, smoke-test]
 ---
 

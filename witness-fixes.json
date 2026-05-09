@@ -4,13 +4,13 @@
     {
       "id": "#1867",
       "desc": "Node 26 install: better-sqlite3 dynamic import + optionalDependencies",
-      "file": "v3/@claude-flow/memory/dist/sqlite-backend.js",
+      "file": "v3/@ruflo/memory/dist/sqlite-backend.js",
       "marker": "(await import('better-sqlite3')).default"
     },
     {
       "id": "#1859",
       "desc": "CLI flag/positional priority swap — named flags win over stray positionals (14 sites in hooks.ts)",
-      "file": "v3/@claude-flow/cli/dist/src/commands/hooks.js",
+      "file": "v3/@ruflo/cli/dist/src/commands/hooks.js",
       "marker": "ctx.flags.file || ctx.args[0]"
     },
     {
@@ -22,7 +22,7 @@
     {
       "id": "ADR-101-C",
       "desc": "Federation policy-engine wires claim-event + agent-handoff message types into CLAIMS_FOR_MESSAGE_TYPE (unblocked Build V3 after 3+ days of failures)",
-      "file": "v3/@claude-flow/plugin-agent-federation/dist/application/policy-engine.js",
+      "file": "v3/@ruflo/plugin-agent-federation/dist/application/policy-engine.js",
       "marker": "'agent-handoff': ['federation:write', 'federation:spawn']"
     }
   ]

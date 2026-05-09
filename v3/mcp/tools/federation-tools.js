@@ -12,10 +12,10 @@
  * - federation/vote - Vote on consensus proposal
  *
  * Implements ADR-005: MCP-First API Design
- * Implements ADR-001: agentic-flow@alpha compatibility
+ * Implements ADR-001: agentic@alpha compatibility
  */
 import { z } from 'zod';
-import { getDefaultFederationHub, } from '../../@claude-flow/swarm/src/federation-hub.js';
+import { getDefaultFederationHub, } from '../../@ruflo/swarm/src/federation-hub.js';
 // ============================================================================
 // Input Schemas
 // ============================================================================

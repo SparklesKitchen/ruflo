@@ -25,7 +25,7 @@ import {
   createReasoningBank,
   type Trajectory,
   type TrajectoryStep,
-} from '../../@claude-flow/neural/src/index.js';
+} from '../../@ruflo/neural/src/index.js';
 
 // ============================================================================
 // Singleton ReasoningBank Instance
@@ -321,7 +321,7 @@ interface ListHooksResult {
 
 /**
  * Generate hash-based embedding from text.
- * For ML embeddings, use: import('agentic-flow').computeEmbedding
+ * For ML embeddings, use: import('agentic').computeEmbedding
  */
 function generateSimpleEmbedding(text: string, dim: number = 768): Float32Array {
   const embedding = new Float32Array(dim);

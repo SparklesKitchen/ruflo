@@ -6,9 +6,9 @@
 
 ## Executive summary
 
-**rUv** (GitHub `ruvnet`, Twitter `ruv`, blog `Cognitum.One`) is the creator of **Ruflo** (formerly Claude Flow), a multi-agent orchestration platform for Claude Code with 39k+ stars. The account joined GitHub in 2012, hosts 173 public repos, has 7,268 followers, and lists company "Not a Bot" / location "0x". The portfolio clusters around three themes:
+**rUv** (GitHub `ruvnet`, Twitter `ruv`, blog `Cognitum.One`) is the creator of **Ruflo** (formerly Ruflo), a multi-agent orchestration platform for Codex with 39k+ stars. The account joined GitHub in 2012, hosts 173 public repos, has 7,268 followers, and lists company "Not a Bot" / location "0x". The portfolio clusters around three themes:
 
-1. **Agent orchestration** (`ruflo`, `agentic-flow`, `swarm-*`)
+1. **Agent orchestration** (`ruflo`, `agentic`, `swarm-*`)
 2. **Self-learning AI infrastructure** (`RuVector`, `ruv-FANN`, `RuLake`)
 3. **Edge / unconventional sensing** (`RuView` for WiFi-based vital monitoring, `ultrasonic` for steganographic agent commands)
 
@@ -22,10 +22,10 @@ A ruflo-internal "Dossier" repo also exists (33 stars) — visual planning for A
 | `ruflo` | repo | TS, 39,201 ⭐, MIT, multi-agent platform | gh-api, WebSearch, github.com |
 | `RuView` | repo | Rust, 51,576 ⭐, WiFi sensing | gh-api |
 | `RuVector` | repo | Rust, 3,891 ⭐, MIT, GNN vector DB | gh-api, codebase |
-| `agentic-flow` | repo | TS, 668 ⭐, low-cost model switcher | gh-api, WebSearch |
+| `agentic` | repo | TS, 668 ⭐, low-cost model switcher | gh-api, WebSearch |
 | `ruv-FANN` | repo | Rust, 347 ⭐, neural net library | gh-api |
 | `SynthLang` | repo | Python, 253 ⭐, prompt language for LLMs | gh-api |
-| `open-claude-code` | repo | JS, 242 ⭐, clean-room CC reimpl | gh-api |
+| `open-codex-code` | repo | JS, 242 ⭐, clean-room CC reimpl | gh-api |
 | `rvm` | repo | Rust, 95 ⭐, agentic VM | gh-api |
 | `Dossier` | repo | 33 ⭐, visual AI coding planner | gh-api |
 | `Cognitum.One` | url | personal blog / company site | gh-api (profile.blog) |
@@ -42,17 +42,17 @@ graph TD
   rUv[ruvnet / rUv] -->|owns| ruflo
   rUv -->|owns| RuView
   rUv -->|owns| RuVector
-  rUv -->|owns| agentic-flow
+  rUv -->|owns| agentic
   rUv -->|owns| ruv-FANN
   rUv -->|owns| SynthLang
-  rUv -->|owns| open-claude-code
+  rUv -->|owns| open-codex-code
   rUv -->|owns| rvm
   rUv -->|owns| Dossier
   rUv -->|owns| RuLake
   rUv -->|owns| obsidian-brain
   rUv -->|writes-at| Cognitum.One
   rUv -->|works-at| NotABot[Not a Bot]
-  ruflo -->|integrates| agentic-flow
+  ruflo -->|integrates| agentic
   ruflo -->|uses| RuVector
   obsidian-brain -->|bridges| RuVector
   obsidian-brain -->|federates-via| pi.ruv.io
@@ -65,8 +65,8 @@ graph TD
 
 ### 1. Agent orchestration cluster
 - `ruflo` (39k ⭐ TS, the flagship)
-- `agentic-flow` (low-cost model switcher; integration partner)
-- `open-claude-code` (CC reverse engineering)
+- `agentic` (low-cost model switcher; integration partner)
+- `open-codex-code` (CC reverse engineering)
 - `marketing` (agentic marketing swarm)
 - `agentic-voice` (Next.js + OpenAI + Exa chat)
 
@@ -84,13 +84,13 @@ graph TD
 
 ## Source provenance
 
-- **Round 0 fan-out** (parallel, 1 batch): `gh api users/ruvnet`, `gh api users/ruvnet/repos?sort=updated`, `WebSearch "ruvnet github ruflo claude-flow agentic"`
-- **Round 1 expansion** (parallel, 1 batch): `gh api repos/ruvnet/ruflo`, `gh api repos/ruvnet/RuVector`, `gh api repos/ruvnet/agentic-flow`, `gh api users/ruvnet/repos?sort=stars`
+- **Round 0 fan-out** (parallel, 1 batch): `gh api users/ruvnet`, `gh api users/ruvnet/repos?sort=updated`, `WebSearch "ruvnet github ruflo codex agentic"`
+- **Round 1 expansion** (parallel, 1 batch): `gh api repos/ruvnet/ruflo`, `gh api repos/ruvnet/RuVector`, `gh api repos/ruvnet/agentic`, `gh api users/ruvnet/repos?sort=stars`
 - **Dedup**: 0 collisions (all entities surfaced once)
-- **Budget spent**: ~3.2k tokens, $0 (gh API + WebSearch are free; no Anthropic calls beyond orchestration)
+- **Budget spent**: ~3.2k tokens, $0 (gh API + WebSearch are free; no OpenAI calls beyond orchestration)
 
 ## Risks / open questions
 
 - `RuView` star count (51,576) substantially exceeds `ruflo` (39,201) — surprising given ruflo is the headline project; worth verifying.
-- "Cognitum.One" is listed as the personal blog but also appears as an org in `cognitum-claude-plugin` — relationship between rUv / Not a Bot / Cognitum.One could be expanded in a depth-3 run.
+- "Cognitum.One" is listed as the personal blog but also appears as an org in `cognitum-codex-plugin` — relationship between rUv / Not a Bot / Cognitum.One could be expanded in a depth-3 run.
 - 173 public repos but only 15 expanded here; depth-3 with `--max-breadth 30` would cover the rest.

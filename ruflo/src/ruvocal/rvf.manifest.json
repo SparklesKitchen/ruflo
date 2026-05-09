@@ -68,7 +68,7 @@
             "OPENAI_API_KEY",
             "GOOGLE_API_KEY",
             "OPENROUTER_API_KEY",
-            "ANTHROPIC_API_KEY",
+            "OPENAI_API_KEY",
             "MCP_GROUP_INTELLIGENCE",
             "MCP_GROUP_AGENTS",
             "MCP_GROUP_MEMORY",
@@ -152,7 +152,7 @@
         "OPENAI_API_KEY",
         "GOOGLE_API_KEY",
         "OPENROUTER_API_KEY",
-        "ANTHROPIC_API_KEY",
+        "OPENAI_API_KEY",
         "OPENID_CLIENT_SECRET",
         "DATABASE_URL"
       ]

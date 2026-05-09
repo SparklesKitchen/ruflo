@@ -4,7 +4,7 @@
  * Monitors teammate health status with configurable
  * thresholds and automatic status transitions.
  *
- * @module @claude-flow/teammate-plugin/utils/health-checker
+ * @module @ruflo/teammate-plugin/utils/health-checker
  */
 
 import type {

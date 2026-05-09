@@ -1,14 +1,14 @@
 # Windows Support via sql.js - Executive Summary
 
 **Date**: 2026-01-03
-**Project**: Claude-Flow v3
+**Project**: Codex-Flow v3
 **Status**: ✅ Research Complete - Ready for Implementation
 
 ---
 
 ## TL;DR
 
-**Problem**: Claude-Flow fails to install on Windows due to `better-sqlite3` requiring native compilation (node-gyp, python, gcc).
+**Problem**: Codex-Flow fails to install on Windows due to `better-sqlite3` requiring native compilation (node-gyp, python, gcc).
 
 **Solution**: Add `sql.js` (WebAssembly SQLite) as a cross-platform fallback provider alongside existing `better-sqlite3`.
 
@@ -39,7 +39,7 @@
 - **17 files** use better-sqlite3 directly
 - **3 abstraction layers** already exist (sqlite-wrapper.js, DatabaseManager.ts, backends/sqlite.ts)
 - **Fallback chain** in place: SQLite → JSON → In-memory
-- **External dependencies**: agentic-flow, agentdb (both optional)
+- **External dependencies**: agentic, agentdb (both optional)
 
 ### Windows Pain Points
 1. `npm install` fails (no node-gyp/build tools)
@@ -96,7 +96,7 @@ Fallback:      JSON (compatibility)
 
 ## Performance Analysis
 
-### Use Case: Claude-Flow Metadata Storage
+### Use Case: Codex-Flow Metadata Storage
 
 | Operation | better-sqlite3 | sql.js | Impact |
 |-----------|----------------|--------|--------|
@@ -140,14 +140,14 @@ Fallback:      JSON (compatibility)
 
 **Before** (Windows):
 ```bash
-$ npm install claude-flow@alpha
+$ npm install codex@alpha
 ⚠️  Warning: Use pnpm on Windows
 ❌ Error: better-sqlite3 compilation failed
 ```
 
 **After** (Windows):
 ```bash
-$ npm install claude-flow@alpha
+$ npm install codex@alpha
 ✅ Installed successfully
 ℹ️  Using sql.js (cross-platform mode)
 ```
@@ -169,7 +169,7 @@ const db = await createDatabase('path/to/db.sqlite', {
 
 ## External Dependencies
 
-### agentic-flow
+### agentic
 - **Status**: Uses better-sqlite3 internally
 - **Action**: Keep as optional dependency
 - **Impact**: ReasoningBank features disabled if better-sqlite3 unavailable
@@ -214,7 +214,7 @@ JSON              | ✅            | ❌            | ❌
 - Monitor performance in production
 - Optimize sql.js usage patterns
 - Consider sql.js as default on all platforms (if performance acceptable)
-- Explore browser-based Claude-Flow (sql.js enables this)
+- Explore browser-based Codex-Flow (sql.js enables this)
 
 ---
 
@@ -247,10 +247,10 @@ JSON              | ✅            | ❌            | ❌
 - [SQLite WASM Documentation](https://sqlite.org/wasm)
 
 ### Codebase Files
-- `/home/user/claude-flow/src/memory/sqlite-wrapper.js` - Main abstraction
-- `/home/user/claude-flow/src/core/DatabaseManager.ts` - Provider manager
-- `/home/user/claude-flow/src/memory/backends/sqlite.ts` - Current backend
-- `/home/user/claude-flow/src/utils/error-recovery.ts` - Error handling
+- `/home/user/codex/src/memory/sqlite-wrapper.js` - Main abstraction
+- `/home/user/codex/src/core/DatabaseManager.ts` - Provider manager
+- `/home/user/codex/src/memory/backends/sqlite.ts` - Current backend
+- `/home/user/codex/src/utils/error-recovery.ts` - Error handling
 
 ---
 

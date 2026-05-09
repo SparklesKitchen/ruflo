@@ -11,11 +11,11 @@ Foundation plugin. Registers the `ruflo` MCP server (300+ tools), provides three
 
 ## What's Included
 
-- **MCP Server**: 300+ tools via `@claude-flow/cli` (memory, agentdb, embeddings, hooks, neural, autopilot, browser, aidefence, agent, swarm, system, terminal, github, daa, coordination, performance, workflow, …)
+- **MCP Server**: 300+ tools via `@ruflo/cli` (memory, agentdb, embeddings, hooks, neural, autopilot, browser, aidefence, agent, swarm, system, terminal, github, daa, coordination, performance, workflow, …)
 - **CLI Commands**: 26 commands with 140+ subcommands for agent orchestration
 - **3-Tier Model Routing**: Agent Booster (WASM), Haiku, Sonnet/Opus with automatic cost optimization
 - **Session Management**: Persistent sessions with cross-conversation learning
-- **Hooks**: PreToolUse / PostToolUse / PreCompact / Stop wired to claude-flow's auto-routing + learning loop. Defined at `plugins/ruflo-core/hooks/hooks.json` so the per-plugin loader picks them up on `/plugin install ruflo-core@ruflo` (per-plugin layout — fixes #1748 Issue 1; the marketplace-root copy at `.claude-plugin/hooks/hooks.json` is preserved for `claude --plugin-dir <repo-root>` users).
+- **Hooks**: PreToolUse / PostToolUse / PreCompact / Stop wired to codex's auto-routing + learning loop. Defined at `plugins/ruflo-core/hooks/hooks.json` so the per-plugin loader picks them up on `/plugin install ruflo-core@ruflo` (per-plugin layout — fixes #1748 Issue 1; the marketplace-root copy at `.codex-plugin/hooks/hooks.json` is preserved for `codex --plugin-dir <repo-root>` users).
 
 ## Configuration
 
@@ -23,7 +23,7 @@ The MCP server starts automatically when this plugin is active. Override environ
 
 ## Compatibility
 
-- **CLI:** pinned to `@claude-flow/cli` v3.6 major+minor. The `.mcp.json` invocation uses `@latest` for dynamic resolution; the smoke contract verifies the resolved CLI matches the v3.6 line.
+- **CLI:** pinned to `@ruflo/cli` v3.6 major+minor. The `.mcp.json` invocation uses `@latest` for dynamic resolution; the smoke contract verifies the resolved CLI matches the v3.6 line.
 - **Verification:** `bash plugins/ruflo-core/scripts/smoke.sh` is the contract.
 
 ## MCP server contract
@@ -32,7 +32,7 @@ The registered `ruflo` MCP server exposes 300+ tools across these families. Runt
 
 | Family | Notable tools | Plugin documenting it |
 |--------|---------------|-----------------------|
-| `memory_*` | `memory_store`, `_search`, `_search_unified`, `_import_claude`, `_bridge_status` | `ruflo-rag-memory` |
+| `memory_*` | `memory_store`, `_search`, `_search_unified`, `_import_codex`, `_bridge_status` | `ruflo-rag-memory` |
 | `agentdb_*` | 15 tools for hierarchical / pattern / causal storage | `ruflo-agentdb` |
 | `embeddings_*` | 10 tools incl. RaBitQ 32× quantization | `ruflo-agentdb`, `ruflo-ruvector` |
 | `hooks_*` (incl. `hooks_intelligence_*`) | 19+ tools — routing, learning, transfer, metrics, explain | `ruflo-intelligence`, `ruflo-autopilot` |

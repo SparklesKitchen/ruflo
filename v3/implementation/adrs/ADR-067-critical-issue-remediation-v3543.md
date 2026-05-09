@@ -18,15 +18,15 @@ This ADR documents all findings, root causes, and the remediation plan for v3.5.
 
 | Priority | Issue | GitHub | Root Cause |
 |----------|-------|--------|------------|
-| **P0 — Critical** | Headless workers hang forever (stdin never closed) | #1395 (Bug 1) | `stdio: ['pipe','pipe','pipe']` — stdin opened but never closed; `claude --print` blocks on EOF |
-| **P0 — Critical** | Workers fail inside active Claude Code session | #1395 (Bug 2) | Nested session detection kills subprocess; workers can never succeed during normal use |
+| **P0 — Critical** | Headless workers hang forever (stdin never closed) | #1395 (Bug 1) | `stdio: ['pipe','pipe','pipe']` — stdin opened but never closed; `codex --print` blocks on EOF |
+| **P0 — Critical** | Workers fail inside active Codex session | #1395 (Bug 2) | Nested session detection kills subprocess; workers can never succeed during normal use |
 | **P0 — Critical** | Swarm agents do not execute work | #1423, #1425 | `startSwarm()` updates metadata but has no task consumer/dispatcher; commands return hardcoded success |
-| **P1 — High** | Stale/nonexistent model IDs in daemon workers | #1431 | Hardcoded `claude-sonnet-4-5-20250929` and `claude-haiku-4-5-20251001` — both expired/invalid |
+| **P1 — High** | Stale/nonexistent model IDs in daemon workers | #1431 | Hardcoded `codex-sonnet-4-5-20250929` and `codex-haiku-4-5-20251001` — both expired/invalid |
 | **P1 — High** | Daemons never terminate, accumulate across sessions | #1395 (Bug 3) | No PID singleton enforcement; each session spawns a new daemon |
 | **P1 — High** | `memory init` hangs after completion | #1428 | ONNX worker threads + SQLite connection never terminated; no `process.exit()` after init |
-| **P2 — Medium** | AgentDB bridge unavailable | #1399 | CLI bundles `@claude-flow/memory@alpha.11` (missing `ControllerRegistry`); runtime patch targets v1.x paths |
+| **P2 — Medium** | AgentDB bridge unavailable | #1399 | CLI bundles `@ruflo/memory@alpha.11` (missing `ControllerRegistry`); runtime patch targets v1.x paths |
 | **P2 — Medium** | MCP array schema missing `items` | #1404 | `type: 'array'` without `items` in ruvllm-tools.ts — invalid JSON Schema, breaks VSCode Copilot |
-| **P2 — Medium** | Hive-mind uses native tools instead of MCP | #1422 | No tool preference enforcement; Claude defaults to native tools over Ruflo MCP |
+| **P2 — Medium** | Hive-mind uses native tools instead of MCP | #1422 | No tool preference enforcement; Codex defaults to native tools over Ruflo MCP |
 
 ## Decision
 
@@ -36,7 +36,7 @@ Address all issues in a single v3.5.43 release, prioritized by severity and depe
 
 **1.1 — Fix stdin pipe (one-line change)**
 
-File: `v3/@claude-flow/cli/src/daemon/headless-worker-executor.ts`
+File: `v3/@ruflo/cli/src/daemon/headless-worker-executor.ts`
 
 ```diff
 - stdio: ['pipe', 'pipe', 'pipe']
@@ -48,19 +48,19 @@ Rationale: `'ignore'` closes stdin at spawn, allowing `--print` mode to proceed 
 **1.2 — Fix nested session detection**
 
 Options (choose one):
-- **A (Preferred)**: Set `CLAUDE_CODE_WORKER=1` env var on spawned processes; patch Claude Code session check to allow workers
-- **B**: Use Anthropic SDK directly for LLM calls in workers, bypassing `claude --print` entirely
+- **A (Preferred)**: Set `CODEX_WORKER=1` env var on spawned processes; patch Codex session check to allow workers
+- **B**: Use OpenAI SDK directly for LLM calls in workers, bypassing `codex --print` entirely
 - **C (Minimum)**: Disable `optimize`/`testgaps` workers by default; document limitation
 
 **1.3 — Update model IDs to aliases**
 
-File: `v3/@claude-flow/cli/src/daemon/headless-worker-executor.ts`
+File: `v3/@ruflo/cli/src/daemon/headless-worker-executor.ts`
 
 ```diff
   const MODEL_IDS = {
--   sonnet: 'claude-sonnet-4-5-20250929',
--   opus: 'claude-opus-4-6',
--   haiku: 'claude-haiku-4-5-20251001',
+-   sonnet: 'codex-sonnet-4-5-20250929',
+-   opus: 'codex-opus-4-6',
+-   haiku: 'codex-haiku-4-5-20251001',
 +   sonnet: 'sonnet',
 +   opus: 'opus',
 +   haiku: 'haiku',
@@ -72,7 +72,7 @@ Rationale: Model aliases auto-resolve to the latest version, preventing future s
 **1.4 — PID singleton enforcement for daemon**
 
 Implement standard PID-file pattern:
-1. On `daemon start`, check `$PROJECT/.claude-flow/daemon.pid`
+1. On `daemon start`, check `$PROJECT/.codex/daemon.pid`
 2. If recorded PID is alive (`kill -0`), skip start
 3. If dead, clean PID file and start fresh
 4. Write PID on start; delete on clean exit and SIGTERM/SIGINT handlers
@@ -89,7 +89,7 @@ The core gap: `startSwarm()` in `swarm.ts` registers agents and updates metadata
 
 Remediation:
 1. Add `TaskDispatcher` class that polls task queue and dispatches to agent workers
-2. Replace hardcoded response stubs with actual process spawning via `claude --print` or SDK calls
+2. Replace hardcoded response stubs with actual process spawning via `codex --print` or SDK calls
 3. Add execution status tracking with real agent state (not hardcoded `"active"`)
 
 **2.2 — Remove hardcoded stubs**
@@ -100,7 +100,7 @@ Audit all commands in `swarm.ts` and `deployment.ts` for stub responses. Either:
 
 **2.3 — Dynamic agent count**
 
-File: `v3/@claude-flow/cli/src/commands/swarm.ts` (line ~645)
+File: `v3/@ruflo/cli/src/commands/swarm.ts` (line ~645)
 
 Replace hardcoded 8-agent count with dynamic fetch from swarm state.
 
@@ -108,7 +108,7 @@ Replace hardcoded 8-agent count with dynamic fetch from swarm state.
 
 **3.1 — Fix memory init hang**
 
-File: `v3/@claude-flow/cli/src/commands/memory.ts` (init handler)
+File: `v3/@ruflo/cli/src/commands/memory.ts` (init handler)
 
 1. Call `ort.env.close()` or terminate ONNX inference sessions after init
 2. Close SQLite connection explicitly
@@ -117,7 +117,7 @@ File: `v3/@claude-flow/cli/src/commands/memory.ts` (init handler)
 
 **3.2 — Fix AgentDB bridge**
 
-1. Update `@claude-flow/cli` dependency on `@claude-flow/memory` to `>=3.0.0-alpha.12`
+1. Update `@ruflo/cli` dependency on `@ruflo/memory` to `>=3.0.0-alpha.12`
 2. Fix `agentdb-runtime-patch.js` path: `dist/controllers/index.js` → `dist/src/controllers/index.js`
 3. Fix CJS wrapper self-reference: `require('./controllers/index.js')` → `require('./index.js')`
 
@@ -138,7 +138,7 @@ Audit all `type: 'array'` properties and add appropriate `items` schema. This is
 
 Options:
 - **A**: Add `--allowedTools` constraint when spawning hive-mind sessions to prefer Ruflo MCP tools
-- **B**: Add system prompt injection that instructs Claude to use Ruflo MCP tools for orchestration
+- **B**: Add system prompt injection that instructs Codex to use Ruflo MCP tools for orchestration
 - **C**: Document expected behavior and provide configuration guidance
 
 ### Phase 5: Code Quality (from #1425 audit)

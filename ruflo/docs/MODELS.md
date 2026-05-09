@@ -44,6 +44,6 @@ The MCP Bridge auto-detects the provider from the model name:
 "models": [
   { "name": "gemini-2.5-pro", "displayName": "Gemini 2.5 Pro", "provider": "gemini", "supportsTools": true },
   { "name": "gpt-4o", "displayName": "GPT-4o", "provider": "openai", "multimodal": true, "supportsTools": true },
-  { "name": "anthropic/claude-sonnet-4.6", "displayName": "Claude Sonnet", "provider": "openrouter", "supportsTools": true }
+  { "name": "openai/codex-sonnet-4.6", "displayName": "Codex Sonnet", "provider": "openrouter", "supportsTools": true }
 ]
 ```

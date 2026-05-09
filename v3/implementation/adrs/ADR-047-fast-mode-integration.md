@@ -1,12 +1,12 @@
-# ADR-047: Fast Mode Integration for Claude Code
+# ADR-047: Fast Mode Integration for Codex
 
 **Status:** Proposed
 **Date:** 2026-02-08
-**Authors:** RuvNet, Claude Flow Team
+**Authors:** RuvNet, Ruflo Team
 
 ## Context
 
-Claude Code has introduced **Fast Mode** as a research preview feature that provides faster Opus 4.6 responses at higher cost. This feature is valuable for interactive work where latency matters more than cost, such as rapid iteration and live debugging.
+Codex has introduced **Fast Mode** as a research preview feature that provides faster Opus 4.6 responses at higher cost. This feature is valuable for interactive work where latency matters more than cost, such as rapid iteration and live debugging.
 
 ### What is Fast Mode?
 
@@ -34,7 +34,7 @@ Fast Mode is not a different model - it uses the same Opus 4.6 with a different 
 
 ## Decision
 
-Integrate Fast Mode awareness into RuvFlow/Claude-Flow to enable:
+Integrate Fast Mode awareness into RuvFlow/Codex-Flow to enable:
 
 1. **Automatic Fast Mode for time-critical swarm tasks**
 2. **Settings integration** for user preference management
@@ -45,12 +45,12 @@ Integrate Fast Mode awareness into RuvFlow/Claude-Flow to enable:
 
 #### 1. Settings Generator Update
 
-Add fast mode configuration to `.claude/settings.json`:
+Add fast mode configuration to `.codex/settings.json`:
 
 ```json
 {
   "fastMode": false,
-  "claudeFlow": {
+  "codexFlow": {
     "fastMode": {
       "enabled": false,
       "autoEnable": {
@@ -167,7 +167,7 @@ Update `settings-generator.ts`:
 // Add to generateSettings()
 settings.fastMode = options.fastMode?.enabled || false;
 
-settings.claudeFlow.fastMode = {
+settings.codexFlow.fastMode = {
   enabled: options.fastMode?.enabled || false,
   autoEnable: {
     forDebugTasks: true,
@@ -211,7 +211,7 @@ const modelDisplay = `${modelName}${fastModeIndicator}`;
 
 ### Phase 5: Documentation
 
-Update CLAUDE.md with fast mode guidance:
+Update AGENTS.md with fast mode guidance:
 
 ```markdown
 ## Fast Mode
@@ -219,7 +219,7 @@ Update CLAUDE.md with fast mode guidance:
 Enable fast mode for time-critical tasks:
 
 \`\`\`bash
-# Toggle in Claude Code
+# Toggle in Codex
 /fast
 
 # Or in settings
@@ -267,9 +267,9 @@ No migration needed - this is an additive feature. Existing users:
 
 ## References
 
-- Source: https://code.claude.com/docs/en/fast-mode
+- Source: https://code.codex.com/docs/en/fast-mode
 - Related: ADR-026 (3-Tier Model Routing)
-- Related: ADR-018 (Claude Code Integration)
+- Related: ADR-018 (Codex Integration)
 
 ## Appendix: CLI Reference
 
@@ -285,7 +285,7 @@ No migration needed - this is an additive feature. Existing users:
 ```json
 {
   "fastMode": true,
-  "claudeFlow": {
+  "codexFlow": {
     "fastMode": {
       "enabled": true,
       "autoEnable": {

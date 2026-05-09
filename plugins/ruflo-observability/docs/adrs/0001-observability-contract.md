@@ -4,7 +4,7 @@ title: ruflo-observability plugin contract — pinning, namespace-routing fix, s
 status: Proposed
 date: 2026-05-04
 authors:
-  - reviewer (Claude Code)
+  - reviewer (Codex)
 tags: [plugin, observability, tracing, metrics, namespace, smoke-test]
 ---
 

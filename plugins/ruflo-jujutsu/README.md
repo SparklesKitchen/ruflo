@@ -27,7 +27,7 @@ Advanced git workflows with diff analysis, risk scoring, and reviewer recommenda
 
 ## MCP surface (6 tools)
 
-All defined at `v3/@claude-flow/cli/src/mcp-tools/analyze-tools.ts`:
+All defined at `v3/@ruflo/cli/src/mcp-tools/analyze-tools.ts`:
 
 | Tool | Purpose |
 |------|---------|
@@ -40,7 +40,7 @@ All defined at `v3/@claude-flow/cli/src/mcp-tools/analyze-tools.ts`:
 
 ## Compatibility
 
-- **CLI:** pinned to `@claude-flow/cli` v3.6 major+minor.
+- **CLI:** pinned to `@ruflo/cli` v3.6 major+minor.
 - **Verification:** `bash plugins/ruflo-jujutsu/scripts/smoke.sh` is the contract.
 
 ## ADR-compliance integration
@@ -56,7 +56,7 @@ Without this plugin, `/adr check` falls back to plain `git diff` parsing — usa
 
 ## Namespace coordination
 
-This plugin owns the `git-patterns` AgentDB namespace (kebab-case, follows the convention from [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md)). Reserved namespaces (`pattern`, `claude-memories`, `default`) MUST NOT be shadowed.
+This plugin owns the `git-patterns` AgentDB namespace (kebab-case, follows the convention from [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md)). Reserved namespaces (`pattern`, `codex-memories`, `default`) MUST NOT be shadowed.
 
 ## Verification
 

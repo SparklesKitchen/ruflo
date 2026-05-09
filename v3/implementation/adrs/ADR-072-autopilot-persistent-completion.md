@@ -1,13 +1,13 @@
-# ADR-072: Autopilot Integration — Persistent Swarm Completion for Claude-Flow CLI
+# ADR-072: Autopilot Integration — Persistent Swarm Completion for Codex-Flow CLI
 
 - **Status**: Proposed
 - **Date**: 2026-03-25
-- **Depends on**: ADR-058 (Autopilot Swarm Completion in agentic-flow)
+- **Depends on**: ADR-058 (Autopilot Swarm Completion in agentic)
 - **Related**: ADR-037 (Autopilot Chat Mode in Ruflo UI), ADR-071 (Guidance MCP Tools)
 
 ## Problem Statement
 
-Claude Code agents and swarms routinely stop before all tasks are complete. This happens because:
+Codex agents and swarms routinely stop before all tasks are complete. This happens because:
 
 1. **Context exhaustion**: Conversations hit context limits and lose track of remaining work
 2. **Premature satisfaction**: Agents declare "done" after completing 60-80% of tasks, skipping edge cases, tests, or documentation
@@ -19,18 +19,18 @@ The result is that complex multi-phase tasks (implement feature + write tests + 
 
 ## Decision
 
-Integrate agentic-flow's **Autopilot Persistent Completion System** (ADR-058) into the `@claude-flow/cli` package at three layers:
+Integrate agentic's **Autopilot Persistent Completion System** (ADR-058) into the `@ruflo/cli` package at three layers:
 
-1. **CLI commands** — 9 subcommands under `npx claude-flow autopilot`
+1. **CLI commands** — 9 subcommands under `npx ruflo autopilot`
 2. **MCP tools** — 10 tools registered in the MCP server
 3. **Stop hook integration** — Intercept agent stop events to check for remaining tasks
-4. **CLAUDE.md injection** — Auto-inject autopilot instructions into project configuration
+4. **AGENTS.md injection** — Auto-inject autopilot instructions into project configuration
 
 ### Architecture
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
-│                        Claude Code Session                       │
+│                        Codex Session                       │
 │                                                                  │
 │  ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐  │
 │  │  Agent 1  │    │  Agent 2  │    │  Agent 3  │    │  Agent N  │  │
@@ -75,9 +75,9 @@ Autopilot discovers incomplete tasks from three sources, aggregated into a unifi
 
 | Source | Location | Format | Priority |
 |--------|----------|--------|----------|
-| **Team Tasks** | `~/.claude/tasks/{team-name}/` | Claude Code task files | Highest |
-| **Swarm Tasks** | `.claude-flow/swarm-tasks.json` | agentic-flow swarm state | High |
-| **Checklist Files** | `.claude-flow/data/checklist.json` | Manual task checklists | Normal |
+| **Team Tasks** | `~/.codex/tasks/{team-name}/` | Codex task files | Highest |
+| **Swarm Tasks** | `.codex/swarm-tasks.json` | agentic swarm state | High |
+| **Checklist Files** | `.codex/data/checklist.json` | Manual task checklists | Normal |
 
 A task is **incomplete** if its status is not one of: `completed`, `done`, `cancelled`, `skipped`.
 
@@ -88,7 +88,7 @@ The autopilot loop exits (allows the agent to stop) when **any** of these condit
 1. **All tasks complete**: Every discovered task has a terminal status
 2. **Max iterations reached**: Default 50, configurable up to 1000
 3. **Timeout exceeded**: Default 240 minutes, configurable up to 24 hours
-4. **Manual disable**: User runs `npx claude-flow autopilot disable` or calls `autopilot_disable` MCP tool
+4. **Manual disable**: User runs `npx ruflo autopilot disable` or calls `autopilot_disable` MCP tool
 5. **No tasks found**: If all 3 sources return zero tasks (nothing to track)
 
 ### Re-Engagement Protocol
@@ -125,11 +125,11 @@ Continue working on the remaining tasks. Do not stop until all are complete.
 
 ## Implementation Plan
 
-### Phase 1: CLI Command (npx claude-flow autopilot)
+### Phase 1: CLI Command (npx ruflo autopilot)
 
-**File**: `v3/@claude-flow/cli/src/commands/autopilot.ts`
+**File**: `v3/@ruflo/cli/src/commands/autopilot.ts`
 
-Add 9 subcommands that delegate to agentic-flow's `handleAutopilotCommand()`:
+Add 9 subcommands that delegate to agentic's `handleAutopilotCommand()`:
 
 | Subcommand | Description | Key Options |
 |------------|-------------|-------------|
@@ -143,13 +143,13 @@ Add 9 subcommands that delegate to agentic-flow's `handleAutopilotCommand()`:
 | `history` | Search past completion episodes | `--query`, `--limit`, `--json` |
 | `predict` | Predict optimal next action | `--json` |
 
-**Import path**: `agentic-flow/dist/agentic-flow/src/cli/autopilot-cli.js` (not yet re-exported from coordination index — needs agentic-flow export fix or direct path import)
+**Import path**: `agentic/dist/agentic/src/cli/autopilot-cli.js` (not yet re-exported from coordination index — needs agentic export fix or direct path import)
 
 ### Phase 2: MCP Tools Registration
 
-**File**: `v3/@claude-flow/cli/src/mcp-tools/autopilot-tools.ts`
+**File**: `v3/@ruflo/cli/src/mcp-tools/autopilot-tools.ts`
 
-Register 10 MCP tools by wrapping agentic-flow's `registerAutopilotTools()` or implementing a thin adapter layer:
+Register 10 MCP tools by wrapping agentic's `registerAutopilotTools()` or implementing a thin adapter layer:
 
 | MCP Tool | Purpose | Input |
 |----------|---------|-------|
@@ -168,9 +168,9 @@ Register 10 MCP tools by wrapping agentic-flow's `registerAutopilotTools()` or i
 
 ### Phase 3: Stop Hook Integration
 
-**File**: `v3/@claude-flow/cli/src/hooks/autopilot-stop-hook.ts`
+**File**: `v3/@ruflo/cli/src/hooks/autopilot-stop-hook.ts`
 
-The stop hook is the critical integration point. It runs when an agent or the main Claude session attempts to end:
+The stop hook is the critical integration point. It runs when an agent or the main Codex session attempts to end:
 
 ```typescript
 // Pseudocode for the stop hook
@@ -239,7 +239,7 @@ async function autopilotStopHook(context: StopHookContext): Promise<StopHookResu
 }
 ```
 
-**Hook registration**: Add to `.claude/settings.json` via `init` command:
+**Hook registration**: Add to `.codex/settings.json` via `init` command:
 
 ```json
 {
@@ -250,7 +250,7 @@ async function autopilotStopHook(context: StopHookContext): Promise<StopHookResu
         "hooks": [
           {
             "type": "command",
-            "command": "npx claude-flow@latest hooks autopilot-check"
+            "command": "npx ruflo@latest hooks autopilot-check"
           }
         ]
       }
@@ -259,11 +259,11 @@ async function autopilotStopHook(context: StopHookContext): Promise<StopHookResu
 }
 ```
 
-### Phase 4: CLAUDE.md Autopilot Instructions
+### Phase 4: AGENTS.md Autopilot Instructions
 
-**File**: `v3/@claude-flow/cli/src/init/executor.ts`
+**File**: `v3/@ruflo/cli/src/init/executor.ts`
 
-When `npx claude-flow init` runs, inject autopilot behavioral instructions into the generated CLAUDE.md:
+When `npx ruflo init` runs, inject autopilot behavioral instructions into the generated AGENTS.md:
 
 ```markdown
 ## Autopilot: Persistent Task Completion
@@ -276,15 +276,15 @@ This project uses autopilot for persistent swarm completion. When enabled:
 4. **Report progress**: Periodically report completion percentage
 
 ### Autopilot Commands
-- `npx claude-flow autopilot status` — Check current progress
-- `npx claude-flow autopilot enable` — Enable persistent completion
-- `npx claude-flow autopilot disable` — Disable (allow early stop)
-- `npx claude-flow autopilot predict` — Get AI-recommended next action
+- `npx ruflo autopilot status` — Check current progress
+- `npx ruflo autopilot enable` — Enable persistent completion
+- `npx ruflo autopilot disable` — Disable (allow early stop)
+- `npx ruflo autopilot predict` — Get AI-recommended next action
 ```
 
-### Phase 5: agentic-flow Export Fix
+### Phase 5: agentic Export Fix
 
-**File**: `agentic-flow/src/coordination/index.ts` (in agentic-flow repo)
+**File**: `agentic/src/coordination/index.ts` (in agentic repo)
 
 The autopilot modules exist in the build output but are not re-exported. Add:
 
@@ -316,7 +316,7 @@ Add to `package.json` exports:
 }
 ```
 
-Publish as `agentic-flow@3.0.0-alpha.3`.
+Publish as `agentic@3.0.0-alpha.3`.
 
 ---
 
@@ -324,7 +324,7 @@ Publish as `agentic-flow@3.0.0-alpha.3`.
 
 ### Autopilot State File
 
-**Location**: `.claude-flow/data/autopilot-state.json`
+**Location**: `.codex/data/autopilot-state.json`
 
 ```json
 {
@@ -342,7 +342,7 @@ Publish as `agentic-flow@3.0.0-alpha.3`.
 
 ### Autopilot Event Log
 
-**Location**: `.claude-flow/data/autopilot-log.json`
+**Location**: `.codex/data/autopilot-log.json`
 
 Array of events:
 
@@ -357,18 +357,18 @@ Array of events:
 
 ### Configuration Persistence
 
-**Location**: `.claude/settings.json` under `claudeFlow.autopilot`
+**Location**: `.codex/settings.json` under `codexFlow.autopilot`
 
 ```json
 {
-  "claudeFlow": {
+  "codexFlow": {
     "autopilot": {
       "enabled": true,
       "maxIterations": 50,
       "timeoutMinutes": 240,
       "taskSources": ["team-tasks", "swarm-tasks", "file-checklist"],
       "completionCriteria": "all-tasks-done",
-      "logFile": ".claude-flow/data/autopilot-log.json"
+      "logFile": ".codex/data/autopilot-log.json"
     }
   }
 }
@@ -462,26 +462,26 @@ After 10 stalled iterations, autopilot disables itself and records a failure epi
 
 | Phase | Effort | Dependency | Description |
 |-------|--------|------------|-------------|
-| **5** | 30 min | agentic-flow repo | Export autopilot modules, publish alpha.3 |
+| **5** | 30 min | agentic repo | Export autopilot modules, publish alpha.3 |
 | **1** | 2 hr | Phase 5 | CLI `autopilot` command with 9 subcommands |
 | **2** | 2 hr | Phase 5 | 10 MCP tools registered in MCP server |
 | **3** | 3 hr | Phase 1+2 | Stop hook integration with task discovery |
-| **4** | 1 hr | Phase 1 | CLAUDE.md injection in `init` command |
+| **4** | 1 hr | Phase 1 | AGENTS.md injection in `init` command |
 
 **Total estimated effort**: 8-9 hours across both repos.
 
 ### Acceptance Criteria
 
-1. `npx claude-flow autopilot status` returns current state (enabled, iterations, progress)
-2. `npx claude-flow autopilot enable/disable` toggles persistent completion
-3. `npx claude-flow autopilot config --max-iterations 100` persists to settings
+1. `npx ruflo autopilot status` returns current state (enabled, iterations, progress)
+2. `npx ruflo autopilot enable/disable` toggles persistent completion
+3. `npx ruflo autopilot config --max-iterations 100` persists to settings
 4. All 10 MCP tools respond correctly when called via MCP client
 5. Stop hook intercepts agent stop and re-engages when tasks remain
 6. Stop hook allows stop when all tasks are complete
 7. Stop hook respects max iterations and timeout limits
 8. AgentDB learning records episodes and can discover patterns
-9. `npx claude-flow autopilot predict` returns actionable recommendations
-10. `npx claude-flow init` includes autopilot configuration in generated settings
+9. `npx ruflo autopilot predict` returns actionable recommendations
+10. `npx ruflo init` includes autopilot configuration in generated settings
 11. Stall detection triggers after 5 iterations with no progress
 12. All existing tests continue to pass (no regressions)
 
@@ -496,11 +496,11 @@ After 10 stalled iterations, autopilot disables itself and records a failure epi
 - Predictive actions reduce iteration count for familiar task patterns
 - Safety limits prevent runaway execution and cost overruns
 - Works without AgentDB (graceful degradation — no learning, but still completes)
-- Compatible with existing Claude Code task system, swarm tasks, and checklists
+- Compatible with existing Codex task system, swarm tasks, and checklists
 
 ### Negative
 
-- Additional agentic-flow dependency surface (autopilot modules must be published)
+- Additional agentic dependency surface (autopilot modules must be published)
 - Stop hook adds latency to every agent stop event (task discovery scan)
 - Learning database grows over time (needs periodic pruning strategy)
 - Complex multi-source task discovery may have edge cases with conflicting task states
@@ -520,21 +520,21 @@ After 10 stalled iterations, autopilot disables itself and records a failure epi
 
 | File | Purpose |
 |------|---------|
-| `v3/@claude-flow/cli/src/commands/autopilot.ts` | CLI command with 9 subcommands |
-| `v3/@claude-flow/cli/src/mcp-tools/autopilot-tools.ts` | 10 MCP tools |
-| `v3/@claude-flow/cli/src/hooks/autopilot-stop-hook.ts` | Stop hook coordinator |
-| `v3/@claude-flow/cli/__tests__/autopilot.test.ts` | Unit tests |
+| `v3/@ruflo/cli/src/commands/autopilot.ts` | CLI command with 9 subcommands |
+| `v3/@ruflo/cli/src/mcp-tools/autopilot-tools.ts` | 10 MCP tools |
+| `v3/@ruflo/cli/src/hooks/autopilot-stop-hook.ts` | Stop hook coordinator |
+| `v3/@ruflo/cli/__tests__/autopilot.test.ts` | Unit tests |
 
 ### Modified Files
 
 | File | Change |
 |------|--------|
-| `v3/@claude-flow/cli/src/commands/index.ts` | Register autopilot command |
-| `v3/@claude-flow/cli/src/mcp-tools/index.ts` | Export autopilotTools |
-| `v3/@claude-flow/cli/src/mcp-client.ts` | Register autopilot tools in registerTools() |
-| `v3/@claude-flow/cli/src/init/executor.ts` | Inject autopilot config in CLAUDE.md + settings |
+| `v3/@ruflo/cli/src/commands/index.ts` | Register autopilot command |
+| `v3/@ruflo/cli/src/mcp-tools/index.ts` | Export autopilotTools |
+| `v3/@ruflo/cli/src/mcp-client.ts` | Register autopilot tools in registerTools() |
+| `v3/@ruflo/cli/src/init/executor.ts` | Inject autopilot config in AGENTS.md + settings |
 
-### agentic-flow Repo Changes
+### agentic Repo Changes
 
 | File | Change |
 |------|--------|

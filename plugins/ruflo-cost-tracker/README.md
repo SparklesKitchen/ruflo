@@ -9,7 +9,7 @@ Tracks token usage per agent, task, and model, then computes USD cost attributio
 ## Installation
 
 ```bash
-claude --plugin-dir plugins/ruflo-cost-tracker
+codex --plugin-dir plugins/ruflo-cost-tracker
 ```
 
 ## Agents
@@ -24,17 +24,17 @@ claude --plugin-dir plugins/ruflo-cost-tracker
 |-------|-------|-------------|
 | `cost-report` | `/cost-report [--period today]` | Generate a cost report with token usage and USD costs by tier, model, and agent |
 | `cost-optimize` | `/cost-optimize` | Analyze usage patterns, recommend cost optimizations, and emit `hooks_model-outcome` events |
-| `cost-track` | `/cost-track` | **Auto-capture** per-session token usage from the Claude Code jsonl into `cost-tracking` namespace (producer side) |
+| `cost-track` | `/cost-track` | **Auto-capture** per-session token usage from the Codex jsonl into `cost-tracking` namespace (producer side) |
 | `cost-budget-check` | `/cost-budget-check [--period today\|week\|month\|all]` | Read totals + budget config, emit 50/75/90/100% alert ladder; exit 1 on HARD_STOP |
 | `cost-booster-route` | `/cost-booster-route <task>` | Route tasks via `hooks_route` and report Agent Booster (Tier 1) bypass utilization |
 | `cost-booster-edit` | `/cost-booster-edit <intent> <file>` | **Apply** a Tier 1 transform via `agent-booster.apply()` (sub-millisecond, $0, deterministic) |
-| `cost-benchmark` | `/cost-benchmark [--llm] [--anthropic]` | Run the corpus benchmark and persist measured-vs-claimed table to `docs/benchmarks/runs/` |
+| `cost-benchmark` | `/cost-benchmark [--llm] [--openai]` | Run the corpus benchmark and persist measured-vs-claimed table to `docs/benchmarks/runs/` |
 | `cost-trend` | `/cost-trend` | Read all bench runs and surface drift (win rate, latency, speedup) — flags regressions the smoke gate misses |
 | `cost-conversation` | `/cost-conversation` | Per-conversation cost view (different lens from cost-report's per-agent / per-model) |
 | `cost-export` | `/cost-export [--prometheus <path>] [--webhook <url>]` | Emit cost data as Prometheus textfile or POST to a webhook |
 | `cost-federation` | `/cost-federation` | ADR-097 Phase 3 consumer — per-peer 1h/24h/7d federation_spend rolling windows |
 | `cost-summary` | `/cost-summary [--format json\|markdown]` | Single-shot programmatic dump of all cost data (stable JSON contract for inter-plugin consumption) |
-| `cost-compact-context` | `/cost-compact-context <query>` | Wrap `getTokenOptimizer().getCompactContext()` for retrieval-compacted analysis (graceful fallback when agentic-flow not installed) |
+| `cost-compact-context` | `/cost-compact-context <query>` | Wrap `getTokenOptimizer().getCompactContext()` for retrieval-compacted analysis (graceful fallback when agentic not installed) |
 
 ## Commands (15 subcommands)
 
@@ -47,7 +47,7 @@ cost outcome <task> <model> <outcome>     # Emit hooks_model-outcome (success|es
 cost budget set <amount>                  # Set USD budget (real impl, persists to cost-tracking)
 cost budget get                           # Show current budget config
 cost budget check [--period ...]          # Compute utilization + alert; exit 1 on HARD_STOP
-cost benchmark [--llm] [--anthropic]      # Run measured benchmark — booster + optional Gemini/Sonnet/Opus baselines
+cost benchmark [--llm] [--openai]      # Run measured benchmark — booster + optional Gemini/Sonnet/Opus baselines
 cost trend                                # Drift across bench runs (win rate, latency, regressions)
 cost conversation                         # Per-conversation cost view
 cost summary [--format json|markdown]     # Programmatic JSON contract for inter-plugin consumption
@@ -63,14 +63,14 @@ Four upstream capabilities are now wired to the cost-tracker surface — every o
 
 | Capability | Where | Surfaced by |
 |---|---|---|
-| **Agent Booster bypass** (Tier 1, $0, WASM) | `hooks_route` emits `[AGENT_BOOSTER_AVAILABLE]` (CLI: `npx @claude-flow/cli@latest hooks route --task ...`) | `cost-booster-route` skill |
-| **Token optimizer / compact context** | `getTokenOptimizer().getCompactContext()` from `@claude-flow/integration` (uses `agentic-flow` when present) | `cost-compact-context` skill |
+| **Agent Booster bypass** (Tier 1, $0, WASM) | `hooks_route` emits `[AGENT_BOOSTER_AVAILABLE]` (CLI: `npx @ruflo/cli@latest hooks route --task ...`) | `cost-booster-route` skill |
+| **Token optimizer / compact context** | `getTokenOptimizer().getCompactContext()` from `@ruflo/integration` (uses `agentic` when present) | `cost-compact-context` skill |
 | **Model-outcome feedback loop** | `hooks_model-outcome` (typed equivalent of legacy `routing-outcomes`) | `cost-optimize` skill step 8 |
 | **Optimize + benchmark loop workers** | `hooks_worker-status --worker optimize / --worker benchmark` (declared by ruflo-loop-workers) | `cost workers` command + `cost-analyst` agent |
 
-CLAUDE.md root percentage claims (`-32%` retrieval, `-15%` booster edits, `352x` speedup, `95%` cache hit) are **claimed upstream, not yet verified** in this repo. The skills above tag every figure with that disclaimer; only the structural `$0` cost of Tier 1 bypasses is reported as a measured saving.
+AGENTS.md root percentage claims (`-32%` retrieval, `-15%` booster edits, `352x` speedup, `95%` cache hit) are **claimed upstream, not yet verified** in this repo. The skills above tag every figure with that disclaimer; only the structural `$0` cost of Tier 1 bypasses is reported as a measured saving.
 
-See [ADR-0002](./docs/adrs/0002-agentic-flow-and-agent-booster-integration.md) for the full rationale, including the riskiest assumption (no MCP wrapper for `getTokenOptimizer` — `cost-compact-context` shells a Node one-liner).
+See [ADR-0002](./docs/adrs/0002-agentic-and-agent-booster-integration.md) for the full rationale, including the riskiest assumption (no MCP wrapper for `getTokenOptimizer` — `cost-compact-context` shells a Node one-liner).
 
 ## Model Pricing (per 1M tokens)
 
@@ -120,7 +120,7 @@ Until Phase 3 ships, federated spend is **not** counted in the host's cost-track
 
 ## Compatibility
 
-- **CLI:** pinned to `@claude-flow/cli` v3.6 major+minor.
+- **CLI:** pinned to `@ruflo/cli` v3.6 major+minor.
 - **Verification:** `bash plugins/ruflo-cost-tracker/scripts/smoke.sh` is the contract.
 
 ## Namespace coordination
@@ -134,7 +134,7 @@ Both follow the kebab-case `<plugin-stem>-<intent>` convention from [ruflo-agent
 
 > **Routing note:** The `agentdb_hierarchical-*` and `agentdb_pattern-*` tools route by tier / ReasoningBank, not by namespace string. Earlier versions of `cost-report` and `cost-optimize` passed namespace arguments to those tools and got silently-ignored behavior. ADR-0001 fixes this by switching the load path to `memory_*` and documenting the dual write path for optimization patterns.
 
-Reserved namespaces (`pattern`, `claude-memories`, `default`) MUST NOT be shadowed.
+Reserved namespaces (`pattern`, `codex-memories`, `default`) MUST NOT be shadowed.
 
 ## Verification
 
@@ -144,14 +144,14 @@ bash plugins/ruflo-cost-tracker/scripts/smoke.sh
 
 CI: see [`.github/workflows/cost-tracker-smoke.yml`](../../.github/workflows/cost-tracker-smoke.yml).
 On every PR touching this plugin, GitHub Actions runs smoke + booster-only bench
-+ regression gate (Tier 1 winRate ≥ 0.80). LLM/Anthropic baselines are NOT run in CI
++ regression gate (Tier 1 winRate ≥ 0.80). LLM/OpenAI baselines are NOT run in CI
 — they cost real money per invocation and belong in a manual / scheduled workflow.
 ```
 
 ## Architecture Decisions
 
 - [`ADR-0001` — ruflo-cost-tracker plugin contract (namespace-routing fix, federation budget pairing, smoke as contract)](./docs/adrs/0001-cost-tracker-contract.md)
-- [`ADR-0002` — agentic-flow + Agent Booster integration, model-outcome feedback loop, optimize-worker consumption, tier-aware reporting](./docs/adrs/0002-agentic-flow-and-agent-booster-integration.md)
+- [`ADR-0002` — agentic + Agent Booster integration, model-outcome feedback loop, optimize-worker consumption, tier-aware reporting](./docs/adrs/0002-agentic-and-agent-booster-integration.md)
 - [`ADR-0003` — Implementation arc v0.5 → v0.15 (auto-capture, budget enforcement, model-outcome feedback, observability, federation consumer)](./docs/adrs/0003-implementation-arc-v0.5-to-v0.15.md)
 
 ## Related Plugins

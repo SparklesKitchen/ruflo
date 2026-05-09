@@ -8,7 +8,7 @@
 
 ## Table of Contents
 
-- [Getting Started](#getting-into-the-flow)
+- [Getting Started](#getting-into-the)
 - [Quick Start](#quick-start)
 - [Core Features](#-core-features)
 - [Intelligence & Learning](#-intelligence--learning)
@@ -29,24 +29,24 @@
 
 Recent releases (3.7.0-alpha.1 through alpha.8) shipped four substantial pieces. End-user CLI surface is unchanged — these are substrate improvements that compound on every existing feature.
 
-### `@claude-flow/cli-core` (alpha.5+) — fast lite path for plugin scripts
+### `@ruflo/cli-core` (alpha.5+) — fast lite path for plugin scripts
 
 A new sibling package that handles **memory commands only** (no SQLite, no HNSW, no ONNX). Cold-cache `npx` wall-time drops from ~35s to ~1.5s — a measured **22.9× speedup** for plugin authors.
 
 ```bash
 # Plugin scripts can opt in via env flag:
 const cliPkg = process.env.CLI_CORE === '1'
-  ? '@claude-flow/cli-core@alpha'  # ~1.5s cold-cache
-  : '@claude-flow/cli@latest';     # ~35s cold-cache (full features)
+  ? '@ruflo/cli-core@alpha'  # ~1.5s cold-cache
+  : '@ruflo/cli@latest';     # ~35s cold-cache (full features)
 ```
 
-The full `@claude-flow/cli` is unchanged for end users. Reference: [`v3/@claude-flow/cli-core/MIGRATION.md`](../v3/@claude-flow/cli-core/MIGRATION.md). 8 plugin scripts in this repo are already CLI_CORE-aware.
+The full `@ruflo/cli` is unchanged for end users. Reference: [`v3/@ruflo/cli-core/MIGRATION.md`](../v3/@ruflo/cli-core/MIGRATION.md). 8 plugin scripts in this repo are already CLI_CORE-aware.
 
 ### Thompson sampling model router (alpha.5)
 
 The 3-tier model selector (Haiku / Sonnet / Opus) is now a **cost-adjusted multi-armed bandit** instead of static thresholds. `hooks_model-outcome` calls update Beta(α, β) priors per tier; `hooks_model-route` samples θ ~ Beta(α, β) and picks argmax. After ~50 outcomes the routing distribution self-corrects against tier overuse — no manual threshold tuning. Cost: 45 µs per route call.
 
-### `@claude-flow/neural@3.0.0-alpha.8` — substrate upgrades
+### `@ruflo/neural@3.0.0-alpha.8` — substrate upgrades
 
 Six concrete additions to the neural package:
 
@@ -73,7 +73,7 @@ All wrapped in MutationGuard (fail-closed) + AttestationLog (audit). Unblocks `/
 - Agent registry (60+ agent types)
 - Plugin marketplace
 - Hooks system (27 hooks + 12 background workers)
-- Configuration files (`claude-flow.config.json`, `.env`, etc.)
+- Configuration files (`codex.config.json`, `.env`, etc.)
 
 If you're running `npx ruflo@latest`, everything you used in 3.6 still works. The above improvements compound underneath.
 
@@ -81,7 +81,7 @@ If you're running `npx ruflo@latest`, everything you used in 3.6 still works. Th
 
 ## Getting into the Flow
 
-Ruflo is a comprehensive AI agent orchestration framework that transforms Claude Code into a powerful multi-agent development platform. It enables teams to deploy, coordinate, and optimize specialized AI agents working together on complex software engineering tasks.
+Ruflo is a comprehensive AI agent orchestration framework that transforms Codex into a powerful multi-agent development platform. It enables teams to deploy, coordinate, and optimize specialized AI agents working together on complex software engineering tasks.
 
 ### Self-Learning/Self-Optimizing Agent Architecture
 
@@ -129,7 +129,7 @@ flowchart TB
 
     subgraph RESOURCES["📦 Resources"]
         MEM[(Memory<br/>AgentDB)]
-        PROV[Providers<br/>Claude/GPT/Gemini/Ollama]
+        PROV[Providers<br/>Codex/GPT/Gemini/Ollama]
         WORK[Workers - 12<br/>ultralearn/audit/optimize]
     end
 
@@ -213,7 +213,7 @@ curl -fsSL https://cdn.jsdelivr.net/gh/ruvnet/ruflo@main/scripts/install.sh | ba
 npx ruflo@latest init wizard
 ```
 
-> **New to Ruflo?** You don't need to learn 310+ MCP tools or 26 CLI commands. After running `init`, just use Claude Code normally — the hooks system automatically routes tasks to the right agents, learns from successful patterns, and coordinates multi-agent work in the background. The advanced tools exist for fine-grained control when you need it.
+> **New to Ruflo?** You don't need to learn 310+ MCP tools or 26 CLI commands. After running `init`, just use Codex normally — the hooks system automatically routes tasks to the right agents, learns from successful patterns, and coordinates multi-agent work in the background. The advanced tools exist for fine-grained control when you need it.
 
 ---
 ### Key Capabilities
@@ -224,9 +224,9 @@ npx ruflo@latest init wizard
 
 🧠 **Learns From Your Workflow** - The system remembers what works. Successful patterns are stored and reused, routing similar tasks to the best-performing agents. Gets smarter over time.
 
-🔌 **Works With Any LLM** - Switch between Claude, GPT, Gemini, Cohere, or local models like Llama. Automatic failover if one provider is unavailable. Smart routing picks the cheapest option that meets quality requirements.
+🔌 **Works With Any LLM** - Switch between Codex, GPT, Gemini, Cohere, or local models like Llama. Automatic failover if one provider is unavailable. Smart routing picks the cheapest option that meets quality requirements.
 
-⚡ **Plugs Into Claude Code** - Native integration via MCP (Model Context Protocol). Use ruflo commands directly in your Claude Code sessions with full tool access.
+⚡ **Plugs Into Codex** - Native integration via MCP (Model Context Protocol). Use ruflo commands directly in your Codex sessions with full tool access.
 
 🔒 **Production-Ready Security** - Built-in protection against prompt injection, input validation, path traversal prevention, command injection blocking, and safe credential handling.
 
@@ -239,14 +239,14 @@ npx ruflo@latest init wizard
 <details>
 <summary>🔄 <strong>Core Flow</strong> — How requests move through the system</summary>
 
-Every request flows through four layers: from your CLI or Claude Code interface, through intelligent routing, to specialized agents, and finally to LLM providers for reasoning.
+Every request flows through four layers: from your CLI or Codex interface, through intelligent routing, to specialized agents, and finally to LLM providers for reasoning.
 
 | Layer | Components | What It Does |
 |-------|------------|--------------|
-| User | Claude Code, CLI | Your interface to control and run commands |
+| User | Codex, CLI | Your interface to control and run commands |
 | Orchestration | MCP Server, Router, Hooks | Routes requests to the right agents |
 | Agents | 100+ types | Specialized workers (coder, tester, reviewer...) |
-| Providers | Anthropic, OpenAI, Google, Ollama | AI models that power reasoning |
+| Providers | OpenAI, OpenAI, Google, Ollama | AI models that power reasoning |
 
 </details>
 
@@ -316,9 +316,9 @@ Background daemons handle security audits, performance optimization, and session
 </details>
 
 <details>
-<summary>🎯 <strong>Task Routing</strong> — Extend your Claude Code subscription by 250%</summary>
+<summary>🎯 <strong>Task Routing</strong> — Extend your Codex subscription by 250%</summary>
 
-Smart routing skips expensive LLM calls when possible. Simple edits use WASM (free), medium tasks use cheaper models. This can extend your Claude Code usage by 250% or save significantly on direct API costs.
+Smart routing skips expensive LLM calls when possible. Simple edits use WASM (free), medium tasks use cheaper models. This can extend your Codex usage by 250% or save significantly on direct API costs.
 
 | Complexity | Handler | Speed |
 |------------|---------|-------|
@@ -371,7 +371,7 @@ When you see these in hook output, the system is telling you how to optimize:
 <details>
 <summary>💰 <strong>Token Optimizer</strong> — reduces token usage via pattern caching and smart routing</summary>
 
-The Token Optimizer integrates agentic-flow optimizations to reduce API costs by compressing context and caching results.
+The Token Optimizer integrates agentic optimizations to reduce API costs by compressing context and caching results.
 
 **Savings Breakdown:**
 
@@ -386,7 +386,7 @@ The Token Optimizer integrates agentic-flow optimizations to reduce API costs by
 **Usage:**
 
 ```typescript
-import { getTokenOptimizer } from '@claude-flow/integration';
+import { getTokenOptimizer } from '@ruflo/integration';
 const optimizer = await getTokenOptimizer();
 
 // Get compact context (32% fewer tokens)
@@ -446,9 +446,9 @@ swarm_init({
 
 </details>
 
-### Claude Code: With vs Without Ruflo
+### Codex: With vs Without Ruflo
 
-| Capability | Claude Code Alone | Claude Code + Ruflo |
+| Capability | Codex Alone | Codex + Ruflo |
 |------------|-------------------|---------------------------|
 | **Agent Collaboration** | Agents work in isolation, no shared context | Agents collaborate via swarms with shared memory and consensus |
 | **Coordination** | Manual orchestration between tasks | Queen-led hierarchy with 3 consensus algorithms (Raft, Byzantine, Gossip) |
@@ -463,7 +463,7 @@ swarm_init({
 | **Task Routing** | You decide which agent to use | Intelligent routing based on learned patterns (89% accuracy) |
 | **Complex Tasks** | Manual breakdown required | Automatic decomposition across 5 domains (Security, Core, Integration, Support) |
 | **Background Workers** | Nothing runs automatically | 12 context-triggered workers auto-dispatch on file changes, patterns, sessions |
-| **LLM Provider** | Anthropic only | 5 providers (Anthropic, OpenAI, Google, Cohere, Ollama) with automatic failover and cost-based routing (cost-optimized routing) |
+| **LLM Provider** | OpenAI only | 5 providers (OpenAI, OpenAI, Google, Cohere, Ollama) with automatic failover and cost-based routing (cost-optimized routing) |
 | **Security** | Standard protections | CVE-hardened with bcrypt, input validation, path traversal prevention |
 | **Performance** | Baseline | Faster tasks via parallel swarm spawning and intelligent routing |
 
@@ -474,14 +474,14 @@ swarm_init({
 - **Node.js 20+** (required)
 - **npm 9+** / **pnpm** / **bun** package manager
 
-**IMPORTANT**: Claude Code must be installed first:
+**IMPORTANT**: Codex must be installed first:
 
 ```bash
-# 1. Install Claude Code globally
-npm install -g @anthropic-ai/claude-code
+# 1. Install Codex globally
+npm install -g @openai-ai/codex-code
 
 # 2. (Optional) Skip permissions check for faster setup
-claude --dangerously-skip-permissions
+codex --dangerously-skip-permissions
 ```
 
 ### Installation
@@ -503,7 +503,7 @@ curl -fsSL https://cdn.jsdelivr.net/gh/ruvnet/ruflo@main/scripts/install.sh | ba
 |--------|-------------|
 | `--global`, `-g` | Install globally (`npm install -g`) |
 | `--minimal`, `-m` | Skip optional deps (faster, ~15s) |
-| `--setup-mcp` | Auto-configure MCP server for Claude Code |
+| `--setup-mcp` | Auto-configure MCP server for Codex |
 | `--doctor`, `-d` | Run diagnostics after install |
 | `--no-init` | Skip project initialization (init runs by default) |
 | `--full`, `-f` | Full setup: global + MCP + doctor |
@@ -557,9 +557,9 @@ bunx ruflo@latest init
 npm install -g ruflo@latest --omit=optional
 ```
 
-#### Claude Code Plugin Marketplace
+#### Codex Plugin Marketplace
 
-Install Ruflo as a native Claude Code plugin -- adds skills, commands, agents, and MCP tools directly into Claude Code:
+Install Ruflo as a native Codex plugin -- adds skills, commands, agents, and MCP tools directly into Codex:
 
 ```bash
 # Add the marketplace (one-time)
@@ -581,12 +581,12 @@ After installing, new `/slash-commands` and agent types are available immediatel
 <details>
 <summary>🤖 <strong>OpenAI Codex CLI Support</strong> — Full Codex integration with self-learning</summary>
 
-Ruflo supports both **Claude Code** and **OpenAI Codex CLI** via the [@claude-flow/codex](https://www.npmjs.com/package/@claude-flow/codex) package, following the [Agentics Foundation](https://agentics.org) standard.
+Ruflo supports both **Codex** and **OpenAI Codex CLI** via the [@ruflo/codex](https://www.npmjs.com/package/@ruflo/codex) package, following the [Agentics Foundation](https://agentics.org) standard.
 
 ### Quick Start for Codex
 
 ```bash
-# Initialize for Codex CLI (creates AGENTS.md instead of CLAUDE.md)
+# Initialize for Codex CLI (creates AGENTS.md instead of AGENTS.md)
 npx ruflo@latest init --codex
 
 # Full Codex setup with all 137+ skills
@@ -598,33 +598,33 @@ npx ruflo@latest init --dual
 
 ### Platform Comparison
 
-| Feature | Claude Code | OpenAI Codex |
+| Feature | Codex | OpenAI Codex |
 |---------|-------------|--------------|
-| Config File | `CLAUDE.md` | `AGENTS.md` |
-| Skills Dir | `.claude/skills/` | `.agents/skills/` |
+| Config File | `AGENTS.md` | `AGENTS.md` |
+| Skills Dir | `.codex/skills/` | `.agents/skills/` |
 | Skill Syntax | `/skill-name` | `$skill-name` |
 | Settings | `settings.json` | `config.toml` |
 | MCP | Native | Via `codex mcp add` |
-| Default Model | claude-sonnet | gpt-5.3 |
+| Default Model | codex-sonnet | gpt-5.3 |
 
 ### Key Concept: Execution Model
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│  CLAUDE-FLOW = ORCHESTRATOR (tracks state, stores memory)       │
+│  RUFLO = ORCHESTRATOR (tracks state, stores memory)       │
 │  CODEX = EXECUTOR (writes code, runs commands, implements)      │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Codex does the work. Claude-flow coordinates and learns.**
+**Codex does the work. Codex coordinates and learns.**
 
-### Dual-Mode Integration (Claude Code + Codex)
+### Dual-Mode Integration (Codex + Codex)
 
-Run Claude Code for interactive development and spawn headless Codex workers for parallel background tasks:
+Run Codex for interactive development and spawn headless Codex workers for parallel background tasks:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│  CLAUDE CODE (interactive)  ←→  CODEX WORKERS (headless)        │
+│  CODEX CODE (interactive)  ←→  CODEX WORKERS (headless)        │
 │  - Main conversation         - Parallel background execution    │
 │  - Complex reasoning         - Bulk code generation            │
 │  - Architecture decisions    - Test execution                   │
@@ -633,10 +633,10 @@ Run Claude Code for interactive development and spawn headless Codex workers for
 ```
 
 ```bash
-# Spawn parallel Codex workers from Claude Code
-claude -p "Analyze src/auth/ for security issues" --session-id "task-1" &
-claude -p "Write unit tests for src/api/" --session-id "task-2" &
-claude -p "Optimize database queries in src/db/" --session-id "task-3" &
+# Spawn parallel Codex workers from Codex
+codex -p "Analyze src/auth/ for security issues" --session-id "task-1" &
+codex -p "Write unit tests for src/api/" --session-id "task-2" &
+codex -p "Optimize database queries in src/db/" --session-id "task-3" &
 wait  # Wait for all to complete
 ```
 
@@ -651,25 +651,25 @@ wait  # Wait for all to complete
 
 ```bash
 # List collaboration templates
-npx @claude-flow/codex dual templates
+npx @ruflo/codex dual templates
 
 # Run feature development swarm (architect → coder → tester → reviewer)
-npx @claude-flow/codex dual run --template feature --task "Add user auth"
+npx @ruflo/codex dual run --template feature --task "Add user auth"
 
 # Run security audit swarm (scanner → analyzer → fixer)
-npx @claude-flow/codex dual run --template security --task "src/auth/"
+npx @ruflo/codex dual run --template security --task "src/auth/"
 
 # Run refactoring swarm (analyzer → planner → refactorer → validator)
-npx @claude-flow/codex dual run --template refactor --task "src/legacy/"
+npx @ruflo/codex dual run --template refactor --task "src/legacy/"
 ```
 
 ### Pre-Built Collaboration Templates
 
 | Template | Pipeline | Platforms |
 |----------|----------|-----------|
-| **feature** | architect → coder → tester → reviewer | Claude + Codex |
-| **security** | scanner → analyzer → fixer | Codex + Claude |
-| **refactor** | analyzer → planner → refactorer → validator | Claude + Codex |
+| **feature** | architect → coder → tester → reviewer | Codex + Codex |
+| **security** | scanner → analyzer → fixer | Codex + Codex |
+| **refactor** | analyzer → planner → refactorer → validator | Codex + Codex |
 
 ### MCP Integration for Codex
 
@@ -697,7 +697,7 @@ The **Intelligence Loop** (ADR-050) automates this cycle through hooks. Each ses
 - Injects ranked context into every route decision
 - Tracks edit patterns and generates new insights
 - Boosts confidence for useful patterns, decays unused ones
-- Saves snapshots so you can track improvement with `node .claude/helpers/hook-handler.cjs stats`
+- Saves snapshots so you can track improvement with `node .codex/helpers/hook-handler.cjs stats`
 
 ### MCP Tools for Learning
 
@@ -738,7 +738,7 @@ The **Intelligence Loop** (ADR-050) automates this cycle through hooks. Each ses
 # Initialize project
 npx ruflo@latest init
 
-# Start MCP server for Claude Code integration
+# Start MCP server for Codex integration
 npx ruflo@latest mcp start
 
 # Spawn a coding agent
@@ -763,19 +763,19 @@ npx ruflo@latest init upgrade --add-missing
 
 The `--add-missing` flag automatically detects and installs new skills, agents, and commands that were added in newer versions, without overwriting your existing customizations.
 
-### Claude Code MCP Integration
+### Codex MCP Integration
 
 Add ruflo as an MCP server for seamless integration:
 
 ```bash
-# Add ruflo MCP server to Claude Code
-claude mcp add ruflo -- npx -y ruflo@latest mcp start
+# Add ruflo MCP server to Codex
+codex mcp add ruflo -- npx -y ruflo@latest mcp start
 
 # Verify installation
-claude mcp list
+codex mcp list
 ```
 
-Once added, Claude Code can use all 313 ruflo MCP tools directly:
+Once added, Codex can use all 313 ruflo MCP tools directly:
 - `swarm_init` - Initialize agent swarms
 - `agent_spawn` - Spawn specialized agents
 - `memory_search` - Search patterns with HNSW vector search
@@ -879,7 +879,7 @@ Not every task needs the most powerful (and expensive) model. Ruflo analyzes eac
 | Benefit | Impact |
 |---------|--------|
 | 💵 **API Cost Reduction** | 75% lower costs by using right-sized models |
-| ⏱️ **Claude Max Extension** | More tasks within quota via smart model selection |
+| ⏱️ **Codex Max Extension** | More tasks within quota via smart model selection |
 | 🚀 **Faster Simple Tasks** | <1ms for transforms vs 2-5s with LLM |
 | 🎯 **Zero Wasted Tokens** | Simple edits use 0 tokens (WASM handles them) |
 
@@ -936,12 +936,12 @@ Complex projects fail when implementation drifts from the original plan. Ruflo s
 ```
 
 **Key ADRs:**
-- **ADR-001**: agentic-flow@alpha as foundation (eliminates 10,000+ duplicate lines)
+- **ADR-001**: agentic@alpha as foundation (eliminates 10,000+ duplicate lines)
 - **ADR-006**: Unified Memory Service with AgentDB
 - **ADR-008**: Vitest testing framework (10x faster than Jest)
 - **ADR-009**: Hybrid Memory Backend (SQLite + HNSW)
 - **ADR-026**: Intelligent 3-tier model routing
-- **ADR-048**: Auto Memory Bridge (Claude Code ↔ AgentDB bidirectional sync)
+- **ADR-048**: Auto Memory Bridge (Codex ↔ AgentDB bidirectional sync)
 - **ADR-049**: Self-Learning Memory with GNN (LearningBridge, MemoryGraph, AgentMemoryScope)
 
 </details>
@@ -956,7 +956,7 @@ Complex projects fail when implementation drifts from the original plan. Ruflo s
 ```mermaid
 flowchart TB
     subgraph User["👤 User Layer"]
-        CC[Claude Code]
+        CC[Codex]
         CLI[CLI Commands]
     end
 
@@ -979,7 +979,7 @@ flowchart TB
     end
 
     subgraph Providers["☁️ Provider Layer"]
-        Anthropic[Anthropic]
+        OpenAI[OpenAI]
         OpenAI[OpenAI]
         Google[Google]
         Ollama[Ollama]
@@ -1090,14 +1090,14 @@ flowchart LR
 | **LearningBridge** | Connects insights to SONA/ReasoningBank neural pipeline | 0.12 ms/insight |
 | **MemoryGraph** | PageRank + label propagation knowledge graph | 2.78 ms build (1k nodes) |
 | **AgentMemoryScope** | 3-scope agent memory (project/local/user) with cross-agent transfer | 1.25 ms transfer |
-| **AutoMemoryBridge** | Bidirectional sync: Claude Code auto memory files ↔ AgentDB | ADR-048 |
+| **AutoMemoryBridge** | Bidirectional sync: Codex auto memory files ↔ AgentDB | ADR-048 |
 
 </details>
 
 <details>
 <summary>🧠 <strong>AgentDB v3 Controllers</strong> — 20+ intelligent memory controllers</summary>
 
-Ruflo V3 integrates AgentDB v3 (3.0.0-alpha.13) providing 20+ memory controllers accessible via MCP tools and the CLI. As of `@claude-flow/cli@3.7.0-alpha.8`, the integration includes the new Cypher-routed delete API (`deleteNode`, `deleteEdge`, `deleteEdgesByEndpoints`, `deleteHyperedge`, plus `ReflexionMemory.deleteEpisode`) for full re-index support.
+Ruflo V3 integrates AgentDB v3 (3.0.0-alpha.13) providing 20+ memory controllers accessible via MCP tools and the CLI. As of `@ruflo/cli@3.7.0-alpha.8`, the integration includes the new Cypher-routed delete API (`deleteNode`, `deleteEdge`, `deleteEdgesByEndpoints`, `deleteHyperedge`, plus `ReflexionMemory.deleteEpisode`) for full re-index support.
 
 **Core Memory:**
 
@@ -1253,7 +1253,7 @@ Connect Ruflo to your development environment.
 <details>
 <summary>🔌 <strong>MCP Setup</strong> — Connect Ruflo to Any AI Environment</summary>
 
-Ruflo runs as an MCP (Model Context Protocol) server, allowing you to connect it to any MCP-compatible AI client. This means you can use Ruflo's 100+ agents, swarm coordination, and self-learning capabilities from Claude Desktop, VS Code, Cursor, Windsurf, ChatGPT, and more.
+Ruflo runs as an MCP (Model Context Protocol) server, allowing you to connect it to any MCP-compatible AI client. This means you can use Ruflo's 100+ agents, swarm coordination, and self-learning capabilities from Codex Desktop, VS Code, Cursor, Windsurf, ChatGPT, and more.
 
 ### Quick Add Command
 
@@ -1263,13 +1263,13 @@ npx ruflo@latest mcp start
 ```
 
 <details open>
-<summary>🖥️ <strong>Claude Desktop</strong></summary>
+<summary>🖥️ <strong>Codex Desktop</strong></summary>
 
 **Config Location:**
-- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+- macOS: `~/Library/Application Support/Codex/codex_desktop_config.json`
+- Windows: `%APPDATA%\Codex\codex_desktop_config.json`
 
-**Access:** Claude → Settings → Developers → Edit Config
+**Access:** Codex → Settings → Developers → Edit Config
 
 ```json
 {
@@ -1278,36 +1278,36 @@ npx ruflo@latest mcp start
       "command": "npx",
       "args": ["ruflo@latest", "mcp", "start"],
       "env": {
-        "ANTHROPIC_API_KEY": "sk-ant-..."
+        "OPENAI_API_KEY": "sk-ant-..."
       }
     }
   }
 }
 ```
 
-Restart Claude Desktop after saving. Look for the MCP indicator (hammer icon) in the input box.
+Restart Codex Desktop after saving. Look for the MCP indicator (hammer icon) in the input box.
 
-*Sources: [Claude Help Center](https://support.claude.com/en/articles/10949351-getting-started-with-local-mcp-servers-on-claude-desktop), [Anthropic Desktop Extensions](https://www.anthropic.com/engineering/desktop-extensions)*
+*Sources: [Codex Help Center](https://support.codex.com/en/articles/10949351-getting-started-with-local-mcp-servers-on-codex-desktop), [OpenAI Desktop Extensions](https://www.openai.com/engineering/desktop-extensions)*
 
 </details>
 
 <details>
-<summary>⌨️ <strong>Claude Code (CLI)</strong></summary>
+<summary>⌨️ <strong>Codex (CLI)</strong></summary>
 
 ```bash
 # Add via CLI (recommended)
-claude mcp add ruflo -- npx ruflo@latest mcp start
+codex mcp add ruflo -- npx ruflo@latest mcp start
 
 # Or add with environment variables
-claude mcp add ruflo \
-  --env ANTHROPIC_API_KEY=sk-ant-... \
+codex mcp add ruflo \
+  --env OPENAI_API_KEY=sk-ant-... \
   -- npx ruflo@latest mcp start
 
 # Verify installation
-claude mcp list
+codex mcp list
 ```
 
-*Sources: [Claude Code MCP Docs](https://code.claude.com/docs/en/mcp)*
+*Sources: [Codex MCP Docs](https://code.codex.com/docs/en/mcp)*
 
 </details>
 
@@ -1332,7 +1332,7 @@ Create `.vscode/mcp.json` in your project:
       "command": "npx",
       "args": ["ruflo@latest", "mcp", "start"],
       "env": {
-        "ANTHROPIC_API_KEY": "sk-ant-..."
+        "OPENAI_API_KEY": "sk-ant-..."
       }
     }
   }
@@ -1359,7 +1359,7 @@ Create `.cursor/mcp.json` in your project (or global config):
       "command": "npx",
       "args": ["ruflo@latest", "mcp", "start"],
       "env": {
-        "ANTHROPIC_API_KEY": "sk-ant-..."
+        "OPENAI_API_KEY": "sk-ant-..."
       }
     }
   }
@@ -1386,7 +1386,7 @@ Create `.cursor/mcp.json` in your project (or global config):
       "command": "npx",
       "args": ["ruflo@latest", "mcp", "start"],
       "env": {
-        "ANTHROPIC_API_KEY": "sk-ant-..."
+        "OPENAI_API_KEY": "sk-ant-..."
       }
     }
   }
@@ -1483,12 +1483,12 @@ All configurations support these environment variables:
 
 | Variable | Description | Required |
 |----------|-------------|----------|
-| `ANTHROPIC_API_KEY` | Your Anthropic API key | Yes (for Claude models) |
+| `OPENAI_API_KEY` | Your OpenAI API key | Yes (for Codex models) |
 | `OPENAI_API_KEY` | OpenAI API key | Optional (for GPT models) |
 | `GOOGLE_API_KEY` | Google AI API key | Optional (for Gemini) |
-| `CLAUDE_FLOW_LOG_LEVEL` | Logging level (debug, info, warn, error) | Optional |
-| `CLAUDE_FLOW_TOOL_GROUPS` | MCP tool groups to enable (comma-separated) | Optional |
-| `CLAUDE_FLOW_TOOL_MODE` | Preset tool mode (develop, pr-review, devops, etc.) | Optional |
+| `RUFLO_LOG_LEVEL` | Logging level (debug, info, warn, error) | Optional |
+| `RUFLO_TOOL_GROUPS` | MCP tool groups to enable (comma-separated) | Optional |
+| `RUFLO_TOOL_MODE` | Preset tool mode (develop, pr-review, devops, etc.) | Optional |
 
 #### MCP Tool Groups
 
@@ -1496,10 +1496,10 @@ Control which MCP tools are loaded to reduce latency and token usage:
 
 ```bash
 # Enable specific tool groups
-export CLAUDE_FLOW_TOOL_GROUPS=implement,test,fix,memory
+export RUFLO_TOOL_GROUPS=implement,test,fix,memory
 
 # Or use a preset mode
-export CLAUDE_FLOW_TOOL_MODE=develop
+export RUFLO_TOOL_MODE=develop
 ```
 
 **Available Groups:** `create`, `issue`, `branch`, `implement`, `test`, `fix`, `optimize`, `monitor`, `security`, `memory`, `all`, `minimal`
@@ -1520,10 +1520,10 @@ export CLAUDE_FLOW_TOOL_MODE=develop
 
 ```bash
 # Use environment variables instead
-export ANTHROPIC_API_KEY="sk-ant-..."
+export OPENAI_API_KEY="sk-ant-..."
 
 # Or use a .env file (add to .gitignore)
-echo "ANTHROPIC_API_KEY=sk-ant-..." >> .env
+echo "OPENAI_API_KEY=sk-ant-..." >> .env
 ```
 
 </details>
@@ -1531,17 +1531,17 @@ echo "ANTHROPIC_API_KEY=sk-ant-..." >> .env
 ---
 
 <details>
-<summary>🛡️ <strong>@claude-flow/guidance</strong> — Long-horizon governance control plane for Claude Code agents</summary>
+<summary>🛡️ <strong>@ruflo/guidance</strong> — Long-horizon governance control plane for Codex agents</summary>
 
 ### Overview
 
-`@claude-flow/guidance` turns `CLAUDE.md` into a runtime governance system with enforcement gates, cryptographic proofs, and feedback loops. Agents that normally drift after 30 minutes can now operate for days — rules are enforced mechanically at every step, not remembered by the model.
+`@ruflo/guidance` turns `AGENTS.md` into a runtime governance system with enforcement gates, cryptographic proofs, and feedback loops. Agents that normally drift after 30 minutes can now operate for days — rules are enforced mechanically at every step, not remembered by the model.
 
 **7-phase pipeline:** Compile → Retrieve → Enforce → Trust → Prove → Defend → Evolve
 
 | Capability | Description |
 |-----------|-------------|
-| **Compile** | Parses `CLAUDE.md` into typed policy bundles (constitution + task-scoped shards) |
+| **Compile** | Parses `AGENTS.md` into typed policy bundles (constitution + task-scoped shards) |
 | **Retrieve** | Intent-classified shard retrieval with semantic similarity and risk filters |
 | **Enforce** | 4 gates the model cannot bypass (destructive ops, tool allowlist, diff size, secrets) |
 | **Trust** | Per-agent trust accumulation with privilege tiers and coherence-driven throttling |
@@ -1552,7 +1552,7 @@ echo "ANTHROPIC_API_KEY=sk-ant-..." >> .env
 ### Install
 
 ```bash
-npm install @claude-flow/guidance@alpha
+npm install @ruflo/guidance@alpha
 ```
 
 ### Quick Usage
@@ -1564,11 +1564,11 @@ import {
   createGates,
   createLedger,
   createProofChain,
-} from '@claude-flow/guidance';
+} from '@ruflo/guidance';
 
-// Compile CLAUDE.md into a policy bundle
+// Compile AGENTS.md into a policy bundle
 const compiler = createCompiler();
-const bundle = await compiler.compile(claudeMdText);
+const bundle = await compiler.compile(codexMdText);
 
 // Retrieve task-relevant rules
 const retriever = createRetriever();
@@ -1592,18 +1592,18 @@ chain.verify(envelope); // true — tamper-evident
 
 | Import Path | Purpose |
 |-------------|---------|
-| `@claude-flow/guidance` | Main entry — GuidanceControlPlane |
-| `@claude-flow/guidance/compiler` | CLAUDE.md → PolicyBundle compiler |
-| `@claude-flow/guidance/retriever` | Intent classification + shard retrieval |
-| `@claude-flow/guidance/gates` | 4 enforcement gates |
-| `@claude-flow/guidance/ledger` | Run event logging + evaluators |
-| `@claude-flow/guidance/proof` | HMAC-SHA256 proof chain |
-| `@claude-flow/guidance/adversarial` | Threat, collusion, memory quorum |
-| `@claude-flow/guidance/trust` | Trust accumulation + privilege tiers |
-| `@claude-flow/guidance/authority` | Human authority + irreversibility classification |
-| `@claude-flow/guidance/wasm-kernel` | WASM-accelerated security-critical paths |
-| `@claude-flow/guidance/analyzer` | CLAUDE.md quality analysis + A/B benchmarking |
-| `@claude-flow/guidance/conformance-kit` | Headless conformance test runner |
+| `@ruflo/guidance` | Main entry — GuidanceControlPlane |
+| `@ruflo/guidance/compiler` | AGENTS.md → PolicyBundle compiler |
+| `@ruflo/guidance/retriever` | Intent classification + shard retrieval |
+| `@ruflo/guidance/gates` | 4 enforcement gates |
+| `@ruflo/guidance/ledger` | Run event logging + evaluators |
+| `@ruflo/guidance/proof` | HMAC-SHA256 proof chain |
+| `@ruflo/guidance/adversarial` | Threat, collusion, memory quorum |
+| `@ruflo/guidance/trust` | Trust accumulation + privilege tiers |
+| `@ruflo/guidance/authority` | Human authority + irreversibility classification |
+| `@ruflo/guidance/wasm-kernel` | WASM-accelerated security-critical paths |
+| `@ruflo/guidance/analyzer` | AGENTS.md quality analysis + A/B benchmarking |
+| `@ruflo/guidance/conformance-kit` | Headless conformance test runner |
 
 ### Stats
 
@@ -1614,13 +1614,13 @@ chain.verify(envelope); // true — tamper-evident
 
 ### Documentation
 
-- [Architecture Overview](v3/@claude-flow/guidance/docs/guides/architecture-overview.md)
-- [Getting Started](v3/@claude-flow/guidance/docs/guides/getting-started.md)
-- [Enforcement Gates Tutorial](v3/@claude-flow/guidance/docs/tutorials/enforcement-gates.md)
-- [Proof Audit Trail](v3/@claude-flow/guidance/docs/tutorials/proof-audit-trail.md)
-- [Multi-Agent Security](v3/@claude-flow/guidance/docs/guides/multi-agent-security.md)
-- [API Quick Reference](v3/@claude-flow/guidance/docs/reference/api-quick-reference.md)
-- [Full README](v3/@claude-flow/guidance/README.md)
+- [Architecture Overview](v3/@ruflo/guidance/docs/guides/architecture-overview.md)
+- [Getting Started](v3/@ruflo/guidance/docs/guides/getting-started.md)
+- [Enforcement Gates Tutorial](v3/@ruflo/guidance/docs/tutorials/enforcement-gates.md)
+- [Proof Audit Trail](v3/@ruflo/guidance/docs/tutorials/proof-audit-trail.md)
+- [Multi-Agent Security](v3/@ruflo/guidance/docs/guides/multi-agent-security.md)
+- [API Quick Reference](v3/@ruflo/guidance/docs/reference/api-quick-reference.md)
+- [Full README](v3/@ruflo/guidance/README.md)
 
 </details>
 
@@ -1713,19 +1713,19 @@ npx ruflo hive-mind sessions                # List active sessions
 </details>
 
 <details>
-<summary>👥 <strong>Agent Teams</strong> — Claude Code multi-instance coordination</summary>
+<summary>👥 <strong>Agent Teams</strong> — Codex multi-instance coordination</summary>
 
-Native integration with Claude Code's experimental Agent Teams feature for spawning and coordinating multiple Claude instances.
+Native integration with Codex's experimental Agent Teams feature for spawning and coordinating multiple Codex instances.
 
 **Enable Agent Teams:**
 ```bash
 # Automatically enabled with ruflo init
 npx ruflo@latest init
 
-# Or manually add to .claude/settings.json
+# Or manually add to .codex/settings.json
 {
   "env": {
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+    "CODEX_EXPERIMENTAL_AGENT_TEAMS": "1"
   }
 }
 ```
@@ -1734,7 +1734,7 @@ npx ruflo@latest init
 
 | Component | Tool | Purpose |
 |-----------|------|---------|
-| **Team Lead** | Main Claude | Coordinates teammates, assigns tasks, reviews results |
+| **Team Lead** | Main Codex | Coordinates teammates, assigns tasks, reviews results |
 | **Teammates** | `Task` tool | Sub-agents spawned to work on specific tasks |
 | **Task List** | `TaskCreate/TaskList/TaskUpdate` | Shared todos visible to all team members |
 | **Mailbox** | `SendMessage` | Inter-agent messaging for coordination |
@@ -1856,35 +1856,35 @@ Install these optional plugins to extend Ruflo capabilities:
 
 | Plugin | Version | Description | Install Command |
 |--------|---------|-------------|-----------------|
-| **@claude-flow/plugin-agentic-qe** | 3.0.0-alpha.2 | Quality Engineering with 58 AI agents across 12 DDD contexts. TDD, coverage analysis, security scanning, chaos engineering, accessibility testing. | `npm install @claude-flow/plugin-agentic-qe` |
-| **@claude-flow/plugin-prime-radiant** | 0.1.4 | Mathematical AI interpretability with 6 engines: sheaf cohomology, spectral analysis, causal inference, quantum topology, category theory, HoTT proofs. | `npm install @claude-flow/plugin-prime-radiant` |
-| **@claude-flow/plugin-gastown-bridge** | 0.1.0 | Gas Town orchestrator integration with WASM-accelerated formula parsing (instant (regex-based, no LLM call)), Beads sync, convoy management, and graph analysis. 20 MCP tools. | `npx ruflo@latest plugins install -n @claude-flow/plugin-gastown-bridge` |
-| **@claude-flow/teammate-plugin** | 1.0.0-alpha.1 | Native TeammateTool integration for Claude Code v2.1.19+. BMSSP WASM acceleration, rate limiting, circuit breaker, semantic routing. 21 MCP tools. | `npx ruflo@latest plugins install -n @claude-flow/teammate-plugin` |
+| **@ruflo/plugin-agentic-qe** | 3.0.0-alpha.2 | Quality Engineering with 58 AI agents across 12 DDD contexts. TDD, coverage analysis, security scanning, chaos engineering, accessibility testing. | `npm install @ruflo/plugin-agentic-qe` |
+| **@ruflo/plugin-prime-radiant** | 0.1.4 | Mathematical AI interpretability with 6 engines: sheaf cohomology, spectral analysis, causal inference, quantum topology, category theory, HoTT proofs. | `npm install @ruflo/plugin-prime-radiant` |
+| **@ruflo/plugin-gastown-bridge** | 0.1.0 | Gas Town orchestrator integration with WASM-accelerated formula parsing (instant (regex-based, no LLM call)), Beads sync, convoy management, and graph analysis. 20 MCP tools. | `npx ruflo@latest plugins install -n @ruflo/plugin-gastown-bridge` |
+| **@ruflo/teammate-plugin** | 1.0.0-alpha.1 | Native TeammateTool integration for Codex v2.1.19+. BMSSP WASM acceleration, rate limiting, circuit breaker, semantic routing. 21 MCP tools. | `npx ruflo@latest plugins install -n @ruflo/teammate-plugin` |
 
 #### 🏥 Domain-Specific Plugins
 
 | Plugin | Version | Description | Install Command |
 |--------|---------|-------------|-----------------|
-| **@claude-flow/plugin-healthcare-clinical** | 0.1.0 | HIPAA-compliant clinical decision support with FHIR/HL7 integration. Symptom analysis, drug interactions, treatment recommendations. | `npm install @claude-flow/plugin-healthcare-clinical` |
-| **@claude-flow/plugin-financial-risk** | 0.1.0 | PCI-DSS/SOX compliant financial risk analysis. Portfolio optimization, fraud detection, regulatory compliance, market simulation. | `npm install @claude-flow/plugin-financial-risk` |
-| **@claude-flow/plugin-legal-contracts** | 0.1.0 | Attorney-client privilege protected contract analysis. Risk identification, clause extraction, compliance verification. | `npm install @claude-flow/plugin-legal-contracts` |
+| **@ruflo/plugin-healthcare-clinical** | 0.1.0 | HIPAA-compliant clinical decision support with FHIR/HL7 integration. Symptom analysis, drug interactions, treatment recommendations. | `npm install @ruflo/plugin-healthcare-clinical` |
+| **@ruflo/plugin-financial-risk** | 0.1.0 | PCI-DSS/SOX compliant financial risk analysis. Portfolio optimization, fraud detection, regulatory compliance, market simulation. | `npm install @ruflo/plugin-financial-risk` |
+| **@ruflo/plugin-legal-contracts** | 0.1.0 | Attorney-client privilege protected contract analysis. Risk identification, clause extraction, compliance verification. | `npm install @ruflo/plugin-legal-contracts` |
 
 #### 💻 Development Intelligence Plugins
 
 | Plugin | Version | Description | Install Command |
 |--------|---------|-------------|-----------------|
-| **@claude-flow/plugin-code-intelligence** | 0.1.0 | Advanced code analysis with GNN-based pattern recognition. Security vulnerability detection, refactoring suggestions, architecture analysis. | `npm install @claude-flow/plugin-code-intelligence` |
-| **@claude-flow/plugin-test-intelligence** | 0.1.0 | AI-powered test generation and optimization. Coverage analysis, mutation testing, test prioritization, flaky test detection. | `npm install @claude-flow/plugin-test-intelligence` |
-| **@claude-flow/plugin-perf-optimizer** | 0.1.0 | Performance profiling and optimization. Memory leak detection, CPU bottleneck analysis, I/O optimization, caching strategies. | `npm install @claude-flow/plugin-perf-optimizer` |
+| **@ruflo/plugin-code-intelligence** | 0.1.0 | Advanced code analysis with GNN-based pattern recognition. Security vulnerability detection, refactoring suggestions, architecture analysis. | `npm install @ruflo/plugin-code-intelligence` |
+| **@ruflo/plugin-test-intelligence** | 0.1.0 | AI-powered test generation and optimization. Coverage analysis, mutation testing, test prioritization, flaky test detection. | `npm install @ruflo/plugin-test-intelligence` |
+| **@ruflo/plugin-perf-optimizer** | 0.1.0 | Performance profiling and optimization. Memory leak detection, CPU bottleneck analysis, I/O optimization, caching strategies. | `npm install @ruflo/plugin-perf-optimizer` |
 
 #### 🧠 Advanced AI/Reasoning Plugins
 
 | Plugin | Version | Description | Install Command |
 |--------|---------|-------------|-----------------|
-| **@claude-flow/plugin-neural-coordination** | 0.1.0 | Multi-agent neural coordination with SONA learning. Agent specialization, knowledge transfer, collective decision making. | `npm install @claude-flow/plugin-neural-coordination` |
-| **@claude-flow/plugin-cognitive-kernel** | 0.1.0 | Cognitive computing kernel for working memory, attention control, meta-cognition, and task scaffolding. Miller's Law (7±2) compliance. | `npm install @claude-flow/plugin-cognitive-kernel` |
-| **@claude-flow/plugin-quantum-optimizer** | 0.1.0 | Quantum-inspired optimization (QAOA, VQE, quantum annealing). Combinatorial optimization, Grover search, tensor networks. | `npm install @claude-flow/plugin-quantum-optimizer` |
-| **@claude-flow/plugin-hyperbolic-reasoning** | 0.1.0 | Hyperbolic geometry for hierarchical reasoning. Poincaré embeddings, tree-like structure analysis, taxonomic inference. | `npm install @claude-flow/plugin-hyperbolic-reasoning` |
+| **@ruflo/plugin-neural-coordination** | 0.1.0 | Multi-agent neural coordination with SONA learning. Agent specialization, knowledge transfer, collective decision making. | `npm install @ruflo/plugin-neural-coordination` |
+| **@ruflo/plugin-cognitive-kernel** | 0.1.0 | Cognitive computing kernel for working memory, attention control, meta-cognition, and task scaffolding. Miller's Law (7±2) compliance. | `npm install @ruflo/plugin-cognitive-kernel` |
+| **@ruflo/plugin-quantum-optimizer** | 0.1.0 | Quantum-inspired optimization (QAOA, VQE, quantum annealing). Combinatorial optimization, Grover search, tensor networks. | `npm install @ruflo/plugin-quantum-optimizer` |
+| **@ruflo/plugin-hyperbolic-reasoning** | 0.1.0 | Hyperbolic geometry for hierarchical reasoning. Poincaré embeddings, tree-like structure analysis, taxonomic inference. | `npm install @ruflo/plugin-hyperbolic-reasoning` |
 
 **Agentic-QE Plugin Features:**
 - 58 specialized QE agents across 13 bounded contexts
@@ -1901,7 +1901,7 @@ Install these optional plugins to extend Ruflo capabilities:
 - Hallucination prevention via consensus verification
 
 **Teammate Plugin Features:**
-- Native TeammateTool integration for Claude Code v2.1.19+
+- Native TeammateTool integration for Codex v2.1.19+
 - 21 MCP tools: `teammate/spawn`, `teammate/coordinate`, `teammate/broadcast`, `teammate/discover-teams`, `teammate/route-task`, etc.
 - BMSSP WASM acceleration for topology optimization (instant (regex-based, no LLM call))
 - Rate limiting with sliding window (configurable limits)
@@ -1923,29 +1923,29 @@ Install these optional plugins to extend Ruflo capabilities:
 
 ```bash
 # Install Quality Engineering plugin
-npm install @claude-flow/plugin-agentic-qe
+npm install @ruflo/plugin-agentic-qe
 
 # Install AI Interpretability plugin
-npm install @claude-flow/plugin-prime-radiant
+npm install @ruflo/plugin-prime-radiant
 
 # Install Gas Town Bridge plugin (WASM-accelerated orchestration)
-npx ruflo@latest plugins install -n @claude-flow/plugin-gastown-bridge
+npx ruflo@latest plugins install -n @ruflo/plugin-gastown-bridge
 
 # Install domain-specific plugins
-npm install @claude-flow/plugin-healthcare-clinical
-npm install @claude-flow/plugin-financial-risk
-npm install @claude-flow/plugin-legal-contracts
+npm install @ruflo/plugin-healthcare-clinical
+npm install @ruflo/plugin-financial-risk
+npm install @ruflo/plugin-legal-contracts
 
 # Install development intelligence plugins
-npm install @claude-flow/plugin-code-intelligence
-npm install @claude-flow/plugin-test-intelligence
-npm install @claude-flow/plugin-perf-optimizer
+npm install @ruflo/plugin-code-intelligence
+npm install @ruflo/plugin-test-intelligence
+npm install @ruflo/plugin-perf-optimizer
 
 # Install advanced AI/reasoning plugins
-npm install @claude-flow/plugin-neural-coordination
-npm install @claude-flow/plugin-cognitive-kernel
-npm install @claude-flow/plugin-quantum-optimizer
-npm install @claude-flow/plugin-hyperbolic-reasoning
+npm install @ruflo/plugin-neural-coordination
+npm install @ruflo/plugin-cognitive-kernel
+npm install @ruflo/plugin-quantum-optimizer
+npm install @ruflo/plugin-hyperbolic-reasoning
 
 # List all installed plugins
 npx ruflo plugins list --installed
@@ -2016,7 +2016,7 @@ Full PostgreSQL integration with advanced vector operations, attention mechanism
 **Configuration:**
 
 ```typescript
-import { createRuVectorBridge } from '@claude-flow/plugins';
+import { createRuVectorBridge } from '@ruflo/plugins';
 
 const bridge = createRuVectorBridge({
   host: 'localhost',
@@ -2064,7 +2064,7 @@ await registry.loadAll();
 **Hyperbolic Operations:**
 
 ```typescript
-import { createHyperbolicSpace } from '@claude-flow/plugins';
+import { createHyperbolicSpace } from '@ruflo/plugins';
 
 const space = createHyperbolicSpace('poincare', { curvature: -1.0 });
 
@@ -2077,7 +2077,7 @@ const midpoint = await space.geodesicMidpoint(v1, v2);
 **Self-Learning System:**
 
 ```typescript
-import { createSelfLearningSystem } from '@claude-flow/plugins';
+import { createSelfLearningSystem } from '@ruflo/plugins';
 
 const learning = createSelfLearningSystem(bridge);
 
@@ -2124,11 +2124,11 @@ npx ruflo@latest worker status
 </details>
 
 <details>
-<summary>☁️ <strong>LLM Providers</strong> — 5 providers (Anthropic, OpenAI, Google, Cohere, Ollama) with automatic failover</summary>
+<summary>☁️ <strong>LLM Providers</strong> — 5 providers (OpenAI, OpenAI, Google, Cohere, Ollama) with automatic failover</summary>
 
 | Provider | Models | Features | Cost |
 |----------|--------|----------|------|
-| **Anthropic** | Claude Opus 4, Claude Sonnet 4, Claude Haiku 3.5 | Native, streaming, tool calling, extended thinking | $1-15/1M tokens |
+| **OpenAI** | Codex Opus 4, Codex Sonnet 4, Codex Haiku 3.5 | Native, streaming, tool calling, extended thinking | $1-15/1M tokens |
 | **OpenAI** | GPT-4o, o3-mini, o1 | 128K context, reasoning chains, function calling | $0.15-60/1M tokens |
 | **Google** | Gemini 2.0 Flash, Gemini 1.5 Pro | 1M+ context, multimodal, grounding | $0.075-7/1M tokens |
 | **xAI** | Grok 3, Grok 3 Mini | Real-time data, reasoning, large context | $2-10/1M tokens |
@@ -2159,9 +2159,9 @@ npx ruflo@latest worker status
 
 | Feature | Description | Performance |
 |---------|-------------|-------------|
-| **Auto-Install** | `provider: 'auto'` installs agentic-flow automatically | Zero config |
-| **Smart Fallback** | agentic-flow → transformers → mock chain | Always works |
-| **75x Faster** | Agentic-flow ONNX vs Transformers.js | 3ms vs 230ms |
+| **Auto-Install** | `provider: 'auto'` installs agentic automatically | Zero config |
+| **Smart Fallback** | agentic → transformers → mock chain | Always works |
+| **75x Faster** | Agentic ONNX vs Transformers.js | 3ms vs 230ms |
 | **LRU Caching** | Intelligent cache with hit rate tracking | <1ms cache hits |
 | **Batch Processing** | Efficient batch embedding with partial cache | 10 items <100ms |
 | **Similarity Functions** | Cosine, Euclidean, Dot product | Optimized math |
@@ -2264,11 +2264,11 @@ npx ruflo@latest worker status
 </details>
 
 <details>
-<summary>🔗 <strong>Integration</strong> — agentic-flow bridge with runtime auto-detection</summary>
+<summary>🔗 <strong>Integration</strong> — agentic bridge with runtime auto-detection</summary>
 
 | Component | Description | Performance |
 |-----------|-------------|-------------|
-| **AgenticFlowBridge** | agentic-flow@alpha integration | ADR-001 compliant |
+| **AgenticFlowBridge** | agentic@alpha integration | ADR-001 compliant |
 | **SONA Adapter** | Learning system integration | sub-millisecond pattern matching |
 | **Flash Attention** | Attention mechanism coordinator | optimized attention (WASM-accelerated when available) |
 | **SDK Bridge** | Version negotiation, API compatibility | Auto-detection |
@@ -2343,11 +2343,11 @@ npx ruflo@latest worker status
 |---------|-------------|-------------|
 | **Multi-Provider** | Agentic-Flow (ONNX), OpenAI, Transformers.js, Mock | 4 providers |
 | **Auto-Install** | `ruflo embeddings init` or `createEmbeddingServiceAsync()` | Zero config |
-| **75x Faster** | Agentic-flow ONNX SIMD vs Transformers.js | 3ms vs 230ms |
+| **75x Faster** | Agentic ONNX SIMD vs Transformers.js | 3ms vs 230ms |
 | **Hyperbolic Space** | Poincaré ball model for hierarchical data | Exponential capacity |
 | **Dimensions** | 384 to 3072 configurable | Quality vs speed tradeoff |
 | **Similarity Metrics** | Cosine, Euclidean, Dot product, Hyperbolic distance | Task-specific matching |
-| **Neural Substrate** | Drift detection, memory physics, swarm coordination | agentic-flow integration |
+| **Neural Substrate** | Drift detection, memory physics, swarm coordination | agentic integration |
 | **LRU + SQLite Cache** | Persistent cross-session caching | <1ms cache hits |
 
 ```bash
@@ -2444,7 +2444,7 @@ ruflo ruvector backup --output ./backup.sql
 ```bash
 npx ruflo hive-mind init                                    # Initialize
 npx ruflo hive-mind spawn "Build API" --queen-type tactical # Spawn swarm
-npx ruflo hive-mind spawn "Research AI" --consensus byzantine --claude
+npx ruflo hive-mind spawn "Research AI" --consensus byzantine --codex
 npx ruflo hive-mind status                                  # Check status
 ```
 
@@ -2455,18 +2455,18 @@ npx ruflo hive-mind status                                  # Check status
 </details>
 
 <details>
-<summary>🔌 <strong>agentic-flow Integration</strong> — ADR-001 compliant core foundation</summary>
+<summary>🔌 <strong>agentic Integration</strong> — ADR-001 compliant core foundation</summary>
 
 | Feature | Description | Benefit |
 |---------|-------------|---------|
-| **ADR-001 Compliance** | Build on agentic-flow, don't duplicate | Eliminates 10,000+ duplicate lines |
-| **Core Foundation** | Use agentic-flow as the base layer | Unified architecture |
+| **ADR-001 Compliance** | Build on agentic, don't duplicate | Eliminates 10,000+ duplicate lines |
+| **Core Foundation** | Use agentic as the base layer | Unified architecture |
 | **SONA Integration** | Seamless learning system connection | sub-millisecond pattern matching |
 | **Flash Attention** | Optimized attention mechanisms | optimized attention (WASM-accelerated when available) |
 | **AgentDB Bridge** | Vector storage integration | HNSW-indexed search |
 | **Feature Flags** | Dynamic capability management | 9 configurable features |
 | **Runtime Detection** | NAPI/WASM/JS auto-selection | Optimal performance per platform |
-| **Graceful Fallback** | Works with or without agentic-flow | Always functional |
+| **Graceful Fallback** | Works with or without agentic | Always functional |
 
 </details>
 
@@ -2554,13 +2554,13 @@ npx ruflo hive-mind status                                  # Check status
 </details>
 
 <details>
-<summary>📊 <strong>V3 Statusline</strong> — Real-time development status for Claude Code</summary>
+<summary>📊 <strong>V3 Statusline</strong> — Real-time development status for Codex</summary>
 
-Real-time development status display integrated directly into Claude Code's status bar. Shows DDD progress, swarm activity, security status, AgentDB metrics, and live session data (model, context usage, cost).
+Real-time development status display integrated directly into Codex's status bar. Shows DDD progress, swarm activity, security status, AgentDB metrics, and live session data (model, context usage, cost).
 
 **How It Works:**
 
-Claude Code pipes JSON session data via **stdin** to the statusline script after each assistant message (debounced ~300ms). The script reads this data and combines it with local project metrics to produce a single-line status output.
+Codex pipes JSON session data via **stdin** to the statusline script after each assistant message (debounced ~300ms). The script reads this data and combines it with local project metrics to produce a single-line status output.
 
 **Output Format:**
 ```
@@ -2573,34 +2573,34 @@ Claude Code pipes JSON session data via **stdin** to the statusline script after
 | `▊ Ruflo V3` | Project header | Always shown |
 | `● ruvnet` | GitHub user | `gh api user` CLI |
 | `⎇ main` | Current git branch | `git branch --show-current` |
-| `Opus 4.6` | Claude model name | Stdin JSON `model.display_name` |
+| `Opus 4.6` | Codex model name | Stdin JSON `model.display_name` |
 | `●42% ctx` | Context window usage | Stdin JSON `context_window.used_percentage` |
 | `$0.15` | Session cost | Stdin JSON `cost.total_cost_usd` |
-| `[●●●●○]` | DDD domain progress bar | `.claude-flow/metrics/v3-progress.json` |
+| `[●●●●○]` | DDD domain progress bar | `.codex/metrics/v3-progress.json` |
 | `⚡ HNSW 150x` | HNSW search speedup | AgentDB file stats |
 | `◉/○` | Swarm coordination status | Process detection |
 | `[12/8]` | Active agents / max agents | `ps aux` process count |
 | `👥 3` | Sub-agents spawned | Task tool agent count |
-| `🟢 CVE 3/3` | Security CVE remediation | `.claude-flow/security/audit-status.json` |
+| `🟢 CVE 3/3` | Security CVE remediation | `.codex/security/audit-status.json` |
 | `💾 512MB` | Memory usage | Node.js process RSS |
 | `🧠 15%` | Intelligence score | Pattern count from AgentDB |
 | `📦 AgentDB ●1.2K` | AgentDB vector count | File size estimate (`size / 2KB`) |
 
 **Setup (Automatic):**
 
-Run `npx ruflo@latest init` — this generates `.claude/settings.json` with the correct statusline config and creates the helper script at `.claude/helpers/statusline.cjs`.
+Run `npx ruflo@latest init` — this generates `.codex/settings.json` with the correct statusline config and creates the helper script at `.codex/helpers/statusline.cjs`.
 
 The generated config uses a **fast local script** (no `npx` cold-start):
 ```json
 {
   "statusLine": {
     "type": "command",
-    "command": "node .claude/helpers/statusline.cjs"
+    "command": "node .codex/helpers/statusline.cjs"
   }
 }
 ```
 
-> **Note:** Only `type`, `command`, and `padding` are valid statusLine fields. Do not add `refreshMs`, `enabled`, or other fields — Claude Code will ignore them.
+> **Note:** Only `type`, `command`, and `padding` are valid statusLine fields. Do not add `refreshMs`, `enabled`, or other fields — Codex will ignore them.
 
 **For Existing Users:**
 
@@ -2613,7 +2613,7 @@ This removes invalid config fields and regenerates the statusline helper with st
 
 **Stdin JSON Protocol:**
 
-Claude Code provides session data via stdin in this format:
+Codex provides session data via stdin in this format:
 ```json
 {
   "model": { "display_name": "Opus 4.6" },
@@ -2627,10 +2627,10 @@ Claude Code provides session data via stdin in this format:
 The statusline script reads stdin synchronously, falls back to local detection when run manually (TTY mode).
 
 **Data Sources:**
-- **Stdin JSON** — Model name, context %, cost, duration (from Claude Code)
-- `.claude-flow/metrics/v3-progress.json` — DDD domain progress
-- `.claude-flow/metrics/swarm-activity.json` — Active agent counts
-- `.claude-flow/security/audit-status.json` — CVE remediation status
+- **Stdin JSON** — Model name, context %, cost, duration (from Codex)
+- `.codex/metrics/v3-progress.json` — DDD domain progress
+- `.codex/metrics/swarm-activity.json` — Active agent counts
+- `.codex/security/audit-status.json` — CVE remediation status
 - **AgentDB files** — Vector count (estimated from file size), HNSW index status
 - Process detection via `ps aux` — Real-time memory and agent counts
 - Git branch via `git branch --show-current`
@@ -2704,13 +2704,13 @@ Shell-based daemons for monitoring (Linux/macOS only):
 **Commands:**
 ```bash
 # Start all daemons
-.claude/helpers/daemon-manager.sh start 3 5
+.codex/helpers/daemon-manager.sh start 3 5
 
 # Check daemon status
-.claude/helpers/daemon-manager.sh status
+.codex/helpers/daemon-manager.sh status
 
 # Stop all daemons
-.claude/helpers/daemon-manager.sh stop
+.codex/helpers/daemon-manager.sh stop
 ```
 
 ### Worker Manager (7 Scheduled Workers)
@@ -2728,13 +2728,13 @@ Shell-based daemons for monitoring (Linux/macOS only):
 **Commands:**
 ```bash
 # Start worker manager
-.claude/helpers/worker-manager.sh start 60
+.codex/helpers/worker-manager.sh start 60
 
 # Force run all workers immediately
-.claude/helpers/worker-manager.sh force
+.codex/helpers/worker-manager.sh force
 
 # Check worker status
-.claude/helpers/worker-manager.sh status
+.codex/helpers/worker-manager.sh status
 ```
 
 </details>
@@ -2773,7 +2773,7 @@ Complete command-line interface for all Ruflo operations.
 | `providers` | 5 | AI providers (list, add, remove, test, configure) |
 | `plugins` | 5 | Plugin management (list, install, uninstall, enable, disable) |
 | `deployment` | 5 | Deployment management (deploy, rollback, status, environments, release) |
-| `embeddings` | 4 | Vector embeddings (embed, batch, search, init) - faster with ONNX runtime with agentic-flow |
+| `embeddings` | 4 | Vector embeddings (embed, batch, search, init) - faster with ONNX runtime with agentic |
 | `claims` | 4 | Claims-based authorization (check, grant, revoke, list) |
 | `migrate` | 5 | V2 to V3 migration with rollback support |
 | `process` | 4 | Background process management |
@@ -2851,10 +2851,10 @@ npx ruflo@latest doctor --verbose
 ✅ Node.js      20.11.0 (required: 20+)
 ✅ npm          10.2.4 (required: 9+)
 ✅ Git          2.43.0
-✅ Config       Valid claude-flow.config.json
+✅ Config       Valid codex.config.json
 ✅ Daemon       Running (PID: 12345)
 ✅ Memory       SQLite healthy, 1.2MB
-⚠️ API Keys    ANTHROPIC_API_KEY set, OPENAI_API_KEY missing
+⚠️ API Keys    OPENAI_API_KEY set, OPENAI_API_KEY missing
 ✅ MCP Server   Responsive (45ms latency)
 ✅ Disk Space   2.4GB available
 
@@ -2876,7 +2876,7 @@ The embeddings package (v3.0.0-alpha.12) provides high-performance vector embedd
 | **Document chunking** | Configurable overlap and size | Handles large documents |
 | **Normalization** | L2, L1, min-max, z-score | 4 normalization methods |
 | **Hyperbolic embeddings** | Poincaré ball model | Better hierarchical representation |
-| **agentic-flow ONNX** | Integrated ONNX runtime | faster with ONNX runtime than API calls |
+| **agentic ONNX** | Integrated ONNX runtime | faster with ONNX runtime than API calls |
 | **Neural substrate** | RuVector integration | Full learning pipeline |
 
 **Models Available:**
@@ -2905,7 +2905,7 @@ npx ruflo@latest embeddings search "login flow" --top-k 5
 **Programmatic:**
 
 ```typescript
-import { createEmbeddingServiceAsync } from '@claude-flow/embeddings';
+import { createEmbeddingServiceAsync } from '@ruflo/embeddings';
 
 const service = await createEmbeddingServiceAsync({
   model: 'all-MiniLM-L6-v2',
@@ -2996,14 +2996,14 @@ Real-world scenarios and pre-built workflows for common tasks.
 
 ## 🧠 Infinite Context & Memory Optimization
 
-Ruflo eliminates Claude Code's context window ceiling with a real-time memory management system that archives, optimizes, and restores conversation context automatically.
+Ruflo eliminates Codex's context window ceiling with a real-time memory management system that archives, optimizes, and restores conversation context automatically.
 
 <details>
 <summary>♾️ <strong>Context Autopilot</strong> — Never lose context to compaction again</summary>
 
 ### The Problem
 
-Claude Code has a finite context window (~200K tokens). When full, it **compacts** — summarizing the conversation and discarding details like exact file paths, tool outputs, decision reasoning, and code snippets. This creates a "context cliff" where Claude loses the ability to reference earlier work.
+Codex has a finite context window (~200K tokens). When full, it **compacts** — summarizing the conversation and discarding details like exact file paths, tool outputs, decision reasoning, and code snippets. This creates a "context cliff" where Codex loses the ability to reference earlier work.
 
 ### The Solution: Context Autopilot (ADR-051)
 
@@ -3065,35 +3065,35 @@ The statusline shows live context metrics read from `autopilot-state.json`:
 
 | Tier | Backend | Storage | Features |
 |------|---------|---------|----------|
-| 1 | **SQLite** (default) | `.claude-flow/data/transcript-archive.db` | WAL mode, indexed queries, ACID, importance ranking |
+| 1 | **SQLite** (default) | `.codex/data/transcript-archive.db` | WAL mode, indexed queries, ACID, importance ranking |
 | 2 | **RuVector PostgreSQL** | Configurable remote | TB-scale, pgvector embeddings, GNN search |
 | 3 | **AgentDB + HNSW** | In-memory + persist | HNSW-indexed semantic search |
-| 4 | **JSON** (fallback) | `.claude-flow/data/transcript-archive.json` | Zero dependencies, always works |
+| 4 | **JSON** (fallback) | `.codex/data/transcript-archive.json` | Zero dependencies, always works |
 
 ### Configuration
 
 ```bash
 # Context Autopilot (all have sensible defaults)
-CLAUDE_FLOW_CONTEXT_AUTOPILOT=true        # Enable/disable autopilot (default: true)
-CLAUDE_FLOW_CONTEXT_WINDOW=200000         # Context window size in tokens
-CLAUDE_FLOW_AUTOPILOT_WARN=0.70           # Warning threshold (70%)
-CLAUDE_FLOW_AUTOPILOT_PRUNE=0.85          # Optimization threshold (85%)
-CLAUDE_FLOW_COMPACT_RESTORE_BUDGET=4000   # Max chars restored after compaction
-CLAUDE_FLOW_RETENTION_DAYS=30             # Auto-prune never-accessed entries
-CLAUDE_FLOW_AUTO_OPTIMIZE=true            # Importance ranking + pruning + sync
+RUFLO_CONTEXT_AUTOPILOT=true        # Enable/disable autopilot (default: true)
+RUFLO_CONTEXT_WINDOW=200000         # Context window size in tokens
+RUFLO_AUTOPILOT_WARN=0.70           # Warning threshold (70%)
+RUFLO_AUTOPILOT_PRUNE=0.85          # Optimization threshold (85%)
+RUFLO_COMPACT_RESTORE_BUDGET=4000   # Max chars restored after compaction
+RUFLO_RETENTION_DAYS=30             # Auto-prune never-accessed entries
+RUFLO_AUTO_OPTIMIZE=true            # Importance ranking + pruning + sync
 ```
 
 ### Commands
 
 ```bash
 # Check archive status and autopilot state
-node .claude/helpers/context-persistence-hook.mjs status
+node .codex/helpers/context-persistence-hook.mjs status
 
-# Manual compact (archives first, then allows Claude Code to compress)
-# Use /compact in Claude Code — autopilot allows manual, blocks auto
+# Manual compact (archives first, then allows Codex to compress)
+# Use /compact in Codex — autopilot allows manual, blocks auto
 
 # Query archive directly
-sqlite3 .claude-flow/data/transcript-archive.db \
+sqlite3 .codex/data/transcript-archive.db \
   "SELECT COUNT(*), SUM(LENGTH(content)) FROM transcript_entries;"
 ```
 
@@ -3101,8 +3101,8 @@ sqlite3 .claude-flow/data/transcript-archive.db \
 
 - **ADR-051**: Infinite Context via Compaction-to-Memory Bridge
 - **ADR-052**: Statusline Observability System
-- **Implementation**: `.claude/helpers/context-persistence-hook.mjs` (~1560 lines)
-- **Settings**: `.claude/settings.json` (PreCompact, SessionStart, UserPromptSubmit hooks)
+- **Implementation**: `.codex/helpers/context-persistence-hook.mjs` (~1560 lines)
+- **Settings**: `.codex/settings.json` (PreCompact, SessionStart, UserPromptSubmit hooks)
 
 </details>
 
@@ -3152,7 +3152,7 @@ RVF is always available since it has zero dependencies, so it wins by default. I
 RVF includes `HnswLite` — a pure TypeScript implementation of the HNSW (Hierarchical Navigable Small World) algorithm for fast nearest-neighbor search. It's used automatically when storing entries with embeddings.
 
 ```typescript
-import { RvfBackend } from '@claude-flow/memory';
+import { RvfBackend } from '@ruflo/memory';
 
 const backend = new RvfBackend({ databasePath: './memory.rvf' });
 await backend.initialize();
@@ -3171,7 +3171,7 @@ Supports cosine, dot product, and Euclidean distance metrics. For large datasets
 The `RvfMigrator` converts between JSON files, SQLite databases, and RVF:
 
 ```typescript
-import { RvfMigrator } from '@claude-flow/memory';
+import { RvfMigrator } from '@ruflo/memory';
 
 // Auto-detect format and migrate
 await RvfMigrator.autoMigrate('./old-memory.db', './memory.rvf');
@@ -3199,7 +3199,7 @@ All write operations use atomic writes: data goes to a temporary file first, the
 The `PersistentSonaCoordinator` stores learning patterns and trajectories in RVF format, so agents retain knowledge across sessions:
 
 ```typescript
-import { PersistentSonaCoordinator } from '@claude-flow/memory';
+import { PersistentSonaCoordinator } from '@ruflo/memory';
 
 const sona = new PersistentSonaCoordinator({
   storePath: './data/sona-learning.rvls',
@@ -3226,8 +3226,8 @@ RVF validates inputs at every boundary:
 
 ```bash
 # Environment variables
-CLAUDE_FLOW_MEMORY_BACKEND=hybrid   # auto-selects RVF
-CLAUDE_FLOW_MEMORY_PATH=./data/memory
+RUFLO_MEMORY_BACKEND=hybrid   # auto-selects RVF
+RUFLO_MEMORY_PATH=./data/memory
 
 # Or via CLI
 ruflo memory init --force
@@ -3313,7 +3313,7 @@ SessionStart:
 UserPrompt:
   route            → intelligence.getContext(prompt)
     → Jaccard-match prompt against pre-ranked entries
-    → Inject top-5 patterns into Claude's context:
+    → Inject top-5 patterns into Codex's context:
 
     [INTELLIGENCE] Relevant patterns for this task:
       * (0.95) HNSW gives HNSW-indexed search [rank #1, 12x accessed]
@@ -3336,13 +3336,13 @@ SessionEnd:
 
 ```bash
 # Human-readable diagnostics
-node .claude/helpers/hook-handler.cjs stats
+node .codex/helpers/hook-handler.cjs stats
 
 # JSON output for scripting
-node .claude/helpers/hook-handler.cjs stats --json
+node .codex/helpers/hook-handler.cjs stats --json
 
 # Or via intelligence.cjs directly
-node .claude/helpers/intelligence.cjs stats
+node .codex/helpers/intelligence.cjs stats
 ```
 
 The stats command shows:
@@ -3421,7 +3421,7 @@ npx ruflo@latest hooks post-edit ./src/auth.ts --success true --train-patterns
 | `pretrain` | Bootstrap from codebase | Learns your project's patterns before you start |
 | `build-agents` | Generate optimized configs | Agent YAML files tuned for your codebase |
 | `transfer` | Import patterns from another project | Cross-project learning |
-| `init` | Initialize hooks system | Sets up .claude/settings.json |
+| `init` | Initialize hooks system | Sets up .codex/settings.json |
 | `metrics` | View learning dashboard | Success rates, pattern counts, routing accuracy |
 | `list` | List all registered hooks | See what's active |
 
@@ -3475,8 +3475,8 @@ npx ruflo@latest hooks intelligence trajectory-step --action "created token serv
 npx ruflo@latest hooks intelligence trajectory-end --success true
 
 # View intelligence diagnostics and improvement trends (ADR-050)
-node .claude/helpers/hook-handler.cjs stats
-node .claude/helpers/intelligence.cjs stats --json
+node .codex/helpers/hook-handler.cjs stats
+node .codex/helpers/intelligence.cjs stats --json
 ```
 
 ### 12 Background Workers (Auto-Triggered)
@@ -3556,9 +3556,9 @@ npx ruflo@latest hooks metrics
 npx ruflo@latest hooks intelligence stats
 
 # Intelligence diagnostics — see if intelligence is improving
-node .claude/helpers/hook-handler.cjs stats          # Human-readable
-node .claude/helpers/hook-handler.cjs stats --json   # JSON for scripting
-node .claude/helpers/intelligence.cjs stats           # Direct access
+node .codex/helpers/hook-handler.cjs stats          # Human-readable
+node .codex/helpers/hook-handler.cjs stats --json   # JSON for scripting
+node .codex/helpers/intelligence.cjs stats           # Direct access
 
 # Bootstrap on new project
 npx ruflo@latest hooks pretrain --depth deep
@@ -3669,7 +3669,7 @@ npx ruflo@latest plugins list
 npx ruflo@latest plugins list --type integration
 
 # Rate a plugin
-npx ruflo@latest plugins rate --name @claude-flow/embeddings --rating 5
+npx ruflo@latest plugins rate --name @ruflo/embeddings --rating 5
 
 # Search for MCP tool plugins
 npx ruflo@latest transfer plugin-search --type "mcp-tool" --verified
@@ -3888,19 +3888,19 @@ Scripts, coordination systems, and collaborative development features.
 <details>
 <summary>🛠️ <strong>Helper Scripts</strong> — 30+ Development Automation Tools</summary>
 
-The `.claude/helpers/` directory contains **30+ automation scripts** for development, monitoring, learning, and swarm coordination. These scripts integrate with hooks and can be called directly or via the V3 master tool.
+The `.codex/helpers/` directory contains **30+ automation scripts** for development, monitoring, learning, and swarm coordination. These scripts integrate with hooks and can be called directly or via the V3 master tool.
 
 ### Quick Start
 
 ```bash
 # Master V3 tool - access all helpers
-.claude/helpers/v3.sh help              # Show all commands
-.claude/helpers/v3.sh status            # Quick development status
-.claude/helpers/v3.sh update domain 3   # Update metrics
+.codex/helpers/v3.sh help              # Show all commands
+.codex/helpers/v3.sh status            # Quick development status
+.codex/helpers/v3.sh update domain 3   # Update metrics
 
 # Quick setup
-.claude/helpers/quick-start.sh          # Initialize development environment
-.claude/helpers/setup-mcp.sh            # Configure MCP servers
+.codex/helpers/quick-start.sh          # Initialize development environment
+.codex/helpers/setup-mcp.sh            # Configure MCP servers
 ```
 
 ### Helper Categories
@@ -3909,112 +3909,112 @@ The `.claude/helpers/` directory contains **30+ automation scripts** for develop
 
 | Script | Purpose | Usage |
 |--------|---------|-------|
-| `v3.sh` | Master CLI for all V3 operations | `.claude/helpers/v3.sh status` |
-| `update-v3-progress.sh` | Update development metrics | `.claude/helpers/update-v3-progress.sh domain 3` |
-| `v3-quick-status.sh` | Compact progress overview | `.claude/helpers/v3-quick-status.sh` |
-| `sync-v3-metrics.sh` | Sync metrics across systems | `.claude/helpers/sync-v3-metrics.sh` |
-| `validate-v3-config.sh` | Validate configuration | `.claude/helpers/validate-v3-config.sh` |
+| `v3.sh` | Master CLI for all V3 operations | `.codex/helpers/v3.sh status` |
+| `update-v3-progress.sh` | Update development metrics | `.codex/helpers/update-v3-progress.sh domain 3` |
+| `v3-quick-status.sh` | Compact progress overview | `.codex/helpers/v3-quick-status.sh` |
+| `sync-v3-metrics.sh` | Sync metrics across systems | `.codex/helpers/sync-v3-metrics.sh` |
+| `validate-v3-config.sh` | Validate configuration | `.codex/helpers/validate-v3-config.sh` |
 
 #### 🤖 Daemon & Worker Management
 
 | Script | Purpose | Usage |
 |--------|---------|-------|
-| `daemon-manager.sh` | Start/stop/status background daemons | `.claude/helpers/daemon-manager.sh start 3 5` |
-| `worker-manager.sh` | Manage background workers | `.claude/helpers/worker-manager.sh start 60` |
-| `swarm-monitor.sh` | Monitor swarm activity | `.claude/helpers/swarm-monitor.sh` |
-| `health-monitor.sh` | System health checks | `.claude/helpers/health-monitor.sh` |
-| `perf-worker.sh` | Performance monitoring worker | `.claude/helpers/perf-worker.sh` |
+| `daemon-manager.sh` | Start/stop/status background daemons | `.codex/helpers/daemon-manager.sh start 3 5` |
+| `worker-manager.sh` | Manage background workers | `.codex/helpers/worker-manager.sh start 60` |
+| `swarm-monitor.sh` | Monitor swarm activity | `.codex/helpers/swarm-monitor.sh` |
+| `health-monitor.sh` | System health checks | `.codex/helpers/health-monitor.sh` |
+| `perf-worker.sh` | Performance monitoring worker | `.codex/helpers/perf-worker.sh` |
 
 #### 🧠 Learning & Intelligence
 
 | Script | Purpose | Usage |
 |--------|---------|-------|
-| `learning-service.mjs` | Neural learning service (Node.js) | `node .claude/helpers/learning-service.mjs` |
-| `learning-hooks.sh` | Hook-based pattern learning | `.claude/helpers/learning-hooks.sh` |
-| `learning-optimizer.sh` | Optimize learned patterns | `.claude/helpers/learning-optimizer.sh` |
-| `pattern-consolidator.sh` | Consolidate patterns (EWC++) | `.claude/helpers/pattern-consolidator.sh` |
-| `metrics-db.mjs` | Metrics database service | `node .claude/helpers/metrics-db.mjs` |
+| `learning-service.mjs` | Neural learning service (Node.js) | `node .codex/helpers/learning-service.mjs` |
+| `learning-hooks.sh` | Hook-based pattern learning | `.codex/helpers/learning-hooks.sh` |
+| `learning-optimizer.sh` | Optimize learned patterns | `.codex/helpers/learning-optimizer.sh` |
+| `pattern-consolidator.sh` | Consolidate patterns (EWC++) | `.codex/helpers/pattern-consolidator.sh` |
+| `metrics-db.mjs` | Metrics database service | `node .codex/helpers/metrics-db.mjs` |
 
 #### 🐝 Swarm Coordination
 
 | Script | Purpose | Usage |
 |--------|---------|-------|
-| `swarm-hooks.sh` | Swarm lifecycle hooks | `.claude/helpers/swarm-hooks.sh init` |
-| `swarm-comms.sh` | Inter-agent communication | `.claude/helpers/swarm-comms.sh broadcast "msg"` |
-| `swarm-monitor.sh` | Real-time swarm monitoring | `.claude/helpers/swarm-monitor.sh --watch` |
+| `swarm-hooks.sh` | Swarm lifecycle hooks | `.codex/helpers/swarm-hooks.sh init` |
+| `swarm-comms.sh` | Inter-agent communication | `.codex/helpers/swarm-comms.sh broadcast "msg"` |
+| `swarm-monitor.sh` | Real-time swarm monitoring | `.codex/helpers/swarm-monitor.sh --watch` |
 
 #### 🔒 Security & Compliance
 
 | Script | Purpose | Usage |
 |--------|---------|-------|
-| `security-scanner.sh` | Scan for vulnerabilities | `.claude/helpers/security-scanner.sh` |
-| `adr-compliance.sh` | Check ADR compliance | `.claude/helpers/adr-compliance.sh` |
-| `ddd-tracker.sh` | Track DDD domain progress | `.claude/helpers/ddd-tracker.sh` |
+| `security-scanner.sh` | Scan for vulnerabilities | `.codex/helpers/security-scanner.sh` |
+| `adr-compliance.sh` | Check ADR compliance | `.codex/helpers/adr-compliance.sh` |
+| `ddd-tracker.sh` | Track DDD domain progress | `.codex/helpers/ddd-tracker.sh` |
 
 #### 💾 Checkpoints & Git
 
 | Script | Purpose | Usage |
 |--------|---------|-------|
-| `checkpoint-manager.sh` | Save/restore checkpoints | `.claude/helpers/checkpoint-manager.sh save "desc"` |
-| `auto-commit.sh` | Automated git commits | `.claude/helpers/auto-commit.sh` |
-| `standard-checkpoint-hooks.sh` | Checkpoint hook integration | `.claude/helpers/standard-checkpoint-hooks.sh` |
-| `github-safe.js` | Safe GitHub operations | `node .claude/helpers/github-safe.js` |
-| `github-setup.sh` | Configure GitHub integration | `.claude/helpers/github-setup.sh` |
+| `checkpoint-manager.sh` | Save/restore checkpoints | `.codex/helpers/checkpoint-manager.sh save "desc"` |
+| `auto-commit.sh` | Automated git commits | `.codex/helpers/auto-commit.sh` |
+| `standard-checkpoint-hooks.sh` | Checkpoint hook integration | `.codex/helpers/standard-checkpoint-hooks.sh` |
+| `github-safe.js` | Safe GitHub operations | `node .codex/helpers/github-safe.js` |
+| `github-setup.sh` | Configure GitHub integration | `.codex/helpers/github-setup.sh` |
 
 #### 🎯 Guidance & Hooks
 
 | Script | Purpose | Usage |
 |--------|---------|-------|
-| `guidance-hooks.sh` | Development guidance via hooks | `.claude/helpers/guidance-hooks.sh` |
-| `guidance-hook.sh` | Single guidance hook | `.claude/helpers/guidance-hook.sh` |
+| `guidance-hooks.sh` | Development guidance via hooks | `.codex/helpers/guidance-hooks.sh` |
+| `guidance-hook.sh` | Single guidance hook | `.codex/helpers/guidance-hook.sh` |
 
 ### Example Workflows
 
 **Start Development Session:**
 ```bash
 # Initialize everything
-.claude/helpers/v3.sh init
-.claude/helpers/daemon-manager.sh start 3 5
-.claude/helpers/worker-manager.sh start 60
+.codex/helpers/v3.sh init
+.codex/helpers/daemon-manager.sh start 3 5
+.codex/helpers/worker-manager.sh start 60
 
 # Check status
-.claude/helpers/v3.sh full-status
+.codex/helpers/v3.sh full-status
 ```
 
 **Swarm Development:**
 ```bash
 # Start swarm monitoring
-.claude/helpers/swarm-monitor.sh --watch &
+.codex/helpers/swarm-monitor.sh --watch &
 
 # Initialize swarm hooks
-.claude/helpers/swarm-hooks.sh init
+.codex/helpers/swarm-hooks.sh init
 
 # Monitor agent communication
-.claude/helpers/swarm-comms.sh listen
+.codex/helpers/swarm-comms.sh listen
 ```
 
 **Learning & Pattern Management:**
 ```bash
 # Start learning service
-node .claude/helpers/learning-service.mjs &
+node .codex/helpers/learning-service.mjs &
 
 # Consolidate patterns after session
-.claude/helpers/pattern-consolidator.sh
+.codex/helpers/pattern-consolidator.sh
 
 # Optimize learned patterns
-.claude/helpers/learning-optimizer.sh --aggressive
+.codex/helpers/learning-optimizer.sh --aggressive
 ```
 
 ### Configuration
 
-Helpers are configured in `.claude/settings.json`:
+Helpers are configured in `.codex/settings.json`:
 
 ```json
 {
   "helpers": {
-    "directory": ".claude/helpers",
+    "directory": ".codex/helpers",
     "enabled": true,
-    "v3ProgressUpdater": ".claude/helpers/update-v3-progress.sh",
+    "v3ProgressUpdater": ".codex/helpers/update-v3-progress.sh",
     "autoStart": ["daemon-manager.sh", "worker-manager.sh"]
   }
 }
@@ -4128,7 +4128,7 @@ Skills are **reusable workflows** that combine agents, hooks, and patterns into 
 | `v3-swarm-coordination` | 15-agent hierarchical mesh, 10 ADRs implementation | Swarm architecture |
 | `v3-mcp-optimization` | Connection pooling, load balancing, <100ms response | MCP performance |
 | `v3-core-implementation` | DDD domains, dependency injection, TypeScript | Core development |
-| `v3-integration-deep` | agentic-flow@alpha deep integration | Framework integration |
+| `v3-integration-deep` | agentic@alpha deep integration | Framework integration |
 | `v3-cli-modernization` | Interactive prompts, enhanced hooks | CLI enhancement |
 
 ```bash
@@ -4149,7 +4149,7 @@ Skills are **reusable workflows** that combine agents, hooks, and patterns into 
 | `skill-builder` | Create new skills with YAML frontmatter | Extending the system |
 | `hooks-automation` | Pre/post hooks, Git integration, memory coordination | Workflow automation |
 | `sparc-methodology` | Specification, Pseudocode, Architecture, Refinement, Completion | Structured development |
-| `swarm-orchestration` | Multi-agent orchestration with agentic-flow | Complex task coordination |
+| `swarm-orchestration` | Multi-agent orchestration with agentic | Complex task coordination |
 | `swarm-advanced` | Research, development, testing workflows | Specialized swarms |
 | `performance-analysis` | Bottleneck detection, optimization recommendations | Performance debugging |
 
@@ -4179,7 +4179,7 @@ Skills are **reusable workflows** that combine agents, hooks, and patterns into 
 ### Running Skills
 
 ```bash
-# In Claude Code - just use the slash command
+# In Codex - just use the slash command
 /github-code-review
 /pair-programming --mode tdd
 /v3-security-overhaul
@@ -4447,7 +4447,7 @@ Use Ruflo packages directly in your TypeScript/JavaScript applications.
 
 ```bash
 # Install specific packages
-npm install @claude-flow/cli @claude-flow/memory @claude-flow/swarm
+npm install @ruflo/cli @ruflo/memory @ruflo/swarm
 
 # Or install everything
 npm install ruflo@latest
@@ -4459,7 +4459,7 @@ npm install ruflo@latest
 <summary>🧠 <strong>Memory & Vector Search</strong></summary>
 
 ```typescript
-import { AgentDB } from '@claude-flow/memory';
+import { AgentDB } from '@ruflo/memory';
 
 // Initialize with HNSW indexing (150x faster)
 const db = new AgentDB({
@@ -4510,7 +4510,7 @@ npx ruflo@latest memory stats
 <summary>🐝 <strong>Swarm Coordination</strong></summary>
 
 ```typescript
-import { createSwarm } from '@claude-flow/swarm';
+import { createSwarm } from '@ruflo/swarm';
 
 // Create a hierarchical swarm
 const swarm = await createSwarm({
@@ -4540,7 +4540,7 @@ await swarm.shutdown({ graceful: true });
 <summary>🛡️ <strong>Security & AIDefence</strong></summary>
 
 ```typescript
-import { isSafe, checkThreats, createAIDefence } from '@claude-flow/aidefence';
+import { isSafe, checkThreats, createAIDefence } from '@ruflo/aidefence';
 
 // Quick safety check
 if (!isSafe(userInput)) {
@@ -4582,12 +4582,12 @@ await aidefence.learnFromDetection(userInput, analysis, {
 ### Basic Usage
 
 ```typescript
-import { createEmbeddingService, cosineSimilarity } from '@claude-flow/embeddings';
+import { createEmbeddingService, cosineSimilarity } from '@ruflo/embeddings';
 
-// Auto-selects best provider (agentic-flow ONNX preferred)
+// Auto-selects best provider (agentic ONNX preferred)
 const embeddings = await createEmbeddingService({
-  provider: 'auto',        // agentic-flow → transformers → mock
-  autoInstall: true,       // Auto-install agentic-flow if missing
+  provider: 'auto',        // agentic → transformers → mock
+  autoInstall: true,       // Auto-install agentic if missing
   dimensions: 384,
   cache: { enabled: true, maxSize: 10000 }
 });
@@ -4614,7 +4614,7 @@ const similarity = cosineSimilarity(batch.embeddings[0], batch.embeddings[1]);
 Split long documents into overlapping chunks:
 
 ```typescript
-import { chunkText, estimateTokens } from '@claude-flow/embeddings';
+import { chunkText, estimateTokens } from '@ruflo/embeddings';
 
 const result = chunkText(longDocument, {
   maxChunkSize: 512,
@@ -4634,7 +4634,7 @@ result.chunks.forEach((chunk, i) => {
 Normalize embeddings for consistent similarity:
 
 ```typescript
-import { l2Normalize, l1Normalize, minMaxNormalize, zScoreNormalize } from '@claude-flow/embeddings';
+import { l2Normalize, l1Normalize, minMaxNormalize, zScoreNormalize } from '@ruflo/embeddings';
 
 // L2 normalize (unit vector - most common for cosine similarity)
 const l2 = l2Normalize(embedding);  // [0.6, 0.8, 0]
@@ -4655,7 +4655,7 @@ import {
   hyperbolicDistance,
   hyperbolicCentroid,
   mobiusAdd,
-} from '@claude-flow/embeddings';
+} from '@ruflo/embeddings';
 
 // Convert to hyperbolic space (better for tree-like structures)
 const poincare = euclideanToPoincare(embedding);
@@ -4678,7 +4678,7 @@ const centroid = hyperbolicCentroid([embed1, embed2, embed3]);
 Access neural features for embedding adaptation:
 
 ```typescript
-import { createNeuralService, isNeuralAvailable } from '@claude-flow/embeddings';
+import { createNeuralService, isNeuralAvailable } from '@ruflo/embeddings';
 
 // Check availability
 const available = await isNeuralAvailable();
@@ -4715,7 +4715,7 @@ if (neural.isAvailable()) {
 Long-term embedding storage with LRU eviction:
 
 ```typescript
-import { PersistentEmbeddingCache } from '@claude-flow/embeddings';
+import { PersistentEmbeddingCache } from '@ruflo/embeddings';
 
 const cache = new PersistentEmbeddingCache({
   dbPath: './embeddings.db',
@@ -4783,7 +4783,7 @@ ruflo embeddings cache clear --older-than 7d
 <summary>🪝 <strong>Hooks & Learning</strong></summary>
 
 ```typescript
-import { HooksService } from '@claude-flow/hooks';
+import { HooksService } from '@ruflo/hooks';
 
 const hooks = new HooksService({
   enableLearning: true,
@@ -4814,15 +4814,15 @@ await hooks.endTrajectory(trajectory, { success: true });
 
 | Package | Purpose | Main Exports |
 |---------|---------|--------------|
-| `@claude-flow/memory` | Vector storage, HNSW, self-learning graph | `AgentDB`, `AutoMemoryBridge`, `LearningBridge`, `MemoryGraph` |
-| `@claude-flow/swarm` | Agent coordination | `createSwarm`, `Swarm` |
-| `@claude-flow/aidefence` | Threat detection | `isSafe`, `checkThreats`, `createAIDefence` |
-| `@claude-flow/embeddings` | Vector embeddings | `createEmbeddingService` |
-| `@claude-flow/hooks` | Event hooks, learning | `HooksService`, `ReasoningBank` |
-| `@claude-flow/security` | Input validation | `InputValidator`, `PathValidator` |
-| `@claude-flow/neural` | SONA learning | `SONAAdapter`, `MoERouter` |
-| `@claude-flow/providers` | LLM providers | `ProviderRegistry`, `createProvider` |
-| `@claude-flow/plugins` | Plugin SDK | `PluginBuilder`, `createPlugin` |
+| `@ruflo/memory` | Vector storage, HNSW, self-learning graph | `AgentDB`, `AutoMemoryBridge`, `LearningBridge`, `MemoryGraph` |
+| `@ruflo/swarm` | Agent coordination | `createSwarm`, `Swarm` |
+| `@ruflo/aidefence` | Threat detection | `isSafe`, `checkThreats`, `createAIDefence` |
+| `@ruflo/embeddings` | Vector embeddings | `createEmbeddingService` |
+| `@ruflo/hooks` | Event hooks, learning | `HooksService`, `ReasoningBank` |
+| `@ruflo/security` | Input validation | `InputValidator`, `PathValidator` |
+| `@ruflo/neural` | SONA learning | `SONAAdapter`, `MoERouter` |
+| `@ruflo/providers` | LLM providers | `ProviderRegistry`, `createProvider` |
+| `@ruflo/plugins` | Plugin SDK | `PluginBuilder`, `createPlugin` |
 
 </details>
 
@@ -4835,26 +4835,26 @@ Core infrastructure packages powering Ruflo's intelligence layer.
 <details>
 <summary>⚡ <strong>Agentic-Flow Integration</strong> — Core AI Infrastructure</summary>
 
-[![npm version](https://img.shields.io/npm/v/agentic-flow?color=blue&label=npm)](https://www.npmjs.com/package/agentic-flow)
-[![npm downloads](https://img.shields.io/npm/dm/agentic-flow?color=green)](https://www.npmjs.com/package/agentic-flow)
-[![GitHub](https://img.shields.io/badge/GitHub-ruvnet%2Fagentic--flow-blue?logo=github)](https://github.com/ruvnet/agentic-flow)
+[![npm version](https://img.shields.io/npm/v/agentic?color=blue&label=npm)](https://www.npmjs.com/package/agentic)
+[![npm downloads](https://img.shields.io/npm/dm/agentic?color=green)](https://www.npmjs.com/package/agentic)
+[![GitHub](https://img.shields.io/badge/GitHub-ruvnet%2Fagentic--blue?logo=github)](https://github.com/ruvnet/agentic)
 
-Ruflo v3 is built on top of **[agentic-flow](https://github.com/ruvnet/agentic-flow)**, a production-ready AI agent orchestration platform. This deep integration provides instant (regex-based, no LLM call) code transformations, learning memory, and geometric intelligence.
+Ruflo v3 is built on top of **[agentic](https://github.com/ruvnet/agentic)**, a production-ready AI agent orchestration platform. This deep integration provides instant (regex-based, no LLM call) code transformations, learning memory, and geometric intelligence.
 
 ### Quick Start
 
 ```bash
 # Install globally
-npm install -g agentic-flow
+npm install -g agentic
 
 # Or run directly with npx
-npx agentic-flow --help
+npx agentic --help
 
 # Start MCP server
-npx agentic-flow mcp start
+npx agentic mcp start
 
-# Add to Claude Code
-claude mcp add agentic-flow -- npx agentic-flow mcp start
+# Add to Codex
+codex mcp add agentic -- npx agentic mcp start
 ```
 
 ### Core Components
@@ -4883,19 +4883,19 @@ Agent Booster performs mechanical code edits without calling LLM APIs:
 
 ```bash
 # Single file edit
-npx agentic-flow agent-booster edit \
+npx agentic agent-booster edit \
   --file src/api.ts \
   --instructions "Add error handling" \
   --code 'try { ... } catch (error) { ... }'
 
 # Batch rename across codebase
-npx agentic-flow agent-booster batch-rename \
+npx agentic agent-booster batch-rename \
   --pattern "getUserData" \
   --replacement "fetchUserProfile" \
   --glob "src/**/*.ts"
 
 # Parse LLM markdown output
-npx agentic-flow agent-booster parse-md response.md
+npx agentic agent-booster parse-md response.md
 ```
 
 **Use Cases:**
@@ -4915,7 +4915,7 @@ npx agentic-flow agent-booster parse-md response.md
 ReasoningBank stores successful patterns for future retrieval:
 
 ```typescript
-import { ReasoningBank } from 'agentic-flow/reasoningbank';
+import { ReasoningBank } from 'agentic/reasoningbank';
 
 const bank = new ReasoningBank();
 
@@ -4951,7 +4951,7 @@ await bank.consolidate();  // Prevent forgetting (EWC++)
 Generate embeddings locally without API calls:
 
 ```typescript
-import { getOptimizedEmbedder, cosineSimilarity } from 'agentic-flow/embeddings';
+import { getOptimizedEmbedder, cosineSimilarity } from 'agentic/embeddings';
 
 const embedder = getOptimizedEmbedder();
 await embedder.init();
@@ -4985,7 +4985,7 @@ Advanced patterns treating embeddings as geometric control surfaces:
 
 **Semantic Drift Detection:**
 ```typescript
-import { getOptimizedEmbedder, cosineSimilarity } from 'agentic-flow/embeddings';
+import { getOptimizedEmbedder, cosineSimilarity } from 'agentic/embeddings';
 
 const embedder = getOptimizedEmbedder();
 let baseline: Float32Array;
@@ -5035,7 +5035,7 @@ if (result.anomalyScore > 1.5) {
 Route tasks to optimal models based on complexity:
 
 ```typescript
-import { ModelRouter } from 'agentic-flow/router';
+import { ModelRouter } from 'agentic/router';
 
 const router = new ModelRouter();
 
@@ -5064,33 +5064,33 @@ const result2 = await router.route({
 </details>
 
 <details>
-<summary>🚀 <strong>CLI Commands</strong> — Full agentic-flow CLI</summary>
+<summary>🚀 <strong>CLI Commands</strong> — Full agentic CLI</summary>
 
 ```bash
 # Agent Booster
-npx agentic-flow agent-booster edit --file <file> --instructions "<instr>" --code '<code>'
-npx agentic-flow agent-booster batch --config batch-edits.json
-npx agentic-flow agent-booster batch-rename --pattern <old> --replacement <new> --glob "**/*.ts"
-npx agentic-flow agent-booster parse-md response.md
+npx agentic agent-booster edit --file <file> --instructions "<instr>" --code '<code>'
+npx agentic agent-booster batch --config batch-edits.json
+npx agentic agent-booster batch-rename --pattern <old> --replacement <new> --glob "**/*.ts"
+npx agentic agent-booster parse-md response.md
 
 # ReasoningBank
-npx agentic-flow reasoningbank retrieve "query" --k 5
-npx agentic-flow reasoningbank record --task "task" --outcome "outcome" --success
-npx agentic-flow reasoningbank distill
-npx agentic-flow reasoningbank consolidate
+npx agentic reasoningbank retrieve "query" --k 5
+npx agentic reasoningbank record --task "task" --outcome "outcome" --success
+npx agentic reasoningbank distill
+npx agentic reasoningbank consolidate
 
 # Embeddings
-npx agentic-flow embeddings embed "text"
-npx agentic-flow embeddings batch documents.txt -o vectors.json
-npx agentic-flow embeddings search "query" --index ./vectors
+npx agentic embeddings embed "text"
+npx agentic embeddings batch documents.txt -o vectors.json
+npx agentic embeddings search "query" --index ./vectors
 
 # Model Router
-npx agentic-flow router route "task description"
-npx agentic-flow router stats
+npx agentic router route "task description"
+npx agentic router stats
 
 # MCP Server
-npx agentic-flow mcp start
-npx agentic-flow mcp stdio
+npx agentic mcp start
+npx agentic mcp stdio
 ```
 
 </details>
@@ -5098,7 +5098,7 @@ npx agentic-flow mcp stdio
 <details>
 <summary>🔧 <strong>MCP Tools</strong> — 313 Integration Tools</summary>
 
-The agentic-flow ecosystem exposes MCP tools across packages (ruflo CLI provides 314 tools):
+The agentic ecosystem exposes MCP tools across packages (ruflo CLI provides 314 tools):
 
 | Category | Tools | Examples |
 |----------|-------|----------|
@@ -5112,17 +5112,17 @@ The agentic-flow ecosystem exposes MCP tools across packages (ruflo CLI provides
 
 ```bash
 # Start MCP server
-npx agentic-flow mcp start
+npx agentic mcp start
 
-# Add to Claude Code
-claude mcp add agentic-flow -- npx agentic-flow mcp start
+# Add to Codex
+codex mcp add agentic -- npx agentic mcp start
 ```
 
 </details>
 
 ### Integration with Ruflo
 
-Ruflo automatically leverages agentic-flow for:
+Ruflo automatically leverages agentic for:
 
 | Feature | How It's Used |
 |---------|---------------|
@@ -5133,8 +5133,8 @@ Ruflo automatically leverages agentic-flow for:
 | **Embedding Search** | HNSW-indexed vector search (150x faster) |
 
 ```typescript
-// Ruflo automatically uses agentic-flow optimizations
-import { getTokenOptimizer } from '@claude-flow/integration';
+// Ruflo automatically uses agentic optimizations
+import { getTokenOptimizer } from '@ruflo/integration';
 
 const optimizer = await getTokenOptimizer();
 
@@ -5157,7 +5157,7 @@ const config = optimizer.getOptimalConfig(agentCount);
 
 [![npm version](https://img.shields.io/npm/v/agentic-jujutsu?color=blue&label=npm)](https://www.npmjs.com/package/agentic-jujutsu)
 [![npm downloads](https://img.shields.io/npm/dm/agentic-jujutsu?color=green)](https://www.npmjs.com/package/agentic-jujutsu)
-[![GitHub](https://img.shields.io/badge/GitHub-ruvnet%2Fagentic--flow-blue?logo=github)](https://github.com/ruvnet/agentic-flow/tree/main/packages/agentic-jujutsu)
+[![GitHub](https://img.shields.io/badge/GitHub-ruvnet%2Fagentic--blue?logo=github)](https://github.com/ruvnet/agentic/tree/main/packages/agentic-jujutsu)
 
 **Agentic-Jujutsu** is self-learning version control designed for multiple AI agents working simultaneously without conflicts. Built on [Jujutsu](https://github.com/martinvonz/jj), it provides faster performance than Git with automatic conflict resolution.
 
@@ -5483,9 +5483,9 @@ cd my-ruvector && docker-compose up -d
 docker run -d \
   --name ruvector-postgres \
   -p 5432:5432 \
-  -e POSTGRES_USER=claude \
+  -e POSTGRES_USER=codex \
   -e POSTGRES_PASSWORD=ruflo-test \
-  -e POSTGRES_DB=claude_flow \
+  -e POSTGRES_DB=codex_flow \
   ruvnet/ruvector-postgres
 
 # Migrate existing memory to PostgreSQL
@@ -5652,7 +5652,7 @@ Ruflo automatically uses RuVector when available:
 
 ```typescript
 // Ruflo detects and uses native ruvector
-import { getVectorStore } from '@claude-flow/memory';
+import { getVectorStore } from '@ruflo/memory';
 
 const store = await getVectorStore();
 // Uses ruvector if installed, falls back to sql.js
@@ -6088,7 +6088,7 @@ npx ruflo@latest security scan --depth full
 ### Programmatic Usage
 
 ```typescript
-import { isSafe, checkThreats, createAIDefence } from '@claude-flow/aidefence';
+import { isSafe, checkThreats, createAIDefence } from '@ruflo/aidefence';
 
 // Quick boolean check
 const safe = isSafe("Hello, help me write code");       // true
@@ -6128,7 +6128,7 @@ await aidefence.learnFromDetection(input, result, {
 ### Multi-Agent Security Consensus
 
 ```typescript
-import { calculateSecurityConsensus } from '@claude-flow/aidefence';
+import { calculateSecurityConsensus } from '@ruflo/aidefence';
 
 const assessments = [
   { agentId: 'guardian-1', threatAssessment: result1, weight: 1.0 },
@@ -6146,7 +6146,7 @@ const consensus = calculateSecurityConsensus(assessments);
 {
   "hooks": {
     "pre-agent-input": {
-      "command": "node -e \"const { isSafe } = require('@claude-flow/aidefence'); if (!isSafe(process.env.AGENT_INPUT)) { process.exit(1); }\"",
+      "command": "node -e \"const { isSafe } = require('@ruflo/aidefence'); if (!isSafe(process.env.AGENT_INPUT)) { process.exit(1); }\"",
       "timeout": 5000
     }
   }
@@ -6180,17 +6180,17 @@ Domain-Driven Design with bounded contexts, clean architecture, and measured per
 
 | Module | Purpose | Key Features |
 |--------|---------|--------------|
-| `@claude-flow/hooks` | Event-driven lifecycle | ReasoningBank, 27 hooks, pattern learning |
-| `@claude-flow/memory` | Unified vector storage | AgentDB, RVF binary format, HnswLite, RvfMigrator, SONA persistence, LearningBridge, MemoryGraph |
-| `@claude-flow/security` | CVE remediation | Input validation, path security, AIDefence |
-| `@claude-flow/swarm` | Multi-agent coordination | 6 topologies, Byzantine consensus, auto-scaling |
-| `@claude-flow/plugins` | WASM extensions | RuVector plugins, semantic search, intent routing |
-| `@claude-flow/cli` | Command interface | 26 commands, 140+ subcommands, shell completions |
-| `@claude-flow/neural` | Self-learning | SONA, 9 RL algorithms, EWC++ memory preservation |
-| `@claude-flow/testing` | Quality assurance | London School TDD, Vitest, fixtures, mocks |
-| `@claude-flow/deployment` | Release automation | Versioning, changelogs, NPM publishing |
-| `@claude-flow/shared` | Common utilities | Types, validation schemas, RvfEventLog, constants |
-| `@claude-flow/browser` | Browser automation | 59 MCP tools, element refs, trajectory learning |
+| `@ruflo/hooks` | Event-driven lifecycle | ReasoningBank, 27 hooks, pattern learning |
+| `@ruflo/memory` | Unified vector storage | AgentDB, RVF binary format, HnswLite, RvfMigrator, SONA persistence, LearningBridge, MemoryGraph |
+| `@ruflo/security` | CVE remediation | Input validation, path security, AIDefence |
+| `@ruflo/swarm` | Multi-agent coordination | 6 topologies, Byzantine consensus, auto-scaling |
+| `@ruflo/plugins` | WASM extensions | RuVector plugins, semantic search, intent routing |
+| `@ruflo/cli` | Command interface | 26 commands, 140+ subcommands, shell completions |
+| `@ruflo/neural` | Self-learning | SONA, 9 RL algorithms, EWC++ memory preservation |
+| `@ruflo/testing` | Quality assurance | London School TDD, Vitest, fixtures, mocks |
+| `@ruflo/deployment` | Release automation | Versioning, changelogs, NPM publishing |
+| `@ruflo/shared` | Common utilities | Types, validation schemas, RvfEventLog, constants |
+| `@ruflo/browser` | Browser automation | 59 MCP tools, element refs, trajectory learning |
 
 ### Architecture Principles
 
@@ -6237,16 +6237,16 @@ Domain-Driven Design with bounded contexts, clean architecture, and measured per
 ---
 
 <details>
-<summary><strong>🌐 Browser Automation — @claude-flow/browser</strong></summary>
+<summary><strong>🌐 Browser Automation — @ruflo/browser</strong></summary>
 
-[![npm version](https://img.shields.io/npm/v/@claude-flow/browser?color=blue&label=npm)](https://www.npmjs.com/package/@claude-flow/browser)
+[![npm version](https://img.shields.io/npm/v/@ruflo/browser?color=blue&label=npm)](https://www.npmjs.com/package/@ruflo/browser)
 
 AI-optimized browser automation integrating [agent-browser](https://github.com/AugmentCode/agent-browser) with ruflo for intelligent web automation, trajectory learning, and multi-agent browser coordination.
 
 ### Installation
 
 ```bash
-npm install @claude-flow/browser
+npm install @ruflo/browser
 
 # agent-browser CLI (auto-suggested on install, or install manually)
 npm install -g agent-browser@latest
@@ -6255,7 +6255,7 @@ npm install -g agent-browser@latest
 ### Quick Start
 
 ```typescript
-import { createBrowserService } from '@claude-flow/browser';
+import { createBrowserService } from '@ruflo/browser';
 
 const browser = createBrowserService({
   sessionId: 'my-session',
@@ -6292,7 +6292,7 @@ await browser.close();
 ### Security Integration
 
 ```typescript
-import { getSecurityScanner, isUrlSafe, containsPII } from '@claude-flow/browser';
+import { getSecurityScanner, isUrlSafe, containsPII } from '@ruflo/browser';
 
 // URL threat detection
 const scanner = getSecurityScanner({ requireHttps: true });
@@ -6310,21 +6310,21 @@ scanner.validateInput('<script>alert(1)</script>', 'comment');
 ### Workflow Templates
 
 ```typescript
-import { listWorkflows, getWorkflow } from '@claude-flow/browser';
+import { listWorkflows, getWorkflow } from '@ruflo/browser';
 
 listWorkflows(); // ['login-basic', 'login-oauth', 'scrape-table', ...]
 const template = getWorkflow('login-basic');
 // { steps: [{action: 'open'}, {action: 'fill'}, ...], variables: [...] }
 ```
 
-📖 [Full Documentation](./v3/@claude-flow/browser/README.md)
+📖 [Full Documentation](./v3/@ruflo/browser/README.md)
 
 </details>
 
 ---
 
 <details>
-<summary>📦 <strong>Release Management</strong> — @claude-flow/deployment</summary>
+<summary>📦 <strong>Release Management</strong> — @ruflo/deployment</summary>
 
 Automated release management, versioning, and CI/CD for Ruflo packages.
 
@@ -6342,7 +6342,7 @@ Automated release management, versioning, and CI/CD for Ruflo packages.
 ### Quick Start
 
 ```typescript
-import { prepareRelease, publishToNpm, validate } from '@claude-flow/deployment';
+import { prepareRelease, publishToNpm, validate } from '@ruflo/deployment';
 
 // Bump version and generate changelog
 const result = await prepareRelease({
@@ -6364,7 +6364,7 @@ await publishToNpm({
 ### Version Bumping Examples
 
 ```typescript
-import { ReleaseManager } from '@claude-flow/deployment';
+import { ReleaseManager } from '@ruflo/deployment';
 
 const manager = new ReleaseManager();
 
@@ -6408,7 +6408,7 @@ Generated:
 ### Complete Release Workflow
 
 ```typescript
-import { Validator, ReleaseManager, Publisher } from '@claude-flow/deployment';
+import { Validator, ReleaseManager, Publisher } from '@ruflo/deployment';
 
 async function release(version: string, tag: string) {
   // 1. Validate
@@ -6446,16 +6446,16 @@ async function release(version: string, tag: string) {
 
 ```bash
 # Prepare release
-npx @claude-flow/deployment release --version 2.0.0 --changelog --tag
+npx @ruflo/deployment release --version 2.0.0 --changelog --tag
 
 # Publish to npm
-npx @claude-flow/deployment publish --tag latest --access public
+npx @ruflo/deployment publish --tag latest --access public
 
 # Validate package
-npx @claude-flow/deployment validate
+npx @ruflo/deployment validate
 
 # Dry run (no changes)
-npx @claude-flow/deployment release --version 2.0.0 --dry-run
+npx @ruflo/deployment release --version 2.0.0 --dry-run
 ```
 
 </details>
@@ -6463,7 +6463,7 @@ npx @claude-flow/deployment release --version 2.0.0 --dry-run
 ---
 
 <details>
-<summary>📊 <strong>Performance Benchmarking</strong> — @claude-flow/performance</summary>
+<summary>📊 <strong>Performance Benchmarking</strong> — @ruflo/performance</summary>
 
 Statistical benchmarking, memory tracking, regression detection, and V3 performance target validation.
 
@@ -6481,7 +6481,7 @@ Statistical benchmarking, memory tracking, regression detection, and V3 performa
 ### Quick Start
 
 ```typescript
-import { benchmark, BenchmarkRunner, V3_PERFORMANCE_TARGETS } from '@claude-flow/performance';
+import { benchmark, BenchmarkRunner, V3_PERFORMANCE_TARGETS } from '@ruflo/performance';
 
 // Single benchmark
 const result = await benchmark('vector-search', async () => {
@@ -6499,7 +6499,7 @@ if (result.mean <= V3_PERFORMANCE_TARGETS['vector-search']) {
 ### V3 Performance Targets
 
 ```typescript
-import { V3_PERFORMANCE_TARGETS, meetsTarget } from '@claude-flow/performance';
+import { V3_PERFORMANCE_TARGETS, meetsTarget } from '@ruflo/performance';
 
 // Built-in targets
 V3_PERFORMANCE_TARGETS = {
@@ -6533,7 +6533,7 @@ const { met, target, ratio } = meetsTarget('vector-search', 0.8);
 ### Benchmark Suite
 
 ```typescript
-import { BenchmarkRunner } from '@claude-flow/performance';
+import { BenchmarkRunner } from '@ruflo/performance';
 
 const runner = new BenchmarkRunner('Memory Operations');
 
@@ -6563,7 +6563,7 @@ const json = runner.toJSON();
 ### Comparison & Regression Detection
 
 ```typescript
-import { compareResults, printComparisonReport } from '@claude-flow/performance';
+import { compareResults, printComparisonReport } from '@ruflo/performance';
 
 // Compare current vs baseline
 const comparisons = compareResults(baselineResults, currentResults, {
@@ -6615,7 +6615,7 @@ interface BenchmarkResult {
 ### Formatting Utilities
 
 ```typescript
-import { formatBytes, formatTime } from '@claude-flow/performance';
+import { formatBytes, formatTime } from '@ruflo/performance';
 
 formatTime(0.00005);  // '50.00 ns'
 formatTime(0.5);      // '500.00 µs'
@@ -6651,7 +6651,7 @@ npx ruflo@latest performance benchmark --suite memory
 ---
 
 <details>
-<summary>🧪 <strong>Testing Framework</strong> — @claude-flow/testing</summary>
+<summary>🧪 <strong>Testing Framework</strong> — @ruflo/testing</summary>
 
 Comprehensive TDD framework implementing **London School** patterns with behavior verification, shared fixtures, and mock services.
 
@@ -6679,7 +6679,7 @@ import {
   agentConfigs,
   swarmConfigs,
   waitFor,
-} from '@claude-flow/testing';
+} from '@ruflo/testing';
 
 // Configure test environment
 setupV3Tests();
@@ -6710,7 +6710,7 @@ import {
   createAgentConfig,
   createV3SwarmAgentConfigs,
   createMockAgent,
-} from '@claude-flow/testing';
+} from '@ruflo/testing';
 
 // Pre-defined configs
 const queen = agentConfigs.queenCoordinator;
@@ -6738,7 +6738,7 @@ import {
   createMemoryEntry,
   generateMockEmbedding,
   createMemoryBatch,
-} from '@claude-flow/testing';
+} from '@ruflo/testing';
 
 // Pre-defined entries
 const pattern = memoryEntries.agentPattern;
@@ -6759,7 +6759,7 @@ import {
   createSwarmConfig,
   createSwarmTask,
   createMockSwarmCoordinator,
-} from '@claude-flow/testing';
+} from '@ruflo/testing';
 
 // Pre-defined configs
 const v3Config = swarmConfigs.v3Default;
@@ -6786,7 +6786,7 @@ import {
   mcpTools,
   createMCPTool,
   createMockMCPClient,
-} from '@claude-flow/testing';
+} from '@ruflo/testing';
 
 // Pre-defined tools
 const swarmInit = mcpTools.swarmInit;
@@ -6807,7 +6807,7 @@ import {
   createMockTaskManager,
   createMockSecurityService,
   createMockSwarmCoordinator,
-} from '@claude-flow/testing';
+} from '@ruflo/testing';
 
 // Full application with all mocks
 const app = createMockApplication();
@@ -6830,7 +6830,7 @@ import {
   retry,
   withTimeout,
   parallelLimit,
-} from '@claude-flow/testing';
+} from '@ruflo/testing';
 
 // Wait for condition
 await waitFor(() => element.isVisible(), { timeout: 5000 });
@@ -6863,7 +6863,7 @@ import {
   assertMocksCalledInOrder,
   assertV3PerformanceTargets,
   assertNoSensitiveData,
-} from '@claude-flow/testing';
+} from '@ruflo/testing';
 
 // Event assertions
 assertEventPublished(mockEventBus, 'UserCreated', { userId: '123' });
@@ -6886,7 +6886,7 @@ assertNoSensitiveData(mockLogger.logs, ['password', 'token', 'secret']);
 ### Performance Testing
 
 ```typescript
-import { createPerformanceTestHelper, TEST_CONFIG } from '@claude-flow/testing';
+import { createPerformanceTestHelper, TEST_CONFIG } from '@ruflo/testing';
 
 const perf = createPerformanceTestHelper();
 
@@ -6928,22 +6928,22 @@ Environment setup, configuration options, and platform support.
 ### Windows (PowerShell)
 
 ```powershell
-npx @claude-flow/security@latest audit --platform windows
-$env:CLAUDE_FLOW_MODE = "integration"
+npx @ruflo/security@latest audit --platform windows
+$env:RUFLO_MODE = "integration"
 ```
 
 ### macOS (Bash/Zsh)
 
 ```bash
-npx @claude-flow/security@latest audit --platform darwin
-export CLAUDE_FLOW_SECURITY_MODE="strict"
+npx @ruflo/security@latest audit --platform darwin
+export RUFLO_SECURITY_MODE="strict"
 ```
 
 ### Linux (Bash)
 
 ```bash
-npx @claude-flow/security@latest audit --platform linux
-export CLAUDE_FLOW_MEMORY_PATH="./data"
+npx @ruflo/security@latest audit --platform linux
+export RUFLO_MEMORY_PATH="./data"
 ```
 
 </details>
@@ -6957,47 +6957,47 @@ export CLAUDE_FLOW_MEMORY_PATH="./data"
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `CLAUDE_FLOW_MODE` | Operation mode (`development`, `production`, `integration`) | `development` |
-| `CLAUDE_FLOW_ENV` | Environment name for test/dev isolation | - |
-| `CLAUDE_FLOW_DATA_DIR` | Root data directory | `./data` |
-| `CLAUDE_FLOW_MEMORY_PATH` | Directory for persistent memory storage | `./data` |
-| `CLAUDE_FLOW_MEMORY_TYPE` | Memory backend type (`json`, `sqlite`, `agentdb`, `hybrid`) | `hybrid` |
-| `CLAUDE_FLOW_SECURITY_MODE` | Security level (`strict`, `standard`, `permissive`) | `standard` |
-| `CLAUDE_FLOW_LOG_LEVEL` | Logging verbosity (`debug`, `info`, `warn`, `error`) | `info` |
-| `CLAUDE_FLOW_CONFIG` | Path to configuration file | `./claude-flow.config.json` |
+| `RUFLO_MODE` | Operation mode (`development`, `production`, `integration`) | `development` |
+| `RUFLO_ENV` | Environment name for test/dev isolation | - |
+| `RUFLO_DATA_DIR` | Root data directory | `./data` |
+| `RUFLO_MEMORY_PATH` | Directory for persistent memory storage | `./data` |
+| `RUFLO_MEMORY_TYPE` | Memory backend type (`json`, `sqlite`, `agentdb`, `hybrid`) | `hybrid` |
+| `RUFLO_SECURITY_MODE` | Security level (`strict`, `standard`, `permissive`) | `standard` |
+| `RUFLO_LOG_LEVEL` | Logging verbosity (`debug`, `info`, `warn`, `error`) | `info` |
+| `RUFLO_CONFIG` | Path to configuration file | `./codex.config.json` |
 | `NODE_ENV` | Node.js environment (`development`, `production`, `test`) | `development` |
 
 ### Swarm & Agents
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `CLAUDE_FLOW_MAX_AGENTS` | Default concurrent agent limit | `15` |
-| `CLAUDE_FLOW_TOPOLOGY` | Default swarm topology (`hierarchical`, `mesh`, `ring`, `star`) | `hierarchical` |
-| `CLAUDE_FLOW_HEADLESS` | Run in headless mode (no interactive prompts) | `false` |
-| `CLAUDE_CODE_HEADLESS` | Claude Code headless mode compatibility | `false` |
+| `RUFLO_MAX_AGENTS` | Default concurrent agent limit | `15` |
+| `RUFLO_TOPOLOGY` | Default swarm topology (`hierarchical`, `mesh`, `ring`, `star`) | `hierarchical` |
+| `RUFLO_HEADLESS` | Run in headless mode (no interactive prompts) | `false` |
+| `CODEX_HEADLESS` | Codex headless mode compatibility | `false` |
 
 ### MCP Server
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `CLAUDE_FLOW_MCP_PORT` | MCP server port | `3000` |
-| `CLAUDE_FLOW_MCP_HOST` | MCP server host | `localhost` |
-| `CLAUDE_FLOW_MCP_TRANSPORT` | Transport type (`stdio`, `http`, `websocket`) | `stdio` |
+| `RUFLO_MCP_PORT` | MCP server port | `3000` |
+| `RUFLO_MCP_HOST` | MCP server host | `localhost` |
+| `RUFLO_MCP_TRANSPORT` | Transport type (`stdio`, `http`, `websocket`) | `stdio` |
 
 ### Vector Search (HNSW)
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `CLAUDE_FLOW_HNSW_M` | HNSW index M parameter (connectivity, higher = more accurate) | `16` |
-| `CLAUDE_FLOW_HNSW_EF` | HNSW search ef parameter (accuracy, higher = slower) | `200` |
-| `CLAUDE_FLOW_EMBEDDING_DIM` | Vector embedding dimensions | `384` |
+| `RUFLO_HNSW_M` | HNSW index M parameter (connectivity, higher = more accurate) | `16` |
+| `RUFLO_HNSW_EF` | HNSW search ef parameter (accuracy, higher = slower) | `200` |
+| `RUFLO_EMBEDDING_DIM` | Vector embedding dimensions | `384` |
 | `SQLJS_WASM_PATH` | Custom path to sql.js WASM binary | - |
 
 ### AI Provider API Keys
 
 | Variable | Description | Required |
 |----------|-------------|----------|
-| `ANTHROPIC_API_KEY` | Anthropic API key for Claude models | Yes (Claude) |
+| `OPENAI_API_KEY` | OpenAI API key for Codex models | Yes (Codex) |
 | `OPENAI_API_KEY` | OpenAI API key for GPT models | Optional |
 | `GOOGLE_GEMINI_API_KEY` | Google Gemini API key | Optional |
 | `OPENROUTER_API_KEY` | OpenRouter API key (multi-provider) | Optional |
@@ -7030,8 +7030,8 @@ export CLAUDE_FLOW_MEMORY_PATH="./data"
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `CLAUDE_FLOW_AUTO_UPDATE` | Enable/disable auto-updates | `true` |
-| `CLAUDE_FLOW_FORCE_UPDATE` | Force update check | `false` |
+| `RUFLO_AUTO_UPDATE` | Enable/disable auto-updates | `true` |
+| `RUFLO_FORCE_UPDATE` | Force update check | `false` |
 | `CI` | CI environment detection (disables updates) | - |
 | `CONTINUOUS_INTEGRATION` | Alternative CI detection | - |
 
@@ -7042,7 +7042,7 @@ export CLAUDE_FLOW_MEMORY_PATH="./data"
 | `GITHUB_TOKEN` | GitHub API token for repository operations | Optional |
 | `JWT_SECRET` | JWT secret for authentication | Production |
 | `HMAC_SECRET` | HMAC secret for request signing | Production |
-| `CLAUDE_FLOW_TOKEN` | Internal authentication token | Optional |
+| `RUFLO_TOKEN` | Internal authentication token | Optional |
 
 ### Output Formatting
 
@@ -7057,25 +7057,25 @@ export CLAUDE_FLOW_MEMORY_PATH="./data"
 
 ```bash
 # Core
-CLAUDE_FLOW_MODE=development
-CLAUDE_FLOW_LOG_LEVEL=info
-CLAUDE_FLOW_MAX_AGENTS=15
+RUFLO_MODE=development
+RUFLO_LOG_LEVEL=info
+RUFLO_MAX_AGENTS=15
 
 # AI Providers
-ANTHROPIC_API_KEY=sk-ant-api03-...
+OPENAI_API_KEY=sk-ant-api03-...
 OPENAI_API_KEY=sk-...
 
 # MCP Server
-CLAUDE_FLOW_MCP_PORT=3000
-CLAUDE_FLOW_MCP_TRANSPORT=stdio
+RUFLO_MCP_PORT=3000
+RUFLO_MCP_TRANSPORT=stdio
 
 # Memory
-CLAUDE_FLOW_MEMORY_TYPE=hybrid
-CLAUDE_FLOW_MEMORY_PATH=./data
+RUFLO_MEMORY_TYPE=hybrid
+RUFLO_MEMORY_PATH=./data
 
 # Vector Search
-CLAUDE_FLOW_HNSW_M=16
-CLAUDE_FLOW_HNSW_EF=200
+RUFLO_HNSW_M=16
+RUFLO_HNSW_EF=200
 
 # Optional: IPFS Storage
 # PINATA_API_KEY=...
@@ -7096,7 +7096,7 @@ CLAUDE_FLOW_HNSW_EF=200
 ### Configuration File Location
 
 Ruflo looks for configuration in this order:
-1. `./claude-flow.config.json` (project root)
+1. `./codex.config.json` (project root)
 2. `~/.config/ruflo/config.json` (user config)
 3. Environment variables (override any file config)
 
@@ -7213,10 +7213,10 @@ Ruflo looks for configuration in this order:
   },
 
   "providers": {
-    "default": "anthropic",
+    "default": "openai",
     "fallback": ["openai", "google"],
-    "anthropic": {
-      "model": "claude-sonnet-4-6-20250514",
+    "openai": {
+      "model": "codex-sonnet-4-6-20250514",
       "maxTokens": 8192
     },
     "openai": {
@@ -7370,7 +7370,7 @@ npx ruflo@latest mcp start
 # Check available memory
 free -m
 # Reduce max agents if memory constrained
-export CLAUDE_FLOW_MAX_AGENTS=5
+export RUFLO_MAX_AGENTS=5
 ```
 
 **Pattern search returning no results**
@@ -7384,9 +7384,9 @@ npx ruflo@latest hooks pretrain
 **Windows path issues**
 ```powershell
 # Use forward slashes or escape backslashes
-$env:CLAUDE_FLOW_MEMORY_PATH = "./data"
+$env:RUFLO_MEMORY_PATH = "./data"
 # Or use absolute path
-$env:CLAUDE_FLOW_MEMORY_PATH = "C:/Users/name/ruflo/data"
+$env:RUFLO_MEMORY_PATH = "C:/Users/name/ruflo/data"
 ```
 
 **Permission denied errors**
@@ -7401,8 +7401,8 @@ sudo chown -R $(whoami) ~/.npm
 # Enable garbage collection
 node --expose-gc node_modules/.bin/ruflo
 # Reduce HNSW parameters for lower memory
-export CLAUDE_FLOW_HNSW_M=8
-export CLAUDE_FLOW_HNSW_EF=100
+export RUFLO_HNSW_M=8
+export RUFLO_HNSW_EF=100
 ```
 
 </details>
@@ -7421,7 +7421,7 @@ export CLAUDE_FLOW_HNSW_EF=100
 │ Memory Search         │ 150x - 12,500x faster (HNSW)        │
 │ Pattern Matching      │ Self-learning (ReasoningBank)       │
 │ Security              │ CVE remediation + strict validation │
-│ Modular Architecture  │ 18 @claude-flow/* packages          │
+│ Modular Architecture  │ 18 @ruflo/* packages          │
 │ Agent Coordination    │ 16 specialized agent roles + custom types              │
 │ Token Efficiency      │ 32% reduction with optimization     │
 └───────────────────────┴─────────────────────────────────────┘
@@ -7431,12 +7431,12 @@ export CLAUDE_FLOW_HNSW_EF=100
 
 | Change | V2 | V3 | Impact |
 |--------|----|----|--------|
-| **Package Structure** | `ruflo` | `@claude-flow/*` (scoped) | Update imports |
+| **Package Structure** | `ruflo` | `@ruflo/*` (scoped) | Update imports |
 | **Memory Backend** | JSON files | AgentDB + HNSW | Faster search |
 | **Hooks System** | Basic patterns | ReasoningBank + SONA | Self-learning |
 | **Security** | Manual validation | Automatic strict mode | More secure |
 | **CLI Commands** | Flat structure | Nested subcommands | New syntax |
-| **Config Format** | `.ruflo/config.json` | `claude-flow.config.json` | Update path |
+| **Config Format** | `.ruflo/config.json` | `codex.config.json` | Update path |
 
 ### Step-by-Step Migration
 
@@ -7488,7 +7488,7 @@ npx ruflo@latest doctor --fix
 }
 ```
 
-**V3 Config (`claude-flow.config.json`)**:
+**V3 Config (`codex.config.json`)**:
 ```json
 {
   "version": "3.0.0",
@@ -7511,13 +7511,13 @@ npx ruflo@latest doctor --fix
 
 ```typescript
 // V2 (deprecated)
-import { ClaudeFlow, Agent, Memory } from 'ruflo';
+import { CodexFlow, Agent, Memory } from 'ruflo';
 
 // V3 (new)
-import { ClaudeFlowClient } from '@claude-flow/cli';
-import { AgentDB } from '@claude-flow/memory';
-import { ThreatDetector } from '@claude-flow/security';
-import { HNSWIndex } from '@claude-flow/embeddings';
+import { CodexFlowClient } from '@ruflo/cli';
+import { AgentDB } from '@ruflo/memory';
+import { ThreatDetector } from '@ruflo/security';
+import { HNSWIndex } from '@ruflo/embeddings';
 ```
 
 ### Rollback Procedure
@@ -7549,8 +7549,8 @@ cp -r ./data-backup-v2 ./data
 
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| `MODULE_NOT_FOUND` | Old package references | Update imports to `@claude-flow/*` |
-| `Config not found` | Path change | Rename to `claude-flow.config.json` |
+| `MODULE_NOT_FOUND` | Old package references | Update imports to `@ruflo/*` |
+| `Config not found` | Path change | Rename to `codex.config.json` |
 | `Memory backend error` | Schema change | Run `migrate run` to convert |
 | `Hooks not working` | New hook names | Use new hook commands |
 | `Agent spawn fails` | Type name changes | Check `agent list` for new types |
@@ -7567,22 +7567,22 @@ cp -r ./data-backup-v2 ./data
 
 | Module | Description | Docs |
 |--------|-------------|------|
-| `@claude-flow/plugins` | Plugin SDK with workers, hooks, providers, security | [README](./v3/@claude-flow/plugins/README.md) |
-| `@claude-flow/hooks` | Event-driven lifecycle hooks + ReasoningBank | [Source](./v3/@claude-flow/hooks/) |
-| `@claude-flow/memory` | AgentDB unification with HNSW indexing | [Source](./v3/@claude-flow/memory/) |
-| `@claude-flow/security` | CVE remediation & security patterns | [Source](./v3/@claude-flow/security/) |
-| `@claude-flow/swarm` | 15-agent coordination engine | [Source](./v3/@claude-flow/swarm/) |
-| `@claude-flow/cli` | CLI modernization | [Source](./v3/@claude-flow/cli/) |
-| `@claude-flow/neural` | SONA learning integration | [Source](./v3/@claude-flow/neural/) |
-| `@claude-flow/testing` | TDD London School framework | [Source](./v3/@claude-flow/testing/) |
-| `@claude-flow/mcp` | MCP server & tools | [Source](./v3/@claude-flow/mcp/) |
-| `@claude-flow/embeddings` | Vector embedding providers | [Source](./v3/@claude-flow/embeddings/) |
-| `@claude-flow/providers` | LLM provider integrations | [Source](./v3/@claude-flow/providers/) |
-| `@claude-flow/integration` | agentic-flow@alpha integration | [Source](./v3/@claude-flow/integration/) |
-| `@claude-flow/performance` | Benchmarking & optimization | [Source](./v3/@claude-flow/performance/) |
-| `@claude-flow/deployment` | Release & CI/CD | [Source](./v3/@claude-flow/deployment/) |
-| `@claude-flow/shared` | Shared utilities, types & V3ProgressService | [Source](./v3/@claude-flow/shared/) |
-| `@claude-flow/browser` | AI-optimized browser automation with agent-browser | [README](./v3/@claude-flow/browser/README.md) |
+| `@ruflo/plugins` | Plugin SDK with workers, hooks, providers, security | [README](./v3/@ruflo/plugins/README.md) |
+| `@ruflo/hooks` | Event-driven lifecycle hooks + ReasoningBank | [Source](./v3/@ruflo/hooks/) |
+| `@ruflo/memory` | AgentDB unification with HNSW indexing | [Source](./v3/@ruflo/memory/) |
+| `@ruflo/security` | CVE remediation & security patterns | [Source](./v3/@ruflo/security/) |
+| `@ruflo/swarm` | 15-agent coordination engine | [Source](./v3/@ruflo/swarm/) |
+| `@ruflo/cli` | CLI modernization | [Source](./v3/@ruflo/cli/) |
+| `@ruflo/neural` | SONA learning integration | [Source](./v3/@ruflo/neural/) |
+| `@ruflo/testing` | TDD London School framework | [Source](./v3/@ruflo/testing/) |
+| `@ruflo/mcp` | MCP server & tools | [Source](./v3/@ruflo/mcp/) |
+| `@ruflo/embeddings` | Vector embedding providers | [Source](./v3/@ruflo/embeddings/) |
+| `@ruflo/providers` | LLM provider integrations | [Source](./v3/@ruflo/providers/) |
+| `@ruflo/integration` | agentic@alpha integration | [Source](./v3/@ruflo/integration/) |
+| `@ruflo/performance` | Benchmarking & optimization | [Source](./v3/@ruflo/performance/) |
+| `@ruflo/deployment` | Release & CI/CD | [Source](./v3/@ruflo/deployment/) |
+| `@ruflo/shared` | Shared utilities, types & V3ProgressService | [Source](./v3/@ruflo/shared/) |
+| `@ruflo/browser` | AI-optimized browser automation with agent-browser | [README](./v3/@ruflo/browser/README.md) |
 
 ### Additional Resources
 
@@ -7597,8 +7597,8 @@ cp -r ./data-backup-v2 ./data
 
 | Resource | Link |
 |----------|------|
-| 📚 Documentation | [github.com/ruvnet/claude-flow](https://github.com/ruvnet/claude-flow) |
-| 🐛 Issues & Bugs | [github.com/ruvnet/claude-flow/issues](https://github.com/ruvnet/claude-flow/issues) |
+| 📚 Documentation | [github.com/SparklesKitchen/ruflo](https://github.com/SparklesKitchen/ruflo) |
+| 🐛 Issues & Bugs | [github.com/SparklesKitchen/ruflo/issues](https://github.com/SparklesKitchen/ruflo/issues) |
 | 💼 Professional Implementation | [ruv.io](https://ruv.io) — Enterprise consulting, custom integrations, and production deployment |
 | 💬 Discord Community | [Agentics Foundation](https://discord.com/invite/dfxmpwkG2D) |
 
@@ -7608,7 +7608,7 @@ MIT - [RuvNet](https://github.com/ruvnet)
 
 
 [![RuVector](https://img.shields.io/npm/v/ruvector?style=for-the-badge&logo=rust&color=orange&label=RuVector)](https://www.npmjs.com/package/ruvector)
-[![Agentic-Flow](https://img.shields.io/npm/v/agentic-flow?style=for-the-badge&logo=typescript&color=3178c6&label=Agentic-Flow)](https://www.npmjs.com/package/agentic-flow)
+[![Agentic-Flow](https://img.shields.io/npm/v/agentic?style=for-the-badge&logo=typescript&color=3178c6&label=Agentic-Flow)](https://www.npmjs.com/package/agentic)
 [![Reddit](https://img.shields.io/reddit/subreddit-subscribers/aipromptprogramming?style=for-the-badge&logo=reddit&color=FF4500&label=r/aipromptprogramming)](https://www.reddit.com/r/aipromptprogramming/)
 
 [![Crates.io](https://img.shields.io/badge/crates.io-ruvnet-E6732E?style=for-the-badge&logo=rust&logoColor=white)](https://crates.io/users/ruvnet)

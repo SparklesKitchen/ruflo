@@ -1,12 +1,12 @@
-# ADR-036: Servo Replaces Playwright as Browser Engine for @claude-flow/browser
+# ADR-036: Servo Replaces Playwright as Browser Engine for @ruflo/browser
 
 **Status:** Accepted
 **Date:** 2026-03-05
-**Supersedes:** Playwright dependency in `@claude-flow/browser`
+**Supersedes:** Playwright dependency in `@ruflo/browser`
 
 ## Context
 
-`@claude-flow/browser` currently provides 59 MCP browser tools built on `agent-browser` + Playwright + Chromium. This stack works but has fundamental problems:
+`@ruflo/browser` currently provides 59 MCP browser tools built on `agent-browser` + Playwright + Chromium. This stack works but has fundamental problems:
 
 1. **~400MB Chromium binary** — must download on first run, bloats Docker images, prevents edge deployment
 2. **200-500MB RAM per tab** — limits concurrent browser sessions in swarms
@@ -19,7 +19,7 @@
 
 ## Decision
 
-Replace Playwright/Chromium with **Servo** as the rendering backend for `@claude-flow/browser`. Keep the existing 59-tool MCP interface, trajectory learning, security scanning, swarm coordination, and 9 workflow templates unchanged. The swap is at the adapter layer — `AgentBrowserAdapter` becomes `ServoAdapter`.
+Replace Playwright/Chromium with **Servo** as the rendering backend for `@ruflo/browser`. Keep the existing 59-tool MCP interface, trajectory learning, security scanning, swarm coordination, and 9 workflow templates unchanged. The swap is at the adapter layer — `AgentBrowserAdapter` becomes `ServoAdapter`.
 
 ### Architecture: Before → After
 
@@ -180,7 +180,7 @@ impl ServoInstance {
 ### TypeScript Adapter (Drop-In Replacement)
 
 ```typescript
-// @claude-flow/browser/src/adapters/servo-adapter.ts
+// @ruflo/browser/src/adapters/servo-adapter.ts
 
 import { ServoInstance } from '@ruvector/servo-native'; // napi-rs binary
 import type { BrowserAdapter, ActionResult, Snapshot } from '../types';
@@ -199,7 +199,7 @@ export class ServoAdapter implements BrowserAdapter {
 
   async snapshot(options?: { interactive?: boolean }): Promise<ActionResult<Snapshot>> {
     const raw = this.servo.snapshot();
-    // Convert Servo refs to @claude-flow/browser element ref format (@e1, @e2, ...)
+    // Convert Servo refs to @ruflo/browser element ref format (@e1, @e2, ...)
     const refs: Record<string, ElementRef> = {};
     for (const [id, node] of Object.entries(raw.refs)) {
       refs[id] = {
@@ -271,7 +271,7 @@ export class ServoAdapter implements BrowserAdapter {
 │   └── win32-x64/servo-native.node
 └── package.json                    ~5MB per platform
 
-@claude-flow/browser                (existing package, adapter swap)
+@ruflo/browser                (existing package, adapter swap)
 ├── src/
 │   ├── adapters/
 │   │   ├── agent-browser-adapter.ts   ← DEPRECATED (Playwright)
@@ -393,6 +393,6 @@ For the 95% of agent browsing tasks (navigate, read content, fill forms, click b
 
 - [ADR-035: MCP Tool Groups](ADR-035-MCP-TOOL-GROUPS.md) — browser group architecture
 - [ADR-033: RuVector + Ruflo MCP Integration](ADR-033-RUVECTOR-RUFLO-MCP-INTEGRATION.md) — stdio MCP client pattern
-- [@claude-flow/browser README](https://github.com/ruvnet/ruflo/blob/main/v3/@claude-flow/browser/README.md) — existing 59-tool API surface
+- [@ruflo/browser README](https://github.com/ruvnet/ruflo/blob/main/v3/@ruflo/browser/README.md) — existing 59-tool API surface
 - [Servo project](https://servo.org/) — Linux Foundation browser engine
 - [napi-rs](https://napi.rs/) — Rust ↔ Node.js FFI framework

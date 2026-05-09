@@ -12,7 +12,7 @@
 ## Context
 
 V3 needs a unified LLM provider system that:
-1. Supports multiple LLM providers (Anthropic, OpenAI, Google, Cohere, Ollama)
+1. Supports multiple LLM providers (OpenAI, OpenAI, Google, Cohere, Ollama)
 2. Provides cost tracking and optimization
 3. Enables intelligent load balancing and failover
 4. Integrates with the hooks system for caching and learning
@@ -21,16 +21,16 @@ V2 has concrete provider implementations in `v2/src/providers/` that need to be 
 
 ## Decision
 
-### 1. Create `@claude-flow/providers` Package
+### 1. Create `@ruflo/providers` Package
 
 A dedicated package for LLM provider implementations:
 
 ```
-v3/@claude-flow/providers/
+v3/@ruflo/providers/
 ├── src/
 │   ├── types.ts              # Unified type definitions
 │   ├── base-provider.ts      # Abstract base class with circuit breaker
-│   ├── anthropic-provider.ts # Claude models
+│   ├── openai-provider.ts # Codex models
 │   ├── openai-provider.ts    # GPT models (+ OpenRouter support)
 │   ├── google-provider.ts    # Gemini models
 │   ├── cohere-provider.ts    # Command models
@@ -73,7 +73,7 @@ interface ILLMProvider {
 
 ### 4. LLM Hooks Integration
 
-Add LLM-specific hooks to `@claude-flow/hooks`:
+Add LLM-specific hooks to `@ruflo/hooks`:
 
 ```typescript
 // Pre-LLM hooks
@@ -92,11 +92,11 @@ Add LLM-specific hooks to `@claude-flow/hooks`:
 
 Include latest models:
 
-**Anthropic (Claude):**
-- claude-3-5-sonnet-20241022
-- claude-3-opus-20240229
-- claude-3-sonnet-20240229
-- claude-3-haiku-20240307
+**OpenAI (Codex):**
+- codex-3-5-sonnet-20241022
+- codex-3-opus-20240229
+- codex-3-sonnet-20240229
+- codex-3-haiku-20240307
 
 **OpenAI:**
 - gpt-4o (latest)
@@ -107,7 +107,7 @@ Include latest models:
 
 **OpenRouter (via OpenAI provider):**
 - openai/gpt-4o-mini
-- anthropic/claude-3-haiku
+- openai/codex-3-haiku
 - Any OpenRouter-supported model
 
 **Google:**
@@ -149,15 +149,15 @@ Include latest models:
 - Testing requires API mocks
 
 ### Neutral
-- Integration with existing `@claude-flow/integration` multi-model-router
-- Can coexist with agentic-flow's provider system
+- Integration with existing `@ruflo/integration` multi-model-router
+- Can coexist with agentic's provider system
 
 ## Implementation Notes
 
 ### Phase 1: Core Implementation ✅ Complete
 1. ✅ Create package structure
 2. ✅ Implement base provider and types (with circuit breaker, caching)
-3. ✅ Implement Anthropic and OpenAI providers
+3. ✅ Implement OpenAI and OpenAI providers
 
 ### Phase 2: Extended Providers ✅ Complete
 4. ✅ Implement Google, Cohere, Ollama providers
@@ -165,7 +165,7 @@ Include latest models:
 6. ✅ Implement provider manager with load balancing
 
 ### Phase 3: Hooks Integration 🔄 Pending
-7. Add LLM hooks to @claude-flow/hooks
+7. Add LLM hooks to @ruflo/hooks
 8. Integration testing with hooks system
 
 ## Validation Results
@@ -174,7 +174,7 @@ Include latest models:
 
 | Provider | Model | Status | Notes |
 |----------|-------|--------|-------|
-| Anthropic | claude-3-haiku-20240307 | ✅ Pass | Full API integration |
+| OpenAI | codex-3-haiku-20240307 | ✅ Pass | Full API integration |
 | Google | gemini-2.0-flash | ✅ Pass | Free tier, streaming support |
 | OpenRouter | openai/gpt-4o-mini | ✅ Pass | Via OpenAI-compatible API |
 | Ollama | qwen2.5:0.5b | ✅ Pass | Local CPU-friendly model |
@@ -208,7 +208,7 @@ Include latest models:
 ## References
 
 - V2 Provider System: `v2/src/providers/`
-- V3 Multi-Model Router: `v3/@claude-flow/integration/src/multi-model-router.ts`
+- V3 Multi-Model Router: `v3/@ruflo/integration/src/multi-model-router.ts`
 - RuVector ruvLLM: `https://github.com/ruvnet/ruvector/tree/main/examples/ruvLLM`
-- ADR-001: agentic-flow Integration
+- ADR-001: agentic Integration
 - ADR-006: Unified Memory Service

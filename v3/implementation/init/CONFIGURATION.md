@@ -27,14 +27,14 @@ interface InitOptions {
 
 ```typescript
 interface InitComponents {
-  settings: boolean;    // .claude/settings.json
-  skills: boolean;      // .claude/skills/
-  commands: boolean;    // .claude/commands/
-  agents: boolean;      // .claude/agents/
-  helpers: boolean;     // .claude/helpers/
+  settings: boolean;    // .codex/settings.json
+  skills: boolean;      // .codex/skills/
+  commands: boolean;    // .codex/commands/
+  agents: boolean;      // .codex/agents/
+  helpers: boolean;     // .codex/helpers/
   statusline: boolean;  // statusline scripts
   mcp: boolean;         // .mcp.json
-  runtime: boolean;     // .claude-flow/
+  runtime: boolean;     // .codex/
 }
 ```
 
@@ -138,8 +138,8 @@ interface AgentsConfig {
 
 ```typescript
 interface MCPConfig {
-  claudeFlow: boolean;    // claude-flow MCP server
-  agenticFlow: boolean;   // agentic-flow integration
+  codexFlow: boolean;    // codex MCP server
+  agenticFlow: boolean;   // agentic integration
   memory: boolean;        // Memory MCP tools
   neural: boolean;        // Neural MCP tools
   github: boolean;        // GitHub MCP integration
@@ -150,11 +150,11 @@ interface MCPConfig {
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `CLAUDE_FLOW_MODE` | `v3` | Operation mode |
-| `CLAUDE_FLOW_HOOKS_ENABLED` | `true` | Enable hooks |
-| `CLAUDE_FLOW_TOPOLOGY` | `hierarchical-mesh` | Swarm topology |
-| `CLAUDE_FLOW_MAX_AGENTS` | `15` | Maximum agents |
-| `CLAUDE_FLOW_MEMORY_BACKEND` | `hybrid` | Memory backend |
+| `RUFLO_MODE` | `v3` | Operation mode |
+| `RUFLO_HOOKS_ENABLED` | `true` | Enable hooks |
+| `RUFLO_TOPOLOGY` | `hierarchical-mesh` | Swarm topology |
+| `RUFLO_MAX_AGENTS` | `15` | Maximum agents |
+| `RUFLO_MEMORY_BACKEND` | `hybrid` | Memory backend |
 
 ## Runtime Configuration
 

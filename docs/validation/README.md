@@ -12,7 +12,7 @@ Three regressions filed on 2026-05-08 (#1859, #1862, #1867) all passed unit test
 
 | Regression | What broke | Why CI passed | What user saw |
 |---|---|---|---|
-| `#1867` | `@claude-flow/memory` had `better-sqlite3` as a hard dep + static import | CI ran on Node 20 where prebuilds existed, so the static import evaluated fine | `npm install ruflo@latest` failed on Node 26 with `node-gyp` errors |
+| `#1867` | `@ruflo/memory` had `better-sqlite3` as a hard dep + static import | CI ran on Node 20 where prebuilds existed, so the static import evaluated fine | `npm install ruflo@latest` failed on Node 26 with `node-gyp` errors |
 | `#1862` | `ruflo-core` plugin's `hooks.json` called `--format true` (not a real flag) | No CI test invoked the plugin's `hooks.json` against the CLI with realistic stdin | Every Write/Edit tool use printed `[ERROR] Invalid value for --format: true` |
 | `#1859` | CLI parser preferred stray positionals over named flags (14 sites in `hooks.ts`) | Unit tests passed flags individually, never combined `--flag` + boolean-shaped value | `post-edit --file X --success true` recorded `"true"` as the file path |
 
@@ -64,12 +64,12 @@ Build the artifact under test in CI, drive it through the *user-visible* failure
 
 | Instance | Source | CI job |
 |---|---|---|
-| Install smoke | `v3/@claude-flow/memory/scripts/smoke-no-bsqlite.mjs` | `smoke-install-no-bsqlite` (`v3-ci.yml`) |
+| Install smoke | `v3/@ruflo/memory/scripts/smoke-no-bsqlite.mjs` | `smoke-install-no-bsqlite` (`v3-ci.yml`) |
 | Hook smoke | `plugins/ruflo-core/scripts/test-hooks.mjs` | `plugin-hooks-smoke` (`v3-ci.yml`) |
 
-**Install smoke** — packs `@claude-flow/memory`, installs the tarball into `/tmp/smoke` with `--omit=optional` (simulates "native better-sqlite3 build failed" on Node 26 without prebuilds), asserts the package loads, runtime auto-falls-back to RVF/sql.js, round-trip works. Catches *any* form of "install fails when an optional native dep can't build."
+**Install smoke** — packs `@ruflo/memory`, installs the tarball into `/tmp/smoke` with `--omit=optional` (simulates "native better-sqlite3 build failed" on Node 26 without prebuilds), asserts the package loads, runtime auto-falls-back to RVF/sql.js, round-trip works. Catches *any* form of "install fails when an optional native dep can't build."
 
-**Hook smoke** — reads each PostToolUse hook from `plugins/ruflo-core/hooks/hooks.json`, pipes synthetic Claude-Code-style JSON to it, asserts both exit code 0 *and* that the recorded value matches the input. Negative assertions like `expect(stdout).not.toContain('Recording outcome for: true')` are critical — a naive `contains: 'true'` test would have spuriously passed against the broken CLI because the recorded value happened to be `"true"`.
+**Hook smoke** — reads each PostToolUse hook from `plugins/ruflo-core/hooks/hooks.json`, pipes synthetic Codex-Code-style JSON to it, asserts both exit code 0 *and* that the recorded value matches the input. Negative assertions like `expect(stdout).not.toContain('Recording outcome for: true')` are critical — a naive `contains: 'true'` test would have spuriously passed against the broken CLI because the recorded value happened to be `"true"`.
 
 See **ADR-102** (`v3/docs/adr/ADR-102-plugin-hook-cli-flag-regression-ci-guard.md`) for the full smoke-harness design + flag-priority CLI convention.
 
@@ -166,7 +166,7 @@ All scripts live in `plugins/ruflo-core/scripts/witness/`. Project-agnostic — 
 | `verify.mjs` | Validate signature + markers (no CLI dep) |
 | `history.mjs` | Query temporal log: `summary`, `regressions`, `timeline`, `list` |
 
-Plus surface area for Claude Code:
+Plus surface area for Codex:
 
 | File | Purpose |
 |---|---|
@@ -229,8 +229,8 @@ These are the specific traps that hit ruflo's GitHub Actions during the 2026-05-
 const probes = [
   repoRoot,
   join(repoRoot, 'v3'),
-  join(repoRoot, 'v3/@claude-flow/cli'),                         // declares ed25519
-  join(repoRoot, 'v3/@claude-flow/plugin-agent-federation'),     // declares ed25519
+  join(repoRoot, 'v3/@ruflo/cli'),                         // declares ed25519
+  join(repoRoot, 'v3/@ruflo/plugin-agent-federation'),     // declares ed25519
 ];
 ```
 
@@ -258,7 +258,7 @@ If the smoke job packs a workspace package and installs the tarball with `--omit
 
 ```yaml
 - name: Pack memory tarball (pnpm rewrites workspace:* → versions)
-  working-directory: v3/@claude-flow/memory
+  working-directory: v3/@ruflo/memory
   run: |
     TARBALL=$(pnpm pack --pack-destination /tmp 2>&1 | grep -E "\.tgz$" | head -1)
     echo "tarball=$TARBALL" >> "$GITHUB_OUTPUT"

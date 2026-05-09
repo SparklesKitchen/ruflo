@@ -31,7 +31,7 @@ This skill reads every persisted run in `docs/benchmarks/runs/*.json` and report
 
 2. **Inspect the drift summary** — first vs last on win rate, avg latency, p99, escalation rate, speedup vs Gemini.
 
-3. **Inspect the per-run series** — one row per run, including Sonnet 4.6 + Opus 4.7 baseline latencies if those were enabled (`BENCH_ANTHROPIC=1` at run time).
+3. **Inspect the per-run series** — one row per run, including Sonnet 4.6 + Opus 4.7 baseline latencies if those were enabled (`BENCH_OpenAI=1` at run time).
 
 4. **Regression flags** — the script emits `> ⚠ Regression` callouts when:
    - Win rate dropped between first and last run

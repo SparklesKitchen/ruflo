@@ -27,7 +27,7 @@ Dynamic Agentic Architecture with cognitive patterns, knowledge sharing, and ada
 
 ## MCP surface (8 tools)
 
-All defined at `v3/@claude-flow/cli/src/mcp-tools/daa-tools.ts`:
+All defined at `v3/@ruflo/cli/src/mcp-tools/daa-tools.ts`:
 
 | Tool | Purpose |
 |------|---------|
@@ -42,7 +42,7 @@ All defined at `v3/@claude-flow/cli/src/mcp-tools/daa-tools.ts`:
 
 ## Compatibility
 
-- **CLI:** pinned to `@claude-flow/cli` v3.6 major+minor.
+- **CLI:** pinned to `@ruflo/cli` v3.6 major+minor.
 - **Verification:** `bash plugins/ruflo-daa/scripts/smoke.sh` is the contract.
 
 ## Intelligence-pipeline alignment
@@ -53,7 +53,7 @@ DAA cognitive patterns feed the **JUDGE** phase of the 4-step intelligence pipel
 
 ## Namespace coordination
 
-This plugin owns the `daa-patterns` AgentDB namespace (kebab-case, follows the convention from [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md)). Reserved namespaces (`pattern`, `claude-memories`, `default`) MUST NOT be shadowed.
+This plugin owns the `daa-patterns` AgentDB namespace (kebab-case, follows the convention from [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md)). Reserved namespaces (`pattern`, `codex-memories`, `default`) MUST NOT be shadowed.
 
 `daa-patterns` is accessed via `memory_*` tools (which route by namespace). The agent file's CLI examples are correct (`memory store --namespace daa-patterns`).
 

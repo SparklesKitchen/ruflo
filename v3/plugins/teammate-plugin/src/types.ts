@@ -1,10 +1,10 @@
 /**
- * @claude-flow/teammate-plugin Types
+ * @ruflo/teammate-plugin Types
  *
  * Complete type definitions for TeammateTool integration.
- * Requires Claude Code >= 2.1.19
+ * Requires Codex >= 2.1.19
  *
- * @module @claude-flow/teammate-plugin/types
+ * @module @ruflo/teammate-plugin/types
  * @version 1.0.0-alpha.1
  */
 
@@ -12,7 +12,7 @@
 // Version Requirements
 // ============================================================================
 
-export const MINIMUM_CLAUDE_CODE_VERSION = '2.1.19';
+export const MINIMUM_CODEX_VERSION = '2.1.19';
 
 // Security limits
 export const SECURITY_LIMITS = {
@@ -56,14 +56,14 @@ export const MCP_PARAM_LIMITS = {
 } as const;
 
 export interface VersionInfo {
-  claudeCode: string | null;
+  codexCode: string | null;
   plugin: string;
   compatible: boolean;
   missingFeatures: string[];
 }
 
 // ============================================================================
-// TeammateTool Operations (13 operations from Claude Code v2.1.19)
+// TeammateTool Operations (13 operations from Codex v2.1.19)
 // ============================================================================
 
 export type TeammateOperation =
@@ -405,7 +405,7 @@ export interface RecoveryConfig {
 }
 
 // ============================================================================
-// AgentInput (Claude Code Task tool schema)
+// AgentInput (Codex Task tool schema)
 // ============================================================================
 
 export interface AgentInput {
@@ -423,7 +423,7 @@ export interface AgentInput {
 }
 
 // ============================================================================
-// ExitPlanModeInput (Claude Code plan exit schema)
+// ExitPlanModeInput (Codex plan exit schema)
 // ============================================================================
 
 export interface ExitPlanModeInput {
@@ -442,7 +442,7 @@ export interface ExitPlanModeInput {
 
 export interface TeammateBridgeEvents {
   // Initialization
-  'initialized': { claudeCodeVersion: string | null; teammateToolAvailable: boolean };
+  'initialized': { codexCodeVersion: string | null; teammateToolAvailable: boolean };
 
   // Team lifecycle
   'team:spawned': { team: string; config: TeamConfig };

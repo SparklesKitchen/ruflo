@@ -92,8 +92,8 @@ async function verifySignature(witness, repoRoot) {
   const probes = [
     repoRoot,
     join(repoRoot, 'v3'),
-    join(repoRoot, 'v3/@claude-flow/cli'),
-    join(repoRoot, 'v3/@claude-flow/plugin-agent-federation'),
+    join(repoRoot, 'v3/@ruflo/cli'),
+    join(repoRoot, 'v3/@ruflo/plugin-agent-federation'),
   ];
   for (const root of probes) {
     try { ed = createRequire(join(root, 'noop.js'))('@noble/ed25519'); break; }

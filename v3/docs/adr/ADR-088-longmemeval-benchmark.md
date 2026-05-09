@@ -55,7 +55,7 @@ Implement a full LongMemEval benchmark harness for AgentDB and publish results t
 ### Architecture
 
 ```
-v3/@claude-flow/memory/benchmarks/longmemeval/
+v3/@ruflo/memory/benchmarks/longmemeval/
 ├── README.md                    # Setup & reproduction instructions
 ├── harness.ts                   # Main benchmark runner
 ├── adapters/
@@ -115,7 +115,7 @@ v3/@claude-flow/memory/benchmarks/longmemeval/
 #### Phase 4: Publication (Week 3)
 1. Commit results to `results/` directory
 2. Create GitHub issue with findings
-3. Update CLAUDE.md and README with verified scores
+3. Update AGENTS.md and README with verified scores
 4. If score >= 95%, create dedicated benchmark page
 
 ### Key Metrics to Report

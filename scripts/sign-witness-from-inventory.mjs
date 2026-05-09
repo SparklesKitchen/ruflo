@@ -17,7 +17,7 @@
  *
  * Run order:
  *   1. node scripts/inventory-capabilities.mjs --json > verification-inventory.json
- *   2. npm run build (in v3/@claude-flow/cli)
+ *   2. npm run build (in v3/@ruflo/cli)
  *   3. node scripts/sign-witness-from-inventory.mjs
  *   4. node scripts/regenerate-witness.mjs  (re-hashes + re-signs)
  *

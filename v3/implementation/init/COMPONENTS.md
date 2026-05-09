@@ -6,15 +6,15 @@ Detailed documentation for each component created by the V3 init system.
 
 ```
 project/
-├── .claude/                    # Claude Code integration
+├── .codex/                    # Codex integration
 │   ├── settings.json           # Hooks and permissions
-│   ├── skills/                 # Claude Code skills
-│   ├── commands/               # Claude Code commands
+│   ├── skills/                 # Codex skills
+│   ├── commands/               # Codex commands
 │   ├── agents/                 # Agent definitions
 │   ├── helpers/                # Utility scripts
 │   ├── statusline.sh           # Unix/macOS statusline
 │   └── statusline.mjs          # ESM statusline module
-├── .claude-flow/               # V3 runtime
+├── .codex/               # V3 runtime
 │   ├── config.yaml             # Runtime configuration
 │   ├── data/                   # Persistent data
 │   ├── logs/                   # Log files
@@ -28,7 +28,7 @@ project/
 
 ## Skills
 
-Skills are installed to `.claude/skills/` and provide specialized capabilities.
+Skills are installed to `.codex/skills/` and provide specialized capabilities.
 
 ### Core Skills
 | Skill | Description |
@@ -68,7 +68,7 @@ Skills are installed to `.claude/skills/` and provide specialized capabilities.
 | v3-cli-modernization | CLI enhancement |
 | v3-core-implementation | Core module implementation |
 | v3-ddd-architecture | Domain-driven design |
-| v3-integration-deep | agentic-flow integration |
+| v3-integration-deep | agentic integration |
 | v3-mcp-optimization | MCP server optimization |
 | v3-memory-unification | Memory system unification |
 | v3-performance-optimization | Performance targets |
@@ -77,12 +77,12 @@ Skills are installed to `.claude/skills/` and provide specialized capabilities.
 
 ## Commands
 
-Commands are installed to `.claude/commands/` and provide quick actions.
+Commands are installed to `.codex/commands/` and provide quick actions.
 
 ### Core Commands
-- `claude-flow-help.md` - Help documentation
-- `claude-flow-swarm.md` - Swarm operations
-- `claude-flow-memory.md` - Memory operations
+- `codex-help.md` - Help documentation
+- `codex-swarm.md` - Swarm operations
+- `codex-memory.md` - Memory operations
 
 ### Command Groups
 | Group | Contents |
@@ -97,7 +97,7 @@ Commands are installed to `.claude/commands/` and provide quick actions.
 
 ## Agents
 
-Agent definitions are installed to `.claude/agents/`.
+Agent definitions are installed to `.codex/agents/`.
 
 ### Core Agents
 - coder - Code generation and implementation
@@ -118,7 +118,7 @@ Agent definitions are installed to `.claude/agents/`.
 
 ## Helpers
 
-Helper scripts are installed to `.claude/helpers/`.
+Helper scripts are installed to `.codex/helpers/`.
 
 ### Cross-Platform Scripts (Node.js)
 | Script | Description |
@@ -157,7 +157,7 @@ Advanced bash script showing:
 - Model and branch info
 
 ### statusline.mjs (ESM Module)
-Claude Code statusline module showing:
+Codex statusline module showing:
 - Model name
 - Token usage
 - Cost tracking
@@ -171,15 +171,15 @@ Claude Code statusline module showing:
 ```json
 {
   "mcpServers": {
-    "claude-flow": {
+    "codex": {
       "command": "npx",
-      "args": ["@claude-flow/cli", "mcp", "start"],
+      "args": ["@ruflo/cli", "mcp", "start"],
       "env": {
-        "CLAUDE_FLOW_MODE": "v3",
-        "CLAUDE_FLOW_HOOKS_ENABLED": "true",
-        "CLAUDE_FLOW_TOPOLOGY": "hierarchical-mesh",
-        "CLAUDE_FLOW_MAX_AGENTS": "15",
-        "CLAUDE_FLOW_MEMORY_BACKEND": "hybrid"
+        "RUFLO_MODE": "v3",
+        "RUFLO_HOOKS_ENABLED": "true",
+        "RUFLO_TOPOLOGY": "hierarchical-mesh",
+        "RUFLO_MAX_AGENTS": "15",
+        "RUFLO_MEMORY_BACKEND": "hybrid"
       }
     }
   }
@@ -188,7 +188,7 @@ Claude Code statusline module showing:
 
 ## Runtime Configuration
 
-`.claude-flow/config.yaml` configures V3 runtime.
+`.codex/config.yaml` configures V3 runtime.
 
 ```yaml
 version: "3.0.0"
@@ -202,12 +202,12 @@ swarm:
 memory:
   backend: hybrid
   enableHNSW: true
-  persistPath: .claude-flow/data
+  persistPath: .codex/data
   cacheSize: 100
 
 neural:
   enabled: true
-  modelPath: .claude-flow/neural
+  modelPath: .codex/neural
 
 hooks:
   enabled: true

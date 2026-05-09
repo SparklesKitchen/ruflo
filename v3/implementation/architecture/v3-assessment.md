@@ -1,4 +1,4 @@
-# Claude-Flow v3 Architecture Assessment
+# Codex-Flow v3 Architecture Assessment
 
 **Date:** 2026-01-03
 **Analyzed Version:** 2.7.47
@@ -9,12 +9,12 @@
 
 ## Executive Summary
 
-Claude-Flow is a sophisticated multi-agent orchestration platform with deep integration into the agentic-flow ecosystem. The current v2.x architecture demonstrates strong engineering practices but suffers from architectural complexity, overlapping concerns, and scalability limitations. This assessment provides a comprehensive analysis and roadmap for v3 redesign focused on modularity, performance, and agentic-flow-native architecture.
+Codex-Flow is a sophisticated multi-agent orchestration platform with deep integration into the agentic ecosystem. The current v2.x architecture demonstrates strong engineering practices but suffers from architectural complexity, overlapping concerns, and scalability limitations. This assessment provides a comprehensive analysis and roadmap for v3 redesign focused on modularity, performance, and agentic-native architecture.
 
 **Key Metrics:**
 - Total TypeScript Files: 376
 - Lines of Code: ~130,000
-- Core Dependencies: agentic-flow (^1.9.4), ruv-swarm (^1.0.14), flow-nexus (^0.1.128)
+- Core Dependencies: agentic (^1.9.4), ruv-swarm (^1.0.14), flow-nexus (^0.1.128)
 - MCP Protocol Version: 2024.11.5
 - Node Version: >=20.0.0
 
@@ -169,9 +169,9 @@ interface IMemoryBackend {
 
 ### 1.6 Hook System Architecture
 
-**agentic-flow Integration:**
+**agentic Integration:**
 ```
-src/services/agentic-flow-hooks/
+src/services/agentic-hooks/
 ├── index.ts                    # Hook system initialization
 ├── hook-manager.ts             # Central hook manager
 ├── types.ts                    # Hook type definitions
@@ -184,7 +184,7 @@ src/services/agentic-flow-hooks/
 
 **Strengths:**
 - Comprehensive hook coverage (pre/post task, session, edit, etc.)
-- Clean integration point with agentic-flow
+- Clean integration point with agentic
 - Event-driven architecture
 - Extensible design
 
@@ -214,7 +214,7 @@ Implementations:
 - Dynamic tool registration
 - Schema validation with JSON Schema
 - Built-in tools: system/info, system/health, tools/list
-- Integration tools: Claude-Flow tools, Swarm tools, ruv-swarm tools
+- Integration tools: Codex-Flow tools, Swarm tools, ruv-swarm tools
 
 **Session Management:**
 - Per-connection sessions
@@ -399,21 +399,21 @@ CLI → Orchestrator → [TerminalManager, MemoryManager, CoordinationManager, M
 
 ---
 
-## 4. agentic-flow Integration Analysis
+## 4. agentic Integration Analysis
 
 ### 4.1 Current Integration Points
 
 **Dependencies:**
 ```json
 "dependencies": {
-  "agentic-flow": "^1.9.4",
+  "agentic": "^1.9.4",
   "ruv-swarm": "^1.0.14",
   "flow-nexus": "^0.1.128"
 }
 ```
 
 **Integration Locations:**
-1. **Hook System** (`src/services/agentic-flow-hooks/`)
+1. **Hook System** (`src/services/agentic-hooks/`)
    - Workflow hooks, LLM hooks, memory hooks
    - Neural training hooks
    - Performance optimization hooks
@@ -424,52 +424,52 @@ CLI → Orchestrator → [TerminalManager, MemoryManager, CoordinationManager, M
    - Lines 386-397: Parallel executor initialization
 
 3. **CLI Commands**
-   - Maestro CLI bridge uses agentic-flow hooks
-   - Session commands integrate with agentic-flow
+   - Maestro CLI bridge uses agentic hooks
+   - Session commands integrate with agentic
 
 ### 4.2 Integration Quality
 
 **Strengths:**
 - Clean separation via hook system
 - Async/event-driven integration
-- Minimal coupling to agentic-flow internals
+- Minimal coupling to agentic internals
 - Graceful degradation when unavailable
 
 **Weaknesses:**
 - Integration is additive, not native
 - Hook system feels bolted on rather than core
-- Not using agentic-flow's orchestration capabilities fully
+- Not using agentic's orchestration capabilities fully
 - Duplicating functionality (e.g., parallel execution)
-- Limited use of agentic-flow's swarm coordination
+- Limited use of agentic's swarm coordination
 
 ### 4.3 Opportunities for v3
 
-**Leverage agentic-flow Native Features:**
+**Leverage agentic Native Features:**
 
-1. **Use agentic-flow's Swarm System**
-   - Replace custom SwarmCoordinator with agentic-flow swarms
-   - Use agentic-flow's built-in topology management
-   - Leverage agentic-flow's consensus mechanisms
+1. **Use agentic's Swarm System**
+   - Replace custom SwarmCoordinator with agentic swarms
+   - Use agentic's built-in topology management
+   - Leverage agentic's consensus mechanisms
 
-2. **Adopt agentic-flow Agent Model**
-   - Use agentic-flow's Agent base class
-   - Inherit agent lifecycle from agentic-flow
-   - Use agentic-flow's communication patterns
+2. **Adopt agentic Agent Model**
+   - Use agentic's Agent base class
+   - Inherit agent lifecycle from agentic
+   - Use agentic's communication patterns
 
 3. **Memory Integration**
-   - Use agentic-flow's memory system as primary
-   - Add claude-flow-specific extensions via plugins
-   - Leverage agentic-flow's distributed memory
+   - Use agentic's memory system as primary
+   - Add codex-specific extensions via plugins
+   - Leverage agentic's distributed memory
 
 4. **Task Execution**
-   - Use agentic-flow's task graph execution
-   - Add claude-flow-specific task types
-   - Leverage agentic-flow's retry and fault tolerance
+   - Use agentic's task graph execution
+   - Add codex-specific task types
+   - Leverage agentic's retry and fault tolerance
 
 **Architecture Shift:**
 ```
-Current: claude-flow implements everything, integrates with agentic-flow
-   v3: agentic-flow provides core, claude-flow extends and specializes
+Current: codex implements everything, integrates with agentic
+   v3: agentic provides core, codex extends and specializes
 ```
 
 ---
@@ -481,7 +481,7 @@ Current: claude-flow implements everything, integrates with agentic-flow
 **Proposed Domain Model:**
 
 ```
-Claude-Flow v3 Domains:
+Codex-Flow v3 Domains:
 ┌─────────────────────────────────────────────────────────┐
 │            Shared Kernel (types, interfaces)            │
 └─────────────────────────────────────────────────────────┘
@@ -569,7 +569,7 @@ src/
 
 ```typescript
 // Plugin interface
-interface ClaudeFlowPlugin {
+interface CodexFlowPlugin {
   name: string;
   version: string;
   initialize(context: PluginContext): Promise<void>;
@@ -598,7 +598,7 @@ interface ClaudeFlowPlugin {
 
 **Plugin Loading:**
 ```typescript
-const core = new ClaudeFlowCore();
+const core = new CodexFlowCore();
 
 // Load required plugins
 await core.loadPlugin(new AgentLifecyclePlugin());
@@ -618,11 +618,11 @@ await core.initialize();
 
 ### 6.1 Architectural Principles
 
-**P1: agentic-flow Native**
-- Build on agentic-flow primitives, don't reimplement
-- Use agentic-flow's agent model as foundation
+**P1: agentic Native**
+- Build on agentic primitives, don't reimplement
+- Use agentic's agent model as foundation
 - Extend via plugins and hooks, not parallel systems
-- Contribute improvements back to agentic-flow
+- Contribute improvements back to agentic
 
 **P2: Domain-Driven Design**
 - Organize by business domain (agent lifecycle, task execution)
@@ -652,7 +652,7 @@ await core.initialize();
 
 **Core Stack:**
 - **Runtime:** Node.js 20+ (TypeScript 5.x)
-- **Base Framework:** agentic-flow ^2.0 (when released)
+- **Base Framework:** agentic ^2.0 (when released)
 - **Protocol:** MCP 2025.x
 - **Database:** Better-sqlite3 (with AgentDB for vectors)
 - **Event Bus:** Native EventEmitter (upgrade to Redis/NATS for distributed)
@@ -783,11 +783,11 @@ class AgentLifecycleService {
   constructor(
     private agentRepository: IAgentRepository,
     private eventBus: IEventBus,
-    private agenticFlowClient: AgenticFlowClient // Use agentic-flow
+    private agenticFlowClient: AgenticFlowClient // Use agentic
   ) {}
 
   async spawnAgent(template: AgentTemplate): Promise<AgentId> {
-    // Use agentic-flow to spawn
+    // Use agentic to spawn
     const agentId = await this.agenticFlowClient.spawnAgent({
       type: template.type,
       capabilities: template.capabilities
@@ -822,7 +822,7 @@ class SpawnAgentCommand {
 **Benefits:**
 - Clear separation of concerns
 - Single source of truth for agent state
-- Leverages agentic-flow for execution
+- Leverages agentic for execution
 - Easy to test each layer
 - Extensible via events
 
@@ -963,16 +963,16 @@ interface ITopologyStrategy {
   routeMessage(from: AgentId, to: AgentId, message: any): Promise<void>;
 }
 
-// Use agentic-flow's coordination when possible
+// Use agentic's coordination when possible
 class AgenticFlowTopology implements ITopologyStrategy {
   constructor(private agenticFlowClient: AgenticFlowClient) {}
 
   async initialize(): Promise<void> {
-    // Delegate to agentic-flow
+    // Delegate to agentic
     await this.agenticFlowClient.initializeSwarm();
   }
 
-  // Implement other methods using agentic-flow
+  // Implement other methods using agentic
 }
 ```
 
@@ -980,7 +980,7 @@ class AgenticFlowTopology implements ITopologyStrategy {
 - **Centralized:** Simple tasks, small teams (<10 agents)
 - **Hierarchical:** Large teams (10-100 agents), clear hierarchy
 - **Mesh:** High autonomy, peer-to-peer, resilience
-- **AgenticFlow:** Complex coordination, leverage agentic-flow native
+- **AgenticFlow:** Complex coordination, leverage agentic native
 
 ### 7.4 MCP Server Redesign
 
@@ -1108,7 +1108,7 @@ interface MCPContext {
 - [ ] Topology strategies
 - [ ] CoordinationEngine
 - [ ] Load balancer
-- [ ] agentic-flow integration
+- [ ] agentic integration
 - [ ] Integration tests
 
 **Sprint 11-12: MCP Server v3**
@@ -1153,7 +1153,7 @@ interface MCPContext {
 
 **Should Have:**
 - [ ] Plugin system functional
-- [ ] agentic-flow native integration
+- [ ] agentic native integration
 - [ ] Performance improvements
 - [ ] Better error messages
 - [ ] Comprehensive documentation
@@ -1234,14 +1234,14 @@ interface MCPContext {
   - Feature flags for gradual rollout
   - Clear communication plan
 
-**Risk: agentic-flow Dependency**
+**Risk: agentic Dependency**
 - **Likelihood:** Medium
 - **Impact:** High
 - **Mitigation:**
-  - Maintain abstraction layer over agentic-flow
-  - Contribute to agentic-flow to fix issues
+  - Maintain abstraction layer over agentic
+  - Contribute to agentic to fix issues
   - Have fallback implementations
-  - Lock agentic-flow version initially
+  - Lock agentic version initially
 
 **Risk: Performance Regression**
 - **Likelihood:** Medium
@@ -1296,9 +1296,9 @@ interface MCPContext {
 
 ### 11.1 Summary
 
-Claude-Flow v2.x is a sophisticated system with strong foundations but architectural complexity that limits scalability and maintainability. The v3 redesign presents an opportunity to:
+Codex-Flow v2.x is a sophisticated system with strong foundations but architectural complexity that limits scalability and maintainability. The v3 redesign presents an opportunity to:
 
-1. **Simplify** by adopting agentic-flow native architecture
+1. **Simplify** by adopting agentic native architecture
 2. **Modularize** through domain-driven design and bounded contexts
 3. **Extend** via a robust plugin system
 4. **Optimize** for performance and developer experience
@@ -1321,7 +1321,7 @@ Claude-Flow v2.x is a sophisticated system with strong foundations but architect
 - Unclear module boundaries (enforce)
 
 **Embrace These Opportunities:**
-- agentic-flow native integration
+- agentic native integration
 - Plugin-based extensibility
 - Domain-driven design
 - Performance optimization
@@ -1400,7 +1400,7 @@ Orchestrator (core/orchestrator.ts)
   HiveMind/Maestro/Verification
 ```
 
-### Appendix C: agentic-flow Integration Points
+### Appendix C: agentic Integration Points
 
 **Current Integration:**
 ```typescript
@@ -1421,12 +1421,12 @@ Orchestrator (core/orchestrator.ts)
 
 **Recommended v3 Integration:**
 ```typescript
-// Use agentic-flow as foundation
-- Agent base class from agentic-flow
-- Swarm coordination from agentic-flow
-- Task graph execution from agentic-flow
-- Memory system from agentic-flow
-- Add claude-flow extensions via plugins
+// Use agentic as foundation
+- Agent base class from agentic
+- Swarm coordination from agentic
+- Task graph execution from agentic
+- Memory system from agentic
+- Add codex extensions via plugins
 ```
 
 ### Appendix D: Testing Strategy

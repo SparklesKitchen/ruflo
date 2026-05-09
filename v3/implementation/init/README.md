@@ -1,12 +1,12 @@
 # V3 Init System
 
-Comprehensive initialization system for Claude Code integration with claude-flow V3.
+Comprehensive initialization system for Codex integration with codex V3.
 
 ## Overview
 
 The V3 init system creates a complete development environment including:
-- `.claude/` directory with settings, skills, commands, agents, and helpers
-- `.claude-flow/` runtime configuration
+- `.codex/` directory with settings, skills, commands, agents, and helpers
+- `.codex/` runtime configuration
 - `.mcp.json` MCP server configuration
 - Cross-platform support (Windows, macOS, Linux)
 
@@ -16,30 +16,30 @@ The V3 init system creates a complete development environment including:
 
 ```bash
 # Default initialization (recommended settings)
-npx @claude-flow/cli init
+npx @ruflo/cli init
 
 # Minimal setup (lightweight)
-npx @claude-flow/cli init --minimal
+npx @ruflo/cli init --minimal
 
 # Full setup (everything enabled)
-npx @claude-flow/cli init --full
+npx @ruflo/cli init --full
 
 # Force overwrite existing files
-npx @claude-flow/cli init --force
+npx @ruflo/cli init --force
 
 # Interactive wizard
-npx @claude-flow/cli init wizard
+npx @ruflo/cli init wizard
 ```
 
 ### Programmatic Usage
 
 ```typescript
-import { executeInit, DEFAULT_INIT_OPTIONS } from '@claude-flow/cli/init';
+import { executeInit, DEFAULT_INIT_OPTIONS } from '@ruflo/cli/init';
 
 const result = await executeInit({
   ...DEFAULT_INIT_OPTIONS,
   targetDir: process.cwd(),
-  sourceBaseDir: '/path/to/claude-flow',
+  sourceBaseDir: '/path/to/codex',
 });
 
 console.log(`Created ${result.created.files.length} files`);
@@ -59,7 +59,7 @@ The init system automatically detects:
 ### Component Selection
 
 Choose which components to install:
-- **Settings**: Claude Code hooks and permissions
+- **Settings**: Codex hooks and permissions
 - **Skills**: Specialized capabilities (50+)
 - **Commands**: Quick action shortcuts
 - **Agents**: Agent definitions (25+)
@@ -87,7 +87,7 @@ Choose which components to install:
 
 ```
 project/
-├── .claude/
+├── .codex/
 │   ├── settings.json      # Hooks and permissions
 │   ├── skills/            # 50+ skills
 │   ├── commands/          # Command shortcuts
@@ -95,7 +95,7 @@ project/
 │   ├── helpers/           # Utility scripts
 │   ├── statusline.sh      # Unix statusline
 │   └── statusline.mjs     # ESM module
-├── .claude-flow/
+├── .codex/
 │   ├── config.yaml        # Runtime config
 │   ├── data/              # Persistent data
 │   ├── logs/              # Log files

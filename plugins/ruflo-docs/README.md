@@ -24,18 +24,18 @@ Documentation generation, drift detection, and API docs automation.
 
 ## Compatibility
 
-- **CLI:** pinned to `@claude-flow/cli` v3.6 major+minor.
+- **CLI:** pinned to `@ruflo/cli` v3.6 major+minor.
 - **Agent model:** Haiku (cost-efficient for docs work).
 - **Verification:** `bash plugins/ruflo-docs/scripts/smoke.sh` is the contract.
 
 ## Document-worker contract
 
-Drives the `document` background worker (one of 12 workers in CLAUDE.md). Two invocation paths:
+Drives the `document` background worker (one of 12 workers in AGENTS.md). Two invocation paths:
 
 ```bash
 # CLI
-npx @claude-flow/cli@latest hooks worker dispatch --trigger document
-npx @claude-flow/cli@latest hooks worker dispatch --trigger document --scope api
+npx @ruflo/cli@latest hooks worker dispatch --trigger document
+npx @ruflo/cli@latest hooks worker dispatch --trigger document --scope api
 
 # MCP
 mcp tool call hooks_worker-dispatch --json -- '{"trigger": "document", "scope": "api"}'
@@ -49,7 +49,7 @@ mcp tool call hooks_worker-dispatch --json -- '{"trigger": "document", "scope": 
 
 ## Namespace coordination
 
-This plugin owns the `docs-drift` AgentDB namespace (kebab-case, follows the convention from [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md)). Used for drift-detection state (last-seen export hash per file). Reserved namespaces (`pattern`, `claude-memories`, `default`) MUST NOT be shadowed.
+This plugin owns the `docs-drift` AgentDB namespace (kebab-case, follows the convention from [ruflo-agentdb ADR-0001 §"Namespace convention"](../ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md)). Used for drift-detection state (last-seen export hash per file). Reserved namespaces (`pattern`, `codex-memories`, `default`) MUST NOT be shadowed.
 
 `docs-drift` is accessed via `memory_*` tools (namespace-routed).
 

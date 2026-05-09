@@ -4,7 +4,7 @@ title: ruflo-workflows plugin contract — pinning, namespace coordination, 10-t
 status: Proposed
 date: 2026-05-04
 authors:
-  - reviewer (Claude Code)
+  - reviewer (Codex)
 tags: [plugin, workflows, automation, orchestration, namespace, smoke-test]
 ---
 
@@ -12,7 +12,7 @@ tags: [plugin, workflows, automation, orchestration, namespace, smoke-test]
 
 `ruflo-workflows` (v0.1.0) — workflow automation with templates, orchestration, and lifecycle management. 1 agent (`workflow-specialist`), 2 skills (`workflow-create`, `workflow-run`), 1 command (`/workflow`).
 
-Wraps **10 `workflow_*` MCP tools** at `v3/@claude-flow/cli/src/mcp-tools/workflow-tools.ts:84, 196, 264, 450, 511, 558, 597, 648, 701, 739`:
+Wraps **10 `workflow_*` MCP tools** at `v3/@ruflo/cli/src/mcp-tools/workflow-tools.ts:84, 196, 264, 450, 511, 558, 597, 648, 701, 739`:
 
 | Tool | Purpose |
 |------|---------|
@@ -54,4 +54,4 @@ bash plugins/ruflo-workflows/scripts/smoke.sh
 - `plugins/ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md` — namespace convention
 - `plugins/ruflo-loop-workers/docs/adrs/0001-loop-workers-contract.md` — sibling automation surface (loops vs workflows)
 - `plugins/ruflo-sparc/docs/adrs/0001-sparc-contract.md` — SPARC orchestration uses workflows for phase transitions
-- `v3/@claude-flow/cli/src/mcp-tools/workflow-tools.ts` — 10 `workflow_*` tools
+- `v3/@ruflo/cli/src/mcp-tools/workflow-tools.ts` — 10 `workflow_*` tools

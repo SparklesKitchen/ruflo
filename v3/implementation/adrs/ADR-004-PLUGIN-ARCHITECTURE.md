@@ -28,7 +28,7 @@ v2 bundles all features (Hive Mind, Maestro, Neural, Verification) into core, ma
 ## Plugin Interface
 
 ```typescript
-interface ClaudeFlowPlugin {
+interface CodexFlowPlugin {
   name: string;
   version: string;
   dependencies?: string[];
@@ -45,7 +45,7 @@ interface ClaudeFlowPlugin {
 }
 
 // Plugin loading
-const core = new ClaudeFlowCore();
+const core = new CodexFlowCore();
 await core.loadPlugin(new HiveMindPlugin());
 await core.initialize();
 ```
@@ -69,9 +69,9 @@ await core.initialize();
 **Plugin Registration:**
 ```typescript
 class PluginManager {
-  private plugins: Map<string, ClaudeFlowPlugin> = new Map();
+  private plugins: Map<string, CodexFlowPlugin> = new Map();
 
-  async loadPlugin(plugin: ClaudeFlowPlugin): Promise<void> {
+  async loadPlugin(plugin: CodexFlowPlugin): Promise<void> {
     // Check dependencies
     for (const dep of plugin.dependencies || []) {
       if (!this.plugins.has(dep)) {
@@ -94,10 +94,10 @@ class PluginManager {
 ```
 
 **Official Plugins:**
-1. `@claude-flow/hive-mind` - Queen-led coordination
-2. `@claude-flow/neural` - Neural training system
-3. `@claude-flow/verification` - Truth scoring
-4. `@claude-flow/enterprise` - Advanced features
+1. `@ruflo/hive-mind` - Queen-led coordination
+2. `@ruflo/neural` - Neural training system
+3. `@ruflo/verification` - Truth scoring
+4. `@ruflo/enterprise` - Advanced features
 
 ## Success Metrics
 

@@ -4,7 +4,7 @@ title: ruflo-wasm plugin contract — pinning, namespace coordination, ADR-070 i
 status: Proposed
 date: 2026-05-04
 authors:
-  - reviewer (Claude Code)
+  - reviewer (Codex)
 tags: [plugin, wasm, sandbox, gallery, namespace, smoke-test]
 ---
 
@@ -12,7 +12,7 @@ tags: [plugin, wasm, sandbox, gallery, namespace, smoke-test]
 
 `ruflo-wasm` (v0.1.0) — sandboxed WASM agent creation, execution, and gallery sharing. 1 agent (`wasm-specialist`), 2 skills (`wasm-agent`, `wasm-gallery`), 1 command (`/wasm`).
 
-Wraps **10 `wasm_*` MCP tools** at `v3/@claude-flow/cli/src/mcp-tools/wasm-agent-tools.ts:18, 51, 74, 103, 117, 138, 160, 181, 195, 216`:
+Wraps **10 `wasm_*` MCP tools** at `v3/@ruflo/cli/src/mcp-tools/wasm-agent-tools.ts:18, 51, 74, 103, 117, 138, 160, 181, 195, 216`:
 
 | Tool | Purpose |
 |------|---------|
@@ -56,4 +56,4 @@ bash plugins/ruflo-wasm/scripts/smoke.sh
 - `v3/implementation/adrs/ADR-070-rvagent-wasm-completion.md` — upstream integration completion (Implemented)
 - `plugins/ruflo-agentdb/docs/adrs/0001-agentdb-optimization.md` — namespace convention
 - `plugins/ruflo-aidefence/docs/adrs/0001-aidefence-contract.md` — 3-gate pattern (relevant for sandboxed prompt-injection defense)
-- `v3/@claude-flow/cli/src/mcp-tools/wasm-agent-tools.ts` — 10 `wasm_*` tools
+- `v3/@ruflo/cli/src/mcp-tools/wasm-agent-tools.ts` — 10 `wasm_*` tools

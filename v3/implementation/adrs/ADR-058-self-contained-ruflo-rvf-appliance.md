@@ -1,12 +1,12 @@
-# ADR-058: Self-Contained Ruflo RVF Appliance — Linux Kernel + Claude Code + ruvLLM
+# ADR-058: Self-Contained Ruflo RVF Appliance — Linux Kernel + Codex + ruvLLM
 
 | Field | Value |
 |-------|-------|
 | **Status** | Proposed |
 | **Date** | 2026-02-28 |
-| **Authors** | Claude Flow Team |
+| **Authors** | Ruflo Team |
 | **Supersedes** | — |
-| **Related** | ADR-057 (RVF Native Storage), ADR-054 (RVF Plugin Marketplace), ADR-056 (agentic-flow v3 Integration), ADR-017 (RuVector Integration) |
+| **Related** | ADR-057 (RVF Native Storage), ADR-054 (RVF Plugin Marketplace), ADR-056 (agentic v3 Integration), ADR-017 (RuVector Integration) |
 
 ---
 
@@ -14,7 +14,7 @@
 
 ### The Problem
 
-Ruflo v3.5 requires the user to have Node.js 20+, npm, Claude Code CLI, API keys, and a properly configured OS environment. This means:
+Ruflo v3.5 requires the user to have Node.js 20+, npm, Codex CLI, API keys, and a properly configured OS environment. This means:
 
 - **10+ setup steps** before a user can run their first agent swarm
 - **Network dependency** at runtime for API calls, npm installs, MCP server downloads
@@ -30,7 +30,7 @@ A **single `ruflo.rvf` file** that contains everything needed to run the full Ru
 ruflo.rvf (self-contained appliance)
 ├── Linux microkernel (Alpine-based, ~5MB)
 ├── Node.js 22 runtime (~30MB stripped)
-├── Claude Code CLI
+├── Codex CLI
 ├── Ruflo v3.5+ (all packages)
 ├── ruvLLM local inference OR API key vault
 ├── AgentDB with HNSW indexes
@@ -81,10 +81,10 @@ Extending RVF to `RVFA` (RuVector Format Appliance) creates a unified format tha
 ├─────────────────────────────────────────────────┤
 │ Section 1: RUNTIME (compressed)                 │
 │   Node.js 22 (stripped, no npm)                 │
-│   Claude Code CLI binary                        │
+│   Codex CLI binary                        │
 ├─────────────────────────────────────────────────┤
 │ Section 2: RUFLO (compressed)                   │
-│   @claude-flow/cli + shared + guidance           │
+│   @ruflo/cli + shared + guidance           │
 │   All 26 commands, 140+ subcommands             │
 │   60+ agent definitions                         │
 │   17 hooks + 12 workers                         │
@@ -146,7 +146,7 @@ ruvLLM bridges the gap between RuVector's vector intelligence (search, routing, 
 
 ```
 .env.enc (AES-256-GCM encrypted)
-├── ANTHROPIC_API_KEY → Claude Sonnet/Opus
+├── OPENAI_API_KEY → Codex Sonnet/Opus
 ├── OPENAI_API_KEY → GPT-4/Codex (dual-mode)
 ├── GOOGLE_API_KEY → Gemini (fallback)
 └── Decryption: passphrase at boot OR hardware key
@@ -204,7 +204,7 @@ ruflo-appliance run ruflo.rvf
 
 ## 3. Capability Verification Suite
 
-The appliance includes a built-in verification suite that tests **every capability** of Ruflo + Claude Flow. This runs automatically at boot (`Section 5: VERIFY`) and can be triggered manually.
+The appliance includes a built-in verification suite that tests **every capability** of Ruflo + Ruflo. This runs automatically at boot (`Section 5: VERIFY`) and can be triggered manually.
 
 ### 3.1 Test Categories (25 Categories, 80+ Checks)
 
@@ -329,7 +329,7 @@ Stage 1: KERNEL
 Stage 2: RUNTIME
   ├── Download Node.js 22 (linux-x64-musl)
   ├── Strip debug symbols, remove npm/corepack
-  ├── Include Claude Code CLI binary
+  ├── Include Codex CLI binary
   └── Compress (~30MB → ~12MB)
 
 Stage 3: RUFLO
@@ -381,7 +381,7 @@ Final: Assemble RVFA
 │  ┌────────────────────────────────────────────────────────┐  │
 │  │  KERNEL: Alpine Linux 3.23 (~5MB)                      │  │
 │  │  ┌──────────────────────────────────────────────────┐  │  │
-│  │  │  RUNTIME: Node.js 22 + Claude Code CLI           │  │  │
+│  │  │  RUNTIME: Node.js 22 + Codex CLI           │  │  │
 │  │  │  ┌──────────────────────────────────────────────┐│  │  │
 │  │  │  │  RUFLO v3.5+                                 ││  │  │
 │  │  │  │  ├── 26 CLI commands (140+ subcommands)      ││  │  │
@@ -536,7 +536,7 @@ Hot Update Flow:
 
 ### Positive
 
-- **Zero-install deployment**: One file, no Node.js/npm/Claude Code prerequisites
+- **Zero-install deployment**: One file, no Node.js/npm/Codex prerequisites
 - **Offline-capable**: Full agent orchestration without internet (offline profile)
 - **Reproducible**: Same binary = same behavior everywhere
 - **Secure**: Encrypted keys, signed updates, container isolation
@@ -567,7 +567,7 @@ Hot Update Flow:
 | Docker image only | Requires Docker installed; no offline model support; not a single file |
 | Flatpak/Snap | Linux-only packaging; no custom binary format; no model bundling |
 | AppImage | Linux-only; no Windows/macOS; limited isolation |
-| WebAssembly bundle | No filesystem access; can't run Claude Code CLI; no local models |
+| WebAssembly bundle | No filesystem access; can't run Codex CLI; no local models |
 | Nix derivation | Requires Nix; steep learning curve; no model bundling |
 | VM image (qcow2) | Too large; requires hypervisor; not portable |
 
@@ -579,7 +579,7 @@ RVFA provides the best balance of portability, size, isolation, and integration 
 
 - ADR-057: RVF Native Storage Backend
 - ADR-054: RVF-Powered Plugin Marketplace
-- ADR-056: agentic-flow v3 Integration
+- ADR-056: agentic v3 Integration
 - [llama.cpp GGUF format](https://github.com/ggerganov/llama.cpp)
 - [Firecracker MicroVM](https://firecracker-microvm.github.io/)
 - [OCI Image Spec](https://github.com/opencontainers/image-spec)

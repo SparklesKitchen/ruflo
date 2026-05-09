@@ -1,5 +1,5 @@
 {
-  "name": "@claude-flow/plugin-test-intelligence",
+  "name": "@ruflo/plugin-test-intelligence",
   "version": "3.0.0-alpha.1",
   "description": "AI-powered test intelligence plugin for predictive test selection, flaky detection, and coverage optimization",
   "main": "./dist/index.js",
@@ -40,7 +40,7 @@
     "prepublishOnly": "npm run clean && npm run build && npm run typecheck"
   },
   "keywords": [
-    "claude-flow",
+    "codex",
     "plugin",
     "test-intelligence",
     "predictive-testing",
@@ -48,11 +48,11 @@
     "coverage-analysis",
     "mutation-testing"
   ],
-  "author": "Claude Flow Team",
+  "author": "Ruflo Team",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ruvnet/claude-flow.git",
+    "url": "https://github.com/SparklesKitchen/ruflo.git",
     "directory": "v3/plugins/test-intelligence"
   },
   "dependencies": {

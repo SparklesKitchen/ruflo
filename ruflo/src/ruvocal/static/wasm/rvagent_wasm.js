@@ -222,7 +222,7 @@ export class WasmAgent {
      *
      * # Example (JavaScript)
      * ```js
-     * const agent = new WasmAgent('{"model": "anthropic:claude-sonnet-4-20250514"}');
+     * const agent = new WasmAgent('{"model": "openai:codex-sonnet-4-20250514"}');
      * ```
      * @param {string} config_json
      */

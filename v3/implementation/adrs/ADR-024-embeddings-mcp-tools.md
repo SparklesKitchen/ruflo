@@ -5,7 +5,7 @@
 
 ## Context
 
-Following ADR-023 (ONNX Hyperbolic Embeddings Initialization), the CLI now has a comprehensive `embeddings` command with init, status, and neural subcommands. However, Claude Code and other MCP clients need programmatic access to embedding operations without invoking CLI commands.
+Following ADR-023 (ONNX Hyperbolic Embeddings Initialization), the CLI now has a comprehensive `embeddings` command with init, status, and neural subcommands. However, Codex and other MCP clients need programmatic access to embedding operations without invoking CLI commands.
 
 ### Problem Statement
 
@@ -26,7 +26,7 @@ Following ADR-005 (MCP-First API Design):
 
 ## Decision
 
-Implement 7 MCP tools in `@claude-flow/cli/src/mcp-tools/embeddings-tools.ts`:
+Implement 7 MCP tools in `@ruflo/cli/src/mcp-tools/embeddings-tools.ts`:
 
 ### 1. `embeddings/init`
 Initialize the ONNX embedding subsystem with hyperbolic support.
@@ -172,7 +172,7 @@ Get embeddings system status and configuration.
 │          ▼                     ▼                    ▼       │
 │  ┌─────────────────────────────────────────────────────────┐│
 │  │               Configuration Layer                        ││
-│  │    .claude-flow/embeddings.json (persistent config)      ││
+│  │    .codex/embeddings.json (persistent config)      ││
 │  └─────────────────────────────────────────────────────────┘│
 │                          │                                   │
 │          ┌───────────────┼───────────────┐                  │
@@ -213,12 +213,12 @@ where scale ensures ||m|| < maxNorm
 
 ## Configuration
 
-Tools store configuration in `.claude-flow/embeddings.json`:
+Tools store configuration in `.codex/embeddings.json`:
 
 ```json
 {
   "model": "all-MiniLM-L6-v2",
-  "modelPath": ".claude-flow/models",
+  "modelPath": ".codex/models",
   "dimension": 384,
   "cacheSize": 256,
   "hyperbolic": {

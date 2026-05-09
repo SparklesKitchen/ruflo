@@ -1,5 +1,5 @@
 #!/bin/bash
-# Claude-Flow Background Workers Test Suite
+# Codex-Flow Background Workers Test Suite
 # Tests all 10 background workers and scheduling
 
 set -e

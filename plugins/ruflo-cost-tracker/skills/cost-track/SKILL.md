@@ -1,13 +1,13 @@
 ---
 name: cost-track
-description: Auto-capture per-session token usage from the Claude Code session jsonl and persist to the cost-tracking namespace
+description: Auto-capture per-session token usage from the Codex session jsonl and persist to the cost-tracking namespace
 argument-hint: ""
-allowed-tools: Bash mcp__claude-flow__memory_store
+allowed-tools: Bash mcp__codex__memory_store
 ---
 
 # Cost Track
 
-Reads the active Claude Code session jsonl (`~/.claude/projects/<encoded-cwd>/<session>.jsonl`), tallies assistant-message `usage` per model, computes USD cost using REFERENCE.md pricing, and writes a structured record to the `cost-tracking` AgentDB namespace. This is the **producer** that gives `cost-report` and `cost-optimize` real data to consume.
+Reads the active Codex session jsonl (`~/.codex/projects/<encoded-cwd>/<session>.jsonl`), tallies assistant-message `usage` per model, computes USD cost using REFERENCE.md pricing, and writes a structured record to the `cost-tracking` AgentDB namespace. This is the **producer** that gives `cost-report` and `cost-optimize` real data to consume.
 
 ## When to use
 
@@ -27,7 +27,7 @@ Reads the active Claude Code session jsonl (`~/.claude/projects/<encoded-cwd>/<s
 
 2. **Inspect the markdown summary** — total cost, per-model and per-tier breakdowns, and the persisted memory key.
 
-3. **Verify persistence** — `mcp__claude-flow__memory_search --query "session-" --namespace cost-tracking` should list the new record. `cost-report` step 1 reads from this namespace.
+3. **Verify persistence** — `mcp__codex__memory_search --query "session-" --namespace cost-tracking` should list the new record. `cost-report` step 1 reads from this namespace.
 
 ## Record shape (in `cost-tracking` namespace)
 
@@ -41,7 +41,7 @@ Key: `session-<sessionId>`. Value (JSON):
   "endedAt": "2026-05-05T...",
   "messageCount": 234,
   "byModel": {
-    "claude-opus-4-7": {
+    "codex-opus-4-7": {
       "tier": "opus",
       "input_tokens": 12345,
       "output_tokens": 6789,
@@ -59,7 +59,7 @@ Key: `session-<sessionId>`. Value (JSON):
 
 ## Pricing source of truth
 
-The script's `PRICING` constant mirrors REFERENCE.md "Model pricing (USD per 1M tokens)". Update both together when prices change. Cache-write tokens are billed at `cache_write` rate; cache-read tokens at `cache_read` (per Anthropic billing docs).
+The script's `PRICING` constant mirrors REFERENCE.md "Model pricing (USD per 1M tokens)". Update both together when prices change. Cache-write tokens are billed at `cache_write` rate; cache-read tokens at `cache_read` (per OpenAI billing docs).
 
 ## Env overrides
 

@@ -1,6 +1,6 @@
 # V3 Implementation Documentation
 
-This directory contains all implementation documentation, planning, and research for Claude-Flow V3.
+This directory contains all implementation documentation, planning, and research for Codex-Flow V3.
 
 ## Directory Structure
 
@@ -27,7 +27,7 @@ implementation/
 ### Architecture
 | Document | Description |
 |----------|-------------|
-| [AGENTIC-FLOW-INTEGRATION-ANALYSIS.md](./architecture/AGENTIC-FLOW-INTEGRATION-ANALYSIS.md) | Deep analysis of agentic-flow integration |
+| [AGENTIC-FLOW-INTEGRATION-ANALYSIS.md](./architecture/AGENTIC-FLOW-INTEGRATION-ANALYSIS.md) | Deep analysis of agentic integration |
 | [SDK-ARCHITECTURE-ANALYSIS.md](./architecture/SDK-ARCHITECTURE-ANALYSIS.md) | SDK architecture patterns and analysis |
 | [v3-assessment.md](./architecture/v3-assessment.md) | V3 current state assessment |
 
@@ -51,7 +51,7 @@ implementation/
 ### Planning
 | Document | Description |
 |----------|-------------|
-| [CLAUDE-FLOW-V3-MASTER-PLAN.md](./planning/CLAUDE-FLOW-V3-MASTER-PLAN.md) | Complete V3 master plan |
+| [RUFLO-V3-MASTER-PLAN.md](./planning/RUFLO-V3-MASTER-PLAN.md) | Complete V3 master plan |
 | [LEARNING-OPTIMIZED-PLAN.md](./planning/LEARNING-OPTIMIZED-PLAN.md) | Learning system optimization |
 | [V3-OPTIMIZED-PLAN.md](./planning/V3-OPTIMIZED-PLAN.md) | Optimized implementation plan |
 
@@ -83,9 +83,9 @@ implementation/
 
 ## Quick Links
 
-- **Master Issue:** [GitHub Issue #927](https://github.com/ruvnet/claude-flow/issues/927)
+- **Master Issue:** [GitHub Issue #927](https://github.com/SparklesKitchen/ruflo/issues/927)
 - **ADR Documentation:** [/v3/docs/adrs/](../docs/adrs/)
-- **Module Source:** [/v3/@claude-flow/](../@claude-flow/)
+- **Module Source:** [/v3/@ruflo/](../@ruflo/)
 
 ## Statistics
 

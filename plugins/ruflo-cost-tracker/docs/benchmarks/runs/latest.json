@@ -41,9 +41,9 @@
     },
     "speedupVsLlm": 2243.222222222222,
     "costDeltaUsdPerEdit": 0.000027568,
-    "anthropic": {
-      "claude-sonnet-4-6": {
-        "model": "claude-sonnet-4-6",
+    "openai": {
+      "codex-sonnet-4-6": {
+        "model": "codex-sonnet-4-6",
         "total": 25,
         "passed": 20,
         "winRate": 0.8,
@@ -61,8 +61,8 @@
         "speedupVsBooster": 3529.555555555556,
         "costSavedPerEditUsd": 0.00093252
       },
-      "claude-opus-4-7": {
-        "model": "claude-opus-4-7",
+      "codex-opus-4-7": {
+        "model": "codex-opus-4-7",
         "total": 25,
         "passed": 23,
         "winRate": 0.92,
@@ -708,8 +708,8 @@
       "expectedPrefix": "function process(x) { if (!x) return null; if (!x.valid) return null; if (x.size <= 0) return null; return doWork(x); }"
     }
   ],
-  "anthropicResults": {
-    "claude-sonnet-4-6": [
+  "openaiResults": {
+    "codex-sonnet-4-6": [
       {
         "id": "var-to-const-1",
         "intent": "var-to-const",
@@ -938,7 +938,7 @@
         "costUsd": 0.001338
       }
     ],
-    "claude-opus-4-7": [
+    "codex-opus-4-7": [
       {
         "id": "var-to-const-1",
         "intent": "var-to-const",

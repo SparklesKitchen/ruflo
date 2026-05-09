@@ -4,7 +4,7 @@ title: ruflo-sparc plugin contract — pinning, namespace coordination, ADR/DDD/
 status: Proposed
 date: 2026-05-04
 authors:
-  - reviewer (Claude Code)
+  - reviewer (Codex)
 tags: [plugin, sparc, methodology, namespace, smoke-test]
 ---
 

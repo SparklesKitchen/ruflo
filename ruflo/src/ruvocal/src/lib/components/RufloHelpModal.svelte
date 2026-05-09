@@ -21,15 +21,15 @@
 
 	const models: ModelInfo[] = [
 		{
-			name: "Claude Haiku 4.5",
-			provider: "Anthropic",
+			name: "Codex Haiku 4.5",
+			provider: "OpenAI",
 			strength: "Fast, cheap, reliable tool-calling",
 			notes: "Default. Best price/perf for routine MCP tool flows.",
 			isDefault: true,
 		},
 		{
-			name: "Claude Sonnet 4.6",
-			provider: "Anthropic",
+			name: "Codex Sonnet 4.6",
+			provider: "OpenAI",
 			strength: "Best general reasoning + long-horizon work",
 			notes: "Reach for this on complex multi-step tasks or 6+ parallel tool calls.",
 		},
@@ -37,7 +37,7 @@
 			name: "Gemini 2.5 Pro",
 			provider: "Google",
 			strength: "1M context, deep research synthesis",
-			notes: "Strongest at multi-document analysis. Tool-calling is more cautious than Claude.",
+			notes: "Strongest at multi-document analysis. Tool-calling is more cautious than Codex.",
 		},
 		{
 			name: "Gemini 2.5 Flash",
@@ -217,7 +217,7 @@
 			<section class="mb-6">
 				<h3 class="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-500">Quick start</h3>
 				<ol class="list-decimal space-y-1.5 pl-5 text-sm">
-					<li>Pick a model below (default: <code class="rounded bg-gray-100 px-1 dark:bg-gray-800">Claude Haiku 4.5</code>).</li>
+					<li>Pick a model below (default: <code class="rounded bg-gray-100 px-1 dark:bg-gray-800">Codex Haiku 4.5</code>).</li>
 					<li>Click an example prompt below the chat box, or type your own.</li>
 					<li>RuFlo decides which tools to call. Watch the streaming tool-call cards below your message — multiple cards = parallel execution.</li>
 					<li>Use <strong>AUTO</strong> on the chat box to chain tool calls automatically.</li>

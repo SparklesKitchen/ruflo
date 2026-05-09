@@ -9,7 +9,7 @@ Drives features through a rigorous five-phase development lifecycle. Each phase 
 ## Installation
 
 ```bash
-claude --plugin-dir plugins/ruflo-sparc
+codex --plugin-dir plugins/ruflo-sparc
 ```
 
 ## Agents
@@ -57,7 +57,7 @@ sparc report                 # Generate full SPARC methodology report with trace
 
 ## Compatibility
 
-- **CLI:** pinned to `@claude-flow/cli` v3.6 major+minor.
+- **CLI:** pinned to `@ruflo/cli` v3.6 major+minor.
 - **Verification:** `bash plugins/ruflo-sparc/scripts/smoke.sh` is the contract.
 
 ## Phase-to-plugin alignment
@@ -84,7 +84,7 @@ This plugin owns four AgentDB namespaces, all kebab-case compliant per [ruflo-ag
 | `sparc-phases` | Phase artifacts (specs, pseudocode, ADRs, reports) |
 | `sparc-gates` | Gate check results and history |
 
-The reserved `patterns` (plural) namespace is consumed for cross-feature SPARC pattern learning — note the pluralization (different from the singular `pattern` ReasoningBank target). Reserved namespaces (`pattern`, `claude-memories`, `default`) MUST NOT be shadowed.
+The reserved `patterns` (plural) namespace is consumed for cross-feature SPARC pattern learning — note the pluralization (different from the singular `pattern` ReasoningBank target). Reserved namespaces (`pattern`, `codex-memories`, `default`) MUST NOT be shadowed.
 
 ## Verification
 

@@ -7,7 +7,7 @@ allowed-tools: Bash
 
 # Cost Summary
 
-A stable single-call interface that other plugins / scripts / dashboards can shell out to and parse. ADR-0002 considered exposing `cost_report` / `cost_summary` as proper MCP tools but **deferred that** — adding MCP tools requires modifying `@claude-flow/cli` source, out of scope for plugin-local work. This script is the equivalent: same data, exposed via a stdout JSON contract.
+A stable single-call interface that other plugins / scripts / dashboards can shell out to and parse. ADR-0002 considered exposing `cost_report` / `cost_summary` as proper MCP tools but **deferred that** — adding MCP tools requires modifying `@ruflo/cli` source, out of scope for plugin-local work. This script is the equivalent: same data, exposed via a stdout JSON contract.
 
 ## When to use
 
@@ -25,7 +25,7 @@ A stable single-call interface that other plugins / scripts / dashboards can she
   "conversationCount": 1,
   "byTier": { "haiku": 0, "sonnet": 0, "opus": 1546.36, "unknown": 0 },
   "byModel": {
-    "claude-opus-4-7": {
+    "codex-opus-4-7": {
       "tier": "opus",
       "cost_usd": 1546.36,
       "messages": 1597,
